@@ -1,6 +1,4 @@
-﻿using Glyph.Transition;
-
-namespace Glyph
+﻿namespace Glyph.Transition
 {
     public class TransitionFloat : TransitionVector<float>
     {

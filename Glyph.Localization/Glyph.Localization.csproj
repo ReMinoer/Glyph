@@ -4,23 +4,22 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</ProjectGuid>
+    <ProjectGuid>{1F7A7855-3E63-45CD-907A-D23AA61A02D2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph</RootNamespace>
-    <AssemblyName>Glyph</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>Glyph.Localization</RootNamespace>
+    <AssemblyName>Glyph.Localization</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Windows|AnyCPU'">
     <OutputPath>bin\Windows\</OutputPath>
@@ -37,39 +36,18 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Angle.cs" />
-    <Compile Include="Axis.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="Checkpoint.cs" />
-    <Compile Include="Point.Extension.cs" />
-    <Compile Include="Rectangle.Extension.cs" />
-    <Compile Include="SpriteBatch.Extension.cs" />
-    <Compile Include="Texture2D.Extension.cs" />
-    <Compile Include="Transition.Extension.cs" />
-    <Compile Include="Vector2.Extension.cs" />
-    <Compile Include="Vector3.Extension.cs" />
-    <Compile Include="ContentLibrary.cs" />
-    <Compile Include="Resolution.cs" />
-    <Compile Include="Texture2DSplit.cs" />
-    <Compile Include="Orientation.cs" />
-    <Compile Include="Period.cs" />
+    <Compile Include="LanguageFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transition\ITimingFunction.cs" />
-    <Compile Include="Transition\ITransition.cs" />
-    <Compile Include="Transition\TransitionVector.cs" />
-    <Compile Include="Transition\BezierFunction.cs" />
-    <Compile Include="Transition\CustomFunction.cs" />
-    <Compile Include="Transition\LinearFunction.cs" />
-    <Compile Include="Transition\StepsFunction.cs" />
-    <Compile Include="Transition\TransitionColor.cs" />
-    <Compile Include="Transition\TransitionFloat.cs" />
-    <Compile Include="Transition\TransitionVector2.cs" />
-    <Compile Include="Transition\TransitionVector3.cs" />
-    <Compile Include="Transition\TransitionVector4.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Glyph.Xml\Glyph.Xml.csproj">
+      <Project>{3CDC6986-8651-4080-99D6-CC0DEAFDF6AE}</Project>
+      <Name>Glyph.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

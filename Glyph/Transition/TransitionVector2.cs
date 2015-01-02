@@ -1,7 +1,6 @@
-﻿using Glyph.Transition;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
-namespace Glyph
+namespace Glyph.Transition
 {
     public class TransitionVector2 : TransitionVector<Vector2>
     {

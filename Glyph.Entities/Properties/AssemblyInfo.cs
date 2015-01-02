@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
 
-[assembly: AssemblyTitle("Glyph")]
+[assembly: AssemblyTitle("Glyph.Entities")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Glyph")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyProduct("Glyph.Entities")]
+[assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 // Le GUID suivant est pour l'ID de la typelib si ce projet est exposé à COM
 
-[assembly: Guid("a6149dd6-b221-4bb3-90cf-bc0c3620c872")]
+[assembly: Guid("1d07370b-b752-46a6-9f55-6008c5381b94")]
 
 // Les informations de version pour un assembly se composent des quatre valeurs suivantes :
 //
