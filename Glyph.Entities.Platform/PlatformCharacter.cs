@@ -4,12 +4,11 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Entities.Platform
 {
-    public abstract class PlatformCharacter : GameObject
+    public abstract class PlatformCharacter : GameObject, ILayable
     {
         // BUG : Correction de position quand changement de sens
         // TODO : Reflechir à la sauvegarde des perso (jumelle, AI,...)
         // WATCH : Cohésion du sol sur longue chute
-        public virtual int Layer { get; set; }
 
         [XmlIgnore]
         public virtual float VerticalSpeed { get; set; }
@@ -53,6 +52,7 @@ namespace Glyph.Entities.Platform
             }
         }
         protected Collision Collision;
+        public virtual int Layer { get; set; }
 
         public virtual void Initialize(int x, int y, int layer)
         {

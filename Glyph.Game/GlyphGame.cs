@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using Glyph.Audio;
 using Glyph.Input;
 using Glyph.Input.StandardActions;
@@ -10,13 +11,16 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Glyph.Game
 {
-    public abstract class GlyphGame : Microsoft.Xna.Framework.Game
+    public abstract class GlyphGame<TMode> : Microsoft.Xna.Framework.Game
     {
         public GraphicsDeviceManager Graphics { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
 
         public ContentLibrary ContentLibrary { get; private set; }
         public InputManager InputManager { get; private set; }
+
+        public ModeManager<TMode> ModeManager { get; private set; }
+        public Dictionary<TMode, IGameMode> Modes { get; private set; }
 
         public PerformanceViewer PerformanceViewer { get; private set; }
         public StatusDisplay StatusDisplay { get; private set; }
@@ -55,12 +59,21 @@ namespace Glyph.Game
 
             InputManager = new InputManager(PlayerIndex.One);
 
+            ModeManager = new ModeManager<TMode>();
+            Modes = new Dictionary<TMode, IGameMode>();
+
             PerformanceViewer = new PerformanceViewer();
             StatusDisplay = new StatusDisplay();
             StatusDisplay.Channels.Add(new DefautStatusDisplayChannel(PerformanceViewer));
             EditorCursor.Initialize();
 
             Chronometer.Init();
+        }
+
+        protected override void Initialize()
+        {
+            Modes[ModeManager.State].Initialize();
+            base.Initialize();
         }
 
         protected override void LoadContent()
@@ -72,6 +85,8 @@ namespace Glyph.Game
             AudioManager.LoadContent(ContentLibrary);
             StatusDisplay.LoadContent(ContentLibrary);
 
+            Modes[ModeManager.State].LoadContent(ContentLibrary, GraphicsDevice);
+
 #if WINDOWS
             EditorCursor.LoadContent(ContentLibrary);
 #endif
@@ -82,11 +97,27 @@ namespace Glyph.Game
             PerformanceViewer.UpdateCall();
 
             base.Update(gameTime);
-            HandleInput();
+
+            bool change = ModeManager.HasChange();
+
+            if (!change)
+                HandleInput();
 
             AudioManager.Update(gameTime);
             PerformanceViewer.Update(gameTime);
             StatusDisplay.Update(gameTime);
+
+            change = change || ModeManager.HasChange();
+            do
+            {
+                if (change)
+                {
+                    Modes[ModeManager.State].Initialize();
+                    Modes[ModeManager.State].LoadContent(ContentLibrary, GraphicsDevice);
+                }
+                Modes[ModeManager.State].Update(gameTime);
+                change = ModeManager.HasChange();
+            } while (change);
 
             PerformanceViewer.UpdateEnd();
         }
@@ -108,6 +139,7 @@ namespace Glyph.Game
                 Resolution.ToogleFullscreen();
 #endif
 
+            Modes[ModeManager.State].HandleInput(InputManager);
             SongPlayer.HandleInput(InputManager);
             StatusDisplay.HandleInput(InputManager);
 
@@ -119,6 +151,8 @@ namespace Glyph.Game
         protected sealed override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            Modes[ModeManager.State].Draw(SpriteBatch, Graphics);
 
             Draw();
 

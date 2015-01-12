@@ -2,13 +2,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Entities.Platform
+namespace Glyph.Entities
 {
-    public class Surface
+    public class Zone : ILayable
     {
         public Vector2 Position { get; set; }
         public Vector2 Size { get; set; }
-        public float Layer { get; set; }
 
         public Color Color { get; set; }
         public float Opacity { get; set; }
@@ -24,10 +23,10 @@ namespace Glyph.Entities.Platform
         }
         private Texture2D _texture;
 
-        public Surface()
+        public Zone()
             : this(0, 0, 0, 0, 0) {}
 
-        public Surface(int x, int y, int w, int h, float layer)
+        public Zone(int x, int y, int w, int h, int layer)
         {
             Position = new Vector2(x, y);
             Size = new Vector2(w, h);
@@ -35,6 +34,8 @@ namespace Glyph.Entities.Platform
             Color = Color.Red;
             Opacity = 0.1f;
         }
+
+        public int Layer { get; set; }
 
         public void LoadContent(ContentLibrary ressources)
         {

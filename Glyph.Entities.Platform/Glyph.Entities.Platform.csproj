@@ -43,7 +43,6 @@
     <Compile Include="IPlatformerSpace.cs" />
     <Compile Include="PlatformCharacter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Surface.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Glyph.Entities\Glyph.Entities.csproj">

@@ -21,7 +21,14 @@ namespace Glyph.Localization
             }
             catch
             {
-                sr = new StreamReader(TitleContainer.OpenStream("Localization/default" + FileExtension));
+                try
+                {
+                    sr = new StreamReader(TitleContainer.OpenStream("Localization/default" + FileExtension));
+                }
+                catch
+                {
+                    return new LanguageFile();
+                }
             }
             var serializer = new XmlSerializer(typeof(LanguageFile));
             var result = (LanguageFile)serializer.Deserialize(sr);
