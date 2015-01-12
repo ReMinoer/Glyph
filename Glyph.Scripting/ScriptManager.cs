@@ -7,8 +7,6 @@ using Glyph.Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-// REFACTOR : Base de scripting dans Glyph
-
 namespace Glyph.Scripting
 {
     public abstract class ScriptManager<TCommands>
