@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Entities.Platform", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Scripting", "Glyph.Scripting\Glyph.Scripting.csproj", "{F522E252-6ADB-4081-A997-1F984766A337}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Application", "Glyph.Application\Glyph.Application.csproj", "{E0970AE4-8303-45CC-AB56-E2B8BB56332B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{F522E252-6ADB-4081-A997-1F984766A337}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F522E252-6ADB-4081-A997-1F984766A337}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
 		{F522E252-6ADB-4081-A997-1F984766A337}.Windows|Any CPU.Build.0 = Windows|Any CPU
+		{E0970AE4-8303-45CC-AB56-E2B8BB56332B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0970AE4-8303-45CC-AB56-E2B8BB56332B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0970AE4-8303-45CC-AB56-E2B8BB56332B}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
+		{E0970AE4-8303-45CC-AB56-E2B8BB56332B}.Windows|Any CPU.Build.0 = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

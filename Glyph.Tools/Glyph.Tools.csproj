@@ -40,7 +40,6 @@
   <ItemGroup>
     <Compile Include="Chronometer.cs" />
     <Compile Include="EditorCursor.cs" />
-    <Compile Include="Log.cs" />
     <Compile Include="PerformanceViewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SongPlayer.cs" />
