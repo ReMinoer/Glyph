@@ -9,6 +9,7 @@
 ////THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////
 
+using Glyph.Application;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -76,6 +77,8 @@ namespace Glyph
 
             UpdateResolution();
             _dirtyMatrix = true;
+
+            Log.System(string.Format("Virtual resolution changed (Width:{0},Height:{1},Ratio:{2})", _virtualWidth, _virtualHeight, GetVirtualAspectRatio()));
         }
 
         static public void ToogleFullscreen()
@@ -192,6 +195,8 @@ namespace Glyph
             _windowHeight = _device.PreferredBackBufferHeight;
 
             _currentlyResizing = false;
+
+            Log.System(string.Format("Window resized (Width:{0},Height:{1},Ratio:{2},Fullscreen:{3})", _windowWidth, _windowHeight, (double)_windowWidth / (double)_windowHeight, FullScreen));
         }
 
         static private void UpdateResolution()

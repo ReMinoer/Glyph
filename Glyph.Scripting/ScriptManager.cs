@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Glyph.Application;
 using Glyph.Entities;
 using Glyph.Localization;
 using Microsoft.Xna.Framework;
@@ -113,6 +114,8 @@ namespace Glyph.Scripting
 
             if (Scripts.ContainsKey("init"))
                 Scripts["init"].Actif = true;
+
+            Log.GameEvent(string.Format("Script loaded : {0}", path));
         }
 
         public void Update(GameObject entity)

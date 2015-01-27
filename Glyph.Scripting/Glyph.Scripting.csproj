@@ -47,6 +47,10 @@
     <Compile Include="TriggerZone.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Glyph.Application\Glyph.Application.csproj">
+      <Project>{E0970AE4-8303-45CC-AB56-E2B8BB56332B}</Project>
+      <Name>Glyph.Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Entities\Glyph.Entities.csproj">
       <Project>{729CF52C-D06C-42FD-A2EE-6C19E07D185F}</Project>
       <Name>Glyph.Entities</Name>

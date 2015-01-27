@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Timers;
+using Glyph.Application;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -45,6 +48,10 @@ namespace Glyph
             files.AddRange(Directory.GetFiles(path, "*.mgfx", SearchOption.AllDirectories));
 
             foreach (string s in files)
+            {
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+
                 if (s.Contains("Font"))
                     AddFont(s.Replace("Content\\", ""), content);
                 else if (s.Contains("Sound"))
@@ -55,6 +62,11 @@ namespace Glyph
                     AddEffect(s, content);
                 else
                     AddTexture(s.Replace("Content\\", ""), content);
+
+                stopwatch.Stop();
+                Log.LoadedContent(string.Format("Loaded {0} ({1}s)", s, stopwatch.Elapsed.ToString(@"s\.fff")));
+                stopwatch.Reset();
+            }
         }
 
         public void AddTexture(string path, ContentManager content)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Glyph.Application;
 using Glyph.Localization;
 
 namespace Glyph.Scripting
@@ -125,6 +126,10 @@ namespace Glyph.Scripting
                      typeof(TCommands).InvokeMember(_lines[_ligneActuel].Cmd, BindingFlags.InvokeMethod, null, null,
                          _lines[_ligneActuel].Args))
                     return;
+
+                Log.Script(string.Format("{0} {1}", _lines[_ligneActuel].Cmd,
+                    _lines[_ligneActuel].Args.Aggregate((x, y) => x + " " + y)));
+
                 _ligneActuel++;
             }
             Actif = false;

@@ -69,7 +69,12 @@
     <Compile Include="Transition\TransitionVector3.cs" />
     <Compile Include="Transition\TransitionVector4.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Glyph.Application\Glyph.Application.csproj">
+      <Project>{e0970ae4-8303-45cc-ab56-e2b8bb56332b}</Project>
+      <Name>Glyph.Application</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
