@@ -6,6 +6,7 @@ namespace Glyph.Application
 {
     static public class Log
     {
+        static public bool Enable { get; set; }
         static public bool ViewInConsole { get { return _viewInConsole; } set { _viewInConsole = value; } }
         static public bool UseRealTime { get { return _useRealTime; } set { _useRealTime = value; } }
 
@@ -23,7 +24,7 @@ namespace Glyph.Application
         static private readonly Stopwatch ExecutionStopwatch = new Stopwatch();
 
         static private bool _viewInConsole = true;
-        static private bool _useRealTime = false;
+        static private bool _useRealTime = true;
         static private string _outputPath = "log.txt";
         static private StreamWriter _fileStream = new StreamWriter("log.txt") {AutoFlush = true};
 

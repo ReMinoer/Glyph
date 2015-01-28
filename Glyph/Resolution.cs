@@ -78,7 +78,7 @@ namespace Glyph
             UpdateResolution();
             _dirtyMatrix = true;
 
-            Log.System(string.Format("Virtual resolution changed (Width:{0},Height:{1},Ratio:{2})", _virtualWidth, _virtualHeight, GetVirtualAspectRatio()));
+            Log.System(string.Format("Virtual resolution changed (Width:{0},Height:{1},Ratio:{2})", _virtualWidth, _virtualHeight, GetVirtualAspectRatio().ToString("F2")));
         }
 
         static public void ToogleFullscreen()
@@ -196,7 +196,7 @@ namespace Glyph
 
             _currentlyResizing = false;
 
-            Log.System(string.Format("Window resized (Width:{0},Height:{1},Ratio:{2},Fullscreen:{3})", _windowWidth, _windowHeight, (double)_windowWidth / (double)_windowHeight, FullScreen));
+            Log.System(string.Format("Window resized (Width:{0},Height:{1},Ratio:{2},Fullscreen:{3})", _windowWidth, _windowHeight, ((double)_windowWidth / _windowHeight).ToString("F2"), FullScreen));
         }
 
         static private void UpdateResolution()

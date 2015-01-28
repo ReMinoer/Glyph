@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Glyph.Application;
 using Glyph.Audio;
 using Glyph.Input;
 using Glyph.Input.StandardActions;
@@ -22,6 +25,16 @@ namespace Glyph.Game
         public ModeManager<TMode> ModeManager { get; private set; }
         public Dictionary<TMode, IGameMode> Modes { get; private set; }
 
+        public CultureInfo Culture
+        {
+            get { return _culture; }
+            set
+            {
+                _culture = value;
+                Log.System(string.Format("Current culture : {0}", _culture.EnglishName));
+            }
+        }
+
         public PerformanceViewer PerformanceViewer { get; private set; }
         public StatusDisplay StatusDisplay { get; private set; }
 
@@ -40,9 +53,14 @@ namespace Glyph.Game
         protected int DefautWindowWidth = (int)Resolution.WindowSize.X;
         private Viewport _defaultViewport;
         private bool _synchroVertical;
+        private CultureInfo _culture;
 
-        protected GlyphGame()
+        protected GlyphGame(string[] args)
         {
+            Log.StartStopwatch();
+            Log.System("Start game");
+            Log.System(string.Format("Launch arguments : {0}", args.Aggregate((x, y) => x + " " + y)));
+
             Graphics = new GraphicsDeviceManager(this);
 
             Window.AllowUserResizing = true;
@@ -61,6 +79,8 @@ namespace Glyph.Game
 
             ModeManager = new ModeManager<TMode>();
             Modes = new Dictionary<TMode, IGameMode>();
+
+            Culture = CultureInfo.CurrentCulture;
 
             PerformanceViewer = new PerformanceViewer();
             StatusDisplay = new StatusDisplay();

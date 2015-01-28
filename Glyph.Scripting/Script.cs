@@ -127,8 +127,11 @@ namespace Glyph.Scripting
                          _lines[_ligneActuel].Args))
                     return;
 
-                Log.Script(string.Format("{0} {1}", _lines[_ligneActuel].Cmd,
-                    _lines[_ligneActuel].Args.Aggregate((x, y) => x + " " + y)));
+                if (_lines[_ligneActuel].Args.Any())
+                    Log.Script(string.Format("{0} {1}", _lines[_ligneActuel].Cmd.Substring(4),
+                        _lines[_ligneActuel].Args.Aggregate((x, y) => x + " " + y)));
+                else
+                    Log.Script(_lines[_ligneActuel].Cmd.Substring(4));
 
                 _ligneActuel++;
             }

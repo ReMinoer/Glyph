@@ -18,7 +18,7 @@ namespace Glyph.Scripting
         public bool DrawTriggerZone { get; set; }
         private readonly LanguageFile _languageFile;
 
-        public ScriptManager(LanguageFile languageFile)
+        protected ScriptManager(LanguageFile languageFile)
         {
             _languageFile = languageFile;
 

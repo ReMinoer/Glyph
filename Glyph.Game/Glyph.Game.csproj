@@ -44,6 +44,10 @@
     <Compile Include="ModeManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Glyph.Application\Glyph.Application.csproj">
+      <Project>{e0970ae4-8303-45cc-ab56-e2b8bb56332b}</Project>
+      <Name>Glyph.Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
       <Project>{46aa8a4b-5a43-45f3-99e4-b7bad0d47fea}</Project>
       <Name>Glyph.Audio</Name>
