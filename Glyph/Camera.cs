@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph
 {
+    // Commentaire de test pour subtree
     public enum CameraMode
     {
         Auto,
