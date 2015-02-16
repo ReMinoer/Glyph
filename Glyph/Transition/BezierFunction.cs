@@ -8,15 +8,10 @@ namespace Glyph.Transition
         public float P1Y { get; private set; }
         public float P2X { get; private set; }
         public float P2Y { get; private set; }
-
         static public BezierFunction Linear { get { return new BezierFunction(0, 0, 1, 1); } }
-
         static public BezierFunction Ease { get { return new BezierFunction(0.25f, 0.1f, 0.25f, 1f); } }
-
         static public BezierFunction EaseIn { get { return new BezierFunction(0.42f, 0f, 1f, 1f); } }
-
         static public BezierFunction EaseOut { get { return new BezierFunction(0f, 0f, 0.58f, 1f); } }
-
         static public BezierFunction EaseInOut { get { return new BezierFunction(0.42f, 0f, 0.58f, 1f); } }
 
         public BezierFunction(float p1X, float p1Y, float p2X, float p2Y)
@@ -25,11 +20,6 @@ namespace Glyph.Transition
             P1Y = p1Y;
             P2X = p2X;
             P2Y = p2Y;
-        }
-
-        public float GetValue(float t)
-        {
-            return BezierY(FindXfor(t));
         }
 
         private float BezierX(float t)
@@ -73,6 +63,11 @@ namespace Glyph.Transition
             }
 
             return x;
+        }
+
+        public float GetValue(float t)
+        {
+            return BezierY(FindXfor(t));
         }
     }
 }

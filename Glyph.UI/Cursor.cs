@@ -13,14 +13,11 @@ namespace Glyph.UI
             get { return Sprite.Position + OriginCursor; }
             set { Sprite.Position = value - OriginCursor; }
         }
-
         static public Vector2 OriginCursor { get; set; }
-
         static public Point PositionSpace
         {
             get { return (Position / (Resolution.ScaleRatio * Camera.Zoom) + Camera.VectorPosition.XY()).ToPoint(); }
         }
-
         static private readonly Sprite Sprite = new Sprite();
         static private bool _isMouseUsed;
 

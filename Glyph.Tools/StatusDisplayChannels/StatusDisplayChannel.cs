@@ -7,12 +7,10 @@ namespace Glyph.Tools.StatusDisplayChannels
     public abstract class StatusDisplayChannel
     {
         public Dictionary<string, StatusDisplayText> Text { get; set; }
-
         public Vector2 ScreenMargin { get; set; }
         public bool OriginRight { get; set; }
         public bool OriginBottom { get; set; }
         public float Spacing { get; set; }
-
         public Vector2 Origin
         {
             get

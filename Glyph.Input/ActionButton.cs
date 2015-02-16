@@ -14,10 +14,8 @@ namespace Glyph.Input
         public Orientation PadRight { get; set; }
         public bool TriggerLeft { get; set; }
         public bool TriggerRight { get; set; }
-
         public float SensitivityPad { get; set; }
         public float SensitivityTrigger { get; set; }
-
         private const float SensitivityPadByDefault = 0.1f;
         private const float SensitivityTriggerByDefault = 0.1f;
 
@@ -35,24 +33,6 @@ namespace Glyph.Input
             TriggerRight = false;
             SensitivityPad = SensitivityPadByDefault;
             SensitivityTrigger = SensitivityTriggerByDefault;
-        }
-
-        public string Name { get; set; }
-
-        public bool IsPressed(InputManager input)
-        {
-            return (Keys.Any() && IsKeyPressed(input)) || (Buttons.Any() && IsButtonPressed(input))
-                   || (ClicLeft && IsClicLeftPressed(input)) || (ClicRight && IsClicRightPressed(input))
-                   || (IsPadLeftPressed(input)) || (IsPadRightPressed(input))
-                   || (TriggerLeft && IsTriggerLeftPressed(input)) || (TriggerRight && IsTriggerRightPressed(input));
-        }
-
-        public bool IsDownNow(InputManager input)
-        {
-            return (Keys.Any() && IsKeyDownNow(input)) || (Buttons.Any() && IsButtonDownNow(input))
-                   || (ClicLeft && IsClicLeftNow(input)) || (ClicRight && IsClicRightNow(input))
-                   || (IsPadLeftNow(input)) || (IsPadRightNow(input)) || (TriggerLeft && IsTriggerLeftNow(input))
-                   || (TriggerRight && IsTriggerRightNow(input));
         }
 
         public bool IsKeyPressed(InputManager input)
@@ -219,6 +199,24 @@ namespace Glyph.Input
         {
             return input.GamePad.Triggers.Right >= SensitivityTrigger
                    && input.LastGamePad.Triggers.Right < SensitivityTrigger;
+        }
+
+        public string Name { get; set; }
+
+        public bool IsPressed(InputManager input)
+        {
+            return (Keys.Any() && IsKeyPressed(input)) || (Buttons.Any() && IsButtonPressed(input))
+                   || (ClicLeft && IsClicLeftPressed(input)) || (ClicRight && IsClicRightPressed(input))
+                   || (IsPadLeftPressed(input)) || (IsPadRightPressed(input))
+                   || (TriggerLeft && IsTriggerLeftPressed(input)) || (TriggerRight && IsTriggerRightPressed(input));
+        }
+
+        public bool IsDownNow(InputManager input)
+        {
+            return (Keys.Any() && IsKeyDownNow(input)) || (Buttons.Any() && IsButtonDownNow(input))
+                   || (ClicLeft && IsClicLeftNow(input)) || (ClicRight && IsClicRightNow(input))
+                   || (IsPadLeftNow(input)) || (IsPadRightNow(input)) || (TriggerLeft && IsTriggerLeftNow(input))
+                   || (TriggerRight && IsTriggerRightNow(input));
         }
     }
 }

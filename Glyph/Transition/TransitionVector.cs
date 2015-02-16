@@ -23,19 +23,16 @@ namespace Glyph.Transition
         private T _end;
         private ITimingFunction _function;
         private bool _isInit;
-
         private bool _lastReverse;
         private T _lastSpeed;
         private T _lastUpdate;
         private float _reverseFactor;
-
         private T _start;
         private float _tempDelay;
         private float _tempDuration;
         private T _tempEnd;
         private ITimingFunction _tempFunction;
         private T _tempStart;
-
         private T _value;
 
         protected TransitionVector(ITimingFunction f)
@@ -53,6 +50,75 @@ namespace Glyph.Transition
         protected TransitionVector(int steps, bool startInclude)
             : this(new StepsFunction(steps, startInclude)) {}
 
+        public T Update(GameTime gameTime, T start, T end, float duration, bool reverse = false, bool reset = false)
+        {
+            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(duration))
+                Init(start, end, duration, reset);
+
+            return Update(gameTime, reverse);
+        }
+
+        public T UpdateBySpeed(GameTime gameTime, T start, T end, float meanSpeed, bool reverse = false,
+                               bool reset = false)
+        {
+            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(MeanSpeedToDuration(meanSpeed)))
+                InitBySpeed(start, end, meanSpeed, reset);
+
+            return Update(gameTime, reverse);
+        }
+
+        static public implicit operator T(TransitionVector<T> x)
+        {
+            return x.Value;
+        }
+
+        public void ShiftValues(T newValue)
+        {
+            ShiftValuesRelative(Subtract(newValue, Value));
+        }
+
+        public void ShiftValuesRelative(T modif)
+        {
+            _value = Add(Value, modif);
+            Start = Add(Start, modif);
+            End = Add(End, modif);
+            _actualStart = Add(_actualStart, modif);
+            _actualEnd = Add(_actualEnd, modif);
+        }
+
+        private T CalculateValue(float time)
+        {
+            if (time < 0 || time > Duration)
+                throw new ArgumentException("Parameter must be >= to 0 and <= to Duration !");
+
+            return Add(_actualStart,
+                Scalar(Subtract(_actualEnd, _actualStart), Function.GetValue(time / _actualDuration)));
+        }
+
+        private void Reverse(bool reverse, T actual)
+        {
+            _actualEnd = reverse ? Start : End;
+            _actualStart = actual;
+
+            _reverseFactor = ((_actualDuration > 0 ? Function.GetValue(ElapsedTime / _actualDuration) : 1)
+                              * _reverseFactor) + (1 - _reverseFactor);
+            _actualDuration = Duration * _reverseFactor;
+
+            _elapsedTime = 0;
+            _lastReverse = reverse;
+        }
+
+        private float MeanSpeedToDuration(float value)
+        {
+            T diff = Subtract(End, Start);
+            return Ratio(diff, Scalar(Normalize(diff), value / 1000));
+        }
+
+        protected abstract T Add(T a, T b);
+        protected abstract T Subtract(T a, T b);
+        protected abstract T Scalar(T a, float b);
+        protected abstract float Ratio(T a, T b);
+        protected abstract T Normalize(T a);
         public ITimingFunction Function
         {
             get
@@ -153,7 +219,6 @@ namespace Glyph.Transition
                     Reset();
             }
         }
-
         public float MeanSpeed
         {
             set
@@ -198,7 +263,6 @@ namespace Glyph.Transition
             }
         }
         public bool IsEnd { get { return ElapsedTime >= _actualDuration; } }
-
         public bool IsWaiting { get { return _elapsedDelay < _delay || Math.Abs(ElapsedTime) < float.Epsilon; } }
 
         public void Init(T start, T end, float duration, bool reset = false, bool fromEnd = false)
@@ -319,79 +383,5 @@ namespace Glyph.Transition
 
             return CalculateValue(ElapsedTime + milliseconds);
         }
-
-        public T Update(GameTime gameTime, T start, T end, float duration, bool reverse = false, bool reset = false)
-        {
-            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(duration))
-                Init(start, end, duration, reset);
-
-            return Update(gameTime, reverse);
-        }
-
-        public T UpdateBySpeed(GameTime gameTime, T start, T end, float meanSpeed, bool reverse = false,
-                               bool reset = false)
-        {
-            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(MeanSpeedToDuration(meanSpeed)))
-                InitBySpeed(start, end, meanSpeed, reset);
-
-            return Update(gameTime, reverse);
-        }
-
-        static public implicit operator T(TransitionVector<T> x)
-        {
-            return x.Value;
-        }
-
-        public void ShiftValues(T newValue)
-        {
-            ShiftValuesRelative(Subtract(newValue, Value));
-        }
-
-        public void ShiftValuesRelative(T modif)
-        {
-            _value = Add(Value, modif);
-            Start = Add(Start, modif);
-            End = Add(End, modif);
-            _actualStart = Add(_actualStart, modif);
-            _actualEnd = Add(_actualEnd, modif);
-        }
-
-        private T CalculateValue(float time)
-        {
-            if (time < 0 || time > Duration)
-                throw new ArgumentException("Parameter must be >= to 0 and <= to Duration !");
-
-            return Add(_actualStart,
-                Scalar(Subtract(_actualEnd, _actualStart), Function.GetValue(time / _actualDuration)));
-        }
-
-        private void Reverse(bool reverse, T actual)
-        {
-            _actualEnd = reverse ? Start : End;
-            _actualStart = actual;
-
-            _reverseFactor = ((_actualDuration > 0 ? Function.GetValue(ElapsedTime / _actualDuration) : 1)
-                              * _reverseFactor) + (1 - _reverseFactor);
-            _actualDuration = Duration * _reverseFactor;
-
-            _elapsedTime = 0;
-            _lastReverse = reverse;
-        }
-
-        private float MeanSpeedToDuration(float value)
-        {
-            T diff = Subtract(End, Start);
-            return Ratio(diff, Scalar(Normalize(diff), value / 1000));
-        }
-
-        protected abstract T Add(T a, T b);
-
-        protected abstract T Subtract(T a, T b);
-
-        protected abstract T Scalar(T a, float b);
-
-        protected abstract float Ratio(T a, T b);
-
-        protected abstract T Normalize(T a);
     }
 }

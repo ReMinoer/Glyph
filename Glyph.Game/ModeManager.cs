@@ -1,4 +1,5 @@
-﻿using Glyph.Application;
+﻿using Diese.Debug;
+using Glyph.Debug;
 
 namespace Glyph.Game
 {
@@ -14,7 +15,7 @@ namespace Glyph.Game
 
                 _state = value;
                 _isChange = true;
-                Log.GameEvent("Current mode : " + State);
+                Log.Message("Current mode : " + State, LogTagGlyph.GameEvent);
             }
         }
         private bool _isChange;
@@ -23,7 +24,7 @@ namespace Glyph.Game
         public void Initialize(TState state)
         {
             _state = state;
-            Log.GameEvent("Current mode : " + State);
+            Log.Message("Current mode : " + State, LogTagGlyph.GameEvent);
         }
 
         public bool HasChange()

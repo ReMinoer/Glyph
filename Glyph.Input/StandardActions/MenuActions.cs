@@ -5,7 +5,6 @@ namespace Glyph.Input.StandardActions
     public class MenuActions : ActionsCollection
     {
         private const string Prefix = "menu-";
-
         public const string Up = Prefix + "Up";
         public const string Down = Prefix + "Down";
         public const string Left = Prefix + "Left";

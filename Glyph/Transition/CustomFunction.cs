@@ -15,23 +15,6 @@ namespace Glyph.Transition
             KeyPoints = new Dictionary<Vector2, ITimingFunction> {{Vector2.Zero, f}};
         }
 
-        public float GetValue(float t)
-        {
-            for (int i = 0; i < KeyPoints.Count; i++)
-                if (t >= KeyPoints.ElementAt(i).Key.X)
-                {
-                    float x = KeyPoints.ElementAt(i).Key.X;
-                    float y = KeyPoints.ElementAt(i).Key.Y;
-                    ITimingFunction function = KeyPoints.ElementAt(i).Value;
-
-                    float intervalX = (i + 1 < KeyPoints.Count) ? KeyPoints.ElementAt(i + 1).Key.X - x : 1f - x;
-                    float intervalY = (i + 1 < KeyPoints.Count) ? KeyPoints.ElementAt(i + 1).Key.Y - y : 1f - y;
-
-                    return (function.GetValue((t - x) / intervalX) * intervalY) + y;
-                }
-            return 1f;
-        }
-
         public void AddKeyPoint(float x, float y, ITimingFunction f)
         {
             if (x < 0 || x > 1)
@@ -47,6 +30,23 @@ namespace Glyph.Transition
         {
             KeyPoints.Clear();
             KeyPoints.Add(new Vector2(0, 0), f);
+        }
+
+        public float GetValue(float t)
+        {
+            for (int i = 0; i < KeyPoints.Count; i++)
+                if (t >= KeyPoints.ElementAt(i).Key.X)
+                {
+                    float x = KeyPoints.ElementAt(i).Key.X;
+                    float y = KeyPoints.ElementAt(i).Key.Y;
+                    ITimingFunction function = KeyPoints.ElementAt(i).Value;
+
+                    float intervalX = (i + 1 < KeyPoints.Count) ? KeyPoints.ElementAt(i + 1).Key.X - x : 1f - x;
+                    float intervalY = (i + 1 < KeyPoints.Count) ? KeyPoints.ElementAt(i + 1).Key.Y - y : 1f - y;
+
+                    return (function.GetValue((t - x) / intervalX) * intervalY) + y;
+                }
+            return 1f;
         }
     }
 }

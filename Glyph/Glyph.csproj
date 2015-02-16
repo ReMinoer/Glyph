@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Glyph</RootNamespace>
     <AssemblyName>Glyph</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -21,6 +21,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Windows|AnyCPU'">
     <OutputPath>bin\Windows\</OutputPath>
@@ -30,6 +31,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -70,9 +72,13 @@
     <Compile Include="Transition\TransitionVector4.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Glyph.Application\Glyph.Application.csproj">
-      <Project>{e0970ae4-8303-45cc-ab56-e2b8bb56332b}</Project>
-      <Name>Glyph.Application</Name>
+    <ProjectReference Include="..\External\Diese\Diese.Debug\Diese.Debug.csproj">
+      <Project>{cf81f12f-4efa-4a26-9853-df86973533ce}</Project>
+      <Name>Diese.Debug</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Debug\Glyph.Debug.csproj">
+      <Project>{010b6d8d-a0b0-4e8c-a923-a08bbf891a76}</Project>
+      <Name>Glyph.Debug</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

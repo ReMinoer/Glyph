@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Glyph.Application;
+using Diese.Debug;
+using Glyph.Debug;
 using Glyph.Localization;
 
 namespace Glyph.Scripting
@@ -11,7 +12,6 @@ namespace Glyph.Scripting
     public abstract class Script<TCommands>
     {
         public bool Actif { get; set; }
-
         public bool UniqueUse { get; set; }
         public bool AlreadyUse { get; set; }
         public List<string> Cond { get; set; }
@@ -45,7 +45,7 @@ namespace Glyph.Scripting
             if (readLine == null)
                 throw new NullReferenceException();
 
-            string[] keywords = readLine.Trim().Split(' ');
+            var keywords = readLine.Trim().Split(' ');
 
             if (keywords[0] == "cond")
             {
@@ -62,7 +62,7 @@ namespace Glyph.Scripting
             {
                 var line = new ScriptLine {Cmd = "cmd_" + keywords[0]};
 
-                ParameterInfo[] parameters = typeof(TCommands).GetMethod(line.Cmd).GetParameters();
+                var parameters = typeof(TCommands).GetMethod(line.Cmd).GetParameters();
                 line.Args = new object[parameters.Length];
 
                 int j = 0;
@@ -80,10 +80,10 @@ namespace Glyph.Scripting
                         {
                             while (keywords[i + j + 1].Last() != '"')
                             {
-                                line.Args[i] += keywords[i + j + 1].Trim(new[] {'"'}) + " ";
+                                line.Args[i] += keywords[i + j + 1].Trim('"') + " ";
                                 j++;
                             }
-                            line.Args[i] += keywords[i + j + 1].Trim(new[] {'"'});
+                            line.Args[i] += keywords[i + j + 1].Trim('"');
                             break;
                         }
                         default:
@@ -128,10 +128,11 @@ namespace Glyph.Scripting
                     return;
 
                 if (_lines[_ligneActuel].Args.Any())
-                    Log.Script(string.Format("{0} {1}", _lines[_ligneActuel].Cmd.Substring(4),
-                        _lines[_ligneActuel].Args.Aggregate((x, y) => x + " " + y)));
+                    Log.Message(
+                        string.Format("{0} {1}", _lines[_ligneActuel].Cmd.Substring(4),
+                            _lines[_ligneActuel].Args.Aggregate((x, y) => x + " " + y)), LogTagGlyph.Script);
                 else
-                    Log.Script(_lines[_ligneActuel].Cmd.Substring(4));
+                    Log.Message(_lines[_ligneActuel].Cmd.Substring(4), LogTagGlyph.Script);
 
                 _ligneActuel++;
             }

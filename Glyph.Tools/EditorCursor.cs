@@ -10,11 +10,9 @@ namespace Glyph.Tools
     static public class EditorCursor
     {
         static public bool Active { get; set; }
-
         static public Vector2 Position { get; set; }
         static public Vector2 PointA { get; set; }
         static public Vector2 PointB { get; set; }
-
         static private Texture2D TextureCross { get; set; }
         static private Texture2D TextureSelection { get; set; }
         static public Point PositionSpace
@@ -57,11 +55,8 @@ namespace Glyph.Tools
             }
         }
         static private readonly Vector2 OriginCursor = new Vector2(5, 5);
-
         static private Point _positionSpace;
-
         static private Rectangle _selection;
-
         static private Rectangle _selectionSpace;
 
         static public void Initialize()

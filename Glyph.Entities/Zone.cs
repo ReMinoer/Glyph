@@ -8,10 +8,8 @@ namespace Glyph.Entities
     {
         public Vector2 Position { get; set; }
         public Vector2 Size { get; set; }
-
         public Color Color { get; set; }
         public float Opacity { get; set; }
-
         [XmlIgnore]
         public Rectangle Hitbox
         {
@@ -35,8 +33,6 @@ namespace Glyph.Entities
             Opacity = 0.1f;
         }
 
-        public int Layer { get; set; }
-
         public void LoadContent(ContentLibrary ressources)
         {
             _texture = ressources.GetTexture("square");
@@ -46,5 +42,7 @@ namespace Glyph.Entities
         {
             spriteBatch.Draw(_texture, Hitbox, Color * Opacity);
         }
+
+        public int Layer { get; set; }
     }
 }

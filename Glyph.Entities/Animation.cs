@@ -9,24 +9,18 @@ namespace Glyph.Entities
         public int[] Frames { get; set; }
         public int[] Intervals { get; set; }
         public bool Loop { get; set; }
-
         [XmlIgnore]
         public bool IsEnd { get; set; }
         [XmlIgnore]
         public bool IsPause { get; set; }
-
         [XmlIgnore]
         public int NbFrames { get { return Frames.Length; } }
-
         [XmlIgnore]
         public int FrameActual { get { return Frames[_currentState]; } }
-
         [XmlIgnore]
         public bool CanChange { get { return Loop || IsEnd; } }
-
         [XmlIgnore]
         public int TotalTime { get { return TimeBetweenFrames(0, NbFrames - 1); } }
-
         static public Animation Default { get { return new Animation(); } }
         private int _currentState;
         private Period _period;

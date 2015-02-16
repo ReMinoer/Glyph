@@ -8,31 +8,24 @@ namespace Glyph.Input
     {
         public PlayerIndex PlayerIndex { get; private set; }
         public GameControls Controls { get; set; }
-
         public KeyboardState Keyboard { get; private set; }
         public MouseState Mouse { get; private set; }
         public GamePadState GamePad { get; private set; }
-
         public KeyboardState LastKeyboard { get; private set; }
         public MouseState LastMouse { get; private set; }
         public GamePadState LastGamePad { get; private set; }
-
         public bool IsGamePadUsed { get; set; }
         public bool IsMouseUsed { get; set; }
         public bool IsClicDownNow
         {
             get { return Mouse.LeftButton == ButtonState.Pressed && LastMouse.LeftButton != ButtonState.Pressed; }
         }
-
         public bool IsClicUpNow
         {
             get { return Mouse.LeftButton == ButtonState.Released && LastMouse.LeftButton != ButtonState.Released; }
         }
-
         public Vector2 MouseWindow { get { return new Vector2(Mouse.X, Mouse.Y) - Resolution.WindowMargin; } }
-
         public Vector2 MouseScreen { get { return MouseWindow / Resolution.ScaleRatio; } }
-
         public Vector2 MouseSpace
         {
             get

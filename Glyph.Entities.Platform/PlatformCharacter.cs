@@ -14,7 +14,6 @@ namespace Glyph.Entities.Platform
         public virtual float VerticalSpeed { get; set; }
         [XmlIgnore]
         public virtual bool OnGround { get; set; }
-
         //[XmlIgnore]
         //public override Vector2 Centre
         //{
@@ -52,7 +51,6 @@ namespace Glyph.Entities.Platform
             }
         }
         protected Collision Collision;
-        public virtual int Layer { get; set; }
 
         public virtual void Initialize(int x, int y, int layer)
         {
@@ -217,5 +215,7 @@ namespace Glyph.Entities.Platform
             else if (Direction.X > 0)
                 Orientation = Orientation.Right;
         }
+
+        public virtual int Layer { get; set; }
     }
 }

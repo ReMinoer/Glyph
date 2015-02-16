@@ -7,32 +7,26 @@ namespace Glyph.Tools
     public class PerformanceViewer
     {
         public string ProcessName { get; private set; }
-
         public float Memory { get; private set; }
         public float MemoryMax { get; private set; }
-
         public float Fps { get; private set; }
-
         public float UpdatePeak { get; private set; }
         public float DrawPeak { get; private set; }
         public float UpdateMean { get; private set; }
         public float DrawMean { get; private set; }
         public bool IsIncrease { get { return Memory > _lastMemory; } }
-
         public bool IsIncreaseMax { get { return Math.Abs(Memory - MemoryMax) < float.Epsilon; } }
+        private const int RefreshIntervalle = 1000;
         private readonly Stopwatch _drawTimer = new Stopwatch();
         private readonly Period _refreshPeriod = new Period(RefreshIntervalle);
         private readonly Stopwatch _updateTimer = new Stopwatch();
         private float _drawCompteur;
-
         private float _drawMax;
         private float _drawTotals;
         private float _lastMemory;
         private float _updateCompteur;
         private float _updateMax;
         private float _updateTotals;
-
-        private const int RefreshIntervalle = 1000;
 
         public PerformanceViewer()
             : this(Process.GetCurrentProcess().ProcessName) {}

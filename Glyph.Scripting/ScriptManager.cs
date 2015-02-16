@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Glyph.Application;
+using Diese.Debug;
+using Glyph.Debug;
 using Glyph.Entities;
 using Glyph.Localization;
 using Microsoft.Xna.Framework;
@@ -14,7 +15,6 @@ namespace Glyph.Scripting
     {
         public Dictionary<string, Script<TCommands>> Scripts { get; private set; }
         public TriggerManager Triggers { get; private set; }
-
         public bool DrawTriggerZone { get; set; }
         private readonly LanguageFile _languageFile;
 
@@ -65,7 +65,7 @@ namespace Glyph.Scripting
                 if (line == null)
                     throw new NullReferenceException();
 
-                string[] lineRead = line.Trim().Split(' ');
+                var lineRead = line.Trim().Split(' ');
 
                 if (lineRead[0] == "triggerlist")
                 {
@@ -79,7 +79,7 @@ namespace Glyph.Scripting
                         if (lineRead.Length > 1)
                         {
                             var coord = new[] {0, 0, 0, 0, 0};
-                            string[] s = lineRead[1].Split(',');
+                            var s = lineRead[1].Split(',');
                             for (int i = 0; i < coord.Length; i++)
                                 coord[i] = Int32.Parse(s[i]);
                             Triggers.Add(lineRead[0], new TriggerZone(coord[0], coord[1], coord[2], coord[3], coord[4]));
@@ -115,7 +115,7 @@ namespace Glyph.Scripting
             if (Scripts.ContainsKey("init"))
                 Scripts["init"].Actif = true;
 
-            Log.GameEvent(string.Format("Script loaded : {0}", path));
+            Log.Message(string.Format("Script loaded : {0}", path), LogTagGlyph.GameEvent);
         }
 
         public void Update(GameObject entity)

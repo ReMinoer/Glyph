@@ -8,10 +8,28 @@ namespace Glyph.UI.Controls
     public class Button : TextSprite, IHandleInput
     {
         public bool Enable { get; set; }
-
         public virtual Padding Padding { get; set; }
-
         public override Rectangle Hitbox { get { return base.Hitbox.Padding(Padding); } }
+        public event EventHandler Activated;
+        public event EventHandler Hover;
+        public event EventHandler Leave;
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            Reset();
+        }
+
+        public override void Initialize(string txt, int x, int y)
+        {
+            base.Initialize(txt, x, y);
+            Reset();
+        }
+
+        public virtual void Reset()
+        {
+            Enable = false;
+        }
 
         public virtual void HandleInput(InputManager input)
         {
@@ -40,27 +58,6 @@ namespace Glyph.UI.Controls
                     if (Activated != null)
                         Activated(this, EventArgs.Empty);
             }
-        }
-
-        public event EventHandler Activated;
-        public event EventHandler Hover;
-        public event EventHandler Leave;
-
-        public override void Initialize()
-        {
-            base.Initialize();
-            Reset();
-        }
-
-        public override void Initialize(string txt, int x, int y)
-        {
-            base.Initialize(txt, x, y);
-            Reset();
-        }
-
-        public virtual void Reset()
-        {
-            Enable = false;
         }
     }
 }

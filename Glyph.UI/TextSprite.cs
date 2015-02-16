@@ -9,18 +9,14 @@ namespace Glyph.UI
     {
         [XmlIgnore]
         public virtual SpriteFont Font { get; set; }
-
         public virtual string Text { get; set; }
-
         public virtual int Contour { get; set; }
         public virtual Color ContourColor { get; set; }
         public virtual float ContourOpacity { get; set; }
-
         public virtual Vector2 Shadow { get; set; }
         public virtual Color ShadowColor { get; set; }
         public virtual float ShadowOpacity { get; set; }
         public virtual int ShadowGradient { get; set; }
-
         [XmlIgnore]
         public override Rectangle RectangleSource
         {

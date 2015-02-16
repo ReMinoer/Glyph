@@ -7,9 +7,7 @@ namespace Glyph
     {
         public int Interval { get; set; }
         public float ElapsedTime { get; private set; }
-
         public float TimeLeft { get { return Interval - ElapsedTime; } }
-
         public bool IsEnd { get; private set; }
 
         public Period()

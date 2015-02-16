@@ -15,7 +15,6 @@ namespace Glyph
     {
         static public CameraMode Mode { get; set; }
         static public bool IsAdaptToEdges { get; set; }
-
         static public Vector2 Center
         {
             get { return _center; }
@@ -49,7 +48,6 @@ namespace Glyph
         }
         static public float ZoomGoal { get; set; }
         static public float ZoomSpeed { get; set; }
-
         static public Vector2 Relative
         {
             get { return _relative; }
@@ -65,9 +63,7 @@ namespace Glyph
         }
         static public Vector2 RelativeGoal { get; set; }
         static public float RelativeSpeed { get; set; }
-
         static public Vector2 Size { get { return Resolution.VirtualSize; } }
-
         static public Rectangle DisplayRectangle
         {
             get
@@ -80,9 +76,7 @@ namespace Glyph
                 return displayRectangle;
             }
         }
-
         static public Vector2 PositionByDefault { get { return Center.Substract(Size.X / 2); } }
-
         static public Vector3 VectorPosition
         {
             get
@@ -120,13 +114,10 @@ namespace Glyph
         }
         static private Vector2 _center;
         static public readonly TransitionVector2 TransitionCenter = new TransitionVector2(BezierFunction.Ease);
-
         static private float _zoom;
         static private Vector2 _relative;
-
         static private bool _dirtyMatrixPosition = true;
         static private Matrix _matrixPosition;
-
         static private bool _dirtyMatrixZoom = true;
         static private Matrix _matrixZoom;
 

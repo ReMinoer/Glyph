@@ -7,7 +7,6 @@ namespace Glyph.Pathfinder
         public Point Destination { get { return new Point(Point.X + Modif.X, Point.Y + Modif.Y); } }
         public Point Point { get; protected set; }
         public Point Modif { get; protected set; }
-
         public abstract TAction Action { get; }
 
         protected Move(Point p, Point m)

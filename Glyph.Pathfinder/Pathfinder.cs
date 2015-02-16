@@ -12,11 +12,9 @@ namespace Glyph.Pathfinder
         public bool Success { get; protected set; }
         public bool IsEnd { get; protected set; }
         public bool IsReady { get; protected set; }
-
         public Point Start { get; protected set; }
         public Point Finish { get; protected set; }
         public Point Current { get; protected set; }
-
         public Stopwatch TimerTimeout { get; protected set; }
         public Stopwatch TimerProcess { get; protected set; }
         protected abstract int Timeout { get; }
@@ -115,7 +113,7 @@ namespace Glyph.Pathfinder
 
         protected void AddSurroundingCases(Point parent, int limitMax, int limitMin = 1, int cond = 0)
         {
-            IEnumerable<Point> list = ListPotentialMovesbyInterval(limitMax, limitMin);
+            var list = ListPotentialMovesbyInterval(limitMax, limitMin);
 
             // Regarder une par une toute les possibilités de d'action
             foreach (Point move in list)
@@ -236,11 +234,8 @@ namespace Glyph.Pathfinder
         }
 
         protected abstract void CalculationProcess();
-
         protected abstract bool IsMoveValid(Point newPoint, Point parent, Point move, int cond = 0);
-
         protected abstract bool IsCaseVide(Point p);
-
         protected abstract TMove NewPathfinderMove(Point p, Point m);
 
         static private float DistanceTo(Point value, Point other)

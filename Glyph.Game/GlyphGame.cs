@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Glyph.Application;
+using Diese.Debug;
 using Glyph.Audio;
+using Glyph.Debug;
 using Glyph.Input;
 using Glyph.Input.StandardActions;
 using Glyph.Tools;
@@ -18,26 +19,21 @@ namespace Glyph.Game
     {
         public GraphicsDeviceManager Graphics { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
-
         public ContentLibrary ContentLibrary { get; private set; }
         public InputManager InputManager { get; private set; }
-
         public ModeManager<TMode> ModeManager { get; private set; }
         public Dictionary<TMode, IGameMode> Modes { get; private set; }
-
         public CultureInfo Culture
         {
             get { return _culture; }
             set
             {
                 _culture = value;
-                Log.System(string.Format("Current culture : {0}", _culture.EnglishName));
+                Log.Message("Current culture : " + _culture.EnglishName, LogTagGlyph.System);
             }
         }
-
         public PerformanceViewer PerformanceViewer { get; private set; }
         public StatusDisplay StatusDisplay { get; private set; }
-
         public bool SynchroVertical
         {
             get { return _synchroVertical; }
@@ -47,19 +43,19 @@ namespace Glyph.Game
                 _synchroVertical = value;
             }
         }
-
         public virtual bool IsFocus { get { return IsActive; } }
-        protected int DefautWindowHeight = (int)Resolution.WindowSize.Y;
-        protected int DefautWindowWidth = (int)Resolution.WindowSize.X;
+        private CultureInfo _culture;
         private Viewport _defaultViewport;
         private bool _synchroVertical;
-        private CultureInfo _culture;
+        protected int DefautWindowHeight = (int)Resolution.WindowSize.Y;
+        protected int DefautWindowWidth = (int)Resolution.WindowSize.X;
 
         protected GlyphGame(string[] args)
         {
-            Log.StartStopwatch();
-            Log.System("Start game");
-            Log.System(string.Format("Launch arguments : {0}", args.Aggregate((x, y) => x + " " + y)));
+            Log.Instantiate(true);
+            Log.Message("Start game", LogTagGlyph.System);
+            Log.Message("Launch arguments : " + (args.Any() ? args.Aggregate((x, y) => x + " " + y) : ""),
+                LogTagGlyph.System);
 
             Graphics = new GraphicsDeviceManager(this);
 

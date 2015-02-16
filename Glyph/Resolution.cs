@@ -9,7 +9,8 @@
 ////THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////
 
-using Glyph.Application;
+using Diese.Debug;
+using Glyph.Debug;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -19,27 +20,21 @@ namespace Glyph
     static public class Resolution
     {
         static public bool FullScreen { get; private set; }
-
         static public Vector2 Size { get; private set; }
         static public Vector2 WindowSize { get { return new Vector2(_windowWidth, _windowHeight); } }
         static public Vector2 VirtualSize { get { return new Vector2(_virtualWidth, _virtualHeight); } }
-
         static public float ScaleRatio { get { return Size.X / _virtualWidth; } }
         static public Vector2 WindowMargin { get { return (WindowSize - Size) / 2; } }
-
         static private GraphicsDeviceManager _device;
         static private GameWindow _window;
-
         static private int _windowWidth = 800;
         static private int _windowHeight = 450;
         static private int _virtualWidth = 800;
         static private int _virtualHeight = 450;
         static private int _savedWidth = 800;
         static private int _savedHeight = 450;
-
         static private Matrix _scaleMatrix;
         static private bool _dirtyMatrix = true;
-
         static private bool _currentlyResizing;
 
         static public void Init(GraphicsDeviceManager device, GameWindow window)
@@ -78,7 +73,9 @@ namespace Glyph
             UpdateResolution();
             _dirtyMatrix = true;
 
-            Log.System(string.Format("Virtual resolution changed (Width:{0},Height:{1},Ratio:{2})", _virtualWidth, _virtualHeight, GetVirtualAspectRatio().ToString("F2")));
+            Log.Message(
+                string.Format("Virtual resolution changed (Width:{0},Height:{1},Ratio:{2})", _virtualWidth,
+                    _virtualHeight, GetVirtualAspectRatio().ToString("F2")), LogTagGlyph.System);
         }
 
         static public void ToogleFullscreen()
@@ -118,7 +115,7 @@ namespace Glyph
             float targetAspectRatio = GetVirtualAspectRatio();
 
             int width = _device.PreferredBackBufferWidth;
-            var height = (int)(width / targetAspectRatio + .5f);
+            int height = (int)(width / targetAspectRatio + .5f);
 
             if (height > _device.PreferredBackBufferHeight)
             {
@@ -196,7 +193,10 @@ namespace Glyph
 
             _currentlyResizing = false;
 
-            Log.System(string.Format("Window resized (Width:{0},Height:{1},Ratio:{2},Fullscreen:{3})", _windowWidth, _windowHeight, ((double)_windowWidth / _windowHeight).ToString("F2"), FullScreen));
+            Log.Message(
+                string.Format("Window resized (Width:{0},Height:{1},Ratio:{2},Fullscreen:{3})", _windowWidth,
+                    _windowHeight, ((double)_windowWidth / _windowHeight).ToString("F2"), FullScreen),
+                LogTagGlyph.System);
         }
 
         static private void UpdateResolution()

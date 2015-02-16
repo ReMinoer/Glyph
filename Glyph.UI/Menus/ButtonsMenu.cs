@@ -19,46 +19,6 @@ namespace Glyph.UI.Menus
             Buttons = new List<Button>();
         }
 
-        public virtual void HandleInput(InputManager input)
-        {
-            if (input.IsMouseUsed)
-            {
-                Selection = -1;
-                for (int i = 0; i < Buttons.Count; i++)
-                    if (Buttons[i].Enable)
-                        Selection = i;
-            }
-            else
-            {
-                if (Buttons.Count == 0)
-                    Selection = -1;
-                else if (Selection == -1)
-                    Selection = DefaultSelection;
-                else
-                {
-                    if (input.IsActionDownNow(MenuActions.Up))
-                        Selection--;
-                    else if (input.IsActionDownNow(MenuActions.Down))
-                        Selection++;
-
-                    if (Selection < 0)
-                        Selection = Buttons.Count - 1;
-                    else if (Selection >= Buttons.Count)
-                        Selection = 0;
-                }
-
-                foreach (Button b in Buttons)
-                    b.Enable = false;
-                Buttons[Selection].Enable = true;
-            }
-
-            foreach (Button bouton in Buttons)
-                bouton.HandleInput(input);
-
-            if (input.IsActionDownNow(MenuActions.Cancel))
-                ButtonOnActivated(DefaultSelection);
-        }
-
         public event EventHandler<MenuEventArgs> Selected;
 
         public virtual void Add(Button button)
@@ -107,6 +67,46 @@ namespace Glyph.UI.Menus
         {
             foreach (Button button in Buttons)
                 button.Draw(spriteBatch);
+        }
+
+        public virtual void HandleInput(InputManager input)
+        {
+            if (input.IsMouseUsed)
+            {
+                Selection = -1;
+                for (int i = 0; i < Buttons.Count; i++)
+                    if (Buttons[i].Enable)
+                        Selection = i;
+            }
+            else
+            {
+                if (Buttons.Count == 0)
+                    Selection = -1;
+                else if (Selection == -1)
+                    Selection = DefaultSelection;
+                else
+                {
+                    if (input.IsActionDownNow(MenuActions.Up))
+                        Selection--;
+                    else if (input.IsActionDownNow(MenuActions.Down))
+                        Selection++;
+
+                    if (Selection < 0)
+                        Selection = Buttons.Count - 1;
+                    else if (Selection >= Buttons.Count)
+                        Selection = 0;
+                }
+
+                foreach (Button b in Buttons)
+                    b.Enable = false;
+                Buttons[Selection].Enable = true;
+            }
+
+            foreach (Button bouton in Buttons)
+                bouton.HandleInput(input);
+
+            if (input.IsActionDownNow(MenuActions.Cancel))
+                ButtonOnActivated(DefaultSelection);
         }
     }
 

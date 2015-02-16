@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Timers;
-using Glyph.Application;
+using Diese.Debug;
+using Glyph.Debug;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -64,7 +64,8 @@ namespace Glyph
                     AddTexture(s.Replace("Content\\", ""), content);
 
                 stopwatch.Stop();
-                Log.LoadedContent(string.Format("Loaded {0} ({1}s)", s, stopwatch.Elapsed.ToString(@"s\.fff")));
+                Log.Message(string.Format("Loaded {0} ({1}s)", s, stopwatch.Elapsed.ToString(@"s\.fff")),
+                    LogTagGlyph.LoadedContent);
                 stopwatch.Reset();
             }
         }
@@ -116,7 +117,7 @@ namespace Glyph
         public void AddEffect(string path, ContentManager content)
         {
             string asset = path.Replace(".mgfx", "");
-            byte[] bytecode = File.ReadAllBytes(path);
+            var bytecode = File.ReadAllBytes(path);
             var effect = new Effect(_graphicsDevice, bytecode);
             _effects.Add(asset.Substring(asset.LastIndexOf('\\') + 1), effect);
         }

@@ -5,7 +5,6 @@ namespace Glyph.Input.StandardActions
     public class DeveloperActions : ActionsCollection
     {
         private const string Prefix = "dev-";
-
         public const string XboxQuit = Prefix + "XboxQuit";
         public const string Fullscreen = Prefix + "Fullscreen";
         public const string StatusDisplay = Prefix + "StatusDisplay";

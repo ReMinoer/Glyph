@@ -20,12 +20,6 @@ namespace Glyph.Tools
             Channels = new List<StatusDisplayChannel>();
         }
 
-        public void HandleInput(InputManager input)
-        {
-            if (input.IsActionDownNow(DeveloperActions.StatusDisplay))
-                Visible = !Visible;
-        }
-
         public void LoadContent(ContentLibrary ressources)
         {
             foreach (StatusDisplayChannel c in Channels)
@@ -48,6 +42,12 @@ namespace Glyph.Tools
 
             foreach (StatusDisplayChannel c in Channels)
                 c.Draw(spriteBatch);
+        }
+
+        public void HandleInput(InputManager input)
+        {
+            if (input.IsActionDownNow(DeveloperActions.StatusDisplay))
+                Visible = !Visible;
         }
     }
 }

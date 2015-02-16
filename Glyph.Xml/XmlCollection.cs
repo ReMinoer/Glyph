@@ -14,11 +14,6 @@ namespace Glyph.Xml
             _elements = new Dictionary<string, string>();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _elements.GetEnumerator();
-        }
-
         public void Add(string name, string value)
         {
             _elements.Add(name, value);
@@ -49,6 +44,11 @@ namespace Glyph.Xml
         public void Clear()
         {
             _elements.Clear();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _elements.GetEnumerator();
         }
     }
 }

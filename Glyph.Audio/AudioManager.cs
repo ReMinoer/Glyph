@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Glyph.Application;
+using Diese.Debug;
+using Glyph.Debug;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
@@ -21,7 +22,6 @@ namespace Glyph.Audio
         static public float Volume { get; set; }
         static public string ActualSong { get; private set; }
         static public string NextSong { get; private set; }
-
         static public bool IsRepeating
         {
             get { return MediaPlayer.IsRepeating; }
@@ -39,15 +39,11 @@ namespace Glyph.Audio
             }
         }
         private const float VolumeSpeed = 0.0005f;
-
         // TODO : Finaliser et tester le manager audio (controle volume, plusieurs effets,...)
         static public Dictionary<string, Song> Musics;
-
         static private Dictionary<string, SoundEffect> _sounds;
         static private Dictionary<string, SoundCollection> _soundCollections;
-
         static private float _volumeFondu;
-
         static private AudioTransitionState _transitionState = AudioTransitionState.Ready;
         static private readonly Period WaitTime = new Period(0);
         static private bool _transitionRequire;
@@ -109,7 +105,7 @@ namespace Glyph.Audio
                         MediaPlayer.Volume = _volumeFondu * Volume;
                         MediaPlayer.Play(Musics[NextSong]);
                         ActualSong = NextSong;
-                        Log.Message(string.Format("Now playing song : {0}", ActualSong));
+                        Log.Message(string.Format("Now playing song : {0}", ActualSong), LogTagGlyph.System);
                     }
                     _transitionState = AudioTransitionState.Ready;
                     break;

@@ -9,20 +9,15 @@ namespace Glyph.Entities
     {
         [XmlIgnore]
         public Texture2DSplit TextureSplit { get; set; }
-
         [XmlIgnore]
         public override Texture2D Texture { get { return TextureSplit.IsEmpty ? null : TextureSplit[0]; } }
-
         public SerializableDictionary<string, Animation> Animations { get; set; }
         public virtual Point NbFrames { get; set; }
         public string CurrentAnimation { get; set; }
-
         [XmlIgnore]
         public virtual int CurrentFrame { get; set; }
-
         [XmlIgnore]
         public virtual Vector2 FrameSize { get { return TextureSplit[0].Size() / NbFrames.ToVector2(); } }
-
         [XmlIgnore]
         public virtual int TextureTarget
         {
@@ -39,7 +34,6 @@ namespace Glyph.Entities
                 return 0;
             }
         }
-
         [XmlIgnore]
         public override Rectangle RectangleSource
         {

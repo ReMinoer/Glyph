@@ -9,10 +9,8 @@ namespace Glyph.Entities
     {
         public virtual float Depth { get; set; }
         public virtual Orientation Orientation { get; set; }
-
         [XmlIgnore]
         public virtual Vector2 Destination { get; set; }
-
         [XmlIgnore]
         public override Vector2 PositionScreen
         {
