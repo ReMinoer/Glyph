@@ -6,14 +6,13 @@ namespace Glyph.Input
     public class CombinedActionButton : IActionButton
     {
         public List<IActionButton> ActionButtons { get; set; }
+        public string Name { get; set; }
 
         public CombinedActionButton(string name)
         {
             Name = name;
             ActionButtons = new List<IActionButton>();
         }
-
-        public string Name { get; set; }
 
         public bool IsPressed(InputManager input)
         {

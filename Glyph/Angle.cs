@@ -28,10 +28,26 @@ namespace Glyph
         public class Rotation
         {
             public float Value { get; private set; }
-            static public Rotation None { get { return new Rotation {Value = 0}; } }
-            static public Rotation RotateRight { get { return new Rotation {Value = (float)(3 * Math.PI) / 2}; } }
-            static public Rotation RotateLeft { get { return new Rotation {Value = (float)Math.PI / 2}; } }
-            static public Rotation RotateOpposite { get { return new Rotation {Value = (float)Math.PI}; } }
+
+            static public Rotation None
+            {
+                get { return new Rotation {Value = 0}; }
+            }
+
+            static public Rotation RotateRight
+            {
+                get { return new Rotation {Value = (float)(3 * Math.PI) / 2}; }
+            }
+
+            static public Rotation RotateLeft
+            {
+                get { return new Rotation {Value = (float)Math.PI / 2}; }
+            }
+
+            static public Rotation RotateOpposite
+            {
+                get { return new Rotation {Value = (float)Math.PI}; }
+            }
 
             static public implicit operator float(Rotation x)
             {

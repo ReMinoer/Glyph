@@ -6,24 +6,46 @@ namespace Glyph.Entities
 {
     public class Animation
     {
+        private int _currentState;
+        private Period _period;
         public int[] Frames { get; set; }
         public int[] Intervals { get; set; }
         public bool Loop { get; set; }
+
         [XmlIgnore]
         public bool IsEnd { get; set; }
+
         [XmlIgnore]
         public bool IsPause { get; set; }
+
         [XmlIgnore]
-        public int NbFrames { get { return Frames.Length; } }
+        public int NbFrames
+        {
+            get { return Frames.Length; }
+        }
+
         [XmlIgnore]
-        public int FrameActual { get { return Frames[_currentState]; } }
+        public int FrameActual
+        {
+            get { return Frames[_currentState]; }
+        }
+
         [XmlIgnore]
-        public bool CanChange { get { return Loop || IsEnd; } }
+        public bool CanChange
+        {
+            get { return Loop || IsEnd; }
+        }
+
         [XmlIgnore]
-        public int TotalTime { get { return TimeBetweenFrames(0, NbFrames - 1); } }
-        static public Animation Default { get { return new Animation(); } }
-        private int _currentState;
-        private Period _period;
+        public int TotalTime
+        {
+            get { return TimeBetweenFrames(0, NbFrames - 1); }
+        }
+
+        static public Animation Default
+        {
+            get { return new Animation(); }
+        }
 
         public Animation()
         {
@@ -52,7 +74,7 @@ namespace Glyph.Entities
             Frames = id;
 
             Intervals = new int[Frames.Length];
-            for (int i = 0; i < Frames.Length; i++)
+            for (var i = 0; i < Frames.Length; i++)
                 Intervals[i] = period;
 
             Loop = loop;
@@ -60,22 +82,34 @@ namespace Glyph.Entities
         }
 
         public Animation(FrameSequence sequence, int period, bool loop)
-            : this(sequence.Frames.ToArray(), period, loop) {}
+            : this(sequence.Frames.ToArray(), period, loop)
+        {
+        }
 
         public Animation(FrameSequence sequence, int[] intervals, bool loop)
-            : this(sequence.Frames.ToArray(), intervals, loop) {}
+            : this(sequence.Frames.ToArray(), intervals, loop)
+        {
+        }
 
         public Animation(int uniqueFrame)
-            : this(new[] {uniqueFrame}, 1000, true) {}
+            : this(new[] {uniqueFrame}, 1000, true)
+        {
+        }
 
         public Animation(int uniqueFrame, int duration)
-            : this(new[] {uniqueFrame}, duration, false) {}
+            : this(new[] {uniqueFrame}, duration, false)
+        {
+        }
 
         public Animation(int begin, int end, int period, bool loop)
-            : this(FrameSequence.Linear(begin, end), period, loop) {}
+            : this(FrameSequence.Linear(begin, end), period, loop)
+        {
+        }
 
         public Animation(int begin, int end, int[] intervals, bool loop)
-            : this(FrameSequence.Linear(begin, end), intervals, loop) {}
+            : this(FrameSequence.Linear(begin, end), intervals, loop)
+        {
+        }
 
         public void Initialize()
         {
@@ -104,7 +138,7 @@ namespace Glyph.Entities
 
         public void SetAllIntervals(int inter)
         {
-            for (int i = 0; i < Frames.Length; i++)
+            for (var i = 0; i < Frames.Length; i++)
                 Intervals[i] = inter;
             _period.Interval = Intervals[_currentState];
         }
@@ -114,7 +148,7 @@ namespace Glyph.Entities
             if (begin > end || begin < 0 || begin >= NbFrames || end < 0 || end >= NbFrames)
                 throw new ArgumentOutOfRangeException();
 
-            int result = 0;
+            var result = 0;
             for (int i = begin; i < end; i++)
                 result += Intervals[i];
             return result;

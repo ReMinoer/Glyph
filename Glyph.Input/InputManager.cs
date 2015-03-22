@@ -16,16 +16,27 @@ namespace Glyph.Input
         public GamePadState LastGamePad { get; private set; }
         public bool IsGamePadUsed { get; set; }
         public bool IsMouseUsed { get; set; }
+
         public bool IsClicDownNow
         {
             get { return Mouse.LeftButton == ButtonState.Pressed && LastMouse.LeftButton != ButtonState.Pressed; }
         }
+
         public bool IsClicUpNow
         {
             get { return Mouse.LeftButton == ButtonState.Released && LastMouse.LeftButton != ButtonState.Released; }
         }
-        public Vector2 MouseWindow { get { return new Vector2(Mouse.X, Mouse.Y) - Resolution.WindowMargin; } }
-        public Vector2 MouseScreen { get { return MouseWindow / Resolution.ScaleRatio; } }
+
+        public Vector2 MouseWindow
+        {
+            get { return new Vector2(Mouse.X, Mouse.Y) - Resolution.WindowMargin; }
+        }
+
+        public Vector2 MouseScreen
+        {
+            get { return MouseWindow / Resolution.ScaleRatio; }
+        }
+
         public Vector2 MouseSpace
         {
             get

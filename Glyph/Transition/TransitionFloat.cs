@@ -2,16 +2,24 @@
 {
     public class TransitionFloat : TransitionVector<float>
     {
-        public TransitionFloat() {}
+        public TransitionFloat()
+        {
+        }
 
         public TransitionFloat(ITimingFunction f)
-            : base(f) {}
+            : base(f)
+        {
+        }
 
         public TransitionFloat(float p1X, float p1Y, float p2X, float p2Y)
-            : base(p1X, p1Y, p2X, p2Y) {}
+            : base(p1X, p1Y, p2X, p2Y)
+        {
+        }
 
         public TransitionFloat(int steps, bool startInclude)
-            : base(steps, startInclude) {}
+            : base(steps, startInclude)
+        {
+        }
 
         protected override float Add(float a, float b)
         {

@@ -7,23 +7,23 @@ namespace Glyph
     static public class SpriteBatchExtension
     {
         static public void DrawRepeat(this SpriteBatch spriteBatch, Texture2D texture, Rectangle destinationRectangle,
-                                      Color color)
+            Color color)
         {
             DrawRepeat(spriteBatch, texture, destinationRectangle, null, color);
         }
 
         static public void DrawRepeat(this SpriteBatch spriteBatch, Texture2D texture, Rectangle destinationRectangle,
-                                      Rectangle? sourceRectangle, Color color)
+            Rectangle? sourceRectangle, Color color)
         {
             DrawRepeat(spriteBatch, texture, destinationRectangle, sourceRectangle, Angle.Rotation.None, color);
         }
 
         static public void DrawRepeat(this SpriteBatch spriteBatch, Texture2D texture, Rectangle destinationRectangle,
-                                      Rectangle? sourceRectangle, Angle.Rotation rotation, Color color)
+            Rectangle? sourceRectangle, Angle.Rotation rotation, Color color)
         {
             Rectangle source = sourceRectangle.HasValue
-                                   ? sourceRectangle.Value
-                                   : new Rectangle(0, 0, texture.Width, texture.Height);
+                ? sourceRectangle.Value
+                : new Rectangle(0, 0, texture.Width, texture.Height);
 
             bool reverse = (Math.Abs(rotation.Value - Angle.Rotation.RotateLeft.Value) < float.Epsilon
                             || Math.Abs(rotation.Value - Angle.Rotation.RotateRight.Value) < float.Epsilon);
@@ -31,8 +31,8 @@ namespace Glyph
             int rotateWidth = reverse ? source.Height : source.Width;
             int rotateHeight = reverse ? source.Width : source.Height;
 
-            for (int x = 0; x < destinationRectangle.Width; x += rotateWidth)
-                for (int y = 0; y < destinationRectangle.Height; y += rotateHeight)
+            for (var x = 0; x < destinationRectangle.Width; x += rotateWidth)
+                for (var y = 0; y < destinationRectangle.Height; y += rotateHeight)
                 {
                     int w = destinationRectangle.Width - x;
                     if (w > rotateWidth)

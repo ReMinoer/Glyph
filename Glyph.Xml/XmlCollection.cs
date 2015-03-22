@@ -5,13 +5,22 @@ namespace Glyph.Xml
 {
     public class XmlCollection : IEnumerable
     {
-        public int Count { get { return _elements.Count; } }
-        public string this[string key] { get { return _elements[key]; } set { _elements[key] = value; } }
         private readonly Dictionary<string, string> _elements;
+
+        public int Count
+        {
+            get { return _elements.Count; }
+        }
 
         public XmlCollection()
         {
             _elements = new Dictionary<string, string>();
+        }
+
+        public string this[string key]
+        {
+            get { return _elements[key]; }
+            set { _elements[key] = value; }
         }
 
         public void Add(string name, string value)

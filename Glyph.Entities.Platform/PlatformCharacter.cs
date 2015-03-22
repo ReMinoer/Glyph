@@ -6,14 +6,18 @@ namespace Glyph.Entities.Platform
 {
     public abstract class PlatformCharacter : GameObject, ILayable
     {
+        protected Collision Collision;
         // BUG : Correction de position quand changement de sens
         // TODO : Reflechir à la sauvegarde des perso (jumelle, AI,...)
         // WATCH : Cohésion du sol sur longue chute
 
         [XmlIgnore]
         public virtual float VerticalSpeed { get; set; }
+
         [XmlIgnore]
         public virtual bool OnGround { get; set; }
+
+        public virtual int Layer { get; set; }
         //[XmlIgnore]
         //public override Vector2 Centre
         //{
@@ -34,6 +38,7 @@ namespace Glyph.Entities.Platform
         //}
 
         protected abstract Rectangle CollisionMask { get; }
+
         [XmlIgnore]
         public override Rectangle Hitbox
         {
@@ -50,7 +55,6 @@ namespace Glyph.Entities.Platform
                 return hitbox;
             }
         }
-        protected Collision Collision;
 
         public virtual void Initialize(int x, int y, int layer)
         {
@@ -73,51 +77,6 @@ namespace Glyph.Entities.Platform
             base.Update(gameTime);
 
             ManageCollision(gameTime, space);
-        }
-
-        protected virtual void ManageCollision(GameTime gameTime, IPlatformerSpace space)
-        {
-            Collision = new Collision();
-
-            space.ManageCollision(this);
-
-            if (Collision.IsCeiling && Collision.IsFloor)
-            {
-                Position = Position.Substract(100, 0);
-                VerticalSpeed = 0;
-            }
-
-            if (Collision.IsWallLeft && Collision.IsWallRight)
-            {
-                Position = Position.Substract(0, 100);
-                VerticalSpeed = 0;
-            }
-
-            if (Collision.IsCeiling && Collision.IsFloor)
-            {
-                Position = Position.Substract(100, 0);
-                VerticalSpeed = 0;
-            }
-
-            if (Collision.IsFloor && VerticalSpeed >= 0)
-            {
-                Position =
-                    Position.SetY(Collision.NewPosY).
-                             Add(Collision.NewDynamiqueX * (float)gameTime.ElapsedGameTime.TotalMilliseconds, 0);
-                VerticalSpeed = Collision.NewDynamiqueY;
-                OnGround = true;
-            }
-            else
-                OnGround = false;
-
-            if (Collision.IsCeiling && VerticalSpeed < 0)
-            {
-                Position = Position.SetY(Collision.NewPosY);
-                VerticalSpeed = 0;
-            }
-
-            if (Collision.IsWallLeft || Collision.IsWallRight)
-                Position = Position.SetX(Collision.NewPosX);
         }
 
         public ObstructionType CollisionRectangle(Rectangle rect)
@@ -178,6 +137,51 @@ namespace Glyph.Entities.Platform
             return ObstructionType.None;
         }
 
+        protected virtual void ManageCollision(GameTime gameTime, IPlatformerSpace space)
+        {
+            Collision = new Collision();
+
+            space.ManageCollision(this);
+
+            if (Collision.IsCeiling && Collision.IsFloor)
+            {
+                Position = Position.Substract(100, 0);
+                VerticalSpeed = 0;
+            }
+
+            if (Collision.IsWallLeft && Collision.IsWallRight)
+            {
+                Position = Position.Substract(0, 100);
+                VerticalSpeed = 0;
+            }
+
+            if (Collision.IsCeiling && Collision.IsFloor)
+            {
+                Position = Position.Substract(100, 0);
+                VerticalSpeed = 0;
+            }
+
+            if (Collision.IsFloor && VerticalSpeed >= 0)
+            {
+                Position =
+                    Position.SetY(Collision.NewPosY).
+                        Add(Collision.NewDynamiqueX * (float)gameTime.ElapsedGameTime.TotalMilliseconds, 0);
+                VerticalSpeed = Collision.NewDynamiqueY;
+                OnGround = true;
+            }
+            else
+                OnGround = false;
+
+            if (Collision.IsCeiling && VerticalSpeed < 0)
+            {
+                Position = Position.SetY(Collision.NewPosY);
+                VerticalSpeed = 0;
+            }
+
+            if (Collision.IsWallLeft || Collision.IsWallRight)
+                Position = Position.SetX(Collision.NewPosX);
+        }
+
         protected void TraitementObstacle(ObstructionType type, int w, int h)
         {
             switch (type)
@@ -215,7 +219,5 @@ namespace Glyph.Entities.Platform
             else if (Direction.X > 0)
                 Orientation = Orientation.Right;
         }
-
-        public virtual int Layer { get; set; }
     }
 }

@@ -9,12 +9,17 @@ namespace Glyph.Tools
 {
     static public class EditorCursor
     {
+        static private readonly Vector2 OriginCursor = new Vector2(5, 5);
+        static private Point _positionSpace;
+        static private Rectangle _selection;
+        static private Rectangle _selectionSpace;
         static public bool Active { get; set; }
         static public Vector2 Position { get; set; }
         static public Vector2 PointA { get; set; }
         static public Vector2 PointB { get; set; }
         static private Texture2D TextureCross { get; set; }
         static private Texture2D TextureSelection { get; set; }
+
         static public Point PositionSpace
         {
             get
@@ -26,6 +31,7 @@ namespace Glyph.Tools
                 return _positionSpace;
             }
         }
+
         static public Rectangle Selection
         {
             get
@@ -37,16 +43,19 @@ namespace Glyph.Tools
                 return _selection;
             }
         }
+
         static public Rectangle SelectionSpace
         {
             get
             {
                 _selectionSpace.X =
                     (int)
-                    ((int)Math.Min(PointB.X, PointA.X) / (Resolution.ScaleRatio * Camera.Zoom) + Camera.VectorPosition.X);
+                        ((int)Math.Min(PointB.X, PointA.X) / (Resolution.ScaleRatio * Camera.Zoom) +
+                         Camera.VectorPosition.X);
                 _selectionSpace.Y =
                     (int)
-                    ((int)Math.Min(PointB.Y, PointA.Y) / (Resolution.ScaleRatio * Camera.Zoom) + Camera.VectorPosition.Y);
+                        ((int)Math.Min(PointB.Y, PointA.Y) / (Resolution.ScaleRatio * Camera.Zoom) +
+                         Camera.VectorPosition.Y);
                 _selectionSpace.Width =
                     (int)((int)Math.Abs(PointB.X - PointA.X) / (Resolution.ScaleRatio * Camera.Zoom));
                 _selectionSpace.Height =
@@ -54,10 +63,6 @@ namespace Glyph.Tools
                 return _selectionSpace;
             }
         }
-        static private readonly Vector2 OriginCursor = new Vector2(5, 5);
-        static private Point _positionSpace;
-        static private Rectangle _selection;
-        static private Rectangle _selectionSpace;
 
         static public void Initialize()
         {

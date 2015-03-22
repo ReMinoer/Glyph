@@ -37,7 +37,7 @@ namespace Glyph.Entities
                 return new FrameSequence();
 
             var result = new FrameSequence(linearPoints[0]);
-            for (int i = 1; i < linearPoints.Length; i++)
+            for (var i = 1; i < linearPoints.Length; i++)
                 result = result.GoTo(linearPoints[i]);
 
             return result;
@@ -73,7 +73,7 @@ namespace Glyph.Entities
         {
             var temp = new int[Frames.Count];
 
-            for (int i = 0; i < Frames.Count; i++)
+            for (var i = 0; i < Frames.Count; i++)
                 temp[(i + startIndex) % Frames.Count] = Frames[i];
 
             Frames = temp.ToList();

@@ -4,16 +4,24 @@ namespace Glyph.Transition
 {
     public class TransitionVector3 : TransitionVector<Vector3>
     {
-        public TransitionVector3() {}
+        public TransitionVector3()
+        {
+        }
 
         public TransitionVector3(ITimingFunction f)
-            : base(f) {}
+            : base(f)
+        {
+        }
 
         public TransitionVector3(float p1X, float p1Y, float p2X, float p2Y)
-            : base(p1X, p1Y, p2X, p2Y) {}
+            : base(p1X, p1Y, p2X, p2Y)
+        {
+        }
 
         public TransitionVector3(int steps, bool startInclude)
-            : base(steps, startInclude) {}
+            : base(steps, startInclude)
+        {
+        }
 
         protected override Vector3 Add(Vector3 a, Vector3 b)
         {

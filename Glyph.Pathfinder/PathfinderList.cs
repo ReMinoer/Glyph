@@ -3,5 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Pathfinder
 {
-    public class PathfinderList : Dictionary<Point, Node> {}
+    public class PathfinderList : Dictionary<Point, Node>
+    {
+    }
 }

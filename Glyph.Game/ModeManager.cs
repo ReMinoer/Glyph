@@ -5,6 +5,9 @@ namespace Glyph.Game
 {
     public class ModeManager<TState>
     {
+        private bool _isChange;
+        private TState _state;
+
         public TState State
         {
             get { return _state; }
@@ -18,8 +21,6 @@ namespace Glyph.Game
                 Log.Message("Current mode : " + State, LogTagGlyph.GameEvent);
             }
         }
-        private bool _isChange;
-        private TState _state;
 
         public void Initialize(TState state)
         {

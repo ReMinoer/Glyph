@@ -2,5 +2,7 @@
 
 namespace Glyph.Input
 {
-    public abstract class ActionsCollection : List<IActionButton> {}
+    public abstract class ActionsCollection : List<IActionButton>
+    {
+    }
 }

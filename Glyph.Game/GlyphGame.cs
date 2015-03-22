@@ -17,12 +17,20 @@ namespace Glyph.Game
 {
     public abstract class GlyphGame<TMode> : Microsoft.Xna.Framework.Game
     {
+        private CultureInfo _culture;
+        private Viewport _defaultViewport;
+        private bool _synchroVertical;
+        protected int DefautWindowHeight = (int)Resolution.WindowSize.Y;
+        protected int DefautWindowWidth = (int)Resolution.WindowSize.X;
         public GraphicsDeviceManager Graphics { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public ContentLibrary ContentLibrary { get; private set; }
         public InputManager InputManager { get; private set; }
         public ModeManager<TMode> ModeManager { get; private set; }
         public Dictionary<TMode, IGameMode> Modes { get; private set; }
+        public PerformanceViewer PerformanceViewer { get; private set; }
+        public StatusDisplay StatusDisplay { get; private set; }
+
         public CultureInfo Culture
         {
             get { return _culture; }
@@ -32,8 +40,7 @@ namespace Glyph.Game
                 Log.Message("Current culture : " + _culture.EnglishName, LogTagGlyph.System);
             }
         }
-        public PerformanceViewer PerformanceViewer { get; private set; }
-        public StatusDisplay StatusDisplay { get; private set; }
+
         public bool SynchroVertical
         {
             get { return _synchroVertical; }
@@ -43,12 +50,11 @@ namespace Glyph.Game
                 _synchroVertical = value;
             }
         }
-        public virtual bool IsFocus { get { return IsActive; } }
-        private CultureInfo _culture;
-        private Viewport _defaultViewport;
-        private bool _synchroVertical;
-        protected int DefautWindowHeight = (int)Resolution.WindowSize.Y;
-        protected int DefautWindowWidth = (int)Resolution.WindowSize.X;
+
+        public virtual bool IsFocus
+        {
+            get { return IsActive; }
+        }
 
         protected GlyphGame(string[] args)
         {
@@ -164,7 +170,7 @@ namespace Glyph.Game
 #endif
         }
 
-        protected sealed override void Draw(GameTime gameTime)
+        protected override sealed void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
@@ -182,7 +188,9 @@ namespace Glyph.Game
             SpriteBatch.End();
         }
 
-        protected virtual void Draw() {}
+        protected virtual void Draw()
+        {
+        }
 
         protected override bool BeginDraw()
         {

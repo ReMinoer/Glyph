@@ -13,13 +13,12 @@ namespace Glyph.UI.Menus
         public List<Button> Buttons { get; set; }
         public int Selection { get; set; }
         public int DefaultSelection { get; set; }
+        public event EventHandler<MenuEventArgs> Selected;
 
         public ButtonsMenu()
         {
             Buttons = new List<Button>();
         }
-
-        public event EventHandler<MenuEventArgs> Selected;
 
         public virtual void Add(Button button)
         {
@@ -52,17 +51,6 @@ namespace Glyph.UI.Menus
                 button.Update(gameTime);
         }
 
-        protected virtual void ButtonOnActivated(int selection)
-        {
-            if (Selected != null)
-                Selected(this, new MenuEventArgs(selection));
-        }
-
-        private void ButtonOnActivated(object sender, EventArgs eventArgs)
-        {
-            ButtonOnActivated(Selection);
-        }
-
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (Button button in Buttons)
@@ -74,7 +62,7 @@ namespace Glyph.UI.Menus
             if (input.IsMouseUsed)
             {
                 Selection = -1;
-                for (int i = 0; i < Buttons.Count; i++)
+                for (var i = 0; i < Buttons.Count; i++)
                     if (Buttons[i].Enable)
                         Selection = i;
             }
@@ -107,6 +95,17 @@ namespace Glyph.UI.Menus
 
             if (input.IsActionDownNow(MenuActions.Cancel))
                 ButtonOnActivated(DefaultSelection);
+        }
+
+        protected virtual void ButtonOnActivated(int selection)
+        {
+            if (Selected != null)
+                Selected(this, new MenuEventArgs(selection));
+        }
+
+        private void ButtonOnActivated(object sender, EventArgs eventArgs)
+        {
+            ButtonOnActivated(Selection);
         }
     }
 

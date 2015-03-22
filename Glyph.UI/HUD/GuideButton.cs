@@ -12,28 +12,40 @@ namespace Glyph.UI.HUD
 {
     public class GuideButton : Sprite, IHandleInput
     {
-        public virtual bool Display { get; set; }
-        public bool DisplayKeyText { get; set; }
-        public override Texture2D Texture { get { return IsPad ? PadIcon : KeyboardIcon; } }
-        public override float Opacity { get { return base.Opacity * TransitionOpacity; } }
-        public Texture2D KeyboardIcon { get; protected set; }
-        public Texture2D PadIcon { get; protected set; }
-        public string KeyName { get { return TextSprite.Text; } }
         private readonly bool _clickable;
         private readonly Vector2 _keyPadding = new Vector2(20, 50);
         protected readonly string ActionButtonName;
         protected readonly TextSprite TextSprite = new TextSprite();
         protected readonly TransitionFloat TransitionOpacity = new TransitionFloat {Start = 0, End = 1, Duration = 500};
         protected bool IsPad;
+        public virtual bool Display { get; set; }
+        public bool DisplayKeyText { get; set; }
+        public Texture2D KeyboardIcon { get; protected set; }
+        public Texture2D PadIcon { get; protected set; }
+
+        public override Texture2D Texture
+        {
+            get { return IsPad ? PadIcon : KeyboardIcon; }
+        }
+
+        public override float Opacity
+        {
+            get { return base.Opacity * TransitionOpacity; }
+        }
+
+        public string KeyName
+        {
+            get { return TextSprite.Text; }
+        }
+
+        public event EventHandler Activated;
+        public event EventHandler IconChanged;
 
         public GuideButton(string actionButtonName, bool clickable = false)
         {
             ActionButtonName = actionButtonName;
             _clickable = clickable;
         }
-
-        public event EventHandler Activated;
-        public event EventHandler IconChanged;
 
         public override void Initialize()
         {

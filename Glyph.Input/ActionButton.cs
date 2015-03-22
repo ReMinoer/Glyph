@@ -6,6 +6,8 @@ namespace Glyph.Input
 {
     public class ActionButton : IActionButton
     {
+        private const float SensitivityPadByDefault = 0.1f;
+        private const float SensitivityTriggerByDefault = 0.1f;
         public List<Keys> Keys { get; set; }
         public List<Buttons> Buttons { get; set; }
         public bool ClicLeft { get; set; }
@@ -16,8 +18,7 @@ namespace Glyph.Input
         public bool TriggerRight { get; set; }
         public float SensitivityPad { get; set; }
         public float SensitivityTrigger { get; set; }
-        private const float SensitivityPadByDefault = 0.1f;
-        private const float SensitivityTriggerByDefault = 0.1f;
+        public string Name { get; set; }
 
         public ActionButton(string name)
         {
@@ -200,8 +201,6 @@ namespace Glyph.Input
             return input.GamePad.Triggers.Right >= SensitivityTrigger
                    && input.LastGamePad.Triggers.Right < SensitivityTrigger;
         }
-
-        public string Name { get; set; }
 
         public bool IsPressed(InputManager input)
         {

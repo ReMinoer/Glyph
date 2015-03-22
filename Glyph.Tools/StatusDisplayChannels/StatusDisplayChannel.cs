@@ -11,6 +11,7 @@ namespace Glyph.Tools.StatusDisplayChannels
         public bool OriginRight { get; set; }
         public bool OriginBottom { get; set; }
         public float Spacing { get; set; }
+
         public Vector2 Origin
         {
             get
@@ -40,7 +41,7 @@ namespace Glyph.Tools.StatusDisplayChannels
         {
             UpdateValues(gameTime);
 
-            int i = 0;
+            var i = 0;
             foreach (StatusDisplayText t in Text.Values)
             {
                 Vector2 size = t.MeasureString();
@@ -51,12 +52,12 @@ namespace Glyph.Tools.StatusDisplayChannels
             }
         }
 
-        protected abstract void UpdateValues(GameTime gameTime);
-
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (StatusDisplayText t in Text.Values)
                 t.Draw(spriteBatch);
         }
+
+        protected abstract void UpdateValues(GameTime gameTime);
     }
 }

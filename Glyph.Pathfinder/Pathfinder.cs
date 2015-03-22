@@ -9,6 +9,11 @@ namespace Glyph.Pathfinder
     public abstract class Pathfinder<TCase, TMove, TAction>
         where TMove : Move<TAction>
     {
+        protected readonly TCase[][] Space;
+        protected bool[][] ClosedGrid;
+        protected PathfinderList Closedlist;
+        protected bool[][] DroppedGrid;
+        protected PathfinderList Openlist;
         public bool Success { get; protected set; }
         public bool IsEnd { get; protected set; }
         public bool IsReady { get; protected set; }
@@ -18,11 +23,6 @@ namespace Glyph.Pathfinder
         public Stopwatch TimerTimeout { get; protected set; }
         public Stopwatch TimerProcess { get; protected set; }
         protected abstract int Timeout { get; }
-        protected readonly TCase[][] Space;
-        protected bool[][] ClosedGrid;
-        protected PathfinderList Closedlist;
-        protected bool[][] DroppedGrid;
-        protected PathfinderList Openlist;
 
         protected Pathfinder(TCase[][] space)
         {
@@ -36,11 +36,11 @@ namespace Glyph.Pathfinder
             Closedlist = new PathfinderList();
 
             ClosedGrid = new bool[space.Length][];
-            for (int i = 0; i < ClosedGrid.Length; i++)
+            for (var i = 0; i < ClosedGrid.Length; i++)
                 ClosedGrid[i] = new bool[space[0].Length];
 
             DroppedGrid = new bool[space.Length][];
-            for (int i = 0; i < DroppedGrid.Length; i++)
+            for (var i = 0; i < DroppedGrid.Length; i++)
                 DroppedGrid[i] = new bool[space[0].Length];
 
             TimerTimeout = new Stopwatch();
@@ -62,11 +62,11 @@ namespace Glyph.Pathfinder
             Closedlist = new PathfinderList();
 
             ClosedGrid = new bool[Space.Length][];
-            for (int i = 0; i < ClosedGrid.Length; i++)
+            for (var i = 0; i < ClosedGrid.Length; i++)
                 ClosedGrid[i] = new bool[Space[0].Length];
 
             DroppedGrid = new bool[Space.Length][];
-            for (int i = 0; i < DroppedGrid.Length; i++)
+            for (var i = 0; i < DroppedGrid.Length; i++)
                 DroppedGrid[i] = new bool[Space[0].Length];
 
             Start = d;
@@ -111,9 +111,37 @@ namespace Glyph.Pathfinder
             return IsEnd;
         }
 
+        public List<TMove> GetRoute()
+        {
+            var route = new List<TMove>();
+
+            if (!Closedlist.Any())
+                return route;
+
+            Point actual = Closedlist.ContainsKey(Finish) ? Finish : BestNodeClosedlist();
+
+            if (actual == new Point(-1, -1))
+                return route;
+
+            Node node = Closedlist[actual];
+
+            route.Add(NewPathfinderMove(node.Parent, new Point(actual.X - node.Parent.X, actual.Y - node.Parent.Y)));
+
+            while (actual != Start)
+            {
+                actual = node.Parent;
+                node = Closedlist[actual];
+
+                route.Add(NewPathfinderMove(node.Parent, new Point(actual.X - node.Parent.X, actual.Y - node.Parent.Y)));
+            }
+
+            route.Reverse();
+            return route;
+        }
+
         protected void AddSurroundingCases(Point parent, int limitMax, int limitMin = 1, int cond = 0)
         {
-            var list = ListPotentialMovesbyInterval(limitMax, limitMin);
+            IEnumerable<Point> list = ListPotentialMovesbyInterval(limitMax, limitMin);
 
             // Regarder une par une toute les possibilités de d'action
             foreach (Point move in list)
@@ -169,7 +197,7 @@ namespace Glyph.Pathfinder
             var tmp = new Point(-1, -1);
             float p = float.MaxValue;
 
-            foreach (var n in Openlist)
+            foreach (KeyValuePair<Point, Node> n in Openlist)
             {
                 float np = n.Value.Cost;
                 if (np < p)
@@ -187,7 +215,7 @@ namespace Glyph.Pathfinder
             var tmp = new Point(-1, -1);
             float d = float.MaxValue;
 
-            foreach (var n in Closedlist)
+            foreach (KeyValuePair<Point, Node> n in Closedlist)
             {
                 float nd = DistanceTo(n.Key, Finish);
                 if (nd < d)
@@ -203,34 +231,6 @@ namespace Glyph.Pathfinder
         protected bool IsCaseExist(Point p)
         {
             return (p.Y >= 0) && (p.Y < Space.Length) && (p.X >= 0) && (p.X < Space[0].Length);
-        }
-
-        public List<TMove> GetRoute()
-        {
-            var route = new List<TMove>();
-
-            if (!Closedlist.Any())
-                return route;
-
-            Point actual = Closedlist.ContainsKey(Finish) ? Finish : BestNodeClosedlist();
-
-            if (actual == new Point(-1, -1))
-                return route;
-
-            Node node = Closedlist[actual];
-
-            route.Add(NewPathfinderMove(node.Parent, new Point(actual.X - node.Parent.X, actual.Y - node.Parent.Y)));
-
-            while (actual != Start)
-            {
-                actual = node.Parent;
-                node = Closedlist[actual];
-
-                route.Add(NewPathfinderMove(node.Parent, new Point(actual.X - node.Parent.X, actual.Y - node.Parent.Y)));
-            }
-
-            route.Reverse();
-            return route;
         }
 
         protected abstract void CalculationProcess();

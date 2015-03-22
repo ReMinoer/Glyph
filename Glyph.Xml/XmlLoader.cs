@@ -63,7 +63,7 @@ namespace Glyph.Xml
             _reader.ReadStartElement(name);
 
             var serializer = new XmlSerializer(typeof(T));
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
                 list.Add((T)serializer.Deserialize(_reader));
 
             _reader.ReadEndElement();

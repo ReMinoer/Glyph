@@ -6,17 +6,6 @@ namespace Glyph.Tools
 {
     public class PerformanceViewer
     {
-        public string ProcessName { get; private set; }
-        public float Memory { get; private set; }
-        public float MemoryMax { get; private set; }
-        public float Fps { get; private set; }
-        public float UpdatePeak { get; private set; }
-        public float DrawPeak { get; private set; }
-        public float UpdateMean { get; private set; }
-        public float DrawMean { get; private set; }
-        public bool IsIncrease { get { return Memory > _lastMemory; } }
-        public bool IsIncreaseMax { get { return Math.Abs(Memory - MemoryMax) < float.Epsilon; } }
-        private const int RefreshIntervalle = 1000;
         private readonly Stopwatch _drawTimer = new Stopwatch();
         private readonly Period _refreshPeriod = new Period(RefreshIntervalle);
         private readonly Stopwatch _updateTimer = new Stopwatch();
@@ -27,9 +16,30 @@ namespace Glyph.Tools
         private float _updateCompteur;
         private float _updateMax;
         private float _updateTotals;
+        private const int RefreshIntervalle = 1000;
+        public string ProcessName { get; private set; }
+        public float Memory { get; private set; }
+        public float MemoryMax { get; private set; }
+        public float Fps { get; private set; }
+        public float UpdatePeak { get; private set; }
+        public float DrawPeak { get; private set; }
+        public float UpdateMean { get; private set; }
+        public float DrawMean { get; private set; }
+
+        public bool IsIncrease
+        {
+            get { return Memory > _lastMemory; }
+        }
+
+        public bool IsIncreaseMax
+        {
+            get { return Math.Abs(Memory - MemoryMax) < float.Epsilon; }
+        }
 
         public PerformanceViewer()
-            : this(Process.GetCurrentProcess().ProcessName) {}
+            : this(Process.GetCurrentProcess().ProcessName)
+        {
+        }
 
         public PerformanceViewer(string process)
         {

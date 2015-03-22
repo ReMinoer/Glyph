@@ -7,10 +7,10 @@ namespace Glyph.Pathfinder.Tools
     public class PathfindingDisplay<TMove, TAction>
         where TMove : Move<TAction>
     {
-        public bool Visible { get; set; }
         private readonly int _sizeCase;
         private List<TMove> _itineraire;
         private Texture2D _square;
+        public bool Visible { get; set; }
 
         public PathfindingDisplay(int sizeCase)
         {

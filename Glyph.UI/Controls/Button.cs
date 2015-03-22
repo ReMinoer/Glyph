@@ -9,7 +9,12 @@ namespace Glyph.UI.Controls
     {
         public bool Enable { get; set; }
         public virtual Padding Padding { get; set; }
-        public override Rectangle Hitbox { get { return base.Hitbox.Padding(Padding); } }
+
+        public override Rectangle Hitbox
+        {
+            get { return base.Hitbox.Padding(Padding); }
+        }
+
         public event EventHandler Activated;
         public event EventHandler Hover;
         public event EventHandler Leave;

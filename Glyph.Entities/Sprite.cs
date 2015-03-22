@@ -16,10 +16,16 @@ namespace Glyph.Entities
         public virtual float Scale { get; set; }
         public virtual Vector2 Origin { get; set; }
         public virtual SpriteEffects SpriteEffect { get; set; }
+
         [XmlIgnore]
         public virtual Texture2D Texture { get; set; }
+
         [XmlIgnore]
-        public virtual Vector2 PositionScreen { get { return Position; } }
+        public virtual Vector2 PositionScreen
+        {
+            get { return Position; }
+        }
+
         [XmlIgnore]
         public virtual Rectangle RectangleSource
         {
@@ -29,6 +35,7 @@ namespace Glyph.Entities
                 return rectangleSource;
             }
         }
+
         [XmlIgnore]
         public virtual Rectangle Hitbox
         {
@@ -44,6 +51,7 @@ namespace Glyph.Entities
                 return hitbox;
             }
         }
+
         [XmlIgnore]
         public virtual Vector2 Center
         {

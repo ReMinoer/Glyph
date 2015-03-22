@@ -9,22 +9,33 @@ namespace Glyph.Entities
     {
         [XmlIgnore]
         public Texture2DSplit TextureSplit { get; set; }
-        [XmlIgnore]
-        public override Texture2D Texture { get { return TextureSplit.IsEmpty ? null : TextureSplit[0]; } }
+
         public SerializableDictionary<string, Animation> Animations { get; set; }
         public virtual Point NbFrames { get; set; }
         public string CurrentAnimation { get; set; }
+
         [XmlIgnore]
         public virtual int CurrentFrame { get; set; }
+
         [XmlIgnore]
-        public virtual Vector2 FrameSize { get { return TextureSplit[0].Size() / NbFrames.ToVector2(); } }
+        public override Texture2D Texture
+        {
+            get { return TextureSplit.IsEmpty ? null : TextureSplit[0]; }
+        }
+
+        [XmlIgnore]
+        public virtual Vector2 FrameSize
+        {
+            get { return TextureSplit[0].Size() / NbFrames.ToVector2(); }
+        }
+
         [XmlIgnore]
         public virtual int TextureTarget
         {
             get
             {
-                int totalFrames = 0;
-                for (int i = 0; i < TextureSplit.Count; i++)
+                var totalFrames = 0;
+                for (var i = 0; i < TextureSplit.Count; i++)
                 {
                     Point framesXY = NbFramesPerTexture(i);
                     totalFrames += framesXY.X * framesXY.Y;
@@ -34,14 +45,15 @@ namespace Glyph.Entities
                 return 0;
             }
         }
+
         [XmlIgnore]
         public override Rectangle RectangleSource
         {
             get
             {
                 var rectangleSource = new Rectangle();
-                int totalFrames = 0;
-                for (int i = 0; i < TextureSplit.Count; i++)
+                var totalFrames = 0;
+                for (var i = 0; i < TextureSplit.Count; i++)
                 {
                     Point framesXY = NbFramesPerTexture(i);
                     totalFrames += framesXY.X * framesXY.Y;
@@ -98,8 +110,6 @@ namespace Glyph.Entities
             UpdateAnimation(gameTime);
         }
 
-        protected virtual void UpdateAnimation(GameTime gameTime) {}
-
         public void ChangeAnimation(string anim)
         {
             if (anim == CurrentAnimation || !Animations[CurrentAnimation].CanChange || !Animations.ContainsKey(anim))
@@ -123,6 +133,10 @@ namespace Glyph.Entities
             if (!TextureSplit.IsEmpty)
                 spriteBatch.Draw(TextureSplit[TextureTarget], PositionScreen, RectangleSource, Color * Opacity, Rotation,
                     Origin, Scale, SpriteEffect, 0);
+        }
+
+        protected virtual void UpdateAnimation(GameTime gameTime)
+        {
         }
     }
 }

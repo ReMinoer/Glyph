@@ -6,7 +6,11 @@ namespace Glyph.Transition
     {
         public int Steps { get; private set; }
         public bool IsStartInclude { get; private set; }
-        public float Interval { get { return 1f / Steps; } }
+
+        public float Interval
+        {
+            get { return 1f / Steps; }
+        }
 
         public StepsFunction(int steps, bool startInclude)
         {

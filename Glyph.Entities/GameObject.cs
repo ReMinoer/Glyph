@@ -7,16 +7,18 @@ namespace Glyph.Entities
 {
     public class GameObject : AnimSprite
     {
+        protected readonly List<Color[]> PixelData;
         public virtual float Depth { get; set; }
         public virtual Orientation Orientation { get; set; }
+
         [XmlIgnore]
         public virtual Vector2 Destination { get; set; }
+
         [XmlIgnore]
         public override Vector2 PositionScreen
         {
             get { return Position.Substract(Camera.PositionByDefault.X * Depth, 0); }
         }
-        protected readonly List<Color[]> PixelData;
 
         public GameObject()
         {
@@ -40,19 +42,11 @@ namespace Glyph.Entities
             base.LoadContent(ressources, asset, frameX, frameY);
 
             PixelData.Clear();
-            for (int i = 0; i < TextureSplit.Count; i++)
+            for (var i = 0; i < TextureSplit.Count; i++)
             {
                 PixelData.Add(new Color[Texture.Width * Texture.Height]);
                 Texture.GetData(PixelData[i]);
             }
-        }
-
-        protected override void UpdateAnimation(GameTime gameTime)
-        {
-            base.UpdateAnimation(gameTime);
-
-            DirectionToOrientation();
-            OrientationToMirror();
         }
 
         public virtual bool ToDestinationLinear(GameTime gameTime)
@@ -90,6 +84,14 @@ namespace Glyph.Entities
             //    Direction = Vector2.Zero;
             //    return true;
             //}
+        }
+
+        protected override void UpdateAnimation(GameTime gameTime)
+        {
+            base.UpdateAnimation(gameTime);
+
+            DirectionToOrientation();
+            OrientationToMirror();
         }
 
         protected virtual void DirectionToOrientation()

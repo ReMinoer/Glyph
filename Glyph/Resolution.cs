@@ -19,12 +19,6 @@ namespace Glyph
     // WATCH : Viewport improvement behaviour
     static public class Resolution
     {
-        static public bool FullScreen { get; private set; }
-        static public Vector2 Size { get; private set; }
-        static public Vector2 WindowSize { get { return new Vector2(_windowWidth, _windowHeight); } }
-        static public Vector2 VirtualSize { get { return new Vector2(_virtualWidth, _virtualHeight); } }
-        static public float ScaleRatio { get { return Size.X / _virtualWidth; } }
-        static public Vector2 WindowMargin { get { return (WindowSize - Size) / 2; } }
         static private GraphicsDeviceManager _device;
         static private GameWindow _window;
         static private int _windowWidth = 800;
@@ -36,6 +30,28 @@ namespace Glyph
         static private Matrix _scaleMatrix;
         static private bool _dirtyMatrix = true;
         static private bool _currentlyResizing;
+        static public bool FullScreen { get; private set; }
+        static public Vector2 Size { get; private set; }
+
+        static public Vector2 WindowSize
+        {
+            get { return new Vector2(_windowWidth, _windowHeight); }
+        }
+
+        static public Vector2 VirtualSize
+        {
+            get { return new Vector2(_virtualWidth, _virtualHeight); }
+        }
+
+        static public float ScaleRatio
+        {
+            get { return Size.X / _virtualWidth; }
+        }
+
+        static public Vector2 WindowMargin
+        {
+            get { return (WindowSize - Size) / 2; }
+        }
 
         static public void Init(GraphicsDeviceManager device, GameWindow window)
         {
@@ -115,7 +131,7 @@ namespace Glyph
             float targetAspectRatio = GetVirtualAspectRatio();
 
             int width = _device.PreferredBackBufferWidth;
-            int height = (int)(width / targetAspectRatio + .5f);
+            var height = (int)(width / targetAspectRatio + .5f);
 
             if (height > _device.PreferredBackBufferHeight)
             {
@@ -161,8 +177,8 @@ namespace Glyph
             }
             else
             {
-                int maxWidth = 0;
-                int maxHeight = 0;
+                var maxWidth = 0;
+                var maxHeight = 0;
                 foreach (DisplayMode dm in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
                     if (dm.Width >= maxWidth && dm.Height >= maxHeight)
                     {
@@ -203,8 +219,8 @@ namespace Glyph
         {
             float virtualRatio = GetVirtualAspectRatio();
             Size = WindowSize.X / WindowSize.Y > virtualRatio
-                       ? WindowSize.SetX(WindowSize.Y * virtualRatio)
-                       : WindowSize.SetY(WindowSize.X / virtualRatio);
+                ? WindowSize.SetX(WindowSize.Y * virtualRatio)
+                : WindowSize.SetY(WindowSize.X / virtualRatio);
         }
 
         static private void RecreateScaleMatrix()
@@ -215,8 +231,8 @@ namespace Glyph
 
             float virtualRatio = GetVirtualAspectRatio();
             Size = WindowSize.X / WindowSize.Y > virtualRatio
-                       ? WindowSize.SetX(WindowSize.Y * virtualRatio)
-                       : WindowSize.SetY(WindowSize.X / virtualRatio);
+                ? WindowSize.SetX(WindowSize.Y * virtualRatio)
+                : WindowSize.SetY(WindowSize.X / virtualRatio);
         }
     }
 }

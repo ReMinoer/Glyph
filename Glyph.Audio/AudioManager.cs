@@ -11,34 +11,6 @@ namespace Glyph.Audio
 {
     static public class AudioManager
     {
-        public enum AudioTransitionState
-        {
-            Ready,
-            Fondu,
-            Wait,
-            Play
-        }
-
-        static public float Volume { get; set; }
-        static public string ActualSong { get; private set; }
-        static public string NextSong { get; private set; }
-        static public bool IsRepeating
-        {
-            get { return MediaPlayer.IsRepeating; }
-            set { MediaPlayer.IsRepeating = value; }
-        }
-        static public int IdNextSong
-        {
-            get
-            {
-                int id = -1;
-                for (int i = 0; i < Musics.Count; i++)
-                    if (Musics.ElementAt(i).Key == NextSong)
-                        id = i;
-                return id;
-            }
-        }
-        private const float VolumeSpeed = 0.0005f;
         // TODO : Finaliser et tester le manager audio (controle volume, plusieurs effets,...)
         static public Dictionary<string, Song> Musics;
         static private Dictionary<string, SoundEffect> _sounds;
@@ -47,6 +19,28 @@ namespace Glyph.Audio
         static private AudioTransitionState _transitionState = AudioTransitionState.Ready;
         static private readonly Period WaitTime = new Period(0);
         static private bool _transitionRequire;
+        private const float VolumeSpeed = 0.0005f;
+        static public float Volume { get; set; }
+        static public string ActualSong { get; private set; }
+        static public string NextSong { get; private set; }
+
+        static public bool IsRepeating
+        {
+            get { return MediaPlayer.IsRepeating; }
+            set { MediaPlayer.IsRepeating = value; }
+        }
+
+        static public int IdNextSong
+        {
+            get
+            {
+                int id = -1;
+                for (var i = 0; i < Musics.Count; i++)
+                    if (Musics.ElementAt(i).Key == NextSong)
+                        id = i;
+                return id;
+            }
+        }
 
         static public void LoadContent(ContentLibrary ressources)
         {
@@ -186,12 +180,20 @@ namespace Glyph.Audio
 
             _soundCollections.Add(asset, new SoundCollection(period));
 
-            int i = 1;
+            var i = 1;
             while (_sounds.ContainsKey(asset + i))
             {
                 _soundCollections[asset].AddSound(_sounds[asset + i]);
                 i++;
             }
+        }
+
+        public enum AudioTransitionState
+        {
+            Ready,
+            Fondu,
+            Wait,
+            Play
         }
     }
 }

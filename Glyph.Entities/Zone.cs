@@ -6,10 +6,13 @@ namespace Glyph.Entities
 {
     public class Zone : ILayable
     {
+        private Texture2D _texture;
         public Vector2 Position { get; set; }
         public Vector2 Size { get; set; }
         public Color Color { get; set; }
         public float Opacity { get; set; }
+        public int Layer { get; set; }
+
         [XmlIgnore]
         public Rectangle Hitbox
         {
@@ -19,10 +22,11 @@ namespace Glyph.Entities
                     (int)Size.X, (int)Size.Y);
             }
         }
-        private Texture2D _texture;
 
         public Zone()
-            : this(0, 0, 0, 0, 0) {}
+            : this(0, 0, 0, 0, 0)
+        {
+        }
 
         public Zone(int x, int y, int w, int h, int layer)
         {
@@ -42,7 +46,5 @@ namespace Glyph.Entities
         {
             spriteBatch.Draw(_texture, Hitbox, Color * Opacity);
         }
-
-        public int Layer { get; set; }
     }
 }

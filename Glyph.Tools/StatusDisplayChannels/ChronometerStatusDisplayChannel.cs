@@ -10,13 +10,13 @@ namespace Glyph.Tools.StatusDisplayChannels
             OriginRight = true;
             OriginBottom = true;
 
-            for (int i = 0; i < Chronometer.Timer.Count; i++)
+            for (var i = 0; i < Chronometer.Timer.Count; i++)
                 Text["chrono" + (i + 1)] = new StatusDisplayText("Chrono " + (i + 1));
         }
 
         protected override void UpdateValues(GameTime gameTime)
         {
-            for (int i = 0; i < Chronometer.Timer.Count; i++)
+            for (var i = 0; i < Chronometer.Timer.Count; i++)
                 Text["chrono" + (i + 1)].Text =
                     Chronometer.Timer[i].Elapsed.TotalMilliseconds.ToString(CultureInfo.InvariantCulture);
         }

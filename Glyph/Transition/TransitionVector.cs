@@ -6,12 +6,6 @@ namespace Glyph.Transition
     public abstract class TransitionVector<T> : ITransition<T>
         where T : IEquatable<T>
     {
-        public T LastUpdate { get { return _lastUpdate; } }
-        public T LastSpeed { get { return _lastSpeed; } }
-        private bool IsAllAttributesInit
-        {
-            get { return _isAttributeInit[0] && _isAttributeInit[1] && _isAttributeInit[2]; }
-        }
         private readonly bool[] _isAttributeInit = {false, false, false};
         private float _actualDuration;
         private T _actualEnd;
@@ -35,90 +29,21 @@ namespace Glyph.Transition
         private T _tempStart;
         private T _value;
 
-        protected TransitionVector(ITimingFunction f)
+        public T LastUpdate
         {
-            Function = f;
-            _isInit = false;
+            get { return _lastUpdate; }
         }
 
-        protected TransitionVector()
-            : this(new LinearFunction()) {}
-
-        protected TransitionVector(float p1X, float p1Y, float p2X, float p2Y)
-            : this(new BezierFunction(p1X, p1Y, p2X, p2Y)) {}
-
-        protected TransitionVector(int steps, bool startInclude)
-            : this(new StepsFunction(steps, startInclude)) {}
-
-        public T Update(GameTime gameTime, T start, T end, float duration, bool reverse = false, bool reset = false)
+        public T LastSpeed
         {
-            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(duration))
-                Init(start, end, duration, reset);
-
-            return Update(gameTime, reverse);
+            get { return _lastSpeed; }
         }
 
-        public T UpdateBySpeed(GameTime gameTime, T start, T end, float meanSpeed, bool reverse = false,
-                               bool reset = false)
+        private bool IsAllAttributesInit
         {
-            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(MeanSpeedToDuration(meanSpeed)))
-                InitBySpeed(start, end, meanSpeed, reset);
-
-            return Update(gameTime, reverse);
+            get { return _isAttributeInit[0] && _isAttributeInit[1] && _isAttributeInit[2]; }
         }
 
-        static public implicit operator T(TransitionVector<T> x)
-        {
-            return x.Value;
-        }
-
-        public void ShiftValues(T newValue)
-        {
-            ShiftValuesRelative(Subtract(newValue, Value));
-        }
-
-        public void ShiftValuesRelative(T modif)
-        {
-            _value = Add(Value, modif);
-            Start = Add(Start, modif);
-            End = Add(End, modif);
-            _actualStart = Add(_actualStart, modif);
-            _actualEnd = Add(_actualEnd, modif);
-        }
-
-        private T CalculateValue(float time)
-        {
-            if (time < 0 || time > Duration)
-                throw new ArgumentException("Parameter must be >= to 0 and <= to Duration !");
-
-            return Add(_actualStart,
-                Scalar(Subtract(_actualEnd, _actualStart), Function.GetValue(time / _actualDuration)));
-        }
-
-        private void Reverse(bool reverse, T actual)
-        {
-            _actualEnd = reverse ? Start : End;
-            _actualStart = actual;
-
-            _reverseFactor = ((_actualDuration > 0 ? Function.GetValue(ElapsedTime / _actualDuration) : 1)
-                              * _reverseFactor) + (1 - _reverseFactor);
-            _actualDuration = Duration * _reverseFactor;
-
-            _elapsedTime = 0;
-            _lastReverse = reverse;
-        }
-
-        private float MeanSpeedToDuration(float value)
-        {
-            T diff = Subtract(End, Start);
-            return Ratio(diff, Scalar(Normalize(diff), value / 1000));
-        }
-
-        protected abstract T Add(T a, T b);
-        protected abstract T Subtract(T a, T b);
-        protected abstract T Scalar(T a, float b);
-        protected abstract float Ratio(T a, T b);
-        protected abstract T Normalize(T a);
         public ITimingFunction Function
         {
             get
@@ -136,6 +61,7 @@ namespace Glyph.Transition
                     _function = _tempFunction;
             }
         }
+
         public T Start
         {
             get
@@ -164,6 +90,7 @@ namespace Glyph.Transition
                     Reset();
             }
         }
+
         public T End
         {
             get
@@ -192,6 +119,7 @@ namespace Glyph.Transition
                     Reset();
             }
         }
+
         public float Duration
         {
             get
@@ -219,6 +147,7 @@ namespace Glyph.Transition
                     Reset();
             }
         }
+
         public float MeanSpeed
         {
             set
@@ -229,6 +158,7 @@ namespace Glyph.Transition
                 Duration = MeanSpeedToDuration(value);
             }
         }
+
         public float Delay
         {
             get
@@ -251,7 +181,12 @@ namespace Glyph.Transition
                 _elapsedDelay = _delay;
             }
         }
-        public T Value { get { return _value; } }
+
+        public T Value
+        {
+            get { return _value; }
+        }
+
         public float ElapsedTime
         {
             get { return _elapsedTime; }
@@ -262,8 +197,73 @@ namespace Glyph.Transition
                 _elapsedTime = value;
             }
         }
-        public bool IsEnd { get { return ElapsedTime >= _actualDuration; } }
-        public bool IsWaiting { get { return _elapsedDelay < _delay || Math.Abs(ElapsedTime) < float.Epsilon; } }
+
+        public bool IsEnd
+        {
+            get { return ElapsedTime >= _actualDuration; }
+        }
+
+        public bool IsWaiting
+        {
+            get { return _elapsedDelay < _delay || Math.Abs(ElapsedTime) < float.Epsilon; }
+        }
+
+        protected TransitionVector(ITimingFunction f)
+        {
+            Function = f;
+            _isInit = false;
+        }
+
+        protected TransitionVector()
+            : this(new LinearFunction())
+        {
+        }
+
+        protected TransitionVector(float p1X, float p1Y, float p2X, float p2Y)
+            : this(new BezierFunction(p1X, p1Y, p2X, p2Y))
+        {
+        }
+
+        protected TransitionVector(int steps, bool startInclude)
+            : this(new StepsFunction(steps, startInclude))
+        {
+        }
+
+        public T Update(GameTime gameTime, T start, T end, float duration, bool reverse = false, bool reset = false)
+        {
+            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(duration))
+                Init(start, end, duration, reset);
+
+            return Update(gameTime, reverse);
+        }
+
+        public T UpdateBySpeed(GameTime gameTime, T start, T end, float meanSpeed, bool reverse = false,
+            bool reset = false)
+        {
+            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(MeanSpeedToDuration(meanSpeed)))
+                InitBySpeed(start, end, meanSpeed, reset);
+
+            return Update(gameTime, reverse);
+        }
+
+        static public implicit operator T(TransitionVector<T> x)
+        {
+            return x.Value;
+        }
+
+        public void ShiftValues(T newValue)
+        {
+            ShiftValuesRelative(Subtract(newValue, Value));
+        }
+
+        public void ShiftValuesRelative(T modif)
+        {
+            _value = Add(Value, modif);
+            Start = Add(Start, modif);
+            End = Add(End, modif);
+            _actualStart = Add(_actualStart, modif);
+            _actualEnd = Add(_actualEnd, modif);
+        }
 
         public void Init(T start, T end, float duration, bool reset = false, bool fromEnd = false)
         {
@@ -313,8 +313,8 @@ namespace Glyph.Transition
                 throw new InvalidOperationException((!_isAttributeInit[0] ? "Start not initialized ! " : "")
                                                     + (!_isAttributeInit[1] ? "End not initialized ! " : "")
                                                     + (!_isAttributeInit[2]
-                                                           ? "Duration or MeanSpeed not initialized ! "
-                                                           : ""));
+                                                        ? "Duration or MeanSpeed not initialized ! "
+                                                        : ""));
 
             if (!_isInit)
             {
@@ -382,6 +382,40 @@ namespace Glyph.Transition
                 throw new ArgumentException("Parameter must be >= to 0 and <= to (Duration - ElapsedTime) !");
 
             return CalculateValue(ElapsedTime + milliseconds);
+        }
+
+        protected abstract T Add(T a, T b);
+        protected abstract T Subtract(T a, T b);
+        protected abstract T Scalar(T a, float b);
+        protected abstract float Ratio(T a, T b);
+        protected abstract T Normalize(T a);
+
+        private T CalculateValue(float time)
+        {
+            if (time < 0 || time > Duration)
+                throw new ArgumentException("Parameter must be >= to 0 and <= to Duration !");
+
+            return Add(_actualStart,
+                Scalar(Subtract(_actualEnd, _actualStart), Function.GetValue(time / _actualDuration)));
+        }
+
+        private void Reverse(bool reverse, T actual)
+        {
+            _actualEnd = reverse ? Start : End;
+            _actualStart = actual;
+
+            _reverseFactor = ((_actualDuration > 0 ? Function.GetValue(ElapsedTime / _actualDuration) : 1)
+                              * _reverseFactor) + (1 - _reverseFactor);
+            _actualDuration = Duration * _reverseFactor;
+
+            _elapsedTime = 0;
+            _lastReverse = reverse;
+        }
+
+        private float MeanSpeedToDuration(float value)
+        {
+            T diff = Subtract(End, Start);
+            return Ratio(diff, Scalar(Normalize(diff), value / 1000));
         }
     }
 }
