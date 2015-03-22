@@ -10,6 +10,6 @@ namespace Glyph.Debug
         static public LogTag Error = new LogTag(ConsoleColor.Red, "!!!");
         static public LogTag LoadedContent = new LogTag(ConsoleColor.Cyan, ">>>");
         static public LogTag GameEvent = new LogTag(ConsoleColor.Magenta, "#");
-        static public LogTag Script = new LogTag(ConsoleColor.Gray, ">");
+        static public LogTag Script = new LogTag(ConsoleColor.Gray, "<");
     }
 }
