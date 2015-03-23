@@ -21,7 +21,7 @@ namespace Glyph.Scripting
         public TriggerManager Triggers { get; private set; }
         public bool DrawTriggerZone { get; set; }
 
-        protected ScriptManager(LanguageFile languageFile)
+        protected ScriptManager(ContentLibrary contentLibrary, LanguageFile languageFile)
         {
             _languageFile = languageFile;
 
@@ -31,9 +31,10 @@ namespace Glyph.Scripting
 
             Lua = new Lua();
             Lua.LoadCLRPackage();
-            Lua.DoCoroutineManager();
+            Lua.LoadCoroutineManager();
             Lua.DoString(Resources.TableTools);
 
+            Lua["Content"] = contentLibrary;
             Lua["Triggers"] = Triggers;
             Lua["Local"] = _languageFile;
         }
@@ -43,6 +44,11 @@ namespace Glyph.Scripting
             foreach (Trigger t in Triggers.Values)
                 if (t is TriggerZone)
                     (t as TriggerZone).LoadContent(ressources);
+        }
+
+        public void DoLuaScript(string luaCode)
+        {
+            Lua.DoString(luaCode);
         }
 
         public void LoadScript(string path)
