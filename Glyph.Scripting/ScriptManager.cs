@@ -55,6 +55,7 @@ namespace Glyph.Scripting
         {
             Triggers.Clear();
             _luaFunctions.Clear();
+            Lua.CleanDeadCoroutines();
 
             Stream stream;
             StreamReader sreader;
