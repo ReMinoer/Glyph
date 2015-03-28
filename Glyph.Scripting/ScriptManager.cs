@@ -25,7 +25,7 @@ namespace Glyph.Scripting
         {
             _languageFile = languageFile;
 
-            Triggers = new TriggerManager();
+            Triggers = new TriggerManager(this);
             DrawTriggerZone = false;
             _luaFunctions = new Dictionary<string, Dictionary<string, LuaFunction>>();
 
@@ -101,9 +101,6 @@ namespace Glyph.Scripting
             if (scriptName != null)
                 _luaFunctions.Add(scriptName, scriptFunctions);
 
-            foreach (Trigger trigger in Triggers.Values)
-                trigger.Enabled += TriggerOnEnabled;
-
             Log.Message(string.Format("Script loaded : {0}", path), LogTagGlyph.GameEvent);
         }
 
@@ -138,7 +135,7 @@ namespace Glyph.Scripting
                     (t as TriggerZone).Draw(spriteBatch);
         }
 
-        private void TriggerOnEnabled(object sender, EventArgs eventArgs)
+        public void TriggerOnEnabled(object sender, EventArgs eventArgs)
         {
             var trigger = (Trigger)sender;
 
