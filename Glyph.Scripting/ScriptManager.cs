@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Diese.Debug;
 using Diese.Lua;
 using Diese.Lua.Properties;
@@ -44,6 +45,11 @@ namespace Glyph.Scripting
             foreach (Trigger t in Triggers.Values)
                 if (t is TriggerZone)
                     (t as TriggerZone).LoadContent(ressources);
+        }
+
+        public string[] GetLuaGlobals()
+        {
+            return Lua.Globals.ToArray();
         }
 
         public void DoLuaScript(string luaCode)
