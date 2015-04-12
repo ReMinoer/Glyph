@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Glyph
 {
@@ -6,21 +7,20 @@ namespace Glyph
     {
         static public float ToRadian(float degree)
         {
-            float result = (degree / 180) * (float)Math.PI;
-            result %= (float)(2 * Math.PI);
-            result += (float)(2 * Math.PI);
-            result %= (float)(2 * Math.PI);
-
+            float result = (degree / 180) * MathHelper.Pi;
+            result %= MathHelper.TwoPi;
+            result += MathHelper.TwoPi;
+            result %= MathHelper.TwoPi;
             return result;
         }
 
         static public float ToDegree(float radian)
         {
             float result = radian;
-            result %= (float)(2 * Math.PI);
-            result += (float)(2 * Math.PI);
-            result %= (float)(2 * Math.PI);
-            result = (result * 180) / (float)Math.PI;
+            result %= MathHelper.TwoPi;
+            result += MathHelper.TwoPi;
+            result %= MathHelper.TwoPi;
+            result = (result * 180) / MathHelper.Pi;
 
             return result;
         }
@@ -36,17 +36,17 @@ namespace Glyph
 
             static public Rotation RotateRight
             {
-                get { return new Rotation {Value = (float)(3 * Math.PI) / 2}; }
+                get { return new Rotation { Value = 3 * MathHelper.PiOver2 }; }
             }
 
             static public Rotation RotateLeft
             {
-                get { return new Rotation {Value = (float)Math.PI / 2}; }
+                get { return new Rotation { Value = MathHelper.PiOver2 }; }
             }
 
             static public Rotation RotateOpposite
             {
-                get { return new Rotation {Value = (float)Math.PI}; }
+                get { return new Rotation { Value = MathHelper.Pi }; }
             }
 
             static public implicit operator float(Rotation x)

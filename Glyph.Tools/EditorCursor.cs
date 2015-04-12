@@ -36,8 +36,8 @@ namespace Glyph.Tools
         {
             get
             {
-                _selection.X = (int)Math.Min(PointB.X, PointA.X);
-                _selection.Y = (int)Math.Min(PointB.Y, PointA.Y);
+                _selection.X = (int)MathHelper.Min(PointB.X, PointA.X);
+                _selection.Y = (int)MathHelper.Min(PointB.Y, PointA.Y);
                 _selection.Width = (int)Math.Abs(PointB.X - PointA.X);
                 _selection.Height = (int)Math.Abs(PointB.Y - PointA.Y);
                 return _selection;
@@ -50,11 +50,11 @@ namespace Glyph.Tools
             {
                 _selectionSpace.X =
                     (int)
-                        ((int)Math.Min(PointB.X, PointA.X) / (Resolution.ScaleRatio * Camera.Zoom) +
+                        ((int)MathHelper.Min(PointB.X, PointA.X) / (Resolution.ScaleRatio * Camera.Zoom) +
                          Camera.VectorPosition.X);
                 _selectionSpace.Y =
                     (int)
-                        ((int)Math.Min(PointB.Y, PointA.Y) / (Resolution.ScaleRatio * Camera.Zoom) +
+                        ((int)MathHelper.Min(PointB.Y, PointA.Y) / (Resolution.ScaleRatio * Camera.Zoom) +
                          Camera.VectorPosition.Y);
                 _selectionSpace.Width =
                     (int)((int)Math.Abs(PointB.X - PointA.X) / (Resolution.ScaleRatio * Camera.Zoom));

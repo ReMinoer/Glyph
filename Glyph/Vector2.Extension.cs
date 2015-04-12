@@ -16,12 +16,12 @@ namespace Glyph
             Vector2 norm = Vector2.Normalize(value);
 
             if (norm.Y >= 0)
-                result = -(float)Math.Asin(norm.X) + (float)Math.PI;
+                result = -(float)Math.Asin(norm.X) + MathHelper.Pi;
             else
                 result = (float)Math.Asin(norm.X);
 
-            result += (float)(2 * Math.PI);
-            result %= (float)(2 * Math.PI);
+            result += MathHelper.TwoPi;
+            result %= MathHelper.TwoPi;
 
             return result;
         }
