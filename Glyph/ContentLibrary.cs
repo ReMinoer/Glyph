@@ -109,7 +109,7 @@ namespace Glyph
         public void AddMusic(string path, ContentManager content)
         {
             string asset = path.Replace(".xnb", "");
-            //_musics.Add(asset.Substring(asset.LastIndexOf('\\') + 1), content.Load<Song>(path));
+            _musics.Add(asset.Substring(asset.LastIndexOf('\\') + 1), content.Load<Song>(path));
         }
 
         public Song GetMusic(string asset)
