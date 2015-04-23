@@ -9,16 +9,17 @@
 ////THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////
 
-using Diese.Debug;
-using Glyph.Debug;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NLog;
 
 namespace Glyph
 {
     // WATCH : Viewport improvement behaviour
     static public class Resolution
     {
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         static private GraphicsDeviceManager _device;
         static private GameWindow _window;
         static private int _windowWidth = 800;
@@ -89,9 +90,8 @@ namespace Glyph
             UpdateResolution();
             _dirtyMatrix = true;
 
-            Log.Message(
-                string.Format("Virtual resolution changed (Width:{0},Height:{1},Ratio:{2})", _virtualWidth,
-                    _virtualHeight, GetVirtualAspectRatio().ToString("F2")), LogTagGlyph.System);
+            Logger.Info("Virtual resolution changed (Width:{0},Height:{1},Ratio:{2})", _virtualWidth,
+                    _virtualHeight, GetVirtualAspectRatio().ToString("F2"));
         }
 
         static public void ToogleFullscreen()
@@ -209,10 +209,8 @@ namespace Glyph
 
             _currentlyResizing = false;
 
-            Log.Message(
-                string.Format("Window resized (Width:{0},Height:{1},Ratio:{2},Fullscreen:{3})", _windowWidth,
-                    _windowHeight, ((double)_windowWidth / _windowHeight).ToString("F2"), FullScreen),
-                LogTagGlyph.System);
+            Logger.Info("Window resized (Width:{0},Height:{1},Ratio:{2},Fullscreen:{3})", _windowWidth,
+                    _windowHeight, ((double)_windowWidth / _windowHeight).ToString("F2"), FullScreen);
         }
 
         static private void UpdateResolution()

@@ -34,6 +34,9 @@
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.3.2.0.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -51,10 +54,6 @@
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
       <Project>{46aa8a4b-5a43-45f3-99e4-b7bad0d47fea}</Project>
       <Name>Glyph.Audio</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Debug\Glyph.Debug.csproj">
-      <Project>{010B6D8D-A0B0-4E8C-A923-A08BBF891A76}</Project>
-      <Name>Glyph.Debug</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
       <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>

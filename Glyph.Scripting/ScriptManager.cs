@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Diese.Debug;
 using Diese.Lua;
 using Diese.Lua.Properties;
-using Glyph.Debug;
 using Glyph.Entities;
 using Glyph.Localization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NLog;
 using NLua;
 
 namespace Glyph.Scripting
 {
     public abstract class ScriptManager
     {
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly LanguageFile _languageFile;
         private readonly Dictionary<string, Dictionary<string, LuaFunction>> _luaFunctions;
         protected readonly Lua Lua;
@@ -108,7 +109,7 @@ namespace Glyph.Scripting
             if (scriptName != null)
                 _luaFunctions.Add(scriptName, scriptFunctions);
 
-            Log.Message(string.Format("Script loaded : {0}", path), LogTagGlyph.GameEvent);
+            Logger.Info("Script loaded : {0}", path);
         }
 
         public void Update(GameTime gameTime, GameObject entity)
@@ -126,9 +127,9 @@ namespace Glyph.Scripting
                 LuaCoroutineResult result = pair.Value;
 
                 if (result.ToString() != "" && result.ErrorMessage != "cannot resume dead coroutine")
-                    Log.Message(string.Format("{0} > {1}", functionName, result), LogTagGlyph.Error);
+                    Logger.Error("{0} > {1}", functionName, result);
                 else if (Lua.StatusCoroutine(functionName) == LuaCoroutineStatus.Dead && result.IsValid)
-                    Log.Message(string.Format("{0} > finished", functionName), LogTagGlyph.Script);
+                    Logger.Info("{0} > finished", functionName);
             }
         }
 
@@ -153,7 +154,7 @@ namespace Glyph.Scripting
             if (_luaFunctions.ContainsKey(scriptName) && _luaFunctions[scriptName].ContainsKey(functionName))
             {
                 Lua.CreateCoroutine(_luaFunctions[scriptName][functionName], scriptName + "." + functionName);
-                Log.Message(string.Format("{0} > triggered", scriptName + "." + functionName), LogTagGlyph.Script);
+                Logger.Info("{0} > triggered", scriptName + "." + functionName);
             }
         }
     }

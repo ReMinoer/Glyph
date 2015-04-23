@@ -35,8 +35,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Modelization", "Exter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Serialization", "External\Diese\Diese.Serialization\Diese.Serialization.csproj", "{4AE2D764-4161-453D-8B2D-BD66607EC27A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Debug", "Glyph.Debug\Glyph.Debug.csproj", "{A674BFDF-5C79-4258-BC00-931C571E1F10}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F31F1E89-B248-4F40-9C3A-8AF372451E40}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -143,12 +141,6 @@ Global
 		{4AE2D764-4161-453D-8B2D-BD66607EC27A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4AE2D764-4161-453D-8B2D-BD66607EC27A}.Windows|Any CPU.ActiveCfg = Release|Any CPU
 		{4AE2D764-4161-453D-8B2D-BD66607EC27A}.Windows|Any CPU.Build.0 = Release|Any CPU
-		{A674BFDF-5C79-4258-BC00-931C571E1F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A674BFDF-5C79-4258-BC00-931C571E1F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A674BFDF-5C79-4258-BC00-931C571E1F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A674BFDF-5C79-4258-BC00-931C571E1F10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A674BFDF-5C79-4258-BC00-931C571E1F10}.Windows|Any CPU.ActiveCfg = Release|Any CPU
-		{A674BFDF-5C79-4258-BC00-931C571E1F10}.Windows|Any CPU.Build.0 = Release|Any CPU
 		{E2707575-12C2-4CE6-B8E4-E7EFD8D4E301}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E2707575-12C2-4CE6-B8E4-E7EFD8D4E301}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2707575-12C2-4CE6-B8E4-E7EFD8D4E301}.Release|Any CPU.ActiveCfg = Release|Any CPU

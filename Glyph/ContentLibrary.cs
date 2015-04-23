@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Diese.Debug;
-using Glyph.Debug;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using NLog;
 
 namespace Glyph
 {
     public class ContentLibrary
     {
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly Dictionary<string, Effect> _effects;
         private readonly Dictionary<string, SpriteFont> _fonts;
         private readonly Dictionary<string, Song> _musics;
@@ -67,8 +68,7 @@ namespace Glyph
                     AddTexture(s.Replace("Content\\", ""), content);
 
                 stopwatch.Stop();
-                Log.Message(string.Format("Loaded {0} ({1}s)", s, stopwatch.Elapsed.ToString(@"s\.fff")),
-                    LogTagGlyph.LoadedContent);
+                Logger.Info("Loaded {0} ({1}s)", s, stopwatch.Elapsed.ToString(@"s\.fff"));
                 stopwatch.Reset();
             }
         }

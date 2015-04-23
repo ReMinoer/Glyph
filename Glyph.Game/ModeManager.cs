@@ -1,10 +1,11 @@
-﻿using Diese.Debug;
-using Glyph.Debug;
+﻿using NLog;
 
 namespace Glyph.Game
 {
     public class ModeManager<TState>
     {
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private bool _isChange;
         private TState _state;
 
@@ -18,14 +19,14 @@ namespace Glyph.Game
 
                 _state = value;
                 _isChange = true;
-                Log.Message("Current mode : " + State, LogTagGlyph.GameEvent);
+                Logger.Info("Current mode : " + State);
             }
         }
 
         public void Initialize(TState state)
         {
             _state = state;
-            Log.Message("Current mode : " + State, LogTagGlyph.GameEvent);
+            Logger.Info("Current mode : " + State);
         }
 
         public bool HasChange()

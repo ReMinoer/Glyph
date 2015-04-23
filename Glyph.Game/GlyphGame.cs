@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using Diese.Debug;
 using Glyph.Audio;
-using Glyph.Debug;
 using Glyph.Input;
 using Glyph.Input.StandardActions;
 using Glyph.Tools;
@@ -12,11 +11,14 @@ using Glyph.Tools.StatusDisplayChannels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using NLog;
 
 namespace Glyph.Game
 {
     public abstract class GlyphGame<TMode> : Microsoft.Xna.Framework.Game
     {
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private CultureInfo _culture;
         private Viewport _defaultViewport;
         private bool _synchroVertical;
@@ -37,7 +39,7 @@ namespace Glyph.Game
             set
             {
                 _culture = value;
-                Log.Message("Current culture : " + _culture.EnglishName, LogTagGlyph.System);
+                Logger.Info("Current culture : " + _culture.EnglishName);
             }
         }
 
@@ -58,10 +60,8 @@ namespace Glyph.Game
 
         protected GlyphGame(string[] args)
         {
-            Log.Instantiate(true);
-            Log.Message("Start game", LogTagGlyph.System);
-            Log.Message("Launch arguments : " + (args.Any() ? args.Aggregate((x, y) => x + " " + y) : ""),
-                LogTagGlyph.System);
+            Logger.Info("Start game");
+            Logger.Info("Launch arguments : " + (args.Any() ? args.Aggregate((x, y) => x + " " + y) : ""));
 
             Graphics = new GraphicsDeviceManager(this);
 

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Diese.Debug;
-using Glyph.Debug;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
+using NLog;
 
 namespace Glyph.Audio
 {
     static public class AudioManager
     {
         // TODO : Finaliser et tester le manager audio (controle volume, plusieurs effets,...)
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         static public Dictionary<string, Song> Musics;
         static private Dictionary<string, SoundEffect> _sounds;
         static private Dictionary<string, SoundCollection> _soundCollections;
@@ -99,7 +100,7 @@ namespace Glyph.Audio
                         MediaPlayer.Volume = _volumeFondu * Volume;
                         MediaPlayer.Play(Musics[NextSong]);
                         ActualSong = NextSong;
-                        Log.Message(string.Format("Now playing song : {0}", ActualSong), LogTagGlyph.System);
+                        Logger.Info("Now playing song : {0}", ActualSong);
                     }
                     _transitionState = AudioTransitionState.Ready;
                     break;
