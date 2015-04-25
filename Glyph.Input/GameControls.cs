@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Xml.Serialization;
-using Glyph.Xml;
+﻿using Diese.Serialization;
 
 namespace Glyph.Input
 {
@@ -14,20 +12,14 @@ namespace Glyph.Input
 
         public void SaveXml(string filename)
         {
-            var file = new StreamWriter(filename);
-            var serializer = new XmlSerializer(typeof(GameControls));
-            serializer.Serialize(file, this);
-            file.Close();
+            var serializer = new SerializerXml<GameControls>();
+            serializer.Save(this, filename);
         }
 
         static public GameControls LoadXml(string filename)
         {
-            var stream = new StreamReader(filename);
-            var serializer = new XmlSerializer(typeof(GameControls));
-            var controls = (GameControls)serializer.Deserialize(stream);
-
-            stream.Close();
-            return controls;
+            var serializer = new SerializerXml<GameControls>();
+            return serializer.Instantiate(filename);
         }
     }
 }

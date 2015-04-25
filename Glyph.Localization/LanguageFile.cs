@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
-using Glyph.Xml;
+using Diese.Serialization;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Localization
@@ -38,11 +38,8 @@ namespace Glyph.Localization
 
         static public LanguageFile Load(CultureInfo culture, string directory = "")
         {
-            var sr = new StreamReader(directory + culture.Name + FileExtension);
-            var serializer = new XmlSerializer(typeof(LanguageFile));
-            var result = (LanguageFile)serializer.Deserialize(sr);
-            sr.Close();
-            return result;
+            var serializer = new SerializerXml<LanguageFile>();
+            return serializer.Instantiate(directory + culture.Name + FileExtension);
         }
 
         public void LoadLevelEditorText(string path)
@@ -69,13 +66,8 @@ namespace Glyph.Localization
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            var sw =
-                new StreamWriter(
-                    new FileStream(directory + culture.Name + FileExtension, FileMode.OpenOrCreate, FileAccess.ReadWrite),
-                    Encoding.UTF8);
-            var serializer = new XmlSerializer(typeof(LanguageFile));
-            serializer.Serialize(sw, this);
-            sw.Close();
+            var serializer = new SerializerXml<LanguageFile>();
+            serializer.Save(this, directory + culture.Name + FileExtension);
         }
     }
 }

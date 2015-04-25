@@ -74,12 +74,6 @@
     <Compile Include="Transition\TransitionVector3.cs" />
     <Compile Include="Transition\TransitionVector4.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Debug\Diese.Debug.csproj">
-      <Project>{cf81f12f-4efa-4a26-9853-df86973533ce}</Project>
-      <Name>Diese.Debug</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

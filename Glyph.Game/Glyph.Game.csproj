@@ -47,10 +47,6 @@
     <Compile Include="ModeManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Debug\Diese.Debug.csproj">
-      <Project>{cf81f12f-4efa-4a26-9853-df86973533ce}</Project>
-      <Name>Diese.Debug</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
       <Project>{46aa8a4b-5a43-45f3-99e4-b7bad0d47fea}</Project>
       <Name>Glyph.Audio</Name>

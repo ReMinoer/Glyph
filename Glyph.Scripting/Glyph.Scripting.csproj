@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="KeraLua">
-      <HintPath>..\..\..\packages\NLua.1.3.2.1\lib\net45\KeraLua.dll</HintPath>
-    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
@@ -56,13 +53,13 @@
     <Compile Include="TriggerZone.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Debug\Diese.Debug.csproj">
-      <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
-      <Name>Diese.Debug</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Lua\Diese.Lua.csproj">
       <Project>{e2707575-12c2-4ce6-b8e4-e7efd8d4e301}</Project>
       <Name>Diese.Lua</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Serialization\Diese.Serialization.csproj">
+      <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
+      <Name>Diese.Serialization</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Entities\Glyph.Entities.csproj">
       <Project>{729CF52C-D06C-42FD-A2EE-6C19E07D185F}</Project>
@@ -71,10 +68,6 @@
     <ProjectReference Include="..\Glyph.Localization\Glyph.Localization.csproj">
       <Project>{1F7A7855-3E63-45CD-907A-D23AA61A02D2}</Project>
       <Name>Glyph.Localization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Xml\Glyph.Xml.csproj">
-      <Project>{3CDC6986-8651-4080-99D6-CC0DEAFDF6AE}</Project>
-      <Name>Glyph.Xml</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
