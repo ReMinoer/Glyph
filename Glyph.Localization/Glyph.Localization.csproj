@@ -43,6 +43,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
+      <Project>{0781ad0f-eb0f-442e-9a1c-34c2aa9319fd}</Project>
+      <Name>Diese.Modelization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Serialization\Diese.Serialization.csproj">
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
       <Name>Diese.Serialization</Name>

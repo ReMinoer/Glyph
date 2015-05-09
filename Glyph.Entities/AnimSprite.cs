@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
+using Diese.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -10,7 +11,7 @@ namespace Glyph.Entities
         [XmlIgnore]
         public Texture2DSplit TextureSplit { get; set; }
 
-        public Dictionary<string, Animation> Animations { get; set; }
+        public SerializableDictionary<string, Animation> Animations { get; set; }
         public virtual Point NbFrames { get; set; }
         public string CurrentAnimation { get; set; }
 
@@ -76,7 +77,7 @@ namespace Glyph.Entities
         public AnimSprite()
         {
             TextureSplit = new Texture2DSplit();
-            Animations = new Dictionary<string, Animation> {{"defaut", Animation.Default}};
+            Animations = new SerializableDictionary<string, Animation>{{"defaut", Animation.Default}};
             CurrentAnimation = "defaut";
         }
 

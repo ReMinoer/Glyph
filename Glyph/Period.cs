@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 
 namespace Glyph
@@ -6,7 +7,9 @@ namespace Glyph
     public class Period
     {
         public int Interval { get; set; }
+        [XmlIgnore]
         public float ElapsedTime { get; private set; }
+        [XmlIgnore]
         public bool IsEnd { get; private set; }
 
         public float TimeLeft
