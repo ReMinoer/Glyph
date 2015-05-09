@@ -6,16 +6,43 @@ namespace Glyph.Entities
 {
     public class Sprite
     {
-        public virtual string Asset { get; set; }
+        public virtual string Asset
+        {
+            get { return _asset; }
+            set { _asset = value; }
+        }
+
         public virtual Vector2 Position { get; set; }
         public virtual Vector2 Direction { get; set; }
         public virtual float Speed { get; set; }
-        public virtual Color Color { get; set; }
-        public virtual float Opacity { get; set; }
+
+        public virtual Color Color
+        {
+            get { return _color; }
+            set { _color = value; }
+        }
+
+        public virtual float Opacity
+        {
+            get { return _opacity; }
+            set { _opacity = value; }
+        }
+
         public virtual float Rotation { get; set; }
-        public virtual float Scale { get; set; }
+
+        public virtual float Scale
+        {
+            get { return _scale; }
+            set { _scale = value; }
+        }
+
         public virtual Vector2 Origin { get; set; }
         public virtual SpriteEffects SpriteEffect { get; set; }
+
+        private Color _color = Color.White;
+        private float _opacity = 1f;
+        private float _scale = 1f;
+        private string _asset = "";
 
         [XmlIgnore]
         public virtual Texture2D Texture { get; set; }
@@ -73,15 +100,6 @@ namespace Glyph.Entities
 
         public virtual void Initialize()
         {
-            Asset = "";
-            Position = Vector2.Zero;
-            Direction = Vector2.Zero;
-            Speed = 0;
-            Color = Color.White;
-            Opacity = 1f;
-            Origin = Vector2.Zero;
-            Rotation = 0;
-            Scale = 1;
         }
 
         public virtual void LoadContent(ContentLibrary ressources)

@@ -20,6 +20,13 @@ namespace Glyph.UI.Menus
             Buttons = new List<Button>();
         }
 
+        public virtual void Initialize()
+        {
+            Selection = -1;
+            foreach (Button button in Buttons)
+                button.Initialize();
+        }
+
         public virtual void Add(Button button)
         {
             Buttons.Add(button);
@@ -30,13 +37,6 @@ namespace Glyph.UI.Menus
         {
             foreach (Button button in buttons)
                 Add(button);
-        }
-
-        public virtual void Reset()
-        {
-            Selection = -1;
-            foreach (Button button in Buttons)
-                button.Reset();
         }
 
         public virtual void LoadContent(ContentLibrary content)

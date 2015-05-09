@@ -8,7 +8,18 @@ namespace Glyph.UI.Controls
     public class Button : TextSprite, IHandleInput
     {
         public bool Enable { get; set; }
-        public virtual Padding Padding { get; set; }
+        public Padding Padding { get; set; }
+
+        public override sealed string Text
+        {
+            get { return base.Text; }
+            set { base.Text = value; }
+        }
+        public override sealed Vector2 Position
+        {
+            get { return base.Position; }
+            set { base.Position = value; }
+        }
 
         public override Rectangle Hitbox
         {
@@ -19,20 +30,19 @@ namespace Glyph.UI.Controls
         public event EventHandler Hover;
         public event EventHandler Leave;
 
+        public Button()
+        {
+        }
+
+        public Button(string txt, int x, int y)
+        {
+            Text = txt;
+            Position = new Vector2(x,y);
+        }
+
         public override void Initialize()
         {
             base.Initialize();
-            Reset();
-        }
-
-        public override void Initialize(string txt, int x, int y)
-        {
-            base.Initialize(txt, x, y);
-            Reset();
-        }
-
-        public virtual void Reset()
-        {
             Enable = false;
         }
 

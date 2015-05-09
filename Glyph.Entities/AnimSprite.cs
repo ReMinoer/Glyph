@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 using Diese.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -86,7 +85,6 @@ namespace Glyph.Entities
             base.Initialize();
 
             CurrentFrame = 0;
-            SpriteEffect = SpriteEffects.None;
         }
 
         public override void LoadContent(ContentLibrary ressources)

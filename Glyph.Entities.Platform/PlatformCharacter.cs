@@ -56,14 +56,12 @@ namespace Glyph.Entities.Platform
             }
         }
 
-        public virtual void Initialize(int x, int y, int layer)
+        public override void Initialize()
         {
             base.Initialize();
 
             VerticalSpeed = 0;
             OnGround = false;
-            Position = new Vector2(x, y);
-            Layer = layer;
             Orientation = Orientation.Right;
         }
 

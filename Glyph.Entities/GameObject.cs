@@ -25,13 +25,6 @@ namespace Glyph.Entities
             PixelData = new List<Color[]>();
         }
 
-        public override void Initialize()
-        {
-            base.Initialize();
-            Depth = 0;
-            Orientation = Orientation.Down;
-        }
-
         public override void LoadContent(ContentLibrary ressources)
         {
             LoadContent(ressources, Asset);

@@ -7,17 +7,32 @@ namespace Glyph.UI
 {
     public class TextSprite : Sprite
     {
+
         [XmlIgnore]
         public virtual SpriteFont Font { get; set; }
 
         public virtual string Text { get; set; }
         public virtual int Contour { get; set; }
-        public virtual Color ContourColor { get; set; }
         public virtual float ContourOpacity { get; set; }
+
+        public virtual Color ContourColor
+        {
+            get { return _contourColor; }
+            set { _contourColor = value; }
+        }
+
         public virtual Vector2 Shadow { get; set; }
-        public virtual Color ShadowColor { get; set; }
         public virtual float ShadowOpacity { get; set; }
         public virtual int ShadowGradient { get; set; }
+
+        public virtual Color ShadowColor
+        {
+            get { return _shadowColor; }
+            set { _shadowColor = value; }
+        }
+
+        private Color _contourColor = Color.Black;
+        private Color _shadowColor = Color.Black;
 
         [XmlIgnore]
         public override Rectangle RectangleSource
@@ -34,27 +49,17 @@ namespace Glyph.UI
             }
         }
 
+        public TextSprite()
+        {
+            Text = "";
+        }
+
         public override void Initialize()
         {
             base.Initialize();
 
-            Text = "";
-
-            Contour = 0;
-            ContourColor = Color.Black;
             ContourOpacity = Opacity;
-
-            Shadow = Vector2.Zero;
-            ShadowColor = Color.Black;
-            ShadowGradient = 0;
             ShadowOpacity = Opacity;
-        }
-
-        public virtual void Initialize(string txt, int x, int y)
-        {
-            Initialize();
-            Text = txt;
-            Position = new Vector2(x, y);
         }
 
         public override void LoadContent(ContentLibrary ressources)
