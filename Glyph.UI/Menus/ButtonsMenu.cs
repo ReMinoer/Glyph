@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glyph.Input;
-using Glyph.Input.StandardActions;
+using Glyph.Input.StandardInputs;
 using Glyph.UI.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.UI.Menus
 {
-    public class ButtonsMenu : IHandleInput
+    public class ButtonsMenu
     {
         public List<Button> Buttons { get; set; }
         public int Selection { get; set; }
@@ -74,9 +74,9 @@ namespace Glyph.UI.Menus
                     Selection = DefaultSelection;
                 else
                 {
-                    if (input.IsActionDownNow(MenuActions.Up))
+                    if (input[MenuInputs.Up])
                         Selection--;
-                    else if (input.IsActionDownNow(MenuActions.Down))
+                    else if (input[MenuInputs.Down])
                         Selection++;
 
                     if (Selection < 0)
@@ -93,7 +93,7 @@ namespace Glyph.UI.Menus
             foreach (Button bouton in Buttons)
                 bouton.HandleInput(input);
 
-            if (input.IsActionDownNow(MenuActions.Cancel))
+            if (input[MenuInputs.Cancel])
                 ButtonOnActivated(DefaultSelection);
         }
 

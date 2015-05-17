@@ -1,4 +1,7 @@
-﻿using Glyph.Input.StandardActions;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Glyph.Input.StandardInputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -6,113 +9,106 @@ namespace Glyph.Input
 {
     public class InputManager
     {
-        public PlayerIndex PlayerIndex { get; private set; }
         public GameControls Controls { get; set; }
-        public KeyboardState Keyboard { get; private set; }
-        public MouseState Mouse { get; private set; }
-        public GamePadState GamePad { get; private set; }
-        public KeyboardState LastKeyboard { get; private set; }
-        public MouseState LastMouse { get; private set; }
-        public GamePadState LastGamePad { get; private set; }
-        public bool IsGamePadUsed { get; set; }
-        public bool IsMouseUsed { get; set; }
+        public KeyboardState KeyboardState { get; private set; }
+        public MouseState MouseState { get; private set; }
+        public bool IsGamePadUsed { get; private set; }
+        public bool IsMouseUsed { get; private set; }
 
-        public bool IsClicDownNow
+        public ReadOnlyDictionary<PlayerIndex, GamePadState> GamePadStates
         {
-            get { return Mouse.LeftButton == ButtonState.Pressed && LastMouse.LeftButton != ButtonState.Pressed; }
+            get { return new ReadOnlyDictionary<PlayerIndex, GamePadState>(_gamePadStates); }
         }
 
-        public bool IsClicUpNow
+        public Vector2 MouseInWindow
         {
-            get { return Mouse.LeftButton == ButtonState.Released && LastMouse.LeftButton != ButtonState.Released; }
+            get { return new Vector2(MouseState.X, MouseState.Y) - Resolution.WindowMargin; }
         }
 
-        public Vector2 MouseWindow
+        public Vector2 MouseInScreen
         {
-            get { return new Vector2(Mouse.X, Mouse.Y) - Resolution.WindowMargin; }
+            get { return MouseInWindow / Resolution.ScaleRatio; }
         }
 
-        public Vector2 MouseScreen
-        {
-            get { return MouseWindow / Resolution.ScaleRatio; }
-        }
-
-        public Vector2 MouseSpace
+        public Vector2 MouseInSpace
         {
             get
             {
-                return MouseWindow / (Resolution.ScaleRatio * Camera.Zoom)
+                return MouseInWindow / (Resolution.ScaleRatio * Camera.Zoom)
                        + new Vector2(Camera.VectorPosition.X, Camera.VectorPosition.Y);
             }
         }
 
-        public InputManager(PlayerIndex index)
+        private readonly Dictionary<PlayerIndex, GamePadState> _gamePadStates;
+        private readonly PlayerIndex[] _padPlayerIndexes;
+
+        public InputManager()
         {
-            PlayerIndex = index;
             IsGamePadUsed = false;
             IsMouseUsed = false;
 
-            Controls = new GameControls {new DeveloperActions()};
+            _gamePadStates = new Dictionary<PlayerIndex, GamePadState>();
+            _padPlayerIndexes = Enum.GetValues(typeof(PlayerIndex)) as PlayerIndex[];
+
+            if (_padPlayerIndexes != null)
+                foreach (PlayerIndex playerIndex in _padPlayerIndexes)
+                    _gamePadStates[playerIndex] = new GamePadState();
+
+            Controls = new GameControls {new DeveloperInputs()};
         }
 
         public void Update(bool isGameActive)
         {
             if (isGameActive)
             {
-                LastKeyboard = Keyboard;
-                LastMouse = Mouse;
-                LastGamePad = GamePad;
-
-                Keyboard = Microsoft.Xna.Framework.Input.Keyboard.GetState();
-                Mouse = Microsoft.Xna.Framework.Input.Mouse.GetState();
-                GamePad = Microsoft.Xna.Framework.Input.GamePad.GetState(PlayerIndex);
-
-                if (GamePad != LastGamePad)
-                {
-                    IsGamePadUsed = true;
-                    IsMouseUsed = false;
-                }
-                else if (Keyboard != LastKeyboard)
-                {
-                    IsGamePadUsed = false;
-                    IsMouseUsed = false;
-                }
-                else if (Mouse != LastMouse)
-                {
-                    IsGamePadUsed = false;
-                    IsMouseUsed = true;
-                }
+                KeyboardState = Keyboard.GetState();
+                MouseState = Mouse.GetState();
+                foreach (PlayerIndex playerIndex in _padPlayerIndexes)
+                    _gamePadStates[playerIndex] = GamePad.GetState(playerIndex);
             }
             else
             {
-                LastKeyboard = new KeyboardState();
-                LastMouse = new MouseState();
-                LastGamePad = new GamePadState();
+                KeyboardState = new KeyboardState();
+                MouseState = new MouseState();
+                foreach (PlayerIndex playerIndex in _padPlayerIndexes)
+                    _gamePadStates[playerIndex] = new GamePadState();
+            }
 
-                Keyboard = new KeyboardState();
-                Mouse = new MouseState();
-                GamePad = new GamePadState();
+            foreach (IInputHandler inputHandler in Controls.Values)
+                inputHandler.Update(this);
+        }
+
+        public bool this[string name]
+        {
+            get
+            {
+                if (!Controls.ContainsKey(name))
+                    return false;
+
+                if (Controls[name].IsTriggered)
+                    RefreshDeviceUsage(Controls[name].InputSource);
+
+                return Controls[name].IsTriggered;
             }
         }
 
-        public bool IsActionPressed(string name)
+        private void RefreshDeviceUsage(InputSource inputSource)
         {
-            return Controls.ContainsKey(name) && Controls[name].IsPressed(this);
-        }
-
-        public bool IsActionDownNow(string name)
-        {
-            return Controls.ContainsKey(name) && Controls[name].IsDownNow(this);
-        }
-
-        public bool IsKeyDownNow(Keys key)
-        {
-            return Keyboard.IsKeyDown(key) && !LastKeyboard.IsKeyDown(key);
-        }
-
-        public bool IsKeyUpNow(Keys key)
-        {
-            return Keyboard.IsKeyUp(key) && !LastKeyboard.IsKeyUp(key);
+            if (inputSource == InputSource.GamePad)
+            {
+                IsGamePadUsed = true;
+                IsMouseUsed = false;
+            }
+            else if (inputSource == InputSource.Keyboard)
+            {
+                IsGamePadUsed = false;
+                IsMouseUsed = false;
+            }
+            else if (inputSource == InputSource.Mouse)
+            {
+                IsGamePadUsed = false;
+                IsMouseUsed = true;
+            }
         }
     }
 }

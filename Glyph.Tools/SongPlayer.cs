@@ -1,6 +1,6 @@
 ﻿using Glyph.Audio;
 using Glyph.Input;
-using Glyph.Input.StandardActions;
+using Glyph.Input.StandardInputs;
 using Microsoft.Xna.Framework.Media;
 
 namespace Glyph.Tools
@@ -9,7 +9,7 @@ namespace Glyph.Tools
     {
         static public void HandleInput(InputManager input)
         {
-            if (input.IsActionDownNow(DeveloperActions.ToogleSong))
+            if (input[DeveloperInputs.ToogleSong])
                 switch (MediaPlayer.State)
                 {
                     case MediaState.Playing:
@@ -20,10 +20,10 @@ namespace Glyph.Tools
                         break;
                 }
 
-            if (input.IsActionDownNow(DeveloperActions.PreviousSong))
+            if (input[DeveloperInputs.PreviousSong])
                 AudioManager.Previous();
 
-            if (input.IsActionDownNow(DeveloperActions.NextSong))
+            if (input[DeveloperInputs.NextSong])
                 AudioManager.Next();
         }
     }

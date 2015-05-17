@@ -1,6 +1,6 @@
 ﻿using System;
 using Glyph.Input;
-using Glyph.Input.StandardActions;
+using Glyph.Input.StandardInputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -80,13 +80,13 @@ namespace Glyph.Tools
 
         static public void HandleInput(InputManager input)
         {
-            if (input.IsActionDownNow(DeveloperActions.StatusDisplay))
+            if (input[DeveloperInputs.StatusDisplay])
                 Active = !Active;
 
             if (!Active)
                 return;
 
-            Position = new Vector2(input.Mouse.X, input.Mouse.Y);
+            Position = new Vector2(input.MouseState.X, input.MouseState.Y);
 
             if (Position.X < 0)
                 Position = Position.SetX(0);
@@ -97,14 +97,14 @@ namespace Glyph.Tools
             if (Position.Y >= Resolution.Size.Y - 1)
                 Position = Position.SetY(Resolution.Size.Y - 1);
 
-            if (input.IsClicDownNow)
+            if (input[DeveloperInputs.Clic])
             {
                 PointA = Position;
                 PointB = Position;
             }
-            else if (input.IsClicUpNow)
+            else if (input[DeveloperInputs.ClicRelease])
                 PointB = Position;
-            else if (input.Mouse.LeftButton == ButtonState.Pressed)
+            else if (input.MouseState.LeftButton == ButtonState.Pressed)
                 PointB = Position;
         }
 

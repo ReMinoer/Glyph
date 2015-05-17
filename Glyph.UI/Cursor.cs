@@ -43,7 +43,7 @@ namespace Glyph.UI
             if (!Enable || !_isMouseUsed)
                 return;
 
-            Position = input.MouseWindow;
+            Position = input.MouseInWindow;
         }
 
         static public void Draw(SpriteBatch spriteBatch)

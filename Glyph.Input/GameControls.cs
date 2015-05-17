@@ -1,25 +1,27 @@
-﻿using Diese.Serialization;
+﻿using System.Collections.Generic;
+using Diese.Serialization;
+using Glyph.Input.Handlers;
 
 namespace Glyph.Input
 {
-    public class GameControls : SerializableDictionary<string, IActionButton>
+    public class GameControls : SerializableDictionary<string, IInputHandler>
     {
-        public void Add(ActionsCollection actions)
+        public void Add(IEnumerable<IInputHandler> inputHandlers)
         {
-            foreach (IActionButton action in actions)
-                Add(action.Name, action);
+            foreach (IInputHandler inputHandler in inputHandlers)
+                Add(inputHandler.Name, inputHandler);
         }
 
-        public void SaveXml(string filename)
+        public static GameControls Load(string path)
         {
-            var serializer = new SerializerXml<GameControls>();
-            serializer.Save(this, filename);
+            var serializerXml = new SerializerXml<GameControls>();
+            return serializerXml.Instantiate(path);
         }
 
-        static public GameControls LoadXml(string filename)
+        public void Save(string path)
         {
-            var serializer = new SerializerXml<GameControls>();
-            return serializer.Instantiate(filename);
+            var serializerXml = new SerializerXml<GameControls>();
+            serializerXml.Save(this, path);
         }
     }
 }

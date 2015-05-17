@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Glyph.Audio;
 using Glyph.Input;
-using Glyph.Input.StandardActions;
+using Glyph.Input.StandardInputs;
 using Glyph.Tools;
 using Glyph.Tools.StatusDisplayChannels;
 using Microsoft.Xna.Framework;
@@ -76,7 +76,7 @@ namespace Glyph.Game
             Content.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
 
-            InputManager = new InputManager(PlayerIndex.One);
+            InputManager = new InputManager();
 
             ModeManager = new ModeManager<TMode>();
             Modes = new Dictionary<TMode, IGameMode>();
@@ -149,14 +149,14 @@ namespace Glyph.Game
             if (!IsFocus)
                 return;
 
-            if (InputManager.IsActionDownNow(DeveloperActions.Mute))
+            if (InputManager[DeveloperInputs.Mute])
                 MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
 
-            if (InputManager.IsActionDownNow(DeveloperActions.XboxQuit))
+            if (InputManager[DeveloperInputs.XboxQuit])
                 Exit();
 
 #if WINDOWS
-            if (InputManager.IsActionDownNow(DeveloperActions.Fullscreen))
+            if (InputManager[DeveloperInputs.Fullscreen])
                 Resolution.ToogleFullscreen();
 #endif
 

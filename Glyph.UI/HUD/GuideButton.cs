@@ -2,7 +2,9 @@
 using System.Linq;
 using Glyph.Entities;
 using Glyph.Input;
-using Glyph.Input.StandardActions;
+using Glyph.Input.Handlers;
+using Glyph.Input.Handlers.Buttons;
+using Glyph.Input.StandardInputs;
 using Glyph.Transition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +12,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Glyph.UI.HUD
 {
-    public class GuideButton : Sprite, IHandleInput
+    public class GuideButton : Sprite
     {
         private readonly bool _clickable;
         private readonly Vector2 _keyPadding = new Vector2(20, 50);
@@ -88,9 +90,23 @@ namespace Glyph.UI.HUD
 
         public void GetKeyName(InputManager input)
         {
-            var actionButton = input.Controls[ActionButtonName] as ActionButton;
-            if (actionButton != null && actionButton.Keys.Any())
-                TextSprite.Text = Enum.GetName(typeof(Keys), actionButton.Keys[0]);
+            KeyHandler keyHandler;
+
+            var inputHandler = input.Controls[ActionButtonName];
+            if (inputHandler == null)
+                return;
+
+            if (inputHandler is KeyHandler)
+                keyHandler = (inputHandler as KeyHandler);
+            else if (inputHandler is InputComposite)
+                keyHandler = (inputHandler as InputComposite).GetComponentInChildren<KeyHandler>();
+            else
+                return;
+
+            if (keyHandler == null)
+                return;
+
+            TextSprite.Text = Enum.GetName(typeof(Keys), keyHandler.Key);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -116,8 +132,8 @@ namespace Glyph.UI.HUD
 
             if (_clickable)
             {
-                bool hover = Hitbox.Contains(input.MouseScreen.ToPoint());
-                if (hover && input.IsActionDownNow(MenuActions.Clic))
+                bool hover = Hitbox.Contains(input.MouseInScreen.ToPoint());
+                if (hover && input[MenuInputs.Clic])
                     if (Activated != null)
                         Activated(this, EventArgs.Empty);
             }

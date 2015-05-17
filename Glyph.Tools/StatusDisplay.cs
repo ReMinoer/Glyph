@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Glyph.Input;
-using Glyph.Input.StandardActions;
+using Glyph.Input.StandardInputs;
 using Glyph.Tools.StatusDisplayChannels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Tools
 {
-    public class StatusDisplay : IHandleInput
+    public class StatusDisplay
     {
         public bool Active { get; set; }
         public bool Visible { get; set; }
@@ -46,7 +46,7 @@ namespace Glyph.Tools
 
         public void HandleInput(InputManager input)
         {
-            if (input.IsActionDownNow(DeveloperActions.StatusDisplay))
+            if (input[DeveloperInputs.StatusDisplay])
                 Visible = !Visible;
         }
     }

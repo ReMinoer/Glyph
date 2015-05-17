@@ -1,11 +1,11 @@
 ﻿using System;
 using Glyph.Input;
-using Glyph.Input.StandardActions;
+using Glyph.Input.StandardInputs;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.UI.Controls
 {
-    public class Button : TextSprite, IHandleInput
+    public class Button : TextSprite
     {
         public bool Enable { get; set; }
         public Padding Padding { get; set; }
@@ -50,7 +50,7 @@ namespace Glyph.UI.Controls
         {
             if (input.IsMouseUsed)
             {
-                bool enable = Hitbox.Contains((int)input.MouseScreen.X, (int)input.MouseScreen.Y);
+                bool enable = Hitbox.Contains((int)input.MouseInScreen.X, (int)input.MouseInScreen.Y);
 
                 if (enable != Enable)
                 {
@@ -65,11 +65,11 @@ namespace Glyph.UI.Controls
 
             if (Enable)
             {
-                if (input.IsMouseUsed && input.IsActionDownNow(MenuActions.Clic))
+                if (input.IsMouseUsed && input[MenuInputs.Clic])
                     if (Activated != null)
                         Activated(this, EventArgs.Empty);
 
-                if (input.IsActionDownNow(MenuActions.Confirm))
+                if (input[MenuInputs.Confirm])
                     if (Activated != null)
                         Activated(this, EventArgs.Empty);
             }

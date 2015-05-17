@@ -39,15 +39,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionButton.cs" />
-    <Compile Include="ActionsCollection.cs" />
-    <Compile Include="CombinedActionButton.cs" />
-    <Compile Include="IHandleInput.cs" />
-    <Compile Include="StandardActions\DeveloperActions.cs" />
     <Compile Include="GameControls.cs" />
-    <Compile Include="IActionButton.cs" />
+    <Compile Include="Handlers\Axis\AxisHandler.cs" />
+    <Compile Include="Handlers\Axis\MouseWheelHandler.cs" />
+    <Compile Include="Handlers\Axis\PadTriggerHandler.cs" />
+    <Compile Include="Handlers\Axis\ThumbStickHandler.cs" />
+    <Compile Include="Handlers\Axis\ThumbStick.cs" />
+    <Compile Include="Handlers\Axis\Trigger.cs" />
+    <Compile Include="Handlers\Buttons\ButtonHandler.cs" />
+    <Compile Include="Handlers\Buttons\ButtonHandlerMode.cs" />
+    <Compile Include="Handlers\Buttons\KeyHandler.cs" />
+    <Compile Include="Handlers\Buttons\MouseButtonHandler.cs" />
+    <Compile Include="Handlers\Buttons\MouseButton.cs" />
+    <Compile Include="Handlers\Buttons\PadButtonHandler.cs" />
+    <Compile Include="IInputComposite.cs" />
+    <Compile Include="Composites\InputSimultaneous.cs" />
+    <Compile Include="InputHandler.cs" />
+    <Compile Include="InputComposite.cs" />
+    <Compile Include="InputSource.cs" />
+    <Compile Include="Composites\InputSet.cs" />
+    <Compile Include="IInputHandler.cs" />
+    <Compile Include="StandardInputs\DeveloperInputs.cs" />
     <Compile Include="InputManager.cs" />
-    <Compile Include="StandardActions\MenuActions.cs" />
+    <Compile Include="StandardInputs\MenuInputs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
