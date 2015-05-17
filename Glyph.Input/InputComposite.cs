@@ -52,14 +52,13 @@ namespace Glyph.Input
             var component = GetComponent<T>(includeItself);
             if (component != null)
                 return component;
-            
+
             foreach (IInputHandler inputHandler in this)
-                if (inputHandler is IInputComposite)
-                {
-                    T first = (inputHandler as IInputComposite).GetComponentInChildren<T>();
-                    if (first != null)
-                        return first;
-                }
+            {
+                T first = inputHandler.GetComponentInChildren<T>();
+                if (first != null)
+                    return first;
+            }
 
             return null;
         }
@@ -70,8 +69,7 @@ namespace Glyph.Input
             var result = GetAllComponents<T>(includeItself);
 
             foreach (IInputHandler inputHandler in this)
-                if (inputHandler is IInputComposite)
-                    result.AddRange((inputHandler as IInputComposite).GetAllComponentsInChildren<T>());
+                result.AddRange(inputHandler.GetAllComponentsInChildren<T>());
 
             return result;
         }
