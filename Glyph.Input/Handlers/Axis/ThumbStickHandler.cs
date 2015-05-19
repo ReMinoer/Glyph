@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Glyph.Input.Handlers.Axis
 {
@@ -14,7 +13,8 @@ namespace Glyph.Input.Handlers.Axis
             get { return InputSource.GamePad; }
         }
 
-        public ThumbStickHandler(string name, ThumbStick thumbStick, Glyph.Axis axis, PlayerIndex playerIndex = PlayerIndex.One)
+        public ThumbStickHandler(string name, ThumbStick thumbStick, Glyph.Axis axis,
+            PlayerIndex playerIndex = PlayerIndex.One)
             : base(name)
         {
             PlayerIndex = playerIndex;

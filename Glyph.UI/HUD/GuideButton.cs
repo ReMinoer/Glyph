@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Glyph.Entities;
 using Glyph.Input;
-using Glyph.Input.Handlers;
 using Glyph.Input.Handlers.Buttons;
 using Glyph.Input.StandardInputs;
 using Glyph.Transition;
@@ -90,19 +88,11 @@ namespace Glyph.UI.HUD
 
         public void GetKeyName(InputManager input)
         {
-            KeyHandler keyHandler;
-
             var inputHandler = input.Controls[ActionButtonName];
             if (inputHandler == null)
                 return;
 
-            if (inputHandler is KeyHandler)
-                keyHandler = (inputHandler as KeyHandler);
-            else if (inputHandler is InputComposite)
-                keyHandler = (inputHandler as InputComposite).GetComponentInChildren<KeyHandler>();
-            else
-                return;
-
+            var keyHandler = inputHandler.GetComponentInChildren<KeyHandler>(true);
             if (keyHandler == null)
                 return;
 

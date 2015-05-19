@@ -1,22 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Glyph.Input
+namespace Glyph.Input.Composites
 {
-    public abstract class InputComposite : IInputComposite
+    public abstract class InputComposite<TValue> : IInputComposite<TValue>
     {
-        public string Name { get; private set; }
-        public abstract bool IsTriggered { get; }
-        public abstract float Value { get; }
-        public abstract InputSource InputSource { get; }
         protected readonly List<IInputHandler> Components;
+        public string Name { get; private set; }
+        public abstract bool IsActivated { get; }
+        public abstract TValue Value { get; }
+        public abstract InputSource InputSource { get; }
+
+        public int Count
+        {
+            get { return Components.Count; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return false; }
+        }
 
         protected InputComposite(string name)
         {
             Name = name;
             Components = new List<IInputHandler>();
         }
-        public abstract void Update(InputManager inputManager);
+
+        public virtual void Update(InputManager inputManager)
+        {
+            foreach (IInputHandler inputHandler in this)
+                inputHandler.Update(inputManager);
+        }
 
         public T GetComponent<T>(bool includeItself = false)
             where T : class, IInputHandler
@@ -55,7 +70,7 @@ namespace Glyph.Input
 
             foreach (IInputHandler inputHandler in this)
             {
-                T first = inputHandler.GetComponentInChildren<T>();
+                var first = inputHandler.GetComponentInChildren<T>();
                 if (first != null)
                     return first;
             }
@@ -66,7 +81,7 @@ namespace Glyph.Input
         public List<T> GetAllComponentsInChildren<T>(bool includeItself = false)
             where T : class, IInputHandler
         {
-            var result = GetAllComponents<T>(includeItself);
+            List<T> result = GetAllComponents<T>(includeItself);
 
             foreach (IInputHandler inputHandler in this)
                 result.AddRange(inputHandler.GetAllComponentsInChildren<T>());
@@ -75,11 +90,6 @@ namespace Glyph.Input
         }
 
         public IEnumerator<IInputHandler> GetEnumerator()
-        {
-            return Components.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
         {
             return Components.GetEnumerator();
         }
@@ -109,14 +119,9 @@ namespace Glyph.Input
             return Components.Remove(item);
         }
 
-        public int Count
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            get { return Components.Count; }
-        }
-
-        public bool IsReadOnly
-        {
-            get { return false; }
+            return Components.GetEnumerator();
         }
     }
 }

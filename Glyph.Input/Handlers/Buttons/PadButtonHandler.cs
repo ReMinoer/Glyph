@@ -8,21 +8,22 @@ namespace Glyph.Input.Handlers.Buttons
         public PlayerIndex PlayerIndex { get; set; }
         public XnaButtons Button { get; set; }
 
-        public PadButtonHandler(string name, XnaButtons button, PlayerIndex playerIndex = PlayerIndex.One, ButtonHandlerMode mode = ButtonHandlerMode.Triggered)
-            : base(name, mode)
+        public PadButtonHandler(string name, XnaButtons button, PlayerIndex playerIndex = PlayerIndex.One,
+            InputAction desiredAction = InputAction.Triggered)
+            : base(name, desiredAction)
         {
             PlayerIndex = playerIndex;
             Button = button;
         }
 
-        public PadButtonHandler(string name, XnaButtons button, ButtonHandlerMode mode)
+        public PadButtonHandler(string name, XnaButtons button, InputAction mode)
             : this(name, button, PlayerIndex.One, mode)
         {
         }
 
         public PadButtonHandler(string name, XnaButtons button, PlayerIndex playerIndex)
             // ReSharper disable once RedundantArgumentDefaultValue
-            : this(name, button, playerIndex, ButtonHandlerMode.Triggered)
+            : this(name, button, playerIndex, InputAction.Triggered)
         {
         }
 

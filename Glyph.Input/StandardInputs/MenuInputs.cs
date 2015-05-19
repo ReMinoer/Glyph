@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Glyph.Input.Composites;
-using Glyph.Input.Handlers;
 using Glyph.Input.Handlers.Buttons;
 using Microsoft.Xna.Framework.Input;
 
@@ -21,15 +20,15 @@ namespace Glyph.Input.StandardInputs
 
         public MenuInputs(bool gamepad, bool mouse, bool keyboard)
         {
-            var up = new InputSet(Up);
-            var down = new InputSet(Down);
-            var left = new InputSet(Left);
-            var right = new InputSet(Right);
-            var confirm = new InputSet(Confirm);
-            var cancel = new InputSet(Cancel);
-            var launch = new InputSet(Launch);
-            var exit = new InputSet(Exit);
-            var clic = new InputSet(Clic);
+            var up = new InputSet<InputAction>(Up);
+            var down = new InputSet<InputAction>(Down);
+            var left = new InputSet<InputAction>(Left);
+            var right = new InputSet<InputAction>(Right);
+            var confirm = new InputSet<InputAction>(Confirm);
+            var cancel = new InputSet<InputAction>(Cancel);
+            var launch = new InputSet<InputAction>(Launch);
+            var exit = new InputSet<InputAction>(Exit);
+            var clic = new InputSet<InputAction>(Clic);
 
             if (gamepad)
             {

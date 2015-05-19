@@ -1,19 +1,22 @@
-﻿namespace Glyph.Input.Composites
+﻿using Glyph.Input.Behaviours;
+
+namespace Glyph.Input.Composites
 {
-    public class InputSimultaneous : InputComposite
+    public class InputSimultaneous : InputComposite<InputAction>
     {
-        public override bool IsTriggered
+        private readonly ButtonBehaviour _buttonBehaviour = new ButtonBehaviour();
+        private bool _isActivated;
+        private InputAction _value;
+
+        public override bool IsActivated
         {
-            get { return _isTriggered; }
+            get { return _isActivated; }
         }
 
-        public override float Value
+        public override InputAction Value
         {
             get { return _value; }
         }
-
-        private bool _isTriggered;
-        private float _value;
 
         public override InputSource InputSource
         {
@@ -27,21 +30,24 @@
 
         public override void Update(InputManager inputManager)
         {
-            _isTriggered = false;
-            _value = 0;
-
             if (Count == 0)
+            {
+                _isActivated = false;
+                _value = InputAction.None;
                 return;
+            }
 
+            base.Update(inputManager);
+
+            _isActivated = true;
             foreach (IInputHandler inputHandler in this)
-                inputHandler.Update(inputManager);
+                if (!inputHandler.IsActivated)
+                {
+                    _isActivated = false;
+                    break;
+                }
 
-            foreach (IInputHandler inputHandler in this)
-                if (!inputHandler.IsTriggered)
-                    return;
-
-            _isTriggered = true;
-            _value = Components[0].Value;
+            _value = _buttonBehaviour.Update(_isActivated);
         }
     }
 }

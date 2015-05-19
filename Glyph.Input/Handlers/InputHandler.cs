@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 
-namespace Glyph.Input
+namespace Glyph.Input.Handlers
 {
-    public abstract class InputHandler : IInputHandler
+    public abstract class InputHandler<TValue> : IInputHandler<TValue>
     {
         public string Name { get; private set; }
+        public abstract bool IsActivated { get; protected set; }
+        public abstract TValue Value { get; protected set; }
+        public abstract InputSource InputSource { get; }
 
         protected InputHandler(string name)
         {
             Name = name;
         }
 
-        public abstract bool IsTriggered { get; protected set; }
-        public abstract float Value { get; protected set; }
-        public abstract InputSource InputSource { get; }
         public abstract void Update(InputManager inputManager);
 
         public T GetComponent<T>(bool includeItself = false) where T : class, IInputHandler
@@ -26,7 +26,7 @@ namespace Glyph.Input
         public List<T> GetAllComponents<T>(bool includeItself = false) where T : class, IInputHandler
         {
             if (includeItself && this is T)
-                return new List<T> { this as T };
+                return new List<T> {this as T};
 
             return new List<T>();
         }

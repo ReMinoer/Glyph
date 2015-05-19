@@ -7,15 +7,16 @@ namespace Glyph.Input.Handlers.Buttons
     {
         public MouseButton MouseBoutton { get; set; }
 
-        public MouseButtonHandler(string name, MouseButton mouseBoutton, ButtonHandlerMode mode = ButtonHandlerMode.Triggered)
-            : base(name, mode)
-        {
-            MouseBoutton = mouseBoutton;
-        }
-
         public override InputSource InputSource
         {
             get { return InputSource.Mouse; }
+        }
+
+        public MouseButtonHandler(string name, MouseButton mouseBoutton,
+            InputAction desiredAction = InputAction.Triggered)
+            : base(name, desiredAction)
+        {
+            MouseBoutton = mouseBoutton;
         }
 
         protected override bool GetState(InputManager inputManager)

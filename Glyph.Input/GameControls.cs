@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Diese.Serialization;
-using Glyph.Input.Handlers;
 
 namespace Glyph.Input
 {
@@ -12,7 +11,7 @@ namespace Glyph.Input
                 Add(inputHandler.Name, inputHandler);
         }
 
-        public static GameControls Load(string path)
+        static public GameControls Load(string path)
         {
             var serializerXml = new SerializerXml<GameControls>();
             return serializerXml.Instantiate(path);

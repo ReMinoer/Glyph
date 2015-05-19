@@ -22,8 +22,8 @@ namespace Glyph.Input.StandardInputs
         {
             var xboxQuit = new InputSimultaneous(XboxQuit)
             {
-                new PadButtonHandler("XboxQuit1", Buttons.Start, ButtonHandlerMode.Pressed),
-                new PadButtonHandler("XboxQuit2", Buttons.Back, ButtonHandlerMode.Pressed)
+                new PadButtonHandler("XboxQuit1", Buttons.Start, InputAction.Pressed),
+                new PadButtonHandler("XboxQuit2", Buttons.Back, InputAction.Pressed)
             };
 
             var fullscreen = new KeyHandler(Fullscreen, Keys.F12);
@@ -35,7 +35,7 @@ namespace Glyph.Input.StandardInputs
             var nextSong = new KeyHandler(NextSong, Keys.F4);
 
             var clic = new MouseButtonHandler(Clic, MouseButton.Left);
-            var clicRelease = new MouseButtonHandler(ClicRelease, MouseButton.Left, ButtonHandlerMode.Released);
+            var clicRelease = new MouseButtonHandler(ClicRelease, MouseButton.Left, InputAction.Released);
 
             Add(xboxQuit);
             Add(fullscreen);

@@ -1,10 +1,9 @@
 ﻿namespace Glyph.Input.Handlers.Axis
 {
-    public abstract class AxisHandler : InputHandler
+    public abstract class AxisHandler : InputHandler<float>
     {
-        public override bool IsTriggered { get; protected set; }
+        public override bool IsActivated { get; protected set; }
         public override float Value { get; protected set; }
-
         public float DeadZone { get; private set; }
 
         public AxisHandler(string name)
@@ -20,7 +19,7 @@
                 state = 0;
 
             Value = state;
-            IsTriggered = Value >= DeadZone;
+            IsActivated = Value >= DeadZone;
         }
 
         protected abstract float GetState(InputManager inputManager);

@@ -11,8 +11,8 @@ namespace Glyph.Input.Handlers.Buttons
             get { return InputSource.Keyboard; }
         }
 
-        public KeyHandler(string name, Keys key, ButtonHandlerMode mode = ButtonHandlerMode.Triggered)
-            : base(name, mode)
+        public KeyHandler(string name, Keys key, InputAction desiredAction = InputAction.Triggered)
+            : base(name, desiredAction)
         {
             Key = key;
         }

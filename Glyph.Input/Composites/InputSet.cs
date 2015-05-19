@@ -1,13 +1,17 @@
 ﻿namespace Glyph.Input.Composites
 {
-    public class InputSet : InputComposite
+    public class InputSet<TValue> : InputComposite<TValue>
     {
-        public override bool IsTriggered
+        private InputSource _inputSource;
+        private bool _isActivated;
+        private TValue _value;
+
+        public override bool IsActivated
         {
-            get { return _isTriggered; }
+            get { return _isActivated; }
         }
 
-        public override float Value
+        public override TValue Value
         {
             get { return _value; }
         }
@@ -17,10 +21,6 @@
             get { return _inputSource; }
         }
 
-        private InputSource _inputSource;
-        private float _value;
-        private bool _isTriggered;
-
         public InputSet(string name)
             : base(name)
         {
@@ -28,14 +28,18 @@
 
         public override void Update(InputManager inputManager)
         {
-            _isTriggered = false;
+            base.Update(inputManager);
+
+            _isActivated = false;
             foreach (IInputHandler inputHandler in this)
             {
-                inputHandler.Update(inputManager);
-                if (!IsTriggered && inputHandler.IsTriggered)
+                if (!IsActivated && inputHandler.IsActivated)
                 {
-                    _isTriggered = true;
-                    _value = inputHandler.Value;
+                    _isActivated = true;
+                    if (inputHandler is IInputHandler<TValue>)
+                        _value = (inputHandler as IInputHandler<TValue>).Value;
+                    else
+                        _value = default(TValue);
                     _inputSource = inputHandler.InputSource;
                 }
             }

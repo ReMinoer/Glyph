@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Decorators\InputDoser.cs" />
     <Compile Include="GameControls.cs" />
     <Compile Include="Handlers\Axis\AxisHandler.cs" />
     <Compile Include="Handlers\Axis\MouseWheelHandler.cs" />
@@ -47,18 +48,21 @@
     <Compile Include="Handlers\Axis\ThumbStick.cs" />
     <Compile Include="Handlers\Axis\Trigger.cs" />
     <Compile Include="Handlers\Buttons\ButtonHandler.cs" />
-    <Compile Include="Handlers\Buttons\ButtonHandlerMode.cs" />
+    <Compile Include="InputAction.cs" />
     <Compile Include="Handlers\Buttons\KeyHandler.cs" />
     <Compile Include="Handlers\Buttons\MouseButtonHandler.cs" />
     <Compile Include="Handlers\Buttons\MouseButton.cs" />
     <Compile Include="Handlers\Buttons\PadButtonHandler.cs" />
     <Compile Include="IInputComposite.cs" />
     <Compile Include="Composites\InputSimultaneous.cs" />
-    <Compile Include="InputHandler.cs" />
-    <Compile Include="InputComposite.cs" />
+    <Compile Include="IInputDecorator.cs" />
+    <Compile Include="Decorators\InputDecorator.cs" />
+    <Compile Include="Handlers\InputHandler.cs" />
+    <Compile Include="Composites\InputComposite.cs" />
     <Compile Include="InputSource.cs" />
     <Compile Include="Composites\InputSet.cs" />
     <Compile Include="IInputHandler.cs" />
+    <Compile Include="Behaviours\ButtonBehaviour.cs" />
     <Compile Include="StandardInputs\DeveloperInputs.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="StandardInputs\MenuInputs.cs" />

@@ -9,9 +9,12 @@ namespace Glyph.Input
 {
     public class InputManager
     {
+        private readonly Dictionary<PlayerIndex, GamePadState> _gamePadStates;
+        private readonly PlayerIndex[] _padPlayerIndexes;
         public GameControls Controls { get; set; }
         public KeyboardState KeyboardState { get; private set; }
         public MouseState MouseState { get; private set; }
+        
         public bool IsGamePadUsed { get; private set; }
         public bool IsMouseUsed { get; private set; }
 
@@ -38,9 +41,6 @@ namespace Glyph.Input
                        + new Vector2(Camera.VectorPosition.X, Camera.VectorPosition.Y);
             }
         }
-
-        private readonly Dictionary<PlayerIndex, GamePadState> _gamePadStates;
-        private readonly PlayerIndex[] _padPlayerIndexes;
 
         public InputManager()
         {
@@ -85,11 +85,21 @@ namespace Glyph.Input
                 if (!Controls.ContainsKey(name))
                     return false;
 
-                if (Controls[name].IsTriggered)
+                if (Controls[name].IsActivated)
                     RefreshDeviceUsage(Controls[name].InputSource);
 
-                return Controls[name].IsTriggered;
+                return Controls[name].IsActivated;
             }
+        }
+
+        public T GetValue<T>(string name)
+        {
+            var inputHandler = Controls[name] as IInputHandler<T>;
+            if (inputHandler == null)
+                throw new ArgumentException(string.Format("\"{0}\" doesn't return a value of type {1} !", name,
+                    typeof(T)));
+
+            return inputHandler.Value;
         }
 
         private void RefreshDeviceUsage(InputSource inputSource)
