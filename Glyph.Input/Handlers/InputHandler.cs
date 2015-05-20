@@ -14,7 +14,7 @@ namespace Glyph.Input.Handlers
             Name = name;
         }
 
-        public abstract void Update(InputManager inputManager);
+        public abstract void Update(InputStates inputStates);
 
         public T GetComponent<T>(bool includeItself = false) where T : class, IInputHandler
         {

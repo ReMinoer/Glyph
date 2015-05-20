@@ -26,9 +26,9 @@
         {
         }
 
-        public override void Update(InputManager inputManager)
+        public override void Update(InputStates inputStates)
         {
-            base.Update(inputManager);
+            base.Update(inputStates);
 
             _isActivated = false;
             foreach (IInputHandler inputHandler in this)

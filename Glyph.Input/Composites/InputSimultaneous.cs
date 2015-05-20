@@ -28,7 +28,7 @@ namespace Glyph.Input.Composites
         {
         }
 
-        public override void Update(InputManager inputManager)
+        public override void Update(InputStates inputStates)
         {
             if (Count == 0)
             {
@@ -37,7 +37,7 @@ namespace Glyph.Input.Composites
                 return;
             }
 
-            base.Update(inputManager);
+            base.Update(inputStates);
 
             _isActivated = true;
             foreach (IInputHandler inputHandler in this)

@@ -27,10 +27,10 @@ namespace Glyph.Input.Composites
             Components = new List<IInputHandler>();
         }
 
-        public virtual void Update(InputManager inputManager)
+        public virtual void Update(InputStates inputStates)
         {
             foreach (IInputHandler inputHandler in this)
-                inputHandler.Update(inputManager);
+                inputHandler.Update(inputStates);
         }
 
         public T GetComponent<T>(bool includeItself = false)

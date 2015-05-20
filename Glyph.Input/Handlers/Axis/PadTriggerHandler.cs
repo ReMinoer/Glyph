@@ -19,11 +19,11 @@ namespace Glyph.Input.Handlers.Axis
             Trigger = trigger;
         }
 
-        protected override float GetState(InputManager inputManager)
+        protected override float GetState(InputStates inputStates)
         {
             return Trigger == Trigger.Left
-                ? inputManager.GamePadStates[PlayerIndex].Triggers.Left
-                : inputManager.GamePadStates[PlayerIndex].Triggers.Right;
+                ? inputStates.GamePadStates[PlayerIndex].Triggers.Left
+                : inputStates.GamePadStates[PlayerIndex].Triggers.Right;
         }
     }
 }

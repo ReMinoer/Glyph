@@ -23,9 +23,9 @@ namespace Glyph.Input.Decorators
         {
         }
 
-        public override void Update(InputManager inputManager)
+        public override void Update(InputStates inputStates)
         {
-            base.Update(inputManager);
+            base.Update(inputStates);
 
             _value = _buttonBehaviour.Update(Component.IsActivated);
             _isActivated = _value != InputAction.None;

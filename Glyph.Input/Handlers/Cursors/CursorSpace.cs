@@ -1,4 +1,4 @@
-﻿namespace Glyph.Input.Handlers.Vectors.Cursors
+﻿namespace Glyph.Input.Handlers.Cursors
 {
     public enum CursorSpace
     {

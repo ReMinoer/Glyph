@@ -32,9 +32,9 @@ namespace Glyph.Input.Handlers.Buttons
             get { return InputSource.GamePad; }
         }
 
-        protected override bool GetState(InputManager inputManager)
+        protected override bool GetState(InputStates inputStates)
         {
-            return inputManager.GamePadStates[PlayerIndex].IsButtonDown(Button);
+            return inputStates.GamePadStates[PlayerIndex].IsButtonDown(Button);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Glyph.Input.Handlers.Vectors.Cursors
+namespace Glyph.Input.Handlers.Cursors
 {
     public class MouseCursorHandler : CursorHandler
     {
@@ -14,9 +14,9 @@ namespace Glyph.Input.Handlers.Vectors.Cursors
         {
         }
 
-        protected override Vector2 GetCursor(InputManager inputManager)
+        protected override Vector2 GetState(InputStates inputStates)
         {
-            return inputManager.MouseState.Position.ToVector2();
+            return inputStates.MouseState.Position.ToVector2();
         }
     }
 }

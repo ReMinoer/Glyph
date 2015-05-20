@@ -14,9 +14,9 @@
         {
         }
 
-        protected override float GetState(InputManager inputManager)
+        protected override float GetState(InputStates inputStates)
         {
-            int state = inputManager.MouseState.ScrollWheelValue - _previousState;
+            int state = inputStates.MouseState.ScrollWheelValue - _previousState;
             _previousState = state;
             return state;
         }

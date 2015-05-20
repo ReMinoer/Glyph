@@ -12,9 +12,9 @@
             DeadZone = deadZone;
         }
 
-        public override void Update(InputManager inputManager)
+        public override void Update(InputStates inputStates)
         {
-            float state = GetState(inputManager);
+            float state = GetState(inputStates);
             if (state < DeadZone)
                 state = 0;
 
@@ -22,6 +22,6 @@
             IsActivated = Value >= DeadZone;
         }
 
-        protected abstract float GetState(InputManager inputManager);
+        protected abstract float GetState(InputStates inputStates);
     }
 }

@@ -24,9 +24,9 @@ namespace Glyph.Input.Decorators
             Component = component;
         }
 
-        public virtual void Update(InputManager inputManager)
+        public virtual void Update(InputStates inputStates)
         {
-            Component.Update(inputManager);
+            Component.Update(inputStates);
         }
 
         public T GetComponent<T>(bool includeItself = false)

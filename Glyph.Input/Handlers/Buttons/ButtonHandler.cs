@@ -15,14 +15,14 @@ namespace Glyph.Input.Handlers.Buttons
             DesiredAction = desiredAction;
         }
 
-        public override void Update(InputManager inputManager)
+        public override void Update(InputStates inputStates)
         {
-            bool state = GetState(inputManager);
+            bool state = GetState(inputStates);
 
             Value = _buttonBehaviour.Update(state);
             IsActivated = Value == DesiredAction;
         }
 
-        protected abstract bool GetState(InputManager inputManager);
+        protected abstract bool GetState(InputStates inputStates);
     }
 }

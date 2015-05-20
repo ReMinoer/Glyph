@@ -1,4 +1,4 @@
-﻿namespace Glyph.Input.Handlers.Buttons
+﻿namespace Glyph.Input
 {
     public enum MouseButton
     {

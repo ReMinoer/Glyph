@@ -2,7 +2,7 @@
 
 namespace Glyph.Input.Handlers.Axis
 {
-    public class ThumbStickHandler : AxisHandler
+    public class ThumbStickAxisHandler : AxisHandler
     {
         public PlayerIndex PlayerIndex { get; set; }
         public ThumbStick ThumbStick { get; set; }
@@ -13,7 +13,7 @@ namespace Glyph.Input.Handlers.Axis
             get { return InputSource.GamePad; }
         }
 
-        public ThumbStickHandler(string name, ThumbStick thumbStick, Glyph.Axis axis,
+        public ThumbStickAxisHandler(string name, ThumbStick thumbStick, Glyph.Axis axis,
             PlayerIndex playerIndex = PlayerIndex.One)
             : base(name)
         {
@@ -22,11 +22,11 @@ namespace Glyph.Input.Handlers.Axis
             Axis = axis;
         }
 
-        protected override float GetState(InputManager inputManager)
+        protected override float GetState(InputStates inputStates)
         {
             Vector2 vector = ThumbStick == ThumbStick.Left
-                ? inputManager.GamePadStates[PlayerIndex].ThumbSticks.Left
-                : inputManager.GamePadStates[PlayerIndex].ThumbSticks.Right;
+                ? inputStates.GamePadStates[PlayerIndex].ThumbSticks.Left
+                : inputStates.GamePadStates[PlayerIndex].ThumbSticks.Right;
 
             return Axis == Glyph.Axis.Horizontal ? vector.X : vector.Y;
         }

@@ -1,4 +1,4 @@
-﻿namespace Glyph.Input.Handlers.Axis
+﻿namespace Glyph.Input
 {
     public enum ThumbStick
     {

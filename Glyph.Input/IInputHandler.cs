@@ -7,7 +7,7 @@ namespace Glyph.Input
         string Name { get; }
         bool IsActivated { get; }
         InputSource InputSource { get; }
-        void Update(InputManager inputManager);
+        void Update(InputStates inputStates);
         T GetComponent<T>(bool includeItself = false) where T : class, IInputHandler;
         List<T> GetAllComponents<T>(bool includeItself = false) where T : class, IInputHandler;
         T GetComponentInChildren<T>(bool includeItself = false) where T : class, IInputHandler;

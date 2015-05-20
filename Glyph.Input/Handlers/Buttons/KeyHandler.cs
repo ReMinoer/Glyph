@@ -17,9 +17,9 @@ namespace Glyph.Input.Handlers.Buttons
             Key = key;
         }
 
-        protected override bool GetState(InputManager inputManager)
+        protected override bool GetState(InputStates inputStates)
         {
-            return inputManager.KeyboardState.IsKeyDown(Key);
+            return inputStates.KeyboardState.IsKeyDown(Key);
         }
     }
 }

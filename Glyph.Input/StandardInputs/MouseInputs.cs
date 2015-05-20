@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Glyph.Input.Handlers.Axis;
 using Glyph.Input.Handlers.Buttons;
-using Glyph.Input.Handlers.Vectors.Cursors;
+using Glyph.Input.Handlers.Cursors;
 
 namespace Glyph.Input.StandardInputs
 {

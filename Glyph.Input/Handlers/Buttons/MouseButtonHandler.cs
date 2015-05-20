@@ -19,16 +19,16 @@ namespace Glyph.Input.Handlers.Buttons
             MouseBoutton = mouseBoutton;
         }
 
-        protected override bool GetState(InputManager inputManager)
+        protected override bool GetState(InputStates inputStates)
         {
             switch (MouseBoutton)
             {
                 case MouseButton.Left:
-                    return inputManager.MouseState.LeftButton == ButtonState.Pressed;
+                    return inputStates.MouseState.LeftButton == ButtonState.Pressed;
                 case MouseButton.Right:
-                    return inputManager.MouseState.RightButton == ButtonState.Pressed;
+                    return inputStates.MouseState.RightButton == ButtonState.Pressed;
                 case MouseButton.Middle:
-                    return inputManager.MouseState.MiddleButton == ButtonState.Pressed;
+                    return inputStates.MouseState.MiddleButton == ButtonState.Pressed;
                 default:
                     throw new NotImplementedException();
             }
