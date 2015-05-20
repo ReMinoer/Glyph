@@ -14,32 +14,12 @@ namespace Glyph.Input
         public GameControls Controls { get; set; }
         public KeyboardState KeyboardState { get; private set; }
         public MouseState MouseState { get; private set; }
-        
         public bool IsGamePadUsed { get; private set; }
         public bool IsMouseUsed { get; private set; }
 
         public ReadOnlyDictionary<PlayerIndex, GamePadState> GamePadStates
         {
             get { return new ReadOnlyDictionary<PlayerIndex, GamePadState>(_gamePadStates); }
-        }
-
-        public Vector2 MouseInWindow
-        {
-            get { return new Vector2(MouseState.X, MouseState.Y) - Resolution.WindowMargin; }
-        }
-
-        public Vector2 MouseInScreen
-        {
-            get { return MouseInWindow / Resolution.ScaleRatio; }
-        }
-
-        public Vector2 MouseInSpace
-        {
-            get
-            {
-                return MouseInWindow / (Resolution.ScaleRatio * Camera.Zoom)
-                       + new Vector2(Camera.VectorPosition.X, Camera.VectorPosition.Y);
-            }
         }
 
         public InputManager()
@@ -54,7 +34,11 @@ namespace Glyph.Input
                 foreach (PlayerIndex playerIndex in _padPlayerIndexes)
                     _gamePadStates[playerIndex] = new GamePadState();
 
-            Controls = new GameControls {new DeveloperInputs()};
+            Controls = new GameControls
+            {
+                new DeveloperInputs(),
+                new MouseInputs()
+            };
         }
 
         public void Update(bool isGameActive)
@@ -98,6 +82,9 @@ namespace Glyph.Input
             if (inputHandler == null)
                 throw new ArgumentException(string.Format("\"{0}\" doesn't return a value of type {1} !", name,
                     typeof(T)));
+
+            if (Controls[name].IsActivated)
+                RefreshDeviceUsage(Controls[name].InputSource);
 
             return inputHandler.Value;
         }

@@ -7,7 +7,7 @@ namespace Glyph.Input.StandardInputs
 {
     public class MenuInputs : List<IInputHandler>
     {
-        private const string Prefix = "menu-";
+        private const string Prefix = "Menu-";
         public const string Up = Prefix + "Up";
         public const string Down = Prefix + "Down";
         public const string Left = Prefix + "Left";

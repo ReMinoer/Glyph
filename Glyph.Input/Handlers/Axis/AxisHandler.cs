@@ -6,10 +6,10 @@
         public override float Value { get; protected set; }
         public float DeadZone { get; private set; }
 
-        public AxisHandler(string name)
+        public AxisHandler(string name, float deadZone = 0)
             : base(name)
         {
-            DeadZone = 0;
+            DeadZone = deadZone;
         }
 
         public override void Update(InputManager inputManager)

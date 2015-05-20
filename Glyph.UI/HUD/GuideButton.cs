@@ -122,7 +122,8 @@ namespace Glyph.UI.HUD
 
             if (_clickable)
             {
-                bool hover = Hitbox.Contains(input.MouseInScreen.ToPoint());
+                var mouseInScreen = input.GetValue<Vector2>(MouseInputs.VirtualScreenPosition);
+                bool hover = Hitbox.Contains(mouseInScreen);
                 if (hover && input[MenuInputs.Clic])
                     if (Activated != null)
                         Activated(this, EventArgs.Empty);

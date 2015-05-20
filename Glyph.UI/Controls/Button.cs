@@ -50,7 +50,8 @@ namespace Glyph.UI.Controls
         {
             if (input.IsMouseUsed)
             {
-                bool enable = Hitbox.Contains((int)input.MouseInScreen.X, (int)input.MouseInScreen.Y);
+                Vector2 mouseInScreen = input.GetValue<Vector2>(MouseInputs.VirtualScreenPosition);
+                bool enable = Hitbox.Contains(mouseInScreen);
 
                 if (enable != Enable)
                 {

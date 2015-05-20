@@ -1,5 +1,6 @@
 ﻿using Glyph.Entities;
 using Glyph.Input;
+using Glyph.Input.StandardInputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -16,11 +17,6 @@ namespace Glyph.UI
         {
             get { return Sprite.Position + OriginCursor; }
             set { Sprite.Position = value - OriginCursor; }
-        }
-
-        static public Point PositionSpace
-        {
-            get { return (Position / (Resolution.ScaleRatio * Camera.Zoom) + Camera.VectorPosition.XY()).ToPoint(); }
         }
 
         static public void Initialize(bool enable)
@@ -43,7 +39,7 @@ namespace Glyph.UI
             if (!Enable || !_isMouseUsed)
                 return;
 
-            Position = input.MouseInWindow;
+            Position = input.GetValue<Vector2>(MouseInputs.ScreenPosition);
         }
 
         static public void Draw(SpriteBatch spriteBatch)

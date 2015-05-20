@@ -7,7 +7,7 @@ namespace Glyph.Input.StandardInputs
 {
     public class DeveloperInputs : List<IInputHandler>
     {
-        private const string Prefix = "dev-";
+        private const string Prefix = "Dev-";
         public const string XboxQuit = Prefix + "XboxQuit";
         public const string Fullscreen = Prefix + "Fullscreen";
         public const string StatusDisplay = Prefix + "StatusDisplay";
@@ -15,8 +15,6 @@ namespace Glyph.Input.StandardInputs
         public const string ToogleSong = Prefix + "ToogleSong";
         public const string PreviousSong = Prefix + "PreviousSong";
         public const string NextSong = Prefix + "NextSong";
-        public const string Clic = Prefix + "Clic";
-        public const string ClicRelease = Prefix + "ClicRelease";
 
         public DeveloperInputs()
         {
@@ -34,9 +32,6 @@ namespace Glyph.Input.StandardInputs
             var previousSong = new KeyHandler(PreviousSong, Keys.F3);
             var nextSong = new KeyHandler(NextSong, Keys.F4);
 
-            var clic = new MouseButtonHandler(Clic, MouseButton.Left);
-            var clicRelease = new MouseButtonHandler(ClicRelease, MouseButton.Left, InputAction.Released);
-
             Add(xboxQuit);
             Add(fullscreen);
             Add(statusDisplay);
@@ -44,8 +39,6 @@ namespace Glyph.Input.StandardInputs
             Add(toogleSong);
             Add(previousSong);
             Add(nextSong);
-            Add(clic);
-            Add(clicRelease);
         }
     }
 }

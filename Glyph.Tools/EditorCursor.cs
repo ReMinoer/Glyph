@@ -86,25 +86,25 @@ namespace Glyph.Tools
             if (!Active)
                 return;
 
-            Position = new Vector2(input.MouseState.X, input.MouseState.Y);
+            Position = input.GetValue<Vector2>(MouseInputs.WindowPosition);
 
-            if (Position.X < 0)
-                Position = Position.SetX(0);
-            if (Position.X >= Resolution.Size.X - 1)
-                Position = Position.SetX(Resolution.Size.X - 1);
-            if (Position.Y < 0)
-                Position = Position.SetY(0);
-            if (Position.Y >= Resolution.Size.Y - 1)
-                Position = Position.SetY(Resolution.Size.Y - 1);
+            if (Position.X < Resolution.WindowMargin.X)
+                Position = Position.SetX(Resolution.WindowMargin.X);
+            if (Position.X >= Resolution.Size.X + Resolution.WindowMargin.X - 1)
+                Position = Position.SetX(Resolution.Size.X + Resolution.WindowMargin.X - 1);
+            if (Position.Y < Resolution.WindowMargin.Y)
+                Position = Position.SetY(Resolution.WindowMargin.Y);
+            if (Position.Y >= Resolution.Size.Y + Resolution.WindowMargin.Y - 1)
+                Position = Position.SetY(Resolution.Size.Y + Resolution.WindowMargin.Y - 1);
 
-            if (input[DeveloperInputs.Clic])
+            if (input[MouseInputs.Left])
             {
                 PointA = Position;
                 PointB = Position;
             }
-            else if (input[DeveloperInputs.ClicRelease])
+            else if (input[MouseInputs.LeftReleased])
                 PointB = Position;
-            else if (input.MouseState.LeftButton == ButtonState.Pressed)
+            else if (input[MouseInputs.LeftPressed])
                 PointB = Position;
         }
 
