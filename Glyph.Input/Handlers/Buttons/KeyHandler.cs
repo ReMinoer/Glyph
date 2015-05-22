@@ -11,6 +11,11 @@ namespace Glyph.Input.Handlers.Buttons
             get { return InputSource.Keyboard; }
         }
 
+        public KeyHandler()
+            : this("", Keys.None)
+        {
+        }
+
         public KeyHandler(string name, Keys key, InputAction desiredAction = InputAction.Triggered)
             : base(name, desiredAction)
         {
@@ -19,7 +24,7 @@ namespace Glyph.Input.Handlers.Buttons
 
         protected override bool GetState(InputStates inputStates)
         {
-            return inputStates.KeyboardState.IsKeyDown(Key);
+            return Key != Keys.None && inputStates.KeyboardState.IsKeyDown(Key);
         }
     }
 }

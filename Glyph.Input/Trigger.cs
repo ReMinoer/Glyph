@@ -2,6 +2,7 @@
 {
     public enum Trigger
     {
+        None,
         Left,
         Right
     }

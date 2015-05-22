@@ -9,6 +9,11 @@
             get { return InputSource.Mouse; }
         }
 
+        public MouseWheelHandler()
+            : this("")
+        {
+        }
+
         public MouseWheelHandler(string name)
             : base(name)
         {

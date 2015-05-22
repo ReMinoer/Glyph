@@ -23,7 +23,7 @@ namespace Glyph.Input.Composites
             get { return Count == 0 ? InputSource.None : Components[0].InputSource; }
         }
 
-        public InputSimultaneous(string name)
+        public InputSimultaneous(string name = "")
             : base(name)
         {
         }

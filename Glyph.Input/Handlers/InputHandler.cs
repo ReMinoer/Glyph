@@ -4,7 +4,7 @@ namespace Glyph.Input.Handlers
 {
     public abstract class InputHandler<TValue> : IInputHandler<TValue>
     {
-        public string Name { get; private set; }
+        public string Name { get; set; }
         public abstract bool IsActivated { get; protected set; }
         public abstract TValue Value { get; protected set; }
         public abstract InputSource InputSource { get; }

@@ -4,9 +4,9 @@ namespace Glyph.Input.Handlers.Vectors
 {
     public abstract class VectorHandler : InputHandler<Vector2>
     {
+        public float DeadZone { get; set; }
         public override bool IsActivated { get; protected set; }
         public override Vector2 Value { get; protected set; }
-        public float DeadZone { get; private set; }
 
         protected VectorHandler(string name, float deadZone = 0) : base(name)
         {

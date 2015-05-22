@@ -18,27 +18,20 @@ namespace Glyph.Input.StandardInputs
 
         public DeveloperInputs()
         {
-            var xboxQuit = new InputSimultaneous(XboxQuit)
+            AddRange(new IInputHandler[]
             {
-                new PadButtonHandler("XboxQuit1", Buttons.Start, InputAction.Pressed),
-                new PadButtonHandler("XboxQuit2", Buttons.Back, InputAction.Pressed)
-            };
-
-            var fullscreen = new KeyHandler(Fullscreen, Keys.F12);
-            var statusDisplay = new KeyHandler(StatusDisplay, Keys.F11);
-            var mute = new KeyHandler(Mute, Keys.F10);
-
-            var toogleSong = new KeyHandler(ToogleSong, Keys.F2);
-            var previousSong = new KeyHandler(PreviousSong, Keys.F3);
-            var nextSong = new KeyHandler(NextSong, Keys.F4);
-
-            Add(xboxQuit);
-            Add(fullscreen);
-            Add(statusDisplay);
-            Add(mute);
-            Add(toogleSong);
-            Add(previousSong);
-            Add(nextSong);
+                new InputSimultaneous(XboxQuit)
+                {
+                    new PadButtonHandler("Button1", Buttons.Start, InputAction.Pressed),
+                    new PadButtonHandler("Button2", Buttons.Back, InputAction.Pressed)
+                },
+                new KeyHandler(Fullscreen, Keys.F12),
+                new KeyHandler(StatusDisplay, Keys.F11),
+                new KeyHandler(Mute, Keys.F10),
+                new KeyHandler(ToogleSong, Keys.F2),
+                new KeyHandler(PreviousSong, Keys.F3),
+                new KeyHandler(NextSong, Keys.F4)
+            });
         }
     }
 }

@@ -6,10 +6,7 @@ namespace Glyph.Input.Decorators
     {
         public IInputHandler Component { get; set; }
 
-        public virtual string Name
-        {
-            get { return Component != null ? Component.Name : ""; }
-        }
+        public string Name { get; set; }
 
         public virtual InputSource InputSource
         {
@@ -19,8 +16,9 @@ namespace Glyph.Input.Decorators
         public abstract bool IsActivated { get; }
         public abstract TValue Value { get; }
 
-        protected InputDecorator(IInputHandler component)
+        protected InputDecorator(string name, IInputHandler component)
         {
+            Name = name;
             Component = component;
         }
 

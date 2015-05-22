@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Input.Handlers.Axis
 {
@@ -13,8 +14,17 @@ namespace Glyph.Input.Handlers.Axis
             get { return InputSource.GamePad; }
         }
 
-        public ThumbStickAxisHandler(string name, ThumbStick thumbStick, Glyph.Axis axis,
-            PlayerIndex playerIndex = PlayerIndex.One)
+        public ThumbStickAxisHandler()
+            : this("", ThumbStick.None, Glyph.Axis.None)
+        {
+        }
+
+        public ThumbStickAxisHandler(string name, ThumbStick thumbStick, Glyph.Axis axis)
+            : this(name, PlayerIndex.One, thumbStick, axis)
+        {
+        }
+
+        public ThumbStickAxisHandler(string name, PlayerIndex playerIndex, ThumbStick thumbStick, Glyph.Axis axis)
             : base(name)
         {
             PlayerIndex = playerIndex;
@@ -24,11 +34,32 @@ namespace Glyph.Input.Handlers.Axis
 
         protected override float GetState(InputStates inputStates)
         {
-            Vector2 vector = ThumbStick == ThumbStick.Left
-                ? inputStates.GamePadStates[PlayerIndex].ThumbSticks.Left
-                : inputStates.GamePadStates[PlayerIndex].ThumbSticks.Right;
+            Vector2 vector;
+            switch (ThumbStick)
+            {
+                case ThumbStick.None:
+                    return 0;
+                case ThumbStick.Left:
+                    vector = inputStates.GamePadStates[PlayerIndex].ThumbSticks.Left;
+                    break;
+                case ThumbStick.Right:
+                    vector = inputStates.GamePadStates[PlayerIndex].ThumbSticks.Right;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
 
-            return Axis == Glyph.Axis.Horizontal ? vector.X : vector.Y;
+            switch (Axis)
+            {
+                case Glyph.Axis.None:
+                    return 0;
+                case Glyph.Axis.Horizontal:
+                    return vector.X;
+                case Glyph.Axis.Vertical:
+                    return vector.Y;
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }

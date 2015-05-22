@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Input.Handlers.Axis
 {
@@ -12,7 +13,17 @@ namespace Glyph.Input.Handlers.Axis
             get { return InputSource.GamePad; }
         }
 
-        public PadTriggerHandler(string name, Trigger trigger, PlayerIndex playerIndex = PlayerIndex.One)
+        public PadTriggerHandler()
+            : this("", Trigger.None)
+        {
+        }
+
+        public PadTriggerHandler(string name, Trigger trigger)
+            : this(name, PlayerIndex.One, trigger)
+        {
+        }
+
+        public PadTriggerHandler(string name, PlayerIndex playerIndex, Trigger trigger)
             : base(name)
         {
             PlayerIndex = playerIndex;
@@ -21,9 +32,17 @@ namespace Glyph.Input.Handlers.Axis
 
         protected override float GetState(InputStates inputStates)
         {
-            return Trigger == Trigger.Left
-                ? inputStates.GamePadStates[PlayerIndex].Triggers.Left
-                : inputStates.GamePadStates[PlayerIndex].Triggers.Right;
+            switch (Trigger)
+            {
+                case Trigger.None:
+                    return 0;
+                case Trigger.Left:
+                    return inputStates.GamePadStates[PlayerIndex].Triggers.Left;
+                case Trigger.Right:
+                    return inputStates.GamePadStates[PlayerIndex].Triggers.Right;
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }

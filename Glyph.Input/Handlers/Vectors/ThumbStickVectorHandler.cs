@@ -1,19 +1,25 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Input.Handlers.Vectors
 {
     public class ThumbStickVectorHandler : VectorHandler
     {
-        public PlayerIndex PlayerIndex { get; private set; }
-        public ThumbStick ThumbStick { get; private set; }
+        public PlayerIndex PlayerIndex { get; set; }
+        public ThumbStick ThumbStick { get; set; }
 
         public override InputSource InputSource
         {
             get { return InputSource.GamePad; }
         }
 
+        public ThumbStickVectorHandler()
+            : this("", PlayerIndex.One, ThumbStick.None)
+        {
+        }
+
         public ThumbStickVectorHandler(string name, ThumbStick thumbStick, float deadZone = 0)
-            : this(name, PlayerIndex.One, thumbStick, deadZone)
+            : this("", PlayerIndex.One, thumbStick, deadZone)
         {
         }
 
@@ -26,9 +32,14 @@ namespace Glyph.Input.Handlers.Vectors
 
         protected override Vector2 GetState(InputStates inputStates)
         {
-            return ThumbStick == ThumbStick.Right
-                ? inputStates.GamePadStates[PlayerIndex].ThumbSticks.Right
-                : inputStates.GamePadStates[PlayerIndex].ThumbSticks.Left;
+            if (ThumbStick == ThumbStick.None)
+                return Vector2.Zero;
+            if (ThumbStick == ThumbStick.Left)
+                return inputStates.GamePadStates[PlayerIndex].ThumbSticks.Left;
+            if (ThumbStick == ThumbStick.Right)
+                return inputStates.GamePadStates[PlayerIndex].ThumbSticks.Right;
+
+            throw new NotImplementedException();
         }
     }
 }

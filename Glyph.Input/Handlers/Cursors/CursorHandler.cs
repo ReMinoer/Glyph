@@ -6,9 +6,9 @@ namespace Glyph.Input.Handlers.Cursors
     public abstract class CursorHandler : InputHandler<Vector2>
     {
         private Vector2 _previousState;
+        public CursorSpace CursorSpace { get; set; }
         public override Vector2 Value { get; protected set; }
         public override bool IsActivated { get; protected set; }
-        public CursorSpace CursorSpace { get; protected set; }
 
         protected CursorHandler(string name, CursorSpace cursorSpace) : base(name)
         {

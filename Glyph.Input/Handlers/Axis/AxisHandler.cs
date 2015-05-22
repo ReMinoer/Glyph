@@ -2,11 +2,11 @@
 {
     public abstract class AxisHandler : InputHandler<float>
     {
+        public float DeadZone { get; set; }
         public override bool IsActivated { get; protected set; }
         public override float Value { get; protected set; }
-        public float DeadZone { get; private set; }
 
-        public AxisHandler(string name, float deadZone = 0)
+        protected AxisHandler(string name, float deadZone = 0)
             : base(name)
         {
             DeadZone = deadZone;

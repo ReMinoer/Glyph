@@ -12,8 +12,12 @@ namespace Glyph.Input.Handlers.Buttons
             get { return InputSource.Mouse; }
         }
 
-        public MouseButtonHandler(string name, MouseButton mouseBoutton,
-            InputAction desiredAction = InputAction.Triggered)
+        public MouseButtonHandler()
+            : this("", MouseButton.None)
+        {
+        }
+
+        public MouseButtonHandler(string name, MouseButton mouseBoutton, InputAction desiredAction = InputAction.Triggered)
             : base(name, desiredAction)
         {
             MouseBoutton = mouseBoutton;
@@ -23,6 +27,8 @@ namespace Glyph.Input.Handlers.Buttons
         {
             switch (MouseBoutton)
             {
+                case MouseButton.None:
+                    return false;
                 case MouseButton.Left:
                     return inputStates.MouseState.LeftButton == ButtonState.Pressed;
                 case MouseButton.Right:

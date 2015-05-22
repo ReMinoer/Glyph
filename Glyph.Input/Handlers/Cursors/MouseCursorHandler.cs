@@ -9,6 +9,11 @@ namespace Glyph.Input.Handlers.Cursors
             get { return InputSource.Mouse; }
         }
 
+        public MouseCursorHandler()
+            : this("", CursorSpace.Window)
+        {
+        }
+
         public MouseCursorHandler(string name, CursorSpace cursorSpace)
             : base(name, cursorSpace)
         {

@@ -21,7 +21,7 @@
             get { return _inputSource; }
         }
 
-        public InputSet(string name)
+        public InputSet(string name = "")
             : base(name)
         {
         }

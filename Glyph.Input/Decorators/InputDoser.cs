@@ -18,8 +18,8 @@ namespace Glyph.Input.Decorators
             get { return _value; }
         }
 
-        public InputDoser(IInputHandler component)
-            : base(component)
+        public InputDoser(string name = "", IInputHandler component = null)
+            : base(name, component)
         {
         }
 

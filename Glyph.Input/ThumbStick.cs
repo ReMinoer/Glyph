@@ -2,6 +2,7 @@
 {
     public enum ThumbStick
     {
+        None,
         Left,
         Right
     }

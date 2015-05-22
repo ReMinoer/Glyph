@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Glyph.Input.Composites;
 using Glyph.Input.Handlers.Buttons;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Glyph.Input.StandardInputs

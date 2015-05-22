@@ -6,7 +6,7 @@ namespace Glyph.Input.Composites
     public abstract class InputComposite<TValue> : IInputComposite<TValue>
     {
         protected readonly List<IInputHandler> Components;
-        public string Name { get; private set; }
+        public string Name { get; set; }
         public abstract bool IsActivated { get; }
         public abstract TValue Value { get; }
         public abstract InputSource InputSource { get; }

@@ -6,25 +6,24 @@ namespace Glyph.Input.Handlers.Buttons
     public class PadButtonHandler : ButtonHandler
     {
         public PlayerIndex PlayerIndex { get; set; }
-        public XnaButtons Button { get; set; }
+        public XnaButtons? Button { get; set; }
 
-        public PadButtonHandler(string name, XnaButtons button, PlayerIndex playerIndex = PlayerIndex.One,
+        public PadButtonHandler()
+            : this("", null)
+        {
+        }
+
+        public PadButtonHandler(string name, XnaButtons? button, InputAction desiredAction = InputAction.Triggered)
+            : this(name, PlayerIndex.One, button, desiredAction)
+        {
+        }
+
+        public PadButtonHandler(string name, PlayerIndex playerIndex, XnaButtons? button,
             InputAction desiredAction = InputAction.Triggered)
             : base(name, desiredAction)
         {
             PlayerIndex = playerIndex;
             Button = button;
-        }
-
-        public PadButtonHandler(string name, XnaButtons button, InputAction mode)
-            : this(name, button, PlayerIndex.One, mode)
-        {
-        }
-
-        public PadButtonHandler(string name, XnaButtons button, PlayerIndex playerIndex)
-            // ReSharper disable once RedundantArgumentDefaultValue
-            : this(name, button, playerIndex, InputAction.Triggered)
-        {
         }
 
         public override InputSource InputSource
@@ -34,7 +33,7 @@ namespace Glyph.Input.Handlers.Buttons
 
         protected override bool GetState(InputStates inputStates)
         {
-            return inputStates.GamePadStates[PlayerIndex].IsButtonDown(Button);
+            return Button.HasValue && inputStates.GamePadStates[PlayerIndex].IsButtonDown(Button.Value);
         }
     }
 }
