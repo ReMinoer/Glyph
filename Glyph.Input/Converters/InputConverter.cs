@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Diese.Composition;
 
 namespace Glyph.Input.Converters
 {
@@ -6,7 +7,6 @@ namespace Glyph.Input.Converters
     {
         public string Name { get; set; }
         public IInputHandler<TInput>[] Components { get; private set; }
-
         public bool IsActivated { get; protected set; }
         public TOutput Value { get; protected set; }
         public abstract InputSource InputSource { get; }
@@ -32,8 +32,6 @@ namespace Glyph.Input.Converters
 
             HandleInput(Components);
         }
-
-        protected abstract void HandleInput(IEnumerable<IInputHandler<TInput>> components);
 
         public T GetComponent<T>(bool includeItself = false)
             where T : class, IInputHandler
@@ -90,5 +88,28 @@ namespace Glyph.Input.Converters
 
             return result;
         }
+
+        public bool ContainsComponent(IComponent<IInputHandler> component)
+        {
+            foreach (IInputHandler<TInput> child in Components)
+                if (child.Equals(component))
+                    return true;
+
+            return false;
+        }
+
+        public bool ContainsComponentInChildren(IComponent<IInputHandler> component)
+        {
+            if (ContainsComponent(component))
+                return true;
+
+            foreach (IInputHandler<TInput> child in Components)
+                if (child.ContainsComponentInChildren(component))
+                    return true;
+
+            return false;
+        }
+
+        protected abstract void HandleInput(IEnumerable<IInputHandler<TInput>> components);
     }
 }

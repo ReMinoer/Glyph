@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using Diese.Composition;
 
 namespace Glyph.Input.Decorators
 {
     public abstract class InputDecorator<TValue> : IInputDecorator<TValue>
     {
         public IInputHandler Component { get; set; }
-
         public string Name { get; set; }
 
         public virtual InputSource InputSource
@@ -69,6 +69,19 @@ namespace Glyph.Input.Decorators
                 result.AddRange(Component.GetAllComponentsInChildren<T>());
 
             return result;
+        }
+
+        public bool ContainsComponent(IComponent<IInputHandler> component)
+        {
+            return Component.Equals(component);
+        }
+
+        public bool ContainsComponentInChildren(IComponent<IInputHandler> component)
+        {
+            if (ContainsComponent(component))
+                return true;
+
+            return Component.ContainsComponentInChildren(component);
         }
     }
 }

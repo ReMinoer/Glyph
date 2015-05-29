@@ -1,18 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using Diese.Composition;
 using Glyph.Input.Behaviours;
 
 namespace Glyph.Input.Handlers
 {
-    public abstract class ButtonHandler : IInputHandler<InputActivity>
+    public abstract class ButtonHandler : Component<IInputHandler>, IInputHandler<InputActivity>
     {
-        public string Name { get; set; }
+        protected readonly ButtonBehaviour ButtonBehaviour = new ButtonBehaviour();
         public bool IsActivated { get; protected set; }
         public InputActivity Value { get; private set; }
         public InputActivity DesiredActivity { get; private set; }
-
         public abstract InputSource InputSource { get; }
-
-        protected readonly ButtonBehaviour ButtonBehaviour = new ButtonBehaviour();
 
         protected ButtonHandler(string name, InputActivity desiredActivity)
         {
@@ -29,30 +26,5 @@ namespace Glyph.Input.Handlers
         }
 
         protected abstract bool GetActivity(InputStates inputStates);
-
-        public T GetComponent<T>(bool includeItself = false) where T : class, IInputHandler
-        {
-            if (includeItself && this is T)
-                return this as T;
-            return null;
-        }
-
-        public List<T> GetAllComponents<T>(bool includeItself = false) where T : class, IInputHandler
-        {
-            if (includeItself && this is T)
-                return new List<T> { this as T };
-
-            return new List<T>();
-        }
-
-        public T GetComponentInChildren<T>(bool includeItself = false) where T : class, IInputHandler
-        {
-            return GetComponent<T>();
-        }
-
-        public List<T> GetAllComponentsInChildren<T>(bool includeItself = false) where T : class, IInputHandler
-        {
-            return GetAllComponents<T>();
-        }
     }
 }

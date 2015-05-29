@@ -49,6 +49,10 @@
     <Compile Include="TextSprite.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
+      <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
+      <Name>Diese.Composition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Serialization\Diese.Serialization.csproj">
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
       <Name>Diese.Serialization</Name>
