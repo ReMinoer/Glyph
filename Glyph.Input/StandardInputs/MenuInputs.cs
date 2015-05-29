@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using Glyph.Input.Composites;
-using Glyph.Input.Converters;
 using Glyph.Input.Handlers.Axis;
 using Glyph.Input.Handlers.Buttons;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Glyph.Input.StandardInputs
@@ -36,16 +34,20 @@ namespace Glyph.Input.StandardInputs
             if (gamepad)
             {
                 up.Add(new PadButtonHandler("DPad", Buttons.DPadUp));
-                up.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Vertical, 0.5f, AxisSign.Positive, InputActivity.Triggered));
+                up.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Vertical, 0.5f, AxisSign.Positive,
+                    InputActivity.Triggered));
 
                 down.Add(new PadButtonHandler("DPad", Buttons.DPadDown));
-                down.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Vertical, 0.5f, AxisSign.Negative, InputActivity.Triggered));
+                down.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Vertical, 0.5f, AxisSign.Negative,
+                    InputActivity.Triggered));
 
                 left.Add(new PadButtonHandler("DPad", Buttons.DPadLeft));
-                left.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Horizontal, 0.5f, AxisSign.Negative, InputActivity.Triggered));
+                left.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Horizontal, 0.5f,
+                    AxisSign.Negative, InputActivity.Triggered));
 
                 right.Add(new PadButtonHandler("DPad", Buttons.DPadRight));
-                right.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Horizontal, 0.5f, AxisSign.Positive, InputActivity.Triggered));
+                right.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Horizontal, 0.5f,
+                    AxisSign.Positive, InputActivity.Triggered));
 
                 confirm.Add(new PadButtonHandler("Button", Buttons.A));
 

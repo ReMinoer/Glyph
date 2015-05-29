@@ -17,7 +17,8 @@ namespace Glyph.Input.Handlers.Buttons
         {
         }
 
-        public MouseButtonHandler(string name, MouseButton mouseBoutton, InputActivity desiredActivity = InputActivity.Triggered)
+        public MouseButtonHandler(string name, MouseButton mouseBoutton,
+            InputActivity desiredActivity = InputActivity.Triggered)
             : base(name, desiredActivity)
         {
             MouseBoutton = mouseBoutton;

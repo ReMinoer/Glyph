@@ -16,11 +16,6 @@ namespace Glyph.Input.Converters
             set { Components[1] = value; }
         }
 
-        public ButtonsToAxis(string name = "")
-            : base(name, 2)
-        {
-        }
-
         public override InputSource InputSource
         {
             get
@@ -32,6 +27,11 @@ namespace Glyph.Input.Converters
 
                 return InputSource.None;
             }
+        }
+
+        public ButtonsToAxis(string name = "")
+            : base(name, 2)
+        {
         }
 
         protected override void HandleInput(IEnumerable<IInputHandler<InputActivity>> components)

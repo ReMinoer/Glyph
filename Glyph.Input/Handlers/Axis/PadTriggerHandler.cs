@@ -18,12 +18,14 @@ namespace Glyph.Input.Handlers.Axis
         {
         }
 
-        public PadTriggerHandler(string name, Trigger trigger, float deadZone = 0, AxisSign sign = AxisSign.None, InputActivity desiredActivity = InputActivity.Pressed)
+        public PadTriggerHandler(string name, Trigger trigger, float deadZone = 0, AxisSign sign = AxisSign.None,
+            InputActivity desiredActivity = InputActivity.Pressed)
             : this(name, PlayerIndex.One, trigger, deadZone, sign, desiredActivity)
         {
         }
 
-        public PadTriggerHandler(string name, PlayerIndex playerIndex, Trigger trigger, float deadZone = 0, AxisSign sign = AxisSign.None, InputActivity desiredActivity = InputActivity.Pressed)
+        public PadTriggerHandler(string name, PlayerIndex playerIndex, Trigger trigger, float deadZone = 0,
+            AxisSign sign = AxisSign.None, InputActivity desiredActivity = InputActivity.Pressed)
             : base(name, deadZone, sign, desiredActivity)
         {
             PlayerIndex = playerIndex;

@@ -1,6 +1,4 @@
-﻿using Glyph.Input.Behaviours;
-
-namespace Glyph.Input.Handlers.Axis
+﻿namespace Glyph.Input.Handlers.Axis
 {
     public abstract class AxisHandler : SensitiveHandler<float>
     {
@@ -20,7 +18,7 @@ namespace Glyph.Input.Handlers.Axis
             float state = GetState(inputStates);
 
             IsActivated = (Sign == AxisSign.Positive || Sign == AxisSign.None) && state >= DeadZone
-                           || (Sign == AxisSign.Negative || Sign == AxisSign.None) && state <= -DeadZone;
+                          || (Sign == AxisSign.Negative || Sign == AxisSign.None) && state <= -DeadZone;
 
             Value = !IsActivated ? state : 0;
         }

@@ -23,7 +23,8 @@ namespace Glyph.Input.Handlers.Vectors
         {
         }
 
-        public ThumbStickVectorHandler(string name, PlayerIndex playerIndex, ThumbStick thumbStick, float deadZone = 0, InputActivity inputActivity = InputActivity.Pressed)
+        public ThumbStickVectorHandler(string name, PlayerIndex playerIndex, ThumbStick thumbStick, float deadZone = 0,
+            InputActivity inputActivity = InputActivity.Pressed)
             : base(name, deadZone, inputActivity)
         {
             PlayerIndex = playerIndex;

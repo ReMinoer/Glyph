@@ -19,12 +19,14 @@ namespace Glyph.Input.Handlers.Axis
         {
         }
 
-        public ThumbStickAxisHandler(string name, ThumbStick thumbStick, Glyph.Axis axis, float deadZone = 0, AxisSign sign = AxisSign.None, InputActivity desiredActivity = InputActivity.Pressed)
+        public ThumbStickAxisHandler(string name, ThumbStick thumbStick, Glyph.Axis axis, float deadZone = 0,
+            AxisSign sign = AxisSign.None, InputActivity desiredActivity = InputActivity.Pressed)
             : this(name, PlayerIndex.One, thumbStick, axis, deadZone, sign, desiredActivity)
         {
         }
 
-        public ThumbStickAxisHandler(string name, PlayerIndex playerIndex, ThumbStick thumbStick, Glyph.Axis axis, float deadZone = 0, AxisSign sign = AxisSign.None, InputActivity desiredActivity = InputActivity.Pressed)
+        public ThumbStickAxisHandler(string name, PlayerIndex playerIndex, ThumbStick thumbStick, Glyph.Axis axis,
+            float deadZone = 0, AxisSign sign = AxisSign.None, InputActivity desiredActivity = InputActivity.Pressed)
             : base(name, deadZone, sign, desiredActivity)
         {
             PlayerIndex = playerIndex;

@@ -8,6 +8,11 @@ namespace Glyph.Input.Handlers.Buttons
         public PlayerIndex PlayerIndex { get; set; }
         public XnaButtons? Button { get; set; }
 
+        public override InputSource InputSource
+        {
+            get { return InputSource.GamePad; }
+        }
+
         public PadButtonHandler()
             : this("", null)
         {
@@ -24,11 +29,6 @@ namespace Glyph.Input.Handlers.Buttons
         {
             PlayerIndex = playerIndex;
             Button = button;
-        }
-
-        public override InputSource InputSource
-        {
-            get { return InputSource.GamePad; }
         }
 
         protected override bool GetActivity(InputStates inputStates)

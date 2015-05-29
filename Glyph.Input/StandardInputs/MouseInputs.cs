@@ -31,7 +31,6 @@ namespace Glyph.Input.StandardInputs
                 new MouseCursorHandler(ScreenPosition, CursorSpace.Screen),
                 new MouseCursorHandler(VirtualScreenPosition, CursorSpace.VirtualScreen),
                 new MouseCursorHandler(ScenePosition, CursorSpace.Scene),
-
                 new MouseButtonHandler(Left, MouseButton.Left),
                 new MouseButtonHandler(LeftReleased, MouseButton.Left, InputActivity.Released),
                 new MouseButtonHandler(LeftPressed, MouseButton.Left, InputActivity.Pressed),
@@ -41,7 +40,6 @@ namespace Glyph.Input.StandardInputs
                 new MouseButtonHandler(Middle, MouseButton.Middle),
                 new MouseButtonHandler(MiddleReleased, MouseButton.Middle, InputActivity.Released),
                 new MouseButtonHandler(MiddlePressed, MouseButton.Middle, InputActivity.Pressed),
-
                 new MouseWheelHandler(Wheel)
             });
         }
