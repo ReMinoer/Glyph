@@ -1,6 +1,6 @@
 ﻿namespace Glyph.Input
 {
-    public enum InputAction
+    public enum InputActivity
     {
         None,
         Triggered,

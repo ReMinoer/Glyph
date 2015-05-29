@@ -26,10 +26,8 @@
         {
         }
 
-        public override void Update(InputStates inputStates)
+        protected override void HandleInput(InputStates inputStates)
         {
-            base.Update(inputStates);
-
             _isActivated = false;
             foreach (IInputHandler inputHandler in this)
             {

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Glyph.Input.Composites;
+using Glyph.Input.Converters;
+using Glyph.Input.Handlers.Axis;
 using Glyph.Input.Handlers.Buttons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -21,31 +23,29 @@ namespace Glyph.Input.StandardInputs
 
         public MenuInputs(bool gamepad, bool mouse, bool keyboard)
         {
-            var up = new InputSet<InputAction>(Up);
-            var down = new InputSet<InputAction>(Down);
-            var left = new InputSet<InputAction>(Left);
-            var right = new InputSet<InputAction>(Right);
-            var confirm = new InputSet<InputAction>(Confirm);
-            var cancel = new InputSet<InputAction>(Cancel);
-            var launch = new InputSet<InputAction>(Launch);
-            var exit = new InputSet<InputAction>(Exit);
-            var clic = new InputSet<InputAction>(Clic);
+            var up = new InputSet<InputActivity>(Up);
+            var down = new InputSet<InputActivity>(Down);
+            var left = new InputSet<InputActivity>(Left);
+            var right = new InputSet<InputActivity>(Right);
+            var confirm = new InputSet<InputActivity>(Confirm);
+            var cancel = new InputSet<InputActivity>(Cancel);
+            var launch = new InputSet<InputActivity>(Launch);
+            var exit = new InputSet<InputActivity>(Exit);
+            var clic = new InputSet<InputActivity>(Clic);
 
             if (gamepad)
             {
                 up.Add(new PadButtonHandler("DPad", Buttons.DPadUp));
-                up.Add(new PadButtonHandler("ThumbStick", Buttons.LeftThumbstickUp));
+                up.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Vertical, 0.5f, AxisSign.Positive, InputActivity.Triggered));
 
                 down.Add(new PadButtonHandler("DPad", Buttons.DPadDown));
-                down.Add(new PadButtonHandler("ThumbStick", Buttons.LeftThumbstickDown));
+                down.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Vertical, 0.5f, AxisSign.Negative, InputActivity.Triggered));
 
                 left.Add(new PadButtonHandler("DPad", Buttons.DPadLeft));
-                left.Add(new PadButtonHandler("ThumbStick", Buttons.LeftThumbstickLeft));
+                left.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Horizontal, 0.5f, AxisSign.Negative, InputActivity.Triggered));
 
                 right.Add(new PadButtonHandler("DPad", Buttons.DPadRight));
-                right.Add(new PadButtonHandler("ThumbStick", Buttons.LeftThumbstickRight));
-
-                //right.SensitivityPad = 0.5f;
+                right.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Horizontal, 0.5f, AxisSign.Positive, InputActivity.Triggered));
 
                 confirm.Add(new PadButtonHandler("Button", Buttons.A));
 

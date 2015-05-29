@@ -22,8 +22,8 @@ namespace Glyph.Input.StandardInputs
             {
                 new InputSimultaneous(XboxQuit)
                 {
-                    new PadButtonHandler("Button1", Buttons.Start, InputAction.Pressed),
-                    new PadButtonHandler("Button2", Buttons.Back, InputAction.Pressed)
+                    new PadButtonHandler("Button1", Buttons.Start, InputActivity.Pressed),
+                    new PadButtonHandler("Button2", Buttons.Back, InputActivity.Pressed)
                 },
                 new KeyHandler(Fullscreen, Keys.F12),
                 new KeyHandler(StatusDisplay, Keys.F11),

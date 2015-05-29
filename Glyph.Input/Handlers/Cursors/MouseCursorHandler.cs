@@ -14,8 +14,8 @@ namespace Glyph.Input.Handlers.Cursors
         {
         }
 
-        public MouseCursorHandler(string name, CursorSpace cursorSpace)
-            : base(name, cursorSpace)
+        public MouseCursorHandler(string name, CursorSpace cursorSpace, InputActivity desiredActivity = InputActivity.Pressed)
+            : base(name, cursorSpace, desiredActivity)
         {
         }
 

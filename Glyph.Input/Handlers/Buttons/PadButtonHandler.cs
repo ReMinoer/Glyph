@@ -13,14 +13,14 @@ namespace Glyph.Input.Handlers.Buttons
         {
         }
 
-        public PadButtonHandler(string name, XnaButtons? button, InputAction desiredAction = InputAction.Triggered)
-            : this(name, PlayerIndex.One, button, desiredAction)
+        public PadButtonHandler(string name, XnaButtons? button, InputActivity desiredActivity = InputActivity.Triggered)
+            : this(name, PlayerIndex.One, button, desiredActivity)
         {
         }
 
         public PadButtonHandler(string name, PlayerIndex playerIndex, XnaButtons? button,
-            InputAction desiredAction = InputAction.Triggered)
-            : base(name, desiredAction)
+            InputActivity desiredActivity = InputActivity.Triggered)
+            : base(name, desiredActivity)
         {
             PlayerIndex = playerIndex;
             Button = button;
@@ -31,7 +31,7 @@ namespace Glyph.Input.Handlers.Buttons
             get { return InputSource.GamePad; }
         }
 
-        protected override bool GetState(InputStates inputStates)
+        protected override bool GetActivity(InputStates inputStates)
         {
             return Button.HasValue && inputStates.GamePadStates[PlayerIndex].IsButtonDown(Button.Value);
         }

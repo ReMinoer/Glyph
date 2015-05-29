@@ -16,13 +16,13 @@ namespace Glyph.Input.Handlers.Buttons
         {
         }
 
-        public KeyHandler(string name, Keys key, InputAction desiredAction = InputAction.Triggered)
-            : base(name, desiredAction)
+        public KeyHandler(string name, Keys key, InputActivity desiredActivity = InputActivity.Triggered)
+            : base(name, desiredActivity)
         {
             Key = key;
         }
 
-        protected override bool GetState(InputStates inputStates)
+        protected override bool GetActivity(InputStates inputStates)
         {
             return Key != Keys.None && inputStates.KeyboardState.IsKeyDown(Key);
         }

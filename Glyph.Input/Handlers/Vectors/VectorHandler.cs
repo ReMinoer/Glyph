@@ -2,18 +2,18 @@
 
 namespace Glyph.Input.Handlers.Vectors
 {
-    public abstract class VectorHandler : InputHandler<Vector2>
+    public abstract class VectorHandler : SensitiveHandler<Vector2>
     {
         public float DeadZone { get; set; }
-        public override bool IsActivated { get; protected set; }
         public override Vector2 Value { get; protected set; }
 
-        protected VectorHandler(string name, float deadZone = 0) : base(name)
+        protected VectorHandler(string name, float deadZone, InputActivity desiredActivity)
+            : base(name, desiredActivity)
         {
             DeadZone = deadZone;
         }
 
-        public override void Update(InputStates inputStates)
+        protected override void HandleInput(InputStates inputStates)
         {
             Vector2 state = GetState(inputStates);
             if (state.Length() < DeadZone)

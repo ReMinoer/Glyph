@@ -3,21 +3,21 @@
     public class ButtonBehaviour
     {
         private bool _previousState;
-        public InputAction Action { get; private set; }
+        public InputActivity Activity { get; private set; }
 
-        public InputAction Update(bool state)
+        public InputActivity Update(bool state)
         {
             if (state && !_previousState)
-                Action = InputAction.Triggered;
+                Activity = InputActivity.Triggered;
             else if (!state && _previousState)
-                Action = InputAction.Released;
+                Activity = InputActivity.Released;
             else if (state)
-                Action = InputAction.Pressed;
+                Activity = InputActivity.Pressed;
             else
-                Action = InputAction.None;
+                Activity = InputActivity.None;
 
             _previousState = state;
-            return Action;
+            return Activity;
         }
     }
 }

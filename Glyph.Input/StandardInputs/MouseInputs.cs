@@ -33,14 +33,14 @@ namespace Glyph.Input.StandardInputs
                 new MouseCursorHandler(ScenePosition, CursorSpace.Scene),
 
                 new MouseButtonHandler(Left, MouseButton.Left),
-                new MouseButtonHandler(LeftReleased, MouseButton.Left, InputAction.Released),
-                new MouseButtonHandler(LeftPressed, MouseButton.Left, InputAction.Pressed),
+                new MouseButtonHandler(LeftReleased, MouseButton.Left, InputActivity.Released),
+                new MouseButtonHandler(LeftPressed, MouseButton.Left, InputActivity.Pressed),
                 new MouseButtonHandler(Right, MouseButton.Right),
-                new MouseButtonHandler(RightReleased, MouseButton.Right, InputAction.Released),
-                new MouseButtonHandler(RightPressed, MouseButton.Right, InputAction.Pressed),
+                new MouseButtonHandler(RightReleased, MouseButton.Right, InputActivity.Released),
+                new MouseButtonHandler(RightPressed, MouseButton.Right, InputActivity.Pressed),
                 new MouseButtonHandler(Middle, MouseButton.Middle),
-                new MouseButtonHandler(MiddleReleased, MouseButton.Middle, InputAction.Released),
-                new MouseButtonHandler(MiddlePressed, MouseButton.Middle, InputAction.Pressed),
+                new MouseButtonHandler(MiddleReleased, MouseButton.Middle, InputActivity.Released),
+                new MouseButtonHandler(MiddlePressed, MouseButton.Middle, InputActivity.Pressed),
 
                 new MouseWheelHandler(Wheel)
             });

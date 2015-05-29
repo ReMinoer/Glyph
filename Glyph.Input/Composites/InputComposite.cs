@@ -7,6 +7,7 @@ namespace Glyph.Input.Composites
     {
         protected readonly List<IInputHandler> Components;
         public string Name { get; set; }
+        public InputActivity DesiredActivity { get; set; }
         public abstract bool IsActivated { get; }
         public abstract TValue Value { get; }
         public abstract InputSource InputSource { get; }
@@ -31,7 +32,11 @@ namespace Glyph.Input.Composites
         {
             foreach (IInputHandler inputHandler in this)
                 inputHandler.Update(inputStates);
+
+            HandleInput(inputStates);
         }
+
+        protected abstract void HandleInput(InputStates inputStates);
 
         public T GetComponent<T>(bool includeItself = false)
             where T : class, IInputHandler

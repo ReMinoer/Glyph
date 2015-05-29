@@ -17,13 +17,13 @@ namespace Glyph.Input.Handlers.Buttons
         {
         }
 
-        public MouseButtonHandler(string name, MouseButton mouseBoutton, InputAction desiredAction = InputAction.Triggered)
-            : base(name, desiredAction)
+        public MouseButtonHandler(string name, MouseButton mouseBoutton, InputActivity desiredActivity = InputActivity.Triggered)
+            : base(name, desiredActivity)
         {
             MouseBoutton = mouseBoutton;
         }
 
-        protected override bool GetState(InputStates inputStates)
+        protected override bool GetActivity(InputStates inputStates)
         {
             switch (MouseBoutton)
             {

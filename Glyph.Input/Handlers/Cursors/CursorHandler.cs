@@ -3,19 +3,19 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Input.Handlers.Cursors
 {
-    public abstract class CursorHandler : InputHandler<Vector2>
+    public abstract class CursorHandler : SensitiveHandler<Vector2>
     {
         private Vector2 _previousState;
         public CursorSpace CursorSpace { get; set; }
         public override Vector2 Value { get; protected set; }
-        public override bool IsActivated { get; protected set; }
 
-        protected CursorHandler(string name, CursorSpace cursorSpace) : base(name)
+        protected CursorHandler(string name, CursorSpace cursorSpace, InputActivity desiredActivity)
+            : base(name, desiredActivity)
         {
             CursorSpace = cursorSpace;
         }
 
-        public override void Update(InputStates inputStates)
+        protected override void HandleInput(InputStates inputStates)
         {
             Vector2 state = GetState(inputStates);
 

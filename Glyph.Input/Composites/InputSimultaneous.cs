@@ -2,18 +2,18 @@
 
 namespace Glyph.Input.Composites
 {
-    public class InputSimultaneous : InputComposite<InputAction>
+    public class InputSimultaneous : InputComposite<InputActivity>
     {
         private readonly ButtonBehaviour _buttonBehaviour = new ButtonBehaviour();
         private bool _isActivated;
-        private InputAction _value;
+        private InputActivity _value;
 
         public override bool IsActivated
         {
             get { return _isActivated; }
         }
 
-        public override InputAction Value
+        public override InputActivity Value
         {
             get { return _value; }
         }
@@ -28,16 +28,14 @@ namespace Glyph.Input.Composites
         {
         }
 
-        public override void Update(InputStates inputStates)
+        protected override void HandleInput(InputStates inputStates)
         {
             if (Count == 0)
             {
                 _isActivated = false;
-                _value = InputAction.None;
+                _value = InputActivity.None;
                 return;
             }
-
-            base.Update(inputStates);
 
             _isActivated = true;
             foreach (IInputHandler inputHandler in this)
