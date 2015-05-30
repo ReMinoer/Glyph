@@ -1,4 +1,4 @@
-﻿using Diese.Composition.Composite;
+﻿using Diese.Composition;
 
 namespace Glyph.Input
 {

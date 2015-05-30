@@ -1,8 +1,9 @@
-﻿namespace Glyph.Input
+﻿using Diese.Composition;
+
+namespace Glyph.Input
 {
-    public interface IInputDecorator : IInputHandler
+    public interface IInputDecorator : IDecorator<IInputHandler>, IInputHandler
     {
-        IInputHandler Component { get; set; }
     }
 
     public interface IInputDecorator<out TValue> : IInputDecorator, IInputHandler<TValue>
