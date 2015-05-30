@@ -76,7 +76,7 @@ namespace Glyph.Game
             Content.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
 
-            InputManager = new InputManager();
+            InputManager = InputManager.Instance;
 
             ModeManager = new ModeManager<TMode>();
             Modes = new Dictionary<TMode, IGameMode>();
