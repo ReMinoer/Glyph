@@ -34,7 +34,7 @@ namespace Glyph
                 return;
 
             _textures.Add(ressources.GetTexture(asset));
-            for (var i = 2; ressources.Contains(asset + i); i++)
+            for (int i = 2; ressources.Contains(asset + i); i++)
                 _textures.Add(ressources.GetTexture(asset + i));
         }
     }

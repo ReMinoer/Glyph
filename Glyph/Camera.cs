@@ -13,8 +13,8 @@ namespace Glyph
 
     static public class Camera
     {
-        static private Vector2 _center;
         static public readonly TransitionVector2 TransitionCenter = new TransitionVector2(BezierFunction.Ease);
+        static private Vector2 _center;
         static private float _zoom;
         static private Vector2 _relative;
         static private bool _dirtyMatrixPosition = true;

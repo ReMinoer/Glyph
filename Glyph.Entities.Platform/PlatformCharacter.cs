@@ -18,6 +18,24 @@ namespace Glyph.Entities.Platform
         public virtual bool OnGround { get; set; }
 
         public virtual int Layer { get; set; }
+
+        [XmlIgnore]
+        public override Rectangle Hitbox
+        {
+            get
+            {
+                var hitbox = new Rectangle();
+                if (Orientation == Orientation.Left)
+                    hitbox.X = (int)Position.X + (RectangleSource.Width - (CollisionMask.X + CollisionMask.Width));
+                else
+                    hitbox.X = (int)Position.X + CollisionMask.X;
+                hitbox.Y = (int)Position.Y + CollisionMask.Y;
+                hitbox.Width = CollisionMask.Width;
+                hitbox.Height = CollisionMask.Height;
+                return hitbox;
+            }
+        }
+
         //[XmlIgnore]
         //public override Vector2 Centre
         //{
@@ -38,23 +56,6 @@ namespace Glyph.Entities.Platform
         //}
 
         protected abstract Rectangle CollisionMask { get; }
-
-        [XmlIgnore]
-        public override Rectangle Hitbox
-        {
-            get
-            {
-                var hitbox = new Rectangle();
-                if (Orientation == Orientation.Left)
-                    hitbox.X = (int)Position.X + (RectangleSource.Width - (CollisionMask.X + CollisionMask.Width));
-                else
-                    hitbox.X = (int)Position.X + CollisionMask.X;
-                hitbox.Y = (int)Position.Y + CollisionMask.Y;
-                hitbox.Width = CollisionMask.Width;
-                hitbox.Height = CollisionMask.Height;
-                return hitbox;
-            }
-        }
 
         public override void Initialize()
         {

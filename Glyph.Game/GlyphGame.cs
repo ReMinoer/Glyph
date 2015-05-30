@@ -16,13 +16,12 @@ namespace Glyph.Game
 {
     public abstract class GlyphGame<TMode> : Microsoft.Xna.Framework.Game
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
+        protected int DefautWindowHeight = (int)Resolution.WindowSize.Y;
+        protected int DefautWindowWidth = (int)Resolution.WindowSize.X;
         private CultureInfo _culture;
         private Viewport _defaultViewport;
         private bool _synchroVertical;
-        protected int DefautWindowHeight = (int)Resolution.WindowSize.Y;
-        protected int DefautWindowWidth = (int)Resolution.WindowSize.X;
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public GraphicsDeviceManager Graphics { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public ContentLibrary ContentLibrary { get; private set; }

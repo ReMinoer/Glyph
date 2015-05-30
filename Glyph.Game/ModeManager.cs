@@ -4,10 +4,9 @@ namespace Glyph.Game
 {
     public class ModeManager<TState>
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private bool _isChange;
         private TState _state;
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public TState State
         {

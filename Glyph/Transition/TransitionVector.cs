@@ -39,11 +39,6 @@ namespace Glyph.Transition
             get { return _lastSpeed; }
         }
 
-        private bool IsAllAttributesInit
-        {
-            get { return _isAttributeInit[0] && _isAttributeInit[1] && _isAttributeInit[2]; }
-        }
-
         public ITimingFunction Function
         {
             get
@@ -208,6 +203,11 @@ namespace Glyph.Transition
             get { return _elapsedDelay < _delay || Math.Abs(ElapsedTime) < float.Epsilon; }
         }
 
+        private bool IsAllAttributesInit
+        {
+            get { return _isAttributeInit[0] && _isAttributeInit[1] && _isAttributeInit[2]; }
+        }
+
         protected TransitionVector(ITimingFunction f)
         {
             Function = f;
@@ -228,6 +228,12 @@ namespace Glyph.Transition
             : this(new StepsFunction(steps, startInclude))
         {
         }
+
+        protected abstract T Add(T a, T b);
+        protected abstract T Subtract(T a, T b);
+        protected abstract T Scalar(T a, float b);
+        protected abstract float Ratio(T a, T b);
+        protected abstract T Normalize(T a);
 
         public T Update(GameTime gameTime, T start, T end, float duration, bool reverse = false, bool reset = false)
         {
@@ -383,12 +389,6 @@ namespace Glyph.Transition
 
             return CalculateValue(ElapsedTime + milliseconds);
         }
-
-        protected abstract T Add(T a, T b);
-        protected abstract T Subtract(T a, T b);
-        protected abstract T Scalar(T a, float b);
-        protected abstract float Ratio(T a, T b);
-        protected abstract T Normalize(T a);
 
         private T CalculateValue(float time)
         {

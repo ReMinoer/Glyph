@@ -15,6 +15,8 @@ namespace Glyph.Input.Handlers.Cursors
             CursorSpace = cursorSpace;
         }
 
+        protected abstract Vector2 GetState(InputStates inputStates);
+
         protected override void HandleInput(InputStates inputStates)
         {
             Vector2 state = GetState(inputStates);
@@ -44,7 +46,5 @@ namespace Glyph.Input.Handlers.Cursors
 
             _previousState = state;
         }
-
-        protected abstract Vector2 GetState(InputStates inputStates);
     }
 }

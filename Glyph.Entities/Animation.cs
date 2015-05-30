@@ -74,7 +74,7 @@ namespace Glyph.Entities
             Frames = id;
 
             Intervals = new int[Frames.Length];
-            for (var i = 0; i < Frames.Length; i++)
+            for (int i = 0; i < Frames.Length; i++)
                 Intervals[i] = period;
 
             Loop = loop;
@@ -138,7 +138,7 @@ namespace Glyph.Entities
 
         public void SetAllIntervals(int inter)
         {
-            for (var i = 0; i < Frames.Length; i++)
+            for (int i = 0; i < Frames.Length; i++)
                 Intervals[i] = inter;
             _period.Interval = Intervals[_currentState];
         }
@@ -148,7 +148,7 @@ namespace Glyph.Entities
             if (begin > end || begin < 0 || begin >= NbFrames || end < 0 || end >= NbFrames)
                 throw new ArgumentOutOfRangeException();
 
-            var result = 0;
+            int result = 0;
             for (int i = begin; i < end; i++)
                 result += Intervals[i];
             return result;

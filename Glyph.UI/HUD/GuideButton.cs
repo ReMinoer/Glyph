@@ -12,12 +12,12 @@ namespace Glyph.UI.HUD
 {
     public class GuideButton : Sprite
     {
-        private readonly bool _clickable;
-        private readonly Vector2 _keyPadding = new Vector2(20, 50);
         protected readonly string ActionButtonName;
         protected readonly TextSprite TextSprite = new TextSprite();
         protected readonly TransitionFloat TransitionOpacity = new TransitionFloat {Start = 0, End = 1, Duration = 500};
         protected bool IsPad;
+        private readonly bool _clickable;
+        private readonly Vector2 _keyPadding = new Vector2(20, 50);
         public virtual bool Display { get; set; }
         public bool DisplayKeyText { get; set; }
         public Texture2D KeyboardIcon { get; protected set; }
@@ -88,7 +88,7 @@ namespace Glyph.UI.HUD
 
         public void GetKeyName(InputManager input)
         {
-            var inputHandler = input.Controls[ActionButtonName];
+            IInputHandler inputHandler = input.Controls[ActionButtonName];
             if (inputHandler == null)
                 return;
 

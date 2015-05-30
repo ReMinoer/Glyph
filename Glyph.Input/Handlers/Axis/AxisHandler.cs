@@ -13,6 +13,8 @@
             Sign = sign;
         }
 
+        protected abstract float GetState(InputStates inputStates);
+
         protected override void HandleInput(InputStates inputStates)
         {
             float state = GetState(inputStates);
@@ -22,7 +24,5 @@
 
             Value = !IsActivated ? state : 0;
         }
-
-        protected abstract float GetState(InputStates inputStates);
     }
 }

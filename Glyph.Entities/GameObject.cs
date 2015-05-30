@@ -35,7 +35,7 @@ namespace Glyph.Entities
             base.LoadContent(ressources, asset, frameX, frameY);
 
             PixelData.Clear();
-            for (var i = 0; i < TextureSplit.Count; i++)
+            for (int i = 0; i < TextureSplit.Count; i++)
             {
                 PixelData.Add(new Color[Texture.Width * Texture.Height]);
                 Texture.GetData(PixelData[i]);

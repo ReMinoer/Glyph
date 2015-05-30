@@ -31,8 +31,8 @@ namespace Glyph
             int rotateWidth = reverse ? source.Height : source.Width;
             int rotateHeight = reverse ? source.Width : source.Height;
 
-            for (var x = 0; x < destinationRectangle.Width; x += rotateWidth)
-                for (var y = 0; y < destinationRectangle.Height; y += rotateHeight)
+            for (int x = 0; x < destinationRectangle.Width; x += rotateWidth)
+                for (int y = 0; y < destinationRectangle.Height; y += rotateHeight)
                 {
                     int w = destinationRectangle.Width - x;
                     if (w > rotateWidth)

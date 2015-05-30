@@ -19,7 +19,6 @@ namespace Glyph
     static public class Resolution
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         static private GraphicsDeviceManager _device;
         static private GameWindow _window;
         static private int _windowWidth = 800;
@@ -91,7 +90,7 @@ namespace Glyph
             _dirtyMatrix = true;
 
             Logger.Info("Virtual resolution changed (Width:{0},Height:{1},Ratio:{2})", _virtualWidth,
-                    _virtualHeight, GetVirtualAspectRatio().ToString("F2"));
+                _virtualHeight, GetVirtualAspectRatio().ToString("F2"));
         }
 
         static public void ToogleFullscreen()
@@ -131,7 +130,7 @@ namespace Glyph
             float targetAspectRatio = GetVirtualAspectRatio();
 
             int width = _device.PreferredBackBufferWidth;
-            var height = (int)(width / targetAspectRatio + .5f);
+            int height = (int)(width / targetAspectRatio + .5f);
 
             if (height > _device.PreferredBackBufferHeight)
             {
@@ -177,8 +176,8 @@ namespace Glyph
             }
             else
             {
-                var maxWidth = 0;
-                var maxHeight = 0;
+                int maxWidth = 0;
+                int maxHeight = 0;
                 foreach (DisplayMode dm in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
                     if (dm.Width >= maxWidth && dm.Height >= maxHeight)
                     {
@@ -210,7 +209,7 @@ namespace Glyph
             _currentlyResizing = false;
 
             Logger.Info("Window resized (Width:{0},Height:{1},Ratio:{2},Fullscreen:{3})", _windowWidth,
-                    _windowHeight, ((double)_windowWidth / _windowHeight).ToString("F2"), FullScreen);
+                _windowHeight, ((double)_windowWidth / _windowHeight).ToString("F2"), FullScreen);
         }
 
         static private void UpdateResolution()

@@ -7,7 +7,6 @@ namespace Glyph.Input.StandardInputs
 {
     public class MouseInputs : List<IInputHandler>
     {
-        private const string Prefix = "Mouse-";
         public const string WindowPosition = Prefix + "WindowPosition";
         public const string ScreenPosition = Prefix + "ScreenPosition";
         public const string VirtualScreenPosition = Prefix + "VirtualScreenPosition";
@@ -22,6 +21,7 @@ namespace Glyph.Input.StandardInputs
         public const string MiddleReleased = Prefix + "MiddleReleased";
         public const string MiddlePressed = Prefix + "MiddlePressed";
         public const string Wheel = Prefix + "Wheel";
+        private const string Prefix = "Mouse-";
 
         public MouseInputs()
         {

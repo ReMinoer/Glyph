@@ -78,7 +78,7 @@ namespace Glyph.Transition
         {
             float x = t;
 
-            for (var i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 float z = BezierX(x) - t;
                 if (Math.Abs(z) < 1e-3)

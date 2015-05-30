@@ -7,11 +7,6 @@ namespace Glyph.Entities
     {
         public List<int> Frames { get; set; }
 
-        internal FrameSequence()
-        {
-            Frames = new List<int>();
-        }
-
         public FrameSequence(int start)
             : this()
         {
@@ -31,13 +26,18 @@ namespace Glyph.Entities
             GoTo(endFrame);
         }
 
+        internal FrameSequence()
+        {
+            Frames = new List<int>();
+        }
+
         static public FrameSequence Linear(params int[] linearPoints)
         {
             if (!linearPoints.Any())
                 return new FrameSequence();
 
             var result = new FrameSequence(linearPoints[0]);
-            for (var i = 1; i < linearPoints.Length; i++)
+            for (int i = 1; i < linearPoints.Length; i++)
                 result = result.GoTo(linearPoints[i]);
 
             return result;
@@ -73,7 +73,7 @@ namespace Glyph.Entities
         {
             var temp = new int[Frames.Count];
 
-            for (var i = 0; i < Frames.Count; i++)
+            for (int i = 0; i < Frames.Count; i++)
                 temp[(i + startIndex) % Frames.Count] = Frames[i];
 
             Frames = temp.ToList();

@@ -15,11 +15,10 @@ namespace Glyph.Scripting
 {
     public abstract class ScriptManager
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
+        protected readonly Lua Lua;
         private readonly LanguageFile _languageFile;
         private readonly Dictionary<string, Dictionary<string, LuaFunction>> _luaFunctions;
-        protected readonly Lua Lua;
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public TriggerManager Triggers { get; private set; }
         public bool DrawTriggerZone { get; set; }
 
@@ -97,7 +96,7 @@ namespace Glyph.Scripting
                 if (!(pair.Value is LuaFunction))
                     continue;
 
-                var name = (string)pair.Key;
+                string name = (string)pair.Key;
                 var function = (LuaFunction)pair.Value;
 
                 scriptFunctions.Add(name, function);

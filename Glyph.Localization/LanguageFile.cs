@@ -55,7 +55,7 @@ namespace Glyph.Localization
             else
                 Add(levelName, new SerializableDictionary<string, string>());
 
-            for (var i = 1; !sr.EndOfStream; i++)
+            for (int i = 1; !sr.EndOfStream; i++)
                 this[levelName].Add("$" + i, sr.ReadLine());
             sr.Close();
         }

@@ -11,14 +11,13 @@ namespace Glyph
 {
     public class ContentLibrary
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly Dictionary<string, Effect> _effects;
         private readonly Dictionary<string, SpriteFont> _fonts;
         private readonly Dictionary<string, Song> _musics;
         private readonly Dictionary<string, SoundEffect> _sounds;
         private readonly Dictionary<string, Texture2D> _textures;
         private GraphicsDevice _graphicsDevice;
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         // TODO : Etudier le chargement asynchrone
 
         public Dictionary<string, Texture2D>.KeyCollection Assets

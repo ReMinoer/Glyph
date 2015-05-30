@@ -8,7 +8,6 @@ namespace Glyph.Input.StandardInputs
 {
     public class MenuInputs : List<IInputHandler>
     {
-        private const string Prefix = "Menu-";
         public const string Up = Prefix + "Up";
         public const string Down = Prefix + "Down";
         public const string Left = Prefix + "Left";
@@ -18,6 +17,7 @@ namespace Glyph.Input.StandardInputs
         public const string Launch = Prefix + "Launch";
         public const string Exit = Prefix + "Exit";
         public const string Clic = Prefix + "Clic";
+        private const string Prefix = "Menu-";
 
         public MenuInputs(bool gamepad, bool mouse, bool keyboard)
         {

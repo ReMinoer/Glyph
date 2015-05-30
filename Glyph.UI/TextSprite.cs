@@ -7,6 +7,8 @@ namespace Glyph.UI
 {
     public class TextSprite : Sprite
     {
+        private Color _contourColor = Color.Black;
+        private Color _shadowColor = Color.Black;
 
         [XmlIgnore]
         public virtual SpriteFont Font { get; set; }
@@ -14,6 +16,9 @@ namespace Glyph.UI
         public virtual string Text { get; set; }
         public virtual int Contour { get; set; }
         public virtual float ContourOpacity { get; set; }
+        public virtual Vector2 Shadow { get; set; }
+        public virtual float ShadowOpacity { get; set; }
+        public virtual int ShadowGradient { get; set; }
 
         public virtual Color ContourColor
         {
@@ -21,18 +26,11 @@ namespace Glyph.UI
             set { _contourColor = value; }
         }
 
-        public virtual Vector2 Shadow { get; set; }
-        public virtual float ShadowOpacity { get; set; }
-        public virtual int ShadowGradient { get; set; }
-
         public virtual Color ShadowColor
         {
             get { return _shadowColor; }
             set { _shadowColor = value; }
         }
-
-        private Color _contourColor = Color.Black;
-        private Color _shadowColor = Color.Black;
 
         [XmlIgnore]
         public override Rectangle RectangleSource

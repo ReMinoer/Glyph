@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Glyph
 {
@@ -36,17 +35,17 @@ namespace Glyph
 
             static public Rotation RotateRight
             {
-                get { return new Rotation { Value = 3 * MathHelper.PiOver2 }; }
+                get { return new Rotation {Value = 3 * MathHelper.PiOver2}; }
             }
 
             static public Rotation RotateLeft
             {
-                get { return new Rotation { Value = MathHelper.PiOver2 }; }
+                get { return new Rotation {Value = MathHelper.PiOver2}; }
             }
 
             static public Rotation RotateOpposite
             {
-                get { return new Rotation { Value = MathHelper.Pi }; }
+                get { return new Rotation {Value = MathHelper.Pi}; }
             }
 
             static public implicit operator float(Rotation x)

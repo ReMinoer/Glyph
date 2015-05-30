@@ -62,7 +62,7 @@ namespace Glyph.UI.Menus
             if (input.IsMouseUsed)
             {
                 Selection = -1;
-                for (var i = 0; i < Buttons.Count; i++)
+                for (int i = 0; i < Buttons.Count; i++)
                     if (Buttons[i].Enable)
                         Selection = i;
             }

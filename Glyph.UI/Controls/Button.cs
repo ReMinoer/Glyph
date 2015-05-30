@@ -15,6 +15,7 @@ namespace Glyph.UI.Controls
             get { return base.Text; }
             set { base.Text = value; }
         }
+
         public override sealed Vector2 Position
         {
             get { return base.Position; }
@@ -37,7 +38,7 @@ namespace Glyph.UI.Controls
         public Button(string txt, int x, int y)
         {
             Text = txt;
-            Position = new Vector2(x,y);
+            Position = new Vector2(x, y);
         }
 
         public override void Initialize()
@@ -50,7 +51,7 @@ namespace Glyph.UI.Controls
         {
             if (input.IsMouseUsed)
             {
-                Vector2 mouseInScreen = input.GetValue<Vector2>(MouseInputs.VirtualScreenPosition);
+                var mouseInScreen = input.GetValue<Vector2>(MouseInputs.VirtualScreenPosition);
                 bool enable = Hitbox.Contains(mouseInScreen);
 
                 if (enable != Enable)

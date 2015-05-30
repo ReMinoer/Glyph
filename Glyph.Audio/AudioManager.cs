@@ -10,10 +10,9 @@ namespace Glyph.Audio
 {
     static public class AudioManager
     {
+        static public Dictionary<string, Song> Musics;
         // TODO : Finaliser et tester le manager audio (controle volume, plusieurs effets,...)
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        static public Dictionary<string, Song> Musics;
         static private Dictionary<string, SoundEffect> _sounds;
         static private Dictionary<string, SoundCollection> _soundCollections;
         static private float _volumeFondu;
@@ -36,7 +35,7 @@ namespace Glyph.Audio
             get
             {
                 int id = -1;
-                for (var i = 0; i < Musics.Count; i++)
+                for (int i = 0; i < Musics.Count; i++)
                     if (Musics.ElementAt(i).Key == NextSong)
                         id = i;
                 return id;
@@ -181,7 +180,7 @@ namespace Glyph.Audio
 
             _soundCollections.Add(asset, new SoundCollection(period));
 
-            var i = 1;
+            int i = 1;
             while (_sounds.ContainsKey(asset + i))
             {
                 _soundCollections[asset].AddSound(_sounds[asset + i]);

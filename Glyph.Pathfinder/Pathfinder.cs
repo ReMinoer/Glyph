@@ -36,16 +36,21 @@ namespace Glyph.Pathfinder
             Closedlist = new PathfinderList();
 
             ClosedGrid = new bool[space.Length][];
-            for (var i = 0; i < ClosedGrid.Length; i++)
+            for (int i = 0; i < ClosedGrid.Length; i++)
                 ClosedGrid[i] = new bool[space[0].Length];
 
             DroppedGrid = new bool[space.Length][];
-            for (var i = 0; i < DroppedGrid.Length; i++)
+            for (int i = 0; i < DroppedGrid.Length; i++)
                 DroppedGrid[i] = new bool[space[0].Length];
 
             TimerTimeout = new Stopwatch();
             TimerProcess = new Stopwatch();
         }
+
+        protected abstract void CalculationProcess();
+        protected abstract bool IsMoveValid(Point newPoint, Point parent, Point move, int cond = 0);
+        protected abstract bool IsCaseVide(Point p);
+        protected abstract TMove NewPathfinderMove(Point p, Point m);
 
         public void Initialize(Point d, Point f)
         {
@@ -62,11 +67,11 @@ namespace Glyph.Pathfinder
             Closedlist = new PathfinderList();
 
             ClosedGrid = new bool[Space.Length][];
-            for (var i = 0; i < ClosedGrid.Length; i++)
+            for (int i = 0; i < ClosedGrid.Length; i++)
                 ClosedGrid[i] = new bool[Space[0].Length];
 
             DroppedGrid = new bool[Space.Length][];
-            for (var i = 0; i < DroppedGrid.Length; i++)
+            for (int i = 0; i < DroppedGrid.Length; i++)
                 DroppedGrid[i] = new bool[Space[0].Length];
 
             Start = d;
@@ -232,11 +237,6 @@ namespace Glyph.Pathfinder
         {
             return (p.Y >= 0) && (p.Y < Space.Length) && (p.X >= 0) && (p.X < Space[0].Length);
         }
-
-        protected abstract void CalculationProcess();
-        protected abstract bool IsMoveValid(Point newPoint, Point parent, Point move, int cond = 0);
-        protected abstract bool IsCaseVide(Point p);
-        protected abstract TMove NewPathfinderMove(Point p, Point m);
 
         static private float DistanceTo(Point value, Point other)
         {

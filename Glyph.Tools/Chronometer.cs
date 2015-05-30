@@ -10,7 +10,7 @@ namespace Glyph.Tools
         static public void Init(int nbTimers = 5)
         {
             Timer = new List<Stopwatch>();
-            for (var i = 0; i < nbTimers; i++)
+            for (int i = 0; i < nbTimers; i++)
                 Timer.Add(new Stopwatch());
         }
     }

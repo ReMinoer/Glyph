@@ -13,6 +13,8 @@ namespace Glyph.Input.Handlers.Vectors
             DeadZone = deadZone;
         }
 
+        protected abstract Vector2 GetState(InputStates inputStates);
+
         protected override void HandleInput(InputStates inputStates)
         {
             Vector2 state = GetState(inputStates);
@@ -22,7 +24,5 @@ namespace Glyph.Input.Handlers.Vectors
             Value = state;
             IsActivated = Value.Length() >= DeadZone;
         }
-
-        protected abstract Vector2 GetState(InputStates inputStates);
     }
 }

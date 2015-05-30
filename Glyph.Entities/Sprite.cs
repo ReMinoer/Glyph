@@ -6,15 +6,25 @@ namespace Glyph.Entities
 {
     public class Sprite
     {
+        private Color _color = Color.White;
+        private float _opacity = 1f;
+        private float _scale = 1f;
+        private string _asset = "";
+        public virtual Vector2 Position { get; set; }
+        public virtual Vector2 Direction { get; set; }
+        public virtual float Speed { get; set; }
+        public virtual float Rotation { get; set; }
+        public virtual Vector2 Origin { get; set; }
+        public virtual SpriteEffects SpriteEffect { get; set; }
+
+        [XmlIgnore]
+        public virtual Texture2D Texture { get; set; }
+
         public virtual string Asset
         {
             get { return _asset; }
             set { _asset = value; }
         }
-
-        public virtual Vector2 Position { get; set; }
-        public virtual Vector2 Direction { get; set; }
-        public virtual float Speed { get; set; }
 
         public virtual Color Color
         {
@@ -28,24 +38,11 @@ namespace Glyph.Entities
             set { _opacity = value; }
         }
 
-        public virtual float Rotation { get; set; }
-
         public virtual float Scale
         {
             get { return _scale; }
             set { _scale = value; }
         }
-
-        public virtual Vector2 Origin { get; set; }
-        public virtual SpriteEffects SpriteEffect { get; set; }
-
-        private Color _color = Color.White;
-        private float _opacity = 1f;
-        private float _scale = 1f;
-        private string _asset = "";
-
-        [XmlIgnore]
-        public virtual Texture2D Texture { get; set; }
 
         [XmlIgnore]
         public virtual Vector2 PositionScreen

@@ -34,7 +34,7 @@ namespace Glyph.Transition
 
         public float GetValue(float t)
         {
-            for (var i = 0; i < KeyPoints.Count; i++)
+            for (int i = 0; i < KeyPoints.Count; i++)
                 if (t >= KeyPoints.ElementAt(i).Key.X)
                 {
                     float x = KeyPoints.ElementAt(i).Key.X;

@@ -7,8 +7,10 @@ namespace Glyph
     public class Period
     {
         public int Interval { get; set; }
+
         [XmlIgnore]
         public float ElapsedTime { get; private set; }
+
         [XmlIgnore]
         public bool IsEnd { get; private set; }
 

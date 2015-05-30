@@ -34,8 +34,8 @@ namespace Glyph.Entities
         {
             get
             {
-                var totalFrames = 0;
-                for (var i = 0; i < TextureSplit.Count; i++)
+                int totalFrames = 0;
+                for (int i = 0; i < TextureSplit.Count; i++)
                 {
                     Point framesXY = NbFramesPerTexture(i);
                     totalFrames += framesXY.X * framesXY.Y;
@@ -52,8 +52,8 @@ namespace Glyph.Entities
             get
             {
                 var rectangleSource = new Rectangle();
-                var totalFrames = 0;
-                for (var i = 0; i < TextureSplit.Count; i++)
+                int totalFrames = 0;
+                for (int i = 0; i < TextureSplit.Count; i++)
                 {
                     Point framesXY = NbFramesPerTexture(i);
                     totalFrames += framesXY.X * framesXY.Y;
@@ -76,7 +76,7 @@ namespace Glyph.Entities
         public AnimSprite()
         {
             TextureSplit = new Texture2DSplit();
-            Animations = new SerializableDictionary<string, Animation>{{"defaut", Animation.Default}};
+            Animations = new SerializableDictionary<string, Animation> {{"defaut", Animation.Default}};
             CurrentAnimation = "defaut";
         }
 

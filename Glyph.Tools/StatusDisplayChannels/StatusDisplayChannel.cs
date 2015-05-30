@@ -31,6 +31,8 @@ namespace Glyph.Tools.StatusDisplayChannels
             Spacing = 0;
         }
 
+        protected abstract void UpdateValues(GameTime gameTime);
+
         public void LoadContent(ContentLibrary ressources)
         {
             foreach (StatusDisplayText t in Text.Values)
@@ -41,7 +43,7 @@ namespace Glyph.Tools.StatusDisplayChannels
         {
             UpdateValues(gameTime);
 
-            var i = 0;
+            int i = 0;
             foreach (StatusDisplayText t in Text.Values)
             {
                 Vector2 size = t.MeasureString();
@@ -57,7 +59,5 @@ namespace Glyph.Tools.StatusDisplayChannels
             foreach (StatusDisplayText t in Text.Values)
                 t.Draw(spriteBatch);
         }
-
-        protected abstract void UpdateValues(GameTime gameTime);
     }
 }
