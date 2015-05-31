@@ -14,9 +14,9 @@
         {
         }
 
-        public MouseWheelHandler(string name, float deadZone = 0, AxisSign sign = AxisSign.None,
+        public MouseWheelHandler(string name, float deadZone = 0, AxisSign sign = AxisSign.None, bool inverse = false,
             InputActivity desiredActivity = InputActivity.Pressed)
-            : base(name, deadZone, sign, desiredActivity)
+            : base(name, deadZone, sign, inverse, desiredActivity)
         {
         }
 

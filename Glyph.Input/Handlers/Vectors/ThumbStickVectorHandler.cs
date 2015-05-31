@@ -14,18 +14,20 @@ namespace Glyph.Input.Handlers.Vectors
         }
 
         public ThumbStickVectorHandler()
-            : this("", PlayerIndex.One, ThumbStick.None)
+            : this("", ThumbStick.None)
         {
         }
 
-        public ThumbStickVectorHandler(string name, ThumbStick thumbStick, float deadZone = 0)
-            : this("", PlayerIndex.One, thumbStick, deadZone)
+        public ThumbStickVectorHandler(string name, ThumbStick thumbStick, float deadZone = 0, bool inverseX = false,
+            bool inverseY = false, InputActivity inputActivity = InputActivity.Pressed)
+            : this("", PlayerIndex.One, thumbStick, deadZone, inverseX, inverseY, inputActivity)
         {
         }
 
         public ThumbStickVectorHandler(string name, PlayerIndex playerIndex, ThumbStick thumbStick, float deadZone = 0,
+            bool inverseX = false, bool inverseY = false,
             InputActivity inputActivity = InputActivity.Pressed)
-            : base(name, deadZone, inputActivity)
+            : base(name, deadZone, inverseX, inverseY, inputActivity)
         {
             PlayerIndex = playerIndex;
             ThumbStick = thumbStick;

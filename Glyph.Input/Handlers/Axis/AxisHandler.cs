@@ -4,13 +4,15 @@
     {
         public float DeadZone { get; set; }
         public AxisSign Sign { get; set; }
+        public bool Inverse { get; set; }
         public override float Value { get; protected set; }
 
-        protected AxisHandler(string name, float deadZone, AxisSign sign, InputActivity desiredActivity)
+        protected AxisHandler(string name, float deadZone, AxisSign sign, bool inverse, InputActivity desiredActivity)
             : base(name, desiredActivity)
         {
             DeadZone = deadZone;
             Sign = sign;
+            Inverse = inverse;
         }
 
         protected abstract float GetState(InputStates inputStates);
@@ -22,7 +24,7 @@
             IsActivated = (Sign == AxisSign.Positive || Sign == AxisSign.None) && state >= DeadZone
                           || (Sign == AxisSign.Negative || Sign == AxisSign.None) && state <= -DeadZone;
 
-            Value = !IsActivated ? state : 0;
+            Value = IsActivated ? (Inverse ? -state : state) : 0;
         }
     }
 }

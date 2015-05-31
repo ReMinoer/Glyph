@@ -35,19 +35,19 @@ namespace Glyph.Input.StandardInputs
             {
                 up.Add(new PadButtonHandler("DPad", Buttons.DPadUp));
                 up.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Vertical, 0.5f, AxisSign.Positive,
-                    InputActivity.Triggered));
+                    false, InputActivity.Triggered));
 
                 down.Add(new PadButtonHandler("DPad", Buttons.DPadDown));
                 down.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Vertical, 0.5f, AxisSign.Negative,
-                    InputActivity.Triggered));
+                    false, InputActivity.Triggered));
 
                 left.Add(new PadButtonHandler("DPad", Buttons.DPadLeft));
                 left.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Horizontal, 0.5f,
-                    AxisSign.Negative, InputActivity.Triggered));
+                    AxisSign.Negative, false, InputActivity.Triggered));
 
                 right.Add(new PadButtonHandler("DPad", Buttons.DPadRight));
                 right.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Horizontal, 0.5f,
-                    AxisSign.Positive, InputActivity.Triggered));
+                    AxisSign.Positive, false, InputActivity.Triggered));
 
                 confirm.Add(new PadButtonHandler("Button", Buttons.A));
 
