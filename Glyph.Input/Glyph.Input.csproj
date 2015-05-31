@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Converters\ButtonsToAxis.cs" />
     <Compile Include="Converters\InputConverter.cs" />
+    <Compile Include="Decorators\InputCache.cs" />
     <Compile Include="Decorators\InputDoser.cs" />
     <Compile Include="GameControls.cs" />
     <Compile Include="Handlers\Axis\AxisHandler.cs" />
@@ -49,8 +50,10 @@
     <Compile Include="Handlers\Axis\PadTriggerHandler.cs" />
     <Compile Include="Handlers\Axis\ThumbStickAxisHandler.cs" />
     <Compile Include="Handlers\ButtonHandler.cs" />
+    <Compile Include="Handlers\Vectors\RadialMouseHandler.cs" />
     <Compile Include="Handlers\Vectors\ThumbStickVectorHandler.cs" />
     <Compile Include="IInputConverter.cs" />
+    <Compile Include="MouseManager.cs" />
     <Compile Include="ThumbStick.cs" />
     <Compile Include="Trigger.cs" />
     <Compile Include="Handlers\Cursors\CursorHandler.cs" />
