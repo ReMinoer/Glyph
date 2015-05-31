@@ -24,7 +24,7 @@ namespace Glyph.UI
             Enable = enable;
 
             Sprite.Initialize();
-            Position = Resolution.Size / 2;
+            Position = Resolution.Instance.Size / 2;
         }
 
         static public void LoadContent(ContentLibrary ressources, string asset)

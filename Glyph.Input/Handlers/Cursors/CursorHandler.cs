@@ -28,13 +28,14 @@ namespace Glyph.Input.Handlers.Cursors
                     position = state;
                     break;
                 case CursorSpace.Screen:
-                    position = state - Resolution.WindowMargin;
+                    position = state - Resolution.Instance.WindowMargin;
                     break;
                 case CursorSpace.VirtualScreen:
-                    position = (state - Resolution.WindowMargin) / Resolution.ScaleRatio;
+                    position = (state - Resolution.Instance.WindowMargin) / Resolution.Instance.ScaleRatio;
                     break;
                 case CursorSpace.Scene:
-                    position = (state - Resolution.WindowMargin) / (Resolution.ScaleRatio * Camera.Zoom)
+                    position = (state - Resolution.Instance.WindowMargin) /
+                               (Resolution.Instance.ScaleRatio * Camera.Zoom)
                                + Camera.VectorPosition.XY();
                     break;
                 default:

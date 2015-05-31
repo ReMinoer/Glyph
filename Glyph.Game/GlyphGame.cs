@@ -16,8 +16,8 @@ namespace Glyph.Game
 {
     public abstract class GlyphGame<TMode> : Microsoft.Xna.Framework.Game
     {
-        protected int DefautWindowHeight = (int)Resolution.WindowSize.Y;
-        protected int DefautWindowWidth = (int)Resolution.WindowSize.X;
+        protected int DefautWindowHeight = (int)Resolution.Instance.WindowSize.Y;
+        protected int DefautWindowWidth = (int)Resolution.Instance.WindowSize.X;
         private CultureInfo _culture;
         private Viewport _defaultViewport;
         private bool _synchroVertical;
@@ -66,7 +66,7 @@ namespace Glyph.Game
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += WindowSizeChanged;
 
-            Resolution.Init(Graphics, Window);
+            Resolution.Instance.Init(Graphics, Window);
 
             Graphics.PreferMultiSampling = true;
             Graphics.ApplyChanges();
@@ -114,6 +114,9 @@ namespace Glyph.Game
 
         protected override void Update(GameTime gameTime)
         {
+            if (ElapsedTime.Instance == null)
+                ElapsedTime.Instance = gameTime;
+
             PerformanceViewer.UpdateCall();
 
             base.Update(gameTime);
@@ -156,7 +159,7 @@ namespace Glyph.Game
 
 #if WINDOWS
             if (InputManager[DeveloperInputs.Fullscreen])
-                Resolution.ToogleFullscreen();
+                Resolution.Instance.ToogleFullscreen();
 #endif
 
             Modes[ModeManager.State].HandleInput(InputManager);
@@ -195,7 +198,7 @@ namespace Glyph.Game
             _defaultViewport = GraphicsDevice.Viewport;
             PerformanceViewer.DrawCall();
 
-            Resolution.BeginDraw();
+            Resolution.Instance.BeginDraw();
             Graphics.GraphicsDevice.Clear(Color.Black);
 
             return base.BeginDraw();
@@ -209,7 +212,8 @@ namespace Glyph.Game
 
         private void WindowSizeChanged(object sender, EventArgs e)
         {
-            Resolution.SetWindow(Window.ClientBounds.Width, Window.ClientBounds.Height, Resolution.FullScreen);
+            Resolution.Instance.SetWindow(Window.ClientBounds.Width, Window.ClientBounds.Height,
+                Resolution.Instance.FullScreen);
         }
     }
 }

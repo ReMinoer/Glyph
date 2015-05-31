@@ -24,9 +24,9 @@ namespace Glyph.Tools
             get
             {
                 _positionSpace.X =
-                    (int)((int)Position.X / (Resolution.ScaleRatio * Camera.Zoom) + Camera.VectorPosition.X);
+                    (int)((int)Position.X / (Resolution.Instance.ScaleRatio * Camera.Zoom) + Camera.VectorPosition.X);
                 _positionSpace.Y =
-                    (int)((int)Position.Y / (Resolution.ScaleRatio * Camera.Zoom) + Camera.VectorPosition.Y);
+                    (int)((int)Position.Y / (Resolution.Instance.ScaleRatio * Camera.Zoom) + Camera.VectorPosition.Y);
                 return _positionSpace;
             }
         }
@@ -49,16 +49,16 @@ namespace Glyph.Tools
             {
                 _selectionSpace.X =
                     (int)
-                        ((int)MathHelper.Min(PointB.X, PointA.X) / (Resolution.ScaleRatio * Camera.Zoom) +
+                        ((int)MathHelper.Min(PointB.X, PointA.X) / (Resolution.Instance.ScaleRatio * Camera.Zoom) +
                          Camera.VectorPosition.X);
                 _selectionSpace.Y =
                     (int)
-                        ((int)MathHelper.Min(PointB.Y, PointA.Y) / (Resolution.ScaleRatio * Camera.Zoom) +
+                        ((int)MathHelper.Min(PointB.Y, PointA.Y) / (Resolution.Instance.ScaleRatio * Camera.Zoom) +
                          Camera.VectorPosition.Y);
                 _selectionSpace.Width =
-                    (int)((int)Math.Abs(PointB.X - PointA.X) / (Resolution.ScaleRatio * Camera.Zoom));
+                    (int)((int)Math.Abs(PointB.X - PointA.X) / (Resolution.Instance.ScaleRatio * Camera.Zoom));
                 _selectionSpace.Height =
-                    (int)((int)Math.Abs(PointB.Y - PointA.Y) / (Resolution.ScaleRatio * Camera.Zoom));
+                    (int)((int)Math.Abs(PointB.Y - PointA.Y) / (Resolution.Instance.ScaleRatio * Camera.Zoom));
                 return _selectionSpace;
             }
         }
@@ -87,14 +87,14 @@ namespace Glyph.Tools
 
             Position = input.GetValue<Vector2>(MouseInputs.WindowPosition);
 
-            if (Position.X < Resolution.WindowMargin.X)
-                Position = Position.SetX(Resolution.WindowMargin.X);
-            if (Position.X >= Resolution.Size.X + Resolution.WindowMargin.X - 1)
-                Position = Position.SetX(Resolution.Size.X + Resolution.WindowMargin.X - 1);
-            if (Position.Y < Resolution.WindowMargin.Y)
-                Position = Position.SetY(Resolution.WindowMargin.Y);
-            if (Position.Y >= Resolution.Size.Y + Resolution.WindowMargin.Y - 1)
-                Position = Position.SetY(Resolution.Size.Y + Resolution.WindowMargin.Y - 1);
+            if (Position.X < Resolution.Instance.WindowMargin.X)
+                Position = Position.SetX(Resolution.Instance.WindowMargin.X);
+            if (Position.X >= Resolution.Instance.Size.X + Resolution.Instance.WindowMargin.X - 1)
+                Position = Position.SetX(Resolution.Instance.Size.X + Resolution.Instance.WindowMargin.X - 1);
+            if (Position.Y < Resolution.Instance.WindowMargin.Y)
+                Position = Position.SetY(Resolution.Instance.WindowMargin.Y);
+            if (Position.Y >= Resolution.Instance.Size.Y + Resolution.Instance.WindowMargin.Y - 1)
+                Position = Position.SetY(Resolution.Instance.Size.Y + Resolution.Instance.WindowMargin.Y - 1);
 
             if (input[MouseInputs.Left])
             {

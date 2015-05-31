@@ -9,6 +9,7 @@
 ////THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NLog;
@@ -16,44 +17,56 @@ using NLog;
 namespace Glyph
 {
     // WATCH : Viewport improvement behaviour
-    static public class Resolution
+    public class Resolution
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        static private GraphicsDeviceManager _device;
-        static private GameWindow _window;
-        static private int _windowWidth = 800;
-        static private int _windowHeight = 450;
-        static private int _virtualWidth = 800;
-        static private int _virtualHeight = 450;
-        static private int _savedWidth = 800;
-        static private int _savedHeight = 450;
-        static private Matrix _scaleMatrix;
-        static private bool _dirtyMatrix = true;
-        static private bool _currentlyResizing;
-        static public bool FullScreen { get; private set; }
-        static public Vector2 Size { get; private set; }
+        private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private GraphicsDeviceManager _device;
+        private GameWindow _window;
+        private int _windowWidth = 800;
+        private int _windowHeight = 450;
+        private int _virtualWidth = 800;
+        private int _virtualHeight = 450;
+        private int _savedWidth = 800;
+        private int _savedHeight = 450;
+        private Matrix _scaleMatrix;
+        private bool _dirtyMatrix = true;
+        private bool _currentlyResizing;
+        static private Resolution _instance;
+        public bool FullScreen { get; private set; }
+        public Vector2 Size { get; private set; }
 
-        static public Vector2 WindowSize
+        static public Resolution Instance
+        {
+            get { return _instance ?? (_instance = new Resolution()); }
+        }
+
+        public Vector2 WindowSize
         {
             get { return new Vector2(_windowWidth, _windowHeight); }
         }
 
-        static public Vector2 VirtualSize
+        public Vector2 VirtualSize
         {
             get { return new Vector2(_virtualWidth, _virtualHeight); }
         }
 
-        static public float ScaleRatio
+        public float ScaleRatio
         {
             get { return Size.X / _virtualWidth; }
         }
 
-        static public Vector2 WindowMargin
+        public Vector2 WindowMargin
         {
             get { return (WindowSize - Size) / 2; }
         }
 
-        static public void Init(GraphicsDeviceManager device, GameWindow window)
+        public event EventHandler<SizeChangedEventArgs> SizeChanged;
+
+        private Resolution()
+        {
+        }
+
+        public void Init(GraphicsDeviceManager device, GameWindow window)
         {
             _device = device;
             _window = window;
@@ -63,7 +76,7 @@ namespace Glyph
             _dirtyMatrix = true;
         }
 
-        static public void SetWindow(int width, int height, bool fullScreen)
+        public void SetWindow(int width, int height, bool fullScreen)
         {
             _windowWidth = width;
             _windowHeight = height;
@@ -81,7 +94,7 @@ namespace Glyph
             _dirtyMatrix = true;
         }
 
-        static public void SetVirtualResolution(int width, int height)
+        public void SetVirtualResolution(int width, int height)
         {
             _virtualWidth = width;
             _virtualHeight = height;
@@ -93,7 +106,7 @@ namespace Glyph
                 _virtualHeight, GetVirtualAspectRatio().ToString("F2"));
         }
 
-        static public void ToogleFullscreen()
+        public void ToogleFullscreen()
         {
             if (FullScreen)
                 SetWindow(_savedWidth, _savedHeight, false);
@@ -106,7 +119,7 @@ namespace Glyph
             }
         }
 
-        static public Matrix GetTransformationMatrix()
+        public Matrix GetTransformationMatrix()
         {
             if (_dirtyMatrix)
                 RecreateScaleMatrix();
@@ -114,18 +127,18 @@ namespace Glyph
             return _scaleMatrix;
         }
 
-        static public float GetVirtualAspectRatio()
+        public float GetVirtualAspectRatio()
         {
             return _virtualWidth / (float)_virtualHeight;
         }
 
-        static public void BeginDraw()
+        public void BeginDraw()
         {
             ResetViewport();
             _device.GraphicsDevice.Clear(Color.Black);
         }
 
-        static public void ResetViewport()
+        public void ResetViewport()
         {
             float targetAspectRatio = GetVirtualAspectRatio();
 
@@ -151,7 +164,7 @@ namespace Glyph
             _device.GraphicsDevice.Viewport = viewport;
         }
 
-        static private void ApplyResolutionSettings()
+        private void ApplyResolutionSettings()
         {
             if (_currentlyResizing)
                 return;
@@ -212,24 +225,29 @@ namespace Glyph
                 _windowHeight, ((double)_windowWidth / _windowHeight).ToString("F2"), FullScreen);
         }
 
-        static private void UpdateResolution()
+        private void UpdateResolution()
         {
             float virtualRatio = GetVirtualAspectRatio();
             Size = WindowSize.X / WindowSize.Y > virtualRatio
                 ? WindowSize.SetX(WindowSize.Y * virtualRatio)
                 : WindowSize.SetY(WindowSize.X / virtualRatio);
+
+            if (SizeChanged != null)
+                SizeChanged.Invoke(this, new SizeChangedEventArgs {NewSize = Size});
         }
 
-        static private void RecreateScaleMatrix()
+        private void RecreateScaleMatrix()
         {
             _dirtyMatrix = false;
             _scaleMatrix = Matrix.CreateScale((float)_device.GraphicsDevice.Viewport.Width / _virtualWidth,
                 (float)_device.GraphicsDevice.Viewport.Width / _virtualWidth, 1f);
 
-            float virtualRatio = GetVirtualAspectRatio();
-            Size = WindowSize.X / WindowSize.Y > virtualRatio
-                ? WindowSize.SetX(WindowSize.Y * virtualRatio)
-                : WindowSize.SetY(WindowSize.X / virtualRatio);
+            UpdateResolution();
+        }
+
+        public class SizeChangedEventArgs : EventArgs
+        {
+            public Vector2 NewSize;
         }
     }
 }

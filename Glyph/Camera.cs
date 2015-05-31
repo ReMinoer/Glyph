@@ -77,7 +77,7 @@ namespace Glyph
 
         static public Vector2 Size
         {
-            get { return Resolution.VirtualSize; }
+            get { return Resolution.Instance.VirtualSize; }
         }
 
         static public Rectangle DisplayRectangle
@@ -198,9 +198,10 @@ namespace Glyph
             return result;
         }
 
-        static public Vector2 PositionObjectOnScreen(Vector2 posVirtual)
+        static public Vector2 PositionObjectOnScreen(Vector2 position)
         {
-            return posVirtual - VectorPosition.XY() * (Resolution.ScaleRatio * Zoom);
+            return (position - VectorPosition.XY()) * (Resolution.Instance.ScaleRatio * Zoom) +
+                   Resolution.Instance.WindowMargin;
         }
     }
 }

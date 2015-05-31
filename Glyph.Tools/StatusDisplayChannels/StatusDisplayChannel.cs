@@ -16,8 +16,8 @@ namespace Glyph.Tools.StatusDisplayChannels
         {
             get
             {
-                return new Vector2(OriginRight ? Resolution.Size.X - ScreenMargin.X : ScreenMargin.X,
-                    OriginBottom ? Resolution.Size.Y - ScreenMargin.Y : ScreenMargin.Y);
+                return new Vector2(OriginRight ? Resolution.Instance.Size.X - ScreenMargin.X : ScreenMargin.X,
+                    OriginBottom ? Resolution.Instance.Size.Y - ScreenMargin.Y : ScreenMargin.Y);
             }
         }
 
