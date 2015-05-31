@@ -5,6 +5,13 @@ namespace Glyph
 {
     static public class Vector2Extension
     {
+        static public Vector2 Normalized(this Vector2 value)
+        {
+            Vector2 temp = value;
+            temp.Normalize();
+            return temp;
+        }
+
         static public Point ToPoint(this Vector2 value)
         {
             return new Point((int)value.X, (int)value.Y);
