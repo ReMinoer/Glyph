@@ -2,7 +2,9 @@
 
 namespace Glyph.Input.Decorators
 {
-    public abstract class InputDecorator<TValue> : Decorator<IInputHandler>, IInputDecorator<TValue>
+    public abstract class InputDecorator<TValue, TComponent> : Decorator<IInputHandler, TComponent>,
+        IInputDecorator<TValue, TComponent>
+        where TComponent : IInputHandler
     {
         public virtual InputSource InputSource
         {
@@ -12,7 +14,7 @@ namespace Glyph.Input.Decorators
         public abstract bool IsActivated { get; }
         public abstract TValue Value { get; }
 
-        protected InputDecorator(string name, IInputHandler component)
+        protected InputDecorator(string name, TComponent component)
         {
             Name = name;
             Component = component;

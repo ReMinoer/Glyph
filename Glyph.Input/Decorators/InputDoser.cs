@@ -2,7 +2,7 @@
 
 namespace Glyph.Input.Decorators
 {
-    public class InputDoser : InputDecorator<InputActivity>
+    public class InputDoser : InputDecorator<InputActivity, IInputHandler>
     {
         private readonly ButtonBehaviour _buttonBehaviour = new ButtonBehaviour();
         private bool _isActivated;
