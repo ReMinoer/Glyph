@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Glyph.Audio;
+using Glyph.Effects;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
 using Glyph.Tools;
@@ -92,6 +93,7 @@ namespace Glyph.Game
 
         protected override void Initialize()
         {
+            ScreenEffectManager.Instance.Initialize();
             Modes[ModeManager.State].Initialize();
             base.Initialize();
         }
@@ -102,6 +104,7 @@ namespace Glyph.Game
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             ContentLibrary.LoadContent(Content, Graphics.GraphicsDevice);
 
+            ScreenEffectManager.Instance.LoadContent(ContentLibrary, GraphicsDevice);
             AudioManager.LoadContent(ContentLibrary);
             StatusDisplay.LoadContent(ContentLibrary);
 
@@ -126,6 +129,7 @@ namespace Glyph.Game
             if (!change)
                 HandleInput();
 
+            ScreenEffectManager.Instance.Update(gameTime);
             AudioManager.Update(gameTime);
             PerformanceViewer.Update(gameTime);
             StatusDisplay.Update(gameTime);
@@ -175,22 +179,86 @@ namespace Glyph.Game
         {
             base.Draw(gameTime);
 
-            Modes[ModeManager.State].Draw(SpriteBatch, Graphics);
+            Matrix cameraMatrix = Camera.MatrixPosition * Camera.MatrixZoom;
+            Matrix resolutionMatrix = Resolution.Instance.GetTransformationMatrix();
 
-            Draw();
+            ScreenEffectManager.Instance.Prepare(SpriteBatch, GraphicsDevice);
+            ScreenEffectManager.Instance.CleanFirstRender(GraphicsDevice);
+
+            // Pre-draw process
+            PreDraw(SpriteBatch, Graphics);
+
+            // Draw in scene
+            SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, cameraMatrix);
+            DrawScene(SpriteBatch, Graphics);
+            SpriteBatch.End();
+
+            // Draw in screen
+            SpriteBatch.Begin();
+            DrawScreen(SpriteBatch, Graphics);
+            SpriteBatch.End();
+
+            // Apply screen effects
+            ScreenEffectManager.Instance.Apply(SpriteBatch, GraphicsDevice);
+
+            // Draw post effects in scene
+            SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, cameraMatrix);
+            DrawPostScene(SpriteBatch, Graphics);
+            SpriteBatch.End();
+
+            // Draw post effects in screen
+            SpriteBatch.Begin();
+            DrawPostScreen(SpriteBatch, Graphics);
+            SpriteBatch.End();
+
+            Graphics.GraphicsDevice.SetRenderTarget(null);
+            Resolution.Instance.BeginDraw();
+
+            // Render to window
+            SpriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, resolutionMatrix);
+            SpriteBatch.Draw(ScreenEffectManager.Instance.Output, Vector2.Zero, Color.White);
+            SpriteBatch.End();
 
             GraphicsDevice.Viewport = _defaultViewport;
 
+            // Draw in window space
             SpriteBatch.Begin();
+            DrawWindow(SpriteBatch, Graphics);
+            SpriteBatch.End();
+        }
+
+        protected virtual void PreDraw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            Modes[ModeManager.State].PreDraw(SpriteBatch, Graphics);
+        }
+
+        protected virtual void DrawScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            Modes[ModeManager.State].DrawScene(SpriteBatch, Graphics);
+        }
+
+        protected virtual void DrawScreen(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            Modes[ModeManager.State].DrawScreen(SpriteBatch, Graphics);
+        }
+
+        protected virtual void DrawPostScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            Modes[ModeManager.State].DrawPostScene(SpriteBatch, Graphics);
+        }
+
+        protected virtual void DrawPostScreen(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            Modes[ModeManager.State].DrawPostScreen(SpriteBatch, Graphics);
+        }
+
+        protected virtual void DrawWindow(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        {
+            Modes[ModeManager.State].DrawWindow(SpriteBatch, Graphics);
             StatusDisplay.Draw(SpriteBatch);
 #if WINDOWS
             EditorCursor.Draw(SpriteBatch);
 #endif
-            SpriteBatch.End();
-        }
-
-        protected virtual void Draw()
-        {
         }
 
         protected override bool BeginDraw()

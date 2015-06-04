@@ -22,7 +22,7 @@ namespace Glyph.Scripting
         public TriggerManager Triggers { get; private set; }
         public bool DrawTriggerZone { get; set; }
 
-        protected ScriptManager(ContentLibrary contentLibrary, LanguageFile languageFile)
+        protected ScriptManager(ContentLibrary contentLibrary, LanguageFile languageFile, GraphicsDevice graphicsDevice)
         {
             _languageFile = languageFile;
 
@@ -36,6 +36,7 @@ namespace Glyph.Scripting
             Lua.DoString(Resources.TableTools);
 
             Lua["Content"] = contentLibrary;
+            Lua["GraphicsDevice"] = graphicsDevice;
             Lua["Triggers"] = Triggers;
             Lua["Local"] = _languageFile;
         }

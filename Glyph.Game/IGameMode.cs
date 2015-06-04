@@ -10,6 +10,11 @@ namespace Glyph.Game
         void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice);
         void Update(GameTime gameTime);
         void HandleInput(InputManager inputManager);
-        void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics);
+        void PreDraw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics);
+        void DrawScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics);
+        void DrawScreen(SpriteBatch spriteBatch, GraphicsDeviceManager graphics);
+        void DrawPostScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics);
+        void DrawPostScreen(SpriteBatch spriteBatch, GraphicsDeviceManager graphics);
+        void DrawWindow(SpriteBatch spriteBatch, GraphicsDeviceManager graphics);
     }
 }
