@@ -43,6 +43,7 @@
     <Compile Include="Converters\InputConverter.cs" />
     <Compile Include="Decorators\InputCache.cs" />
     <Compile Include="Decorators\InputDoser.cs" />
+    <Compile Include="Decorators\InputDelay.cs" />
     <Compile Include="GameControls.cs" />
     <Compile Include="Handlers\Axis\AxisHandler.cs" />
     <Compile Include="Handlers\Axis\AxisSign.cs" />

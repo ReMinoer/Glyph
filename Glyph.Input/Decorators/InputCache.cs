@@ -37,10 +37,10 @@
         {
             base.Update(inputStates);
 
-            if (!IsActivated && Component.Value.Equals(default(TValue)))
+            if (!IsActivated && Component != null && Component.Value.Equals(default(TValue)))
                 return;
 
-            if (!_cache.Equals(Component.Value))
+            if (Component != null && !_cache.Equals(Component.Value))
             {
                 _resetPeriod.Init();
                 _cache = Component.Value;

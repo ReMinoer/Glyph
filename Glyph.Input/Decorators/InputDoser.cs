@@ -5,17 +5,15 @@ namespace Glyph.Input.Decorators
     public class InputDoser : InputDecorator<InputActivity, IInputHandler>
     {
         private readonly ButtonBehaviour _buttonBehaviour = new ButtonBehaviour();
-        private bool _isActivated;
-        private InputActivity _value;
 
         public override bool IsActivated
         {
-            get { return _isActivated; }
+            get { return Value != InputActivity.None; }
         }
 
         public override InputActivity Value
         {
-            get { return _value; }
+            get { return _buttonBehaviour.Activity; }
         }
 
         public InputDoser(string name = "", IInputHandler component = null)
@@ -27,8 +25,7 @@ namespace Glyph.Input.Decorators
         {
             base.Update(inputStates);
 
-            _value = _buttonBehaviour.Update(Component.IsActivated);
-            _isActivated = _value != InputActivity.None;
+            _buttonBehaviour.Update(Component != null && Component.IsActivated);
         }
     }
 }
