@@ -7,7 +7,6 @@ namespace Glyph.Effects
     public abstract class EffectComponent : Component<IEffect>, IEffect
     {
         public virtual bool Enabled { get; set; }
-
         public abstract void Initialize();
         public abstract void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice);
         public abstract void Update(GameTime gameTime);

@@ -10,7 +10,6 @@ namespace Glyph.Effects.Masked
         protected Texture2D[] PatchSprites;
         protected RenderTarget2D MaskRender;
         private Texture2D _square;
-
         public float Opacity { get; set; }
         public List<MaskPatch> Patches { get; set; }
 
@@ -24,6 +23,8 @@ namespace Glyph.Effects.Masked
         {
             Patches = new List<MaskPatch>();
         }
+
+        protected abstract void ApplyEffect(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
 
         public override void Initialize()
         {
@@ -81,8 +82,6 @@ namespace Glyph.Effects.Masked
 
             ApplyEffect(spriteBatch, graphicsDevice);
         }
-
-        protected abstract void ApplyEffect(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
 
         public override void Dispose()
         {
