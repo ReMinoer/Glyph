@@ -53,6 +53,10 @@
     <Compile Include="TriggerZone.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
+      <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
+      <Name>Diese.Composition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Lua\Diese.Lua.csproj">
       <Project>{e2707575-12c2-4ce6-b8e4-e7efd8d4e301}</Project>
       <Name>Diese.Lua</Name>
@@ -60,6 +64,10 @@
     <ProjectReference Include="..\External\Diese\Diese.Serialization\Diese.Serialization.csproj">
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
       <Name>Diese.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Effects\Glyph.Effects.csproj">
+      <Project>{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}</Project>
+      <Name>Glyph.Effects</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Entities\Glyph.Entities.csproj">
       <Project>{729CF52C-D06C-42FD-A2EE-6C19E07D185F}</Project>

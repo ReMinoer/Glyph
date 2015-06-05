@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Diese.Lua;
 using Diese.Lua.Properties;
+using Glyph.Effects;
 using Glyph.Entities;
 using Glyph.Localization;
 using Microsoft.Xna.Framework;
@@ -37,6 +38,7 @@ namespace Glyph.Scripting
 
             Lua["Content"] = contentLibrary;
             Lua["GraphicsDevice"] = graphicsDevice;
+            Lua["ScreenEffectManager"] = ScreenEffectManager.Instance;
             Lua["Triggers"] = Triggers;
             Lua["Local"] = _languageFile;
         }
