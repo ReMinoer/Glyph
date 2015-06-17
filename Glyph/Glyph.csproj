@@ -49,6 +49,15 @@
     <Compile Include="Axis.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Checkpoint.cs" />
+    <Compile Include="GlyphObject.cs" />
+    <Compile Include="IGlyphComponent.cs" />
+    <Compile Include="IDraw.cs" />
+    <Compile Include="IGlyphComposite.cs" />
+    <Compile Include="IGlyphObject.cs" />
+    <Compile Include="IHandleInput.cs" />
+    <Compile Include="ILoadContent.cs" />
+    <Compile Include="IUpdate.cs" />
+    <Compile Include="DependencyGraph.cs" />
     <Compile Include="Point.Extension.cs" />
     <Compile Include="Rectangle.Extension.cs" />
     <Compile Include="SpriteBatch.Extension.cs" />
@@ -75,6 +84,12 @@
     <Compile Include="Transition\TransitionVector2.cs" />
     <Compile Include="Transition\TransitionVector3.cs" />
     <Compile Include="Transition\TransitionVector4.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
+      <Project>{e8d6f663-89a6-497f-a02f-d0fc562d2d0e}</Project>
+      <Name>Diese.Composition</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
