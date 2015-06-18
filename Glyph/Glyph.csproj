@@ -49,11 +49,14 @@
     <Compile Include="Axis.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Checkpoint.cs" />
-    <Compile Include="GlyphObject.cs" />
+    <Compile Include="DependencyAttribute.cs" />
+    <Compile Include="Exceptions\CyclicDependencyException.cs" />
+    <Compile Include="Exceptions\GlyphException.cs" />
+    <Compile Include="GlyphEntity.cs" />
     <Compile Include="IGlyphComponent.cs" />
     <Compile Include="IDraw.cs" />
     <Compile Include="IGlyphComposite.cs" />
-    <Compile Include="IGlyphObject.cs" />
+    <Compile Include="IGlyphEntity.cs" />
     <Compile Include="IHandleInput.cs" />
     <Compile Include="ILoadContent.cs" />
     <Compile Include="IUpdate.cs" />

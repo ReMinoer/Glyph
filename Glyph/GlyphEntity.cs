@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Diese.Composition;
+using Glyph.Exceptions;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph
 {
-    public class GlyphObject : Composite<IGlyphComponent>, IGlyphObject
+    public class GlyphEntity : Composite<IGlyphComponent>, IGlyphEntity
     {
         // TODO : Handle singletons & single components
         private bool _enabled;
@@ -17,6 +18,7 @@ namespace Glyph
         private List<IDraw> _orderedDraw;
         private readonly List<ILoadContent> _cachedLoadContent;
         private readonly List<IHandleInput> _cachedHandleInput;
+        private bool _initialized;
 
         public virtual bool Enabled
         {
@@ -53,7 +55,7 @@ namespace Glyph
         public event EventHandler UpdateOrderChanged;
         public event EventHandler DrawOrderChanged;
 
-        public GlyphObject()
+        public GlyphEntity()
         {
             _updateDependencies = new DependencyGraph<IUpdate>();
             _drawDependencies = new DependencyGraph<IDraw>();
@@ -62,17 +64,25 @@ namespace Glyph
             _orderedUpdate = new List<IUpdate>();
             _cachedHandleInput = new List<IHandleInput>();
             _orderedDraw = new List<IDraw>();
+
+            _updateDependencies.GraphEdited += UpdateDependenciesOnGraphEdited;
+            _drawDependencies.GraphEdited += DrawDependenciesOnGraphEdited;
         }
 
         public void Initialize()
         {
-            foreach (IGlyphComponent component in Components)
-                component.Initialize();
-
             MyInitialize();
 
-            _updateDependencies.GraphEdited += UpdateDependenciesOnGraphEdited;
-            _drawDependencies.GraphEdited += DrawDependenciesOnGraphEdited;
+            if (!_initialized)
+            {
+                UpdateDependenciesOnGraphEdited(this, EventArgs.Empty);
+                DrawDependenciesOnGraphEdited(this, EventArgs.Empty);
+
+                _initialized = true;
+            }
+
+            foreach (IGlyphComponent component in Components)
+                component.Initialize();
         }
 
         protected virtual void MyInitialize()
@@ -146,8 +156,41 @@ namespace Glyph
 
         public override void Add(IGlyphComponent item)
         {
+            var typeQueued = new List<Type>();
+            Add(item, typeQueued);
+        }
+
+        private void Add(IGlyphComponent item, IList<Type> typeQueued)
+        {
             AddComponentToCache(item);
             base.Add(item);
+
+            object[] dependencies = item.GetType().GetCustomAttributes(typeof(DependencyAttribute), true);
+
+            foreach (object dependency in dependencies)
+            {
+                var temp = dependency as DependencyAttribute;
+                if (temp == null)
+                    continue;
+
+                Type componentType = temp.ComponentType;
+                if (typeQueued.Contains(componentType))
+                    throw new CyclicDependencyException(typeQueued[0]);
+
+                IGlyphComponent component = GetComponent(componentType);
+                if (component == null)
+                {
+                    component = Activator.CreateInstance(componentType) as IGlyphComponent;
+
+                    typeQueued.Add(componentType);
+                    Add(component, typeQueued);
+                }
+
+                var updateDependent = item as IUpdate;
+                var updateDependency = component as IUpdate;
+                if (updateDependent != null && updateDependency != null)
+                    AddUpdateDependency(updateDependent, updateDependency);
+            }
         }
 
         public override void Insert(int index, IGlyphComponent item)
@@ -243,6 +286,9 @@ namespace Glyph
 
         private void UpdateDependenciesOnGraphEdited(object sender, EventArgs eventArgs)
         {
+            if (!_initialized)
+                return;
+
             _orderedUpdate = _updateDependencies.GetTopologicalOrder();
 
             if (UpdateOrderChanged != null)
@@ -251,6 +297,9 @@ namespace Glyph
 
         private void DrawDependenciesOnGraphEdited(object sender, EventArgs eventArgs)
         {
+            if (!_initialized)
+                return;
+
             _orderedDraw = _drawDependencies.GetTopologicalOrder();
 
             if (DrawOrderChanged != null)
