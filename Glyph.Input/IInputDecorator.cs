@@ -2,7 +2,7 @@
 
 namespace Glyph.Input
 {
-    public interface IInputDecorator<TComponent> : IDecorator<IInputHandler, TComponent>, IInputHandler
+    public interface IInputDecorator<TComponent> : IDecorator<IInputHandler, IInputParent, TComponent>, IInputHandler
         where TComponent : IInputHandler
     {
     }

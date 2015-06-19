@@ -54,6 +54,7 @@
     <Compile Include="Handlers\Vectors\RadialMouseHandler.cs" />
     <Compile Include="Handlers\Vectors\ThumbStickVectorHandler.cs" />
     <Compile Include="IInputConverter.cs" />
+    <Compile Include="IInputParent.cs" />
     <Compile Include="MouseManager.cs" />
     <Compile Include="ThumbStick.cs" />
     <Compile Include="Trigger.cs" />

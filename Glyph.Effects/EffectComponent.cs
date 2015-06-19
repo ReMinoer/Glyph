@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Effects
 {
-    public abstract class EffectComponent : Component<IEffect>, IEffect
+    public abstract class EffectComponent : Component<IEffect, IEffectParent>, IEffect
     {
         public virtual bool Enabled { get; set; }
         public abstract void Initialize();

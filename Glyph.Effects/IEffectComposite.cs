@@ -2,7 +2,7 @@
 
 namespace Glyph.Effects
 {
-    public interface IEffectComposite : IEffect, IComposite<IEffect>
+    public interface IEffectComposite : IEffect, IComposite<IEffect, IEffectParent>
     {
     }
 }

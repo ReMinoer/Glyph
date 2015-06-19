@@ -2,7 +2,7 @@
 
 namespace Glyph.Input
 {
-    public interface IInputHandler : IComponent<IInputHandler>
+    public interface IInputHandler : IComponent<IInputHandler, IInputParent>
     {
         bool IsActivated { get; }
         InputSource InputSource { get; }

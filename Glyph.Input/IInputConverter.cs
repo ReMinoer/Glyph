@@ -2,7 +2,7 @@
 
 namespace Glyph.Input
 {
-    public interface IInputConverter<out TInput, out TOutput> : ISynthesizer<IInputHandler, IInputHandler<TInput>>,
+    public interface IInputConverter<out TInput, out TOutput> : ISynthesizer<IInputHandler, IInputParent, IInputHandler<TInput>>,
         IInputHandler<TOutput>
     {
     }

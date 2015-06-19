@@ -2,7 +2,7 @@
 
 namespace Glyph.Input
 {
-    public interface IInputComposite : IComposite<IInputHandler>, IInputHandler
+    public interface IInputComposite : IComposite<IInputHandler, IInputParent>, IInputHandler
     {
     }
 

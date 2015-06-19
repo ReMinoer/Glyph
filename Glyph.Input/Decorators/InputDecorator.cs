@@ -2,7 +2,7 @@
 
 namespace Glyph.Input.Decorators
 {
-    public abstract class InputDecorator<TValue, TComponent> : Decorator<IInputHandler, TComponent>,
+    public abstract class InputDecorator<TValue, TComponent> : Decorator<IInputHandler, IInputParent, TComponent>,
         IInputDecorator<TValue, TComponent>
         where TComponent : class, IInputHandler
     {

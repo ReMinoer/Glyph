@@ -40,6 +40,7 @@
     <Compile Include="EffectSynthesizer.cs" />
     <Compile Include="IEffect.cs" />
     <Compile Include="IEffectComposite.cs" />
+    <Compile Include="IEffectParent.cs" />
     <Compile Include="IEffectSynthesizer.cs" />
     <Compile Include="Masked\MaskedEffect.cs" />
     <Compile Include="Masked\MaskPatch.cs" />

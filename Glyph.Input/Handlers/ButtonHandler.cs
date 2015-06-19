@@ -3,7 +3,7 @@ using Glyph.Input.Behaviours;
 
 namespace Glyph.Input.Handlers
 {
-    public abstract class ButtonHandler : Component<IInputHandler>, IInputHandler<InputActivity>
+    public abstract class ButtonHandler : Component<IInputHandler, IInputParent>, IInputHandler<InputActivity>
     {
         protected readonly ButtonBehaviour ButtonBehaviour = new ButtonBehaviour();
         public bool IsActivated { get; protected set; }

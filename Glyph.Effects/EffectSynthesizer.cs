@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Effects
 {
-    public class EffectSynthesizer<TInput> : Synthesizer<IEffect, TInput>, IEffectSynthesizer<TInput>
+    public class EffectSynthesizer<TInput> : Synthesizer<IEffect, IEffectParent, TInput>, IEffectSynthesizer<TInput>
         where TInput : IEffect
     {
         public bool Enabled { get; set; }

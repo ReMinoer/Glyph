@@ -2,7 +2,7 @@
 
 namespace Glyph.Effects
 {
-    public interface IEffectSynthesizer<out TInput> : IEffect, ISynthesizer<IEffect, TInput>
+    public interface IEffectSynthesizer<out TInput> : IEffect, ISynthesizer<IEffect, IEffectParent, TInput>
         where TInput : IEffect
     {
     }

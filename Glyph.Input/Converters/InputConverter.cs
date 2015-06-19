@@ -3,7 +3,7 @@ using Diese.Composition;
 
 namespace Glyph.Input.Converters
 {
-    public abstract class InputConverter<TInput, TOutput> : Synthesizer<IInputHandler, IInputHandler<TInput>>,
+    public abstract class InputConverter<TInput, TOutput> : Synthesizer<IInputHandler, IInputParent, IInputHandler<TInput>>,
         IInputConverter<TInput, TOutput>
     {
         public bool IsActivated { get; protected set; }
