@@ -47,7 +47,7 @@
             }
             else
             {
-                _resetPeriod.Update(ElapsedTime.Instance);
+                _resetPeriod.Update(ElapsedTime.Instance.Delta);
             }
         }
     }

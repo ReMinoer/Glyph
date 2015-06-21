@@ -42,7 +42,7 @@ namespace Glyph.Input.Decorators
             base.Update(inputStates);
 
             if (Component != null && Component.IsActivated)
-                _period.Update(ElapsedTime.Instance);
+                _period.Update(ElapsedTime.Instance.Delta);
             else
                 _period.Init();
 

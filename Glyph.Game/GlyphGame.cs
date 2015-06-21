@@ -117,8 +117,7 @@ namespace Glyph.Game
 
         protected override void Update(GameTime gameTime)
         {
-            if (ElapsedTime.Instance == null)
-                ElapsedTime.Instance = gameTime;
+            ElapsedTime.Instance.Refresh(gameTime);
 
             PerformanceViewer.UpdateCall();
 
