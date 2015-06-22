@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Effects
 {
-    public abstract class EffectComposite : Composite<IEffect, IEffectParent>, IEffectComposite
+    public abstract class EffectComposite : OrderedComposite<IEffect, IEffectParent>, IEffectComposite
     {
         public bool Enabled { get; set; }
         public abstract void Apply(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
