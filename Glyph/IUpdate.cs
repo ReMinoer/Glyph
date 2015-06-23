@@ -6,6 +6,6 @@ namespace Glyph
     {
         bool Enabled { get; }
         event EventHandler EnabledChanged;
-        void Update();
+        void Update(ElapsedTime elapsedTime);
     }
 }

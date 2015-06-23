@@ -2,7 +2,7 @@
 
 namespace Glyph
 {
-    public interface IGlyphComposite : IGlyphComponent, IComposite<IGlyphComponent>
+    public interface IGlyphComposite : IGlyphComponent, IComposite<IGlyphComponent, GlyphEntity>
     {
     }
 }

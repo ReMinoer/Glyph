@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Diese.Composition;
 using Glyph.Exceptions;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph
 {
-    public class GlyphEntity : Composite<IGlyphComponent>, IGlyphEntity
+    public class GlyphEntity : Composite<IGlyphComponent, GlyphEntity>, IGlyphComposite, ILoadContent, IHandleInput, IDraw, IDependencyProvider<IGlyphComponent>
     {
         // TODO : Handle singletons & single components
+        static private readonly Stack<Type> DependencyStack = new Stack<Type>();
+
         private bool _enabled;
         private bool _visible;
 
-        private readonly DependencyGraph<IUpdate> _updateDependencies;
-        private readonly DependencyGraph<IDraw> _drawDependencies;
+        private readonly IDependencyGraph<IUpdate> _updateDependencies;
+        private readonly IDependencyGraph<IDraw> _drawDependencies;
         private List<IUpdate> _orderedUpdate;
         private List<IDraw> _orderedDraw;
-        private readonly List<ILoadContent> _cachedLoadContent;
-        private readonly List<IHandleInput> _cachedHandleInput;
-        private bool _initialized;
+        private readonly List<ILoadContent> _orderedLoadContent;
+        private readonly List<IHandleInput> _orderedHandleInput;
 
         public virtual bool Enabled
         {
@@ -59,11 +61,10 @@ namespace Glyph
         {
             _updateDependencies = new DependencyGraph<IUpdate>();
             _drawDependencies = new DependencyGraph<IDraw>();
-
-            _cachedLoadContent = new List<ILoadContent>();
             _orderedUpdate = new List<IUpdate>();
-            _cachedHandleInput = new List<IHandleInput>();
             _orderedDraw = new List<IDraw>();
+            _orderedLoadContent = new List<ILoadContent>();
+            _orderedHandleInput = new List<IHandleInput>();
 
             _updateDependencies.GraphEdited += UpdateDependenciesOnGraphEdited;
             _drawDependencies.GraphEdited += DrawDependenciesOnGraphEdited;
@@ -71,48 +72,40 @@ namespace Glyph
 
         public void Initialize()
         {
-            MyInitialize();
-
-            if (!_initialized)
-            {
-                UpdateDependenciesOnGraphEdited(this, EventArgs.Empty);
-                DrawDependenciesOnGraphEdited(this, EventArgs.Empty);
-
-                _initialized = true;
-            }
+            InitializeLocal();
 
             foreach (IGlyphComponent component in Components)
                 component.Initialize();
         }
 
-        protected virtual void MyInitialize()
+        protected virtual void InitializeLocal()
         {
         }
 
         public void LoadContent(ContentLibrary contentLibrary)
         {
-            foreach (ILoadContent component in _cachedLoadContent)
+            foreach (ILoadContent component in _orderedLoadContent)
                 component.LoadContent(contentLibrary);
 
-            MyLoadContent(contentLibrary);
+            LoadContentLocal(contentLibrary);
         }
 
-        protected virtual void MyLoadContent(ContentLibrary contentLibrary)
+        protected virtual void LoadContentLocal(ContentLibrary contentLibrary)
         {
         }
 
-        public void Update()
+        public void Update(ElapsedTime elapsedTime)
         {
             if (!Enabled)
                 return;
 
-            MyUpdate();
+            UpdateLocal(elapsedTime);
 
             foreach (IUpdate component in _orderedUpdate)
-                component.Update();
+                component.Update(elapsedTime);
         }
 
-        protected virtual void MyUpdate()
+        protected virtual void UpdateLocal(ElapsedTime elapsedTime)
         {
         }
 
@@ -121,28 +114,28 @@ namespace Glyph
             if (!Enabled)
                 return;
 
-            MyHandleInput();
+            HandleInputLocal();
 
-            foreach (IHandleInput component in _cachedHandleInput)
+            foreach (IHandleInput component in _orderedHandleInput)
                 component.HandleInput();
         }
 
-        protected virtual void MyHandleInput()
+        protected virtual void HandleInputLocal()
         {
         }
 
-        public void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public void Draw()
         {
             if (!Visible)
                 return;
 
-            MyDraw(spriteBatch, graphicsDevice);
+            DrawLocal();
 
             foreach (IDraw component in _orderedDraw)
-                component.Draw(spriteBatch, graphicsDevice);
+                component.Draw();
         }
 
-        protected virtual void MyDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        protected virtual void DrawLocal()
         {
         }
 
@@ -154,97 +147,99 @@ namespace Glyph
             Clear();
         }
 
-        public override void Add(IGlyphComponent item)
+        public T Add<T>()
+            where T : class, IGlyphComponent, new()
         {
-            var typeQueued = new List<Type>();
-            Add(item, typeQueued);
+            var component = new T();
+            Add(component);
+
+            return component;
         }
 
-        private void Add(IGlyphComponent item, IList<Type> typeQueued)
+        public IGlyphComponent Add(Type componentType)
         {
-            AddComponentToCache(item);
+            var component = Activator.CreateInstance(componentType) as IGlyphComponent;
+            Add(component);
+
+            return component;
+        }
+
+        public override sealed void Add(IGlyphComponent item)
+        {
+            if (Contains(item))
+                throw new ArgumentException("Component provided is already contained by this entity !");
+
+            Type type = item.GetType();
+
+            if (GetComponent(type) != null && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
+                throw new SingleComponentException(type);
+
+            var dependent = item as IDependent<IGlyphComponent>;
+            if (dependent != null)
+                dependent.BindDependencies(this);
+
             base.Add(item);
-
-            object[] dependencies = item.GetType().GetCustomAttributes(typeof(DependencyAttribute), true);
-
-            foreach (object dependency in dependencies)
-            {
-                var temp = dependency as DependencyAttribute;
-                if (temp == null)
-                    continue;
-
-                Type componentType = temp.ComponentType;
-                if (typeQueued.Contains(componentType))
-                    throw new CyclicDependencyException(typeQueued[0]);
-
-                IGlyphComponent component = GetComponent(componentType);
-                if (component == null)
-                {
-                    component = Activator.CreateInstance(componentType) as IGlyphComponent;
-
-                    typeQueued.Add(componentType);
-                    Add(component, typeQueued);
-                }
-
-                var updateDependent = item as IUpdate;
-                var updateDependency = component as IUpdate;
-                if (updateDependent != null && updateDependency != null)
-                    AddUpdateDependency(updateDependent, updateDependency);
-            }
-        }
-
-        public override void Insert(int index, IGlyphComponent item)
-        {
             AddComponentToCache(item);
-            base.Insert(index, item);
         }
 
-        public override void Clear()
+        public override sealed void Clear()
         {
             foreach (IGlyphComponent component in this)
                 RemoveComponentFromCache(component);
+
             base.Clear();
         }
 
-        public override bool Remove(IGlyphComponent item)
+        public override sealed bool Remove(IGlyphComponent item)
         {
+            if (!Contains(item))
+                throw new ArgumentException("Component provided is not contained by this entity !");
+
             RemoveComponentFromCache(item);
             return base.Remove(item);
         }
 
-        public override void RemoveAt(int index)
+        public T Resolve<T>()
+            where T : class, IGlyphComponent, new()
         {
-            RemoveComponentFromCache(this[index]);
-            base.RemoveAt(index);
+            Type type = typeof(T);
+
+            if (DependencyStack.Contains(type))
+                throw new CyclicDependencyException(DependencyStack);
+
+            var dependency = GetComponent<T>();
+            if (dependency == null)
+            {
+                DependencyStack.Push(type);
+                dependency = Add<T>();
+                DependencyStack.Pop();
+            }
+
+            return dependency;
         }
 
-        protected void AddUpdateDependency(IUpdate dependent, IUpdate dependency)
+        protected internal void AddUpdateDependency(IUpdate dependent, IUpdate dependency)
         {
             _updateDependencies.AddDependency(dependent, dependency);
         }
 
-        protected void RemoveUpdateDependency(IUpdate dependent, IUpdate dependency)
+        protected internal void RemoveUpdateDependency(IUpdate dependent, IUpdate dependency)
         {
             _updateDependencies.RemoveDependency(dependent, dependency);
         }
 
-        protected void AddDrawDependency(IDraw dependent, IDraw dependency)
+        protected internal void AddDrawDependency(IDraw dependent, IDraw dependency)
         {
             _drawDependencies.AddDependency(dependent, dependency);
         }
 
-        protected void RemoveDrawDependency(IDraw dependent, IDraw dependency)
+        protected internal void RemoveDrawDependency(IDraw dependent, IDraw dependency)
         {
             _drawDependencies.RemoveDependency(dependent, dependency);
         }
 
         private void AddComponentToCache(IGlyphComponent component)
         {
-            if (Contains(component))
-                throw new ArgumentException("Component provided is already contained by this entity !");
-            if (GetComponentInParents(component.GetType()) != null)
-                throw new ArgumentException("Component provided cannot become a child from itself !");
-
             var update = component as IUpdate;
             if (update != null)
                 _updateDependencies.AddItem(update);
@@ -255,18 +250,15 @@ namespace Glyph
 
             var loadContent = component as ILoadContent;
             if (loadContent != null)
-                _cachedLoadContent.Add(loadContent);
+                _orderedLoadContent.Add(loadContent);
 
             var handleInput = component as IHandleInput;
             if (loadContent != null)
-                _cachedHandleInput.Add(handleInput);
+                _orderedHandleInput.Add(handleInput);
         }
 
         private void RemoveComponentFromCache(IGlyphComponent component)
         {
-            if (!Contains(component))
-                throw new ArgumentException("Component provided is not contained by this entity !");
-
             var update = component as IUpdate;
             if (update != null)
                 _updateDependencies.RemoveItem(update);
@@ -277,18 +269,15 @@ namespace Glyph
 
             var loadContent = component as ILoadContent;
             if (loadContent != null)
-                _cachedLoadContent.Remove(loadContent);
+                _orderedLoadContent.Remove(loadContent);
 
             var handleInput = component as IHandleInput;
             if (loadContent != null)
-                _cachedHandleInput.Remove(handleInput);
+                _orderedHandleInput.Remove(handleInput);
         }
 
         private void UpdateDependenciesOnGraphEdited(object sender, EventArgs eventArgs)
         {
-            if (!_initialized)
-                return;
-
             _orderedUpdate = _updateDependencies.GetTopologicalOrder();
 
             if (UpdateOrderChanged != null)
@@ -297,9 +286,6 @@ namespace Glyph
 
         private void DrawDependenciesOnGraphEdited(object sender, EventArgs eventArgs)
         {
-            if (!_initialized)
-                return;
-
             _orderedDraw = _drawDependencies.GetTopologicalOrder();
 
             if (DrawOrderChanged != null)

@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph
 {
@@ -7,6 +6,6 @@ namespace Glyph
     {
         bool Visible { get; }
         event EventHandler VisibleChanged;
-        void Draw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
+        void Draw();
     }
 }
