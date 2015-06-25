@@ -65,12 +65,14 @@
     <Compile Include="ITimeUnscalable.cs" />
     <Compile Include="IUpdate.cs" />
     <Compile Include="DependencyGraph.cs" />
+    <Compile Include="Matrix3x3.cs" />
     <Compile Include="Point.Extension.cs" />
     <Compile Include="Rectangle.Extension.cs" />
     <Compile Include="SinglePerParentAttribute.cs" />
     <Compile Include="SpriteBatch.Extension.cs" />
     <Compile Include="Texture2D.Extension.cs" />
     <Compile Include="ElapsedTime.cs" />
+    <Compile Include="Transformation.cs" />
     <Compile Include="Transition.Extension.cs" />
     <Compile Include="Vector2.Extension.cs" />
     <Compile Include="Vector3.Extension.cs" />
