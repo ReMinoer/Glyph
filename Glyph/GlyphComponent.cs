@@ -4,7 +4,7 @@ using Diese.Composition;
 
 namespace Glyph
 {
-    public class GlyphComponent : Component<IGlyphComponent, GlyphEntity>, IGlyphComponent
+    public class GlyphComponent : Component<IGlyphComponent, GlyphObject>, IGlyphComponent
     {
         public virtual void Initialize()
         {

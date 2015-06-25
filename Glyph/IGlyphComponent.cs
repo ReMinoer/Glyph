@@ -3,7 +3,7 @@ using Diese.Composition;
 
 namespace Glyph
 {
-    public interface IGlyphComponent : IComponent<IGlyphComponent, GlyphEntity>, IDisposable
+    public interface IGlyphComponent : IComponent<IGlyphComponent, GlyphObject>, IDisposable
     {
         void Initialize();
     }

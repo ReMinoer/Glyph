@@ -9,8 +9,6 @@ namespace Glyph
     {
         int Count { get; }
 
-        event EventHandler GraphEdited;
-
         List<T> this[T item] { get; }
         void AddItem(T item, params T[] dependencies);
         void RemoveItem(T item);
@@ -18,21 +16,19 @@ namespace Glyph
         void AddDependency(T dependent, T dependency);
         void RemoveDependency(T dependent, T dependency);
         bool ContainsDependency(T dependent, T dependency);
-        List<T> GetTopologicalOrder();
+        IEnumerable<T> GetTopologicalOrder();
     }
 
     public class DependencyGraph<T> : IDependencyGraph<T>
     {
         private readonly Dictionary<T, List<T>> _dependencies;
 
-        public event EventHandler GraphEdited;
+        public int Count { get; private set; }
 
         public DependencyGraph()
         {
             _dependencies = new Dictionary<T, List<T>>();
         }
-
-        public int Count { get; private set; }
 
         public List<T> this[T item]
         {
@@ -50,9 +46,6 @@ namespace Glyph
                 AddDependency(item, dependency);
 
             Count += dependencies.Length;
-
-            if (GraphEdited != null)
-                GraphEdited.Invoke(this, EventArgs.Empty);
         }
 
         public void RemoveItem(T item)
@@ -62,9 +55,6 @@ namespace Glyph
 
             Count -= _dependencies[item].Count;
             _dependencies.Remove(item);
-
-            if (GraphEdited != null)
-                GraphEdited.Invoke(this, EventArgs.Empty);
         }
 
         public bool ContainsItem(T item)
@@ -85,9 +75,6 @@ namespace Glyph
 
             _dependencies[dependent].Add(dependency);
             Count++;
-
-            if (GraphEdited != null)
-                GraphEdited.Invoke(this, EventArgs.Empty);
         }
 
         public void RemoveDependency(T dependent, T dependency)
@@ -103,9 +90,6 @@ namespace Glyph
 
             _dependencies[dependent].Remove(dependency);
             Count--;
-
-            if (GraphEdited != null)
-                GraphEdited.Invoke(this, EventArgs.Empty);
         }
 
         public bool ContainsDependency(T dependent, T dependency)
@@ -113,7 +97,7 @@ namespace Glyph
             return ContainsItem(dependent) && _dependencies[dependent].Contains(dependency);
         }
 
-        public List<T> GetTopologicalOrder()
+        public IEnumerable<T> GetTopologicalOrder()
         {
             var sorted = new List<T>();
             var visited = new Stack<T>();

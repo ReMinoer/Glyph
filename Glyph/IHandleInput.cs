@@ -1,7 +1,11 @@
-﻿namespace Glyph
+﻿using System;
+
+namespace Glyph
 {
-    public interface IHandleInput : IUpdate
+    public interface IHandleInput
     {
+        bool Enabled { get; }
+        event EventHandler EnabledChanged;
         void HandleInput();
     }
 }

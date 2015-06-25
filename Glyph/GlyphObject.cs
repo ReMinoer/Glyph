@@ -7,20 +7,22 @@ using Glyph.Exceptions;
 
 namespace Glyph
 {
-    public class GlyphEntity : Composite<IGlyphComponent, GlyphEntity>, IGlyphComposite, ILoadContent, IHandleInput, IDraw, IDependencyProvider<IGlyphComponent>
+    public class GlyphObject : Composite<IGlyphComponent, GlyphObject>, IGlyphComposite, ILoadContent, IUpdate, IHandleInput, IDraw, IDependencyProvider<IGlyphComponent>
     {
-        // TODO : Handle singletons & single components
         static private readonly Stack<Type> DependencyStack = new Stack<Type>();
 
         private bool _enabled;
         private bool _visible;
 
-        private readonly IDependencyGraph<IUpdate> _updateDependencies;
+        protected readonly LocalComponent Local;
+
+        private readonly IDependencyGraph<IGlyphComponent> _logicalDependencies;
         private readonly IDependencyGraph<IDraw> _drawDependencies;
-        private List<IUpdate> _orderedUpdate;
-        private List<IDraw> _orderedDraw;
-        private readonly List<ILoadContent> _orderedLoadContent;
-        private readonly List<IHandleInput> _orderedHandleInput;
+        private ICollection<IGlyphComponent> _orderedInitialize;
+        private ICollection<ILoadContent> _orderedLoadContent;
+        private ICollection<IUpdate> _orderedUpdate;
+        private ICollection<IHandleInput> _orderedHandleInput;
+        private ICollection<IDraw> _orderedDraw;
 
         public virtual bool Enabled
         {
@@ -54,31 +56,32 @@ namespace Glyph
 
         public event EventHandler EnabledChanged;
         public event EventHandler VisibleChanged;
-        public event EventHandler UpdateOrderChanged;
+        public event EventHandler LogicalOrderChanged;
         public event EventHandler DrawOrderChanged;
 
-        public GlyphEntity()
+        public GlyphObject()
         {
-            _updateDependencies = new DependencyGraph<IUpdate>();
-            _drawDependencies = new DependencyGraph<IDraw>();
-            _orderedUpdate = new List<IUpdate>();
-            _orderedDraw = new List<IDraw>();
-            _orderedLoadContent = new List<ILoadContent>();
-            _orderedHandleInput = new List<IHandleInput>();
+            Local = new LocalComponent(this);
 
-            _updateDependencies.GraphEdited += UpdateDependenciesOnGraphEdited;
-            _drawDependencies.GraphEdited += DrawDependenciesOnGraphEdited;
+            _logicalDependencies = new DependencyGraph<IGlyphComponent>();
+            _logicalDependencies.AddItem(Local);
+            _drawDependencies = new DependencyGraph<IDraw>();
+            _drawDependencies.AddItem(Local);
+
+            _orderedInitialize = new List<IGlyphComponent> { Local };
+            _orderedLoadContent = new List<ILoadContent> { Local };
+            _orderedUpdate = new List<IUpdate> { Local };
+            _orderedHandleInput = new List<IHandleInput> { Local };
+            _orderedDraw = new List<IDraw> { Local };
         }
 
         public void Initialize()
         {
-            InitializeLocal();
-
             foreach (IGlyphComponent component in Components)
                 component.Initialize();
         }
 
-        protected virtual void InitializeLocal()
+        protected virtual void LocalInitialize()
         {
         }
 
@@ -86,11 +89,9 @@ namespace Glyph
         {
             foreach (ILoadContent component in _orderedLoadContent)
                 component.LoadContent(contentLibrary);
-
-            LoadContentLocal(contentLibrary);
         }
 
-        protected virtual void LoadContentLocal(ContentLibrary contentLibrary)
+        protected virtual void LocalLoadContent(ContentLibrary contentLibrary)
         {
         }
 
@@ -99,13 +100,11 @@ namespace Glyph
             if (!Enabled)
                 return;
 
-            UpdateLocal(elapsedTime);
-
             foreach (IUpdate component in _orderedUpdate)
                 component.Update(elapsedTime);
         }
 
-        protected virtual void UpdateLocal(ElapsedTime elapsedTime)
+        protected virtual void LocalUpdate(ElapsedTime elapsedTime)
         {
         }
 
@@ -114,13 +113,11 @@ namespace Glyph
             if (!Enabled)
                 return;
 
-            HandleInputLocal();
-
             foreach (IHandleInput component in _orderedHandleInput)
                 component.HandleInput();
         }
 
-        protected virtual void HandleInputLocal()
+        protected virtual void LocalHandleInput()
         {
         }
 
@@ -129,13 +126,11 @@ namespace Glyph
             if (!Visible)
                 return;
 
-            DrawLocal();
-
             foreach (IDraw component in _orderedDraw)
                 component.Draw();
         }
 
-        protected virtual void DrawLocal()
+        protected virtual void LocalDraw()
         {
         }
 
@@ -143,8 +138,6 @@ namespace Glyph
         {
             foreach (IGlyphComponent component in Components)
                 component.Dispose();
-
-            Clear();
         }
 
         public T Add<T>()
@@ -195,8 +188,13 @@ namespace Glyph
             if (!Contains(item))
                 throw new ArgumentException("Component provided is not contained by this entity !");
 
+            bool valid = base.Remove(item);
+
+            if (!valid)
+                return false;
+
             RemoveComponentFromCache(item);
-            return base.Remove(item);
+            return true;
         }
 
         public T Resolve<T>()
@@ -218,19 +216,21 @@ namespace Glyph
             return dependency;
         }
 
-        protected internal void AddUpdateDependency(IUpdate dependent, IUpdate dependency)
+        protected internal void AddLogicalDependency(IGlyphComponent dependent, IGlyphComponent dependency)
         {
-            _updateDependencies.AddDependency(dependent, dependency);
+            _logicalDependencies.AddDependency(dependent, dependency);
+            RefreshLogicalOrder();
         }
 
-        protected internal void RemoveUpdateDependency(IUpdate dependent, IUpdate dependency)
+        protected internal void RemoveLogicalDependency(IGlyphComponent dependent, IGlyphComponent dependency)
         {
-            _updateDependencies.RemoveDependency(dependent, dependency);
+            _logicalDependencies.RemoveDependency(dependent, dependency);
         }
 
         protected internal void AddDrawDependency(IDraw dependent, IDraw dependency)
         {
             _drawDependencies.AddDependency(dependent, dependency);
+            RefreshDrawOrder();
         }
 
         protected internal void RemoveDrawDependency(IDraw dependent, IDraw dependency)
@@ -240,56 +240,124 @@ namespace Glyph
 
         private void AddComponentToCache(IGlyphComponent component)
         {
-            var update = component as IUpdate;
-            if (update != null)
-                _updateDependencies.AddItem(update);
-
-            var draw = component as IDraw;
-            if (draw != null)
-                _drawDependencies.AddItem(draw);
+            _logicalDependencies.AddItem(component);
+            _orderedInitialize.Add(component);
 
             var loadContent = component as ILoadContent;
             if (loadContent != null)
                 _orderedLoadContent.Add(loadContent);
 
+            var update = component as IUpdate;
+            if (update != null)
+                _orderedUpdate.Add(update);
+
             var handleInput = component as IHandleInput;
-            if (loadContent != null)
+            if (handleInput != null)
                 _orderedHandleInput.Add(handleInput);
+
+            var draw = component as IDraw;
+            if (draw != null)
+            {
+                _drawDependencies.AddItem(draw);
+                _orderedDraw.Add(draw);
+            }
         }
 
         private void RemoveComponentFromCache(IGlyphComponent component)
         {
-            var update = component as IUpdate;
-            if (update != null)
-                _updateDependencies.RemoveItem(update);
-
-            var draw = component as IDraw;
-            if (draw != null)
-                _drawDependencies.RemoveItem(draw);
+            _logicalDependencies.RemoveItem(component);
+            _orderedInitialize.Remove(component);
 
             var loadContent = component as ILoadContent;
             if (loadContent != null)
                 _orderedLoadContent.Remove(loadContent);
 
+            var update = component as IUpdate;
+            if (update != null)
+                _orderedUpdate.Remove(update);
+
             var handleInput = component as IHandleInput;
-            if (loadContent != null)
+            if (handleInput != null)
                 _orderedHandleInput.Remove(handleInput);
+
+            var draw = component as IDraw;
+            if (draw != null)
+            {
+                _drawDependencies.RemoveItem(draw);
+                _orderedDraw.Remove(draw);
+            }
         }
 
-        private void UpdateDependenciesOnGraphEdited(object sender, EventArgs eventArgs)
+        private void RefreshLogicalOrder()
         {
-            _orderedUpdate = _updateDependencies.GetTopologicalOrder();
+            IList<IGlyphComponent> topologicalOrder = _logicalDependencies.GetTopologicalOrder().ToList();
 
-            if (UpdateOrderChanged != null)
-                UpdateOrderChanged.Invoke(this, EventArgs.Empty);
+            if (_orderedInitialize.SequenceEqual(topologicalOrder))
+                return;
+
+            _orderedInitialize = topologicalOrder;
+            _orderedLoadContent = topologicalOrder.Where(x => x is ILoadContent).Cast<ILoadContent>().ToList();
+            _orderedUpdate = topologicalOrder.Where(x => x is IUpdate).Cast<IUpdate>().ToList();
+            _orderedHandleInput = topologicalOrder.Where(x => x is IHandleInput).Cast<IHandleInput>().ToList();
+
+            if (LogicalOrderChanged != null)
+                LogicalOrderChanged.Invoke(this, EventArgs.Empty);
         }
 
-        private void DrawDependenciesOnGraphEdited(object sender, EventArgs eventArgs)
+        private void RefreshDrawOrder()
         {
-            _orderedDraw = _drawDependencies.GetTopologicalOrder();
+            _orderedDraw = _drawDependencies.GetTopologicalOrder().ToList();
 
             if (DrawOrderChanged != null)
                 DrawOrderChanged.Invoke(this, EventArgs.Empty);
+        }
+
+        protected class LocalComponent : GlyphComponent, ILoadContent, IUpdate, IHandleInput, IDraw
+        {
+            private readonly GlyphObject _baseComponent;
+
+            public bool Enabled
+            {
+                get { return true; }
+            }
+
+            public bool Visible
+            {
+                get { return true; }
+            }
+
+            public event EventHandler EnabledChanged;
+            public event EventHandler VisibleChanged;
+
+            internal LocalComponent(GlyphObject baseComponent)
+            {
+                _baseComponent = baseComponent;
+            }
+
+            public override sealed void Initialize()
+            {
+                _baseComponent.LocalInitialize();
+            }
+
+            public void LoadContent(ContentLibrary contentLibrary)
+            {
+                _baseComponent.LocalLoadContent(contentLibrary);
+            }
+
+            public void Update(ElapsedTime elapsedTime)
+            {
+                _baseComponent.LocalUpdate(elapsedTime);
+            }
+
+            public void HandleInput()
+            {
+                _baseComponent.LocalHandleInput();
+            }
+
+            public void Draw()
+            {
+                _baseComponent.LocalDraw();
+            }
         }
     }
 }

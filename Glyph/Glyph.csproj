@@ -53,7 +53,7 @@
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
     <Compile Include="GlyphComponent.cs" />
-    <Compile Include="GlyphEntity.cs" />
+    <Compile Include="GlyphObject.cs" />
     <Compile Include="GlyphUpdateBase.cs" />
     <Compile Include="IDependencyProvider.cs" />
     <Compile Include="IDependent.cs" />
