@@ -12,6 +12,11 @@ namespace Glyph
             return temp;
         }
 
+        static public Vector3 ToVector3(this Vector2 value)
+        {
+            return new Vector3(value.X, value.Y, 0);
+        }
+
         static public Point ToPoint(this Vector2 value)
         {
             return new Point((int)value.X, (int)value.Y);
