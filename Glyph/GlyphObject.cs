@@ -14,7 +14,7 @@ namespace Glyph
         private bool _enabled;
         private bool _visible;
 
-        protected readonly LocalComponent Local;
+        protected readonly DelegatedComponent This;
 
         private readonly IDependencyGraph<IGlyphComponent> _logicalDependencies;
         private readonly IDependencyGraph<IDraw> _drawDependencies;
@@ -56,23 +56,21 @@ namespace Glyph
 
         public event EventHandler EnabledChanged;
         public event EventHandler VisibleChanged;
-        public event EventHandler LogicalOrderChanged;
-        public event EventHandler DrawOrderChanged;
 
         public GlyphObject()
         {
-            Local = new LocalComponent(this);
+            This = new DelegatedComponent(this);
 
             _logicalDependencies = new DependencyGraph<IGlyphComponent>();
-            _logicalDependencies.AddItem(Local);
+            _logicalDependencies.AddItem(This);
             _drawDependencies = new DependencyGraph<IDraw>();
-            _drawDependencies.AddItem(Local);
+            _drawDependencies.AddItem(This);
 
-            _orderedInitialize = new List<IGlyphComponent> { Local };
-            _orderedLoadContent = new List<ILoadContent> { Local };
-            _orderedUpdate = new List<IUpdate> { Local };
-            _orderedHandleInput = new List<IHandleInput> { Local };
-            _orderedDraw = new List<IDraw> { Local };
+            _orderedInitialize = new List<IGlyphComponent> { This };
+            _orderedLoadContent = new List<ILoadContent> { This };
+            _orderedUpdate = new List<IUpdate> { This };
+            _orderedHandleInput = new List<IHandleInput> { This };
+            _orderedDraw = new List<IDraw> { This };
         }
 
         public void Initialize()
@@ -299,20 +297,14 @@ namespace Glyph
             _orderedLoadContent = topologicalOrder.Where(x => x is ILoadContent).Cast<ILoadContent>().ToList();
             _orderedUpdate = topologicalOrder.Where(x => x is IUpdate).Cast<IUpdate>().ToList();
             _orderedHandleInput = topologicalOrder.Where(x => x is IHandleInput).Cast<IHandleInput>().ToList();
-
-            if (LogicalOrderChanged != null)
-                LogicalOrderChanged.Invoke(this, EventArgs.Empty);
         }
 
         private void RefreshDrawOrder()
         {
             _orderedDraw = _drawDependencies.GetTopologicalOrder().ToList();
-
-            if (DrawOrderChanged != null)
-                DrawOrderChanged.Invoke(this, EventArgs.Empty);
         }
 
-        protected class LocalComponent : GlyphComponent, ILoadContent, IUpdate, IHandleInput, IDraw
+        protected class DelegatedComponent : GlyphComponent, ILoadContent, IUpdate, IHandleInput, IDraw
         {
             private readonly GlyphObject _baseComponent;
 
@@ -329,7 +321,7 @@ namespace Glyph
             public event EventHandler EnabledChanged;
             public event EventHandler VisibleChanged;
 
-            internal LocalComponent(GlyphObject baseComponent)
+            internal DelegatedComponent(GlyphObject baseComponent)
             {
                 _baseComponent = baseComponent;
             }
