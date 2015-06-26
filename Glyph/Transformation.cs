@@ -5,7 +5,7 @@ namespace Glyph
 {
     public struct Transformation
     {
-        public Vector2 Position { get; set; }
+        public Vector2 Translation { get; set; }
         public float Rotation { get; set; }
         public float Scale { get; set; }
 
@@ -16,29 +16,29 @@ namespace Glyph
             get
             {
                 return new Transformation {
-                    Position = Vector2.Zero,
+                    Translation = Vector2.Zero,
                     Rotation = 0,
                     Scale = 1f
                 };
             }
         }
 
-        public Transformation(Vector2 position, float rotation, float scale)
+        public Transformation(Vector2 translation, float rotation, float scale)
             : this()
         {
-            Position = position;
+            Translation = translation;
             Rotation = rotation;
             Scale = scale;
 
             RefreshMatrix();
         }
 
-        public void SetPosition(Vector2 value)
+        public void SetTranslation(Vector2 value)
         {
-            if (value == Position)
+            if (value == Translation)
                 return;
 
-            Position = value;
+            Translation = value;
             RefreshMatrix();
         }
 
@@ -64,7 +64,7 @@ namespace Glyph
 
         private void RefreshMatrix()
         {
-            Matrix = new Matrix3X3(Position, Rotation, Scale);
+            Matrix = new Matrix3X3(Translation, Rotation, Scale);
         }
     }
 }

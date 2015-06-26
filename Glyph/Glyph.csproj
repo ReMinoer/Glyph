@@ -54,6 +54,7 @@
     <Compile Include="Exceptions\SingleComponentException.cs" />
     <Compile Include="GlyphComponent.cs" />
     <Compile Include="GlyphObject.cs" />
+    <Compile Include="GameObject2D.cs" />
     <Compile Include="GlyphUpdateBase.cs" />
     <Compile Include="IDependencyProvider.cs" />
     <Compile Include="IDependent.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Matrix3x3.cs" />
     <Compile Include="Point.Extension.cs" />
     <Compile Include="Rectangle.Extension.cs" />
+    <Compile Include="SceneNode.cs" />
     <Compile Include="SinglePerParentAttribute.cs" />
     <Compile Include="SpriteBatch.Extension.cs" />
     <Compile Include="Texture2D.Extension.cs" />
