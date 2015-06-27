@@ -2,6 +2,6 @@
 {
     public interface ITimeUnscalable
     {
-        bool UseUnscaledTime { get; set; }
+        bool UseUnscaledTime { get; }
     }
 }
