@@ -7,6 +7,9 @@ namespace Glyph
     {
         static public Vector2 Normalized(this Vector2 value)
         {
+            if (value == Vector2.Zero)
+                return value;
+
             Vector2 temp = value;
             temp.Normalize();
             return temp;
