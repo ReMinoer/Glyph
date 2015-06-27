@@ -1,36 +1,17 @@
-﻿using System;
-
-namespace Glyph
+﻿namespace Glyph
 {
-    public abstract class GlyphUpdateBase : GlyphComponent, IUpdate
+    public abstract class GlyphUpdateBase : GlyphComponent, IUpdate, IEnableable
     {
-        private bool _enabled;
-
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled == value)
-                    return;
-
-                if (EnabledChanged != null)
-                    EnabledChanged(this, EventArgs.Empty);
-
-                _enabled = value;
-            }
-        }
-
-        public event EventHandler EnabledChanged;
+        public virtual bool Enabled { get; set; }
 
         public void Update(ElapsedTime elapsedTime)
         {
             if (!Enabled)
                 return;
 
-            UpdateLocal(elapsedTime);
+            UpdateThis(elapsedTime);
         }
 
-        protected abstract void UpdateLocal(ElapsedTime elapsedTime);
+        protected abstract void UpdateThis(ElapsedTime elapsedTime);
     }
 }

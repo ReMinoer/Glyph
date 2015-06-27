@@ -58,6 +58,7 @@
     <Compile Include="GlyphUpdateBase.cs" />
     <Compile Include="IDependencyProvider.cs" />
     <Compile Include="IDependent.cs" />
+    <Compile Include="IEnableable.cs" />
     <Compile Include="IGlyphComponent.cs" />
     <Compile Include="IDraw.cs" />
     <Compile Include="IGlyphComposite.cs" />

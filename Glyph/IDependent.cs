@@ -1,7 +1,7 @@
 ﻿namespace Glyph
 {
-    public interface IDependent<out TAbstract>
+    public interface IDependent
     {
-        void BindDependencies(IDependencyProvider<TAbstract> dependencyProvider);
+        void BindDependencies(IDependencyProvider dependencyProvider);
     }
 }

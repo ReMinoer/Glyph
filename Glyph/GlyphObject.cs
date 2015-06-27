@@ -7,12 +7,9 @@ using Glyph.Exceptions;
 
 namespace Glyph
 {
-    public class GlyphObject : Composite<IGlyphComponent, GlyphObject>, IGlyphComposite, ILoadContent, IUpdate, IHandleInput, IDraw, IDependencyProvider<IGlyphComponent>
+    public class GlyphObject : Composite<IGlyphComponent, GlyphObject>, IGlyphComposite, IEnableable, ILoadContent, IUpdate, IHandleInput, IDraw, IDependencyProvider
     {
         static private readonly Stack<Type> DependencyStack = new Stack<Type>();
-
-        private bool _enabled;
-        private bool _visible;
 
         protected readonly DelegatedComponent This;
 
@@ -24,38 +21,8 @@ namespace Glyph
         private ICollection<IHandleInput> _orderedHandleInput;
         private ICollection<IDraw> _orderedDraw;
 
-        public virtual bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled == value)
-                    return;
-
-                if (EnabledChanged != null)
-                    EnabledChanged(this, EventArgs.Empty);
-
-                _enabled = value;
-            }
-        }
-
-        public virtual bool Visible
-        {
-            get { return _visible; }
-            set
-            {
-                if (_visible == value)
-                    return;
-
-                if (VisibleChanged != null)
-                    VisibleChanged(this, EventArgs.Empty);
-
-                _visible = value;
-            }
-        }
-
-        public event EventHandler EnabledChanged;
-        public event EventHandler VisibleChanged;
+        public virtual bool Enabled { get; set; }
+        public virtual bool Visible { get; set; }
 
         public GlyphObject()
         {
@@ -165,7 +132,7 @@ namespace Glyph
             if (GetComponent(type) != null && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
                 throw new SingleComponentException(type);
 
-            var dependent = item as IDependent<IGlyphComponent>;
+            var dependent = item as IDependent;
             if (dependent != null)
                 dependent.BindDependencies(this);
 
@@ -202,6 +169,9 @@ namespace Glyph
 
             if (DependencyStack.Contains(type))
                 throw new CyclicDependencyException(DependencyStack);
+
+            if (this is T)
+                return this as T;
 
             var dependency = GetComponent<T>();
             if (dependency == null)
@@ -304,7 +274,7 @@ namespace Glyph
             _orderedDraw = _drawDependencies.GetTopologicalOrder().ToList();
         }
 
-        protected class DelegatedComponent : GlyphComponent, ILoadContent, IUpdate, IHandleInput, IDraw
+        protected class DelegatedComponent : GlyphComponent, IEnableable, ILoadContent, IUpdate, IHandleInput, IDraw
         {
             private readonly GlyphObject _baseComponent;
 
@@ -317,9 +287,6 @@ namespace Glyph
             {
                 get { return true; }
             }
-
-            public event EventHandler EnabledChanged;
-            public event EventHandler VisibleChanged;
 
             internal DelegatedComponent(GlyphObject baseComponent)
             {

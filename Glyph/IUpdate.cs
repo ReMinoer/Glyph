@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace Glyph
+﻿namespace Glyph
 {
     public interface IUpdate : IGlyphComponent
     {
-        bool Enabled { get; }
-        event EventHandler EnabledChanged;
         void Update(ElapsedTime elapsedTime);
     }
 }

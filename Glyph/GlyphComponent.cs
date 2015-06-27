@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Diese.Composition;
+﻿using Diese.Composition;
 
 namespace Glyph
 {

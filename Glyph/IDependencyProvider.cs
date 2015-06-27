@@ -1,7 +1,7 @@
 ﻿namespace Glyph
 {
-    public interface IDependencyProvider<in TAbstract>
+    public interface IDependencyProvider
     {
-        T Resolve<T>() where T : class, TAbstract, new();
+        T Resolve<T>() where T : class, IGlyphComponent, new();
     }
 }

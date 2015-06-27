@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace Glyph
+﻿namespace Glyph
 {
-    public interface IHandleInput
+    public interface IHandleInput : IGlyphComponent
     {
-        bool Enabled { get; }
-        event EventHandler EnabledChanged;
         void HandleInput();
     }
 }
