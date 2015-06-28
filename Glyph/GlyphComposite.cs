@@ -2,7 +2,7 @@
 
 namespace Glyph
 {
-    public class GlyphComponent : Component<IGlyphComponent, IGlyphParent>, IGlyphComponent
+    public abstract class GlyphComposite : Composite<IGlyphComponent, IGlyphParent>, IGlyphComposite
     {
         public virtual void Initialize()
         {

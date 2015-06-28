@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Diese.Composition;
 using Glyph.Exceptions;
 
 namespace Glyph
 {
-    public class GlyphObject : Composite<IGlyphComponent, GlyphObject>, IGlyphComposite, IEnableable, ILoadContent, IUpdate, IHandleInput, IDraw, IDependencyProvider
+    public class GlyphObject : GlyphComposite, IEnableable, ILoadContent, IUpdate, IHandleInput, IDraw, IDependencyProvider
     {
         static private readonly Stack<Type> DependencyStack = new Stack<Type>();
 
@@ -40,7 +39,7 @@ namespace Glyph
             _orderedDraw = new List<IDraw> { This };
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
             foreach (IGlyphComponent component in Components)
                 component.Initialize();
@@ -99,7 +98,7 @@ namespace Glyph
         {
         }
 
-        public virtual void Dispose()
+        public override void Dispose()
         {
             foreach (IGlyphComponent component in Components)
                 component.Dispose();
