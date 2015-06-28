@@ -6,7 +6,6 @@ namespace Glyph.Animation.Trajectories
     {
         float Length { get; }
         Vector2 GetPosition(float advance);
-
         ITimedTrajectory AsTimed(float duration);
         ITimedTrajectory AsTimed(float duration, EasingDelegate easing);
         IProgressiveTrajectory AsProgressive();

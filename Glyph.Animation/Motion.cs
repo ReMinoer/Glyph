@@ -3,23 +3,20 @@ using Glyph.Animation.Trajectories.Players;
 using Microsoft.Xna.Framework;
 
 // TODO : Splines
+
 namespace Glyph.Animation
 {
     [SinglePerParent]
     public class Motion : GlyphContainer, IEnableable, IUpdate, ITimeUnscalable, IDependent, IDependencyProvider
     {
-        public enum MoveType
-        {
-            Continuous,
-            Trajectory
-        }
-
         private SceneNode _sceneNode;
         private Vector2 _direction;
-
         public bool Enabled { get; set; }
-
         public MoveType Type { get; private set; }
+        public ITrajectoryPlayer TrajectoryPlayer { get; private set; }
+        public bool UseUnscaledTime { get; set; }
+        public Referential Referential { get; private set; }
+        public float Speed { get; set; }
 
         public Vector2 Direction
         {
@@ -30,12 +27,6 @@ namespace Glyph.Animation
                 _direction = value.Normalized();
             }
         }
-
-        public float Speed { get; set; }
-        public bool UseUnscaledTime { get; set; }
-        public Referential Referential { get; private set; }
-
-        public ITrajectoryPlayer TrajectoryPlayer { get; private set; }
 
         public Motion()
             : base(1)
@@ -121,39 +112,43 @@ namespace Glyph.Animation
             GoTo(destination, duration, (advance => advance), referential);
         }
 
-        public void GoTo(float x, float y, float duration, EasingDelegate easing, Referential referential = Referential.Local)
+        public void GoTo(float x, float y, float duration, EasingDelegate easing,
+            Referential referential = Referential.Local)
         {
             GoTo(new Vector2(x, y), duration, easing, referential);
         }
 
-        public void GoTo(Vector2 destination, float duration, EasingDelegate easing, Referential referential = Referential.Local)
+        public void GoTo(Vector2 destination, float duration, EasingDelegate easing,
+            Referential referential = Referential.Local)
         {
             FollowTrajectory(new GoToTrajectory(destination).AsTimed(duration, easing), referential);
         }
 
         public void FollowTrajectory(IStandardTrajectory trajectory, Referential referential = Referential.Local)
         {
-            PlayTrajectory(new ProgressiveTrajectoryPlayer { Trajectory = trajectory.AsProgressive() }, referential);
+            PlayTrajectory(new ProgressiveTrajectoryPlayer {Trajectory = trajectory.AsProgressive()}, referential);
         }
 
-        public void FollowTrajectory(IStandardTrajectory trajectory, float duration, Referential referential = Referential.Local)
+        public void FollowTrajectory(IStandardTrajectory trajectory, float duration,
+            Referential referential = Referential.Local)
         {
-            PlayTrajectory(new TimedTrajectoryPlayer { Trajectory = trajectory.AsTimed(duration) }, referential);
+            PlayTrajectory(new TimedTrajectoryPlayer {Trajectory = trajectory.AsTimed(duration)}, referential);
         }
 
-        public void FollowTrajectory(IStandardTrajectory trajectory, float duration, EasingDelegate easing, Referential referential = Referential.Local)
+        public void FollowTrajectory(IStandardTrajectory trajectory, float duration, EasingDelegate easing,
+            Referential referential = Referential.Local)
         {
-            PlayTrajectory(new TimedTrajectoryPlayer { Trajectory = trajectory.AsTimed(duration, easing) }, referential);
+            PlayTrajectory(new TimedTrajectoryPlayer {Trajectory = trajectory.AsTimed(duration, easing)}, referential);
         }
 
         public void FollowTrajectory(ITimedTrajectory trajectory, Referential referential = Referential.Local)
         {
-            PlayTrajectory(new TimedTrajectoryPlayer { Trajectory = trajectory }, referential);
+            PlayTrajectory(new TimedTrajectoryPlayer {Trajectory = trajectory}, referential);
         }
 
         public void FollowTrajectory(IProgressiveTrajectory trajectory, Referential referential = Referential.Local)
         {
-            PlayTrajectory(new ProgressiveTrajectoryPlayer { Trajectory = trajectory }, referential);
+            PlayTrajectory(new ProgressiveTrajectoryPlayer {Trajectory = trajectory}, referential);
         }
 
         public void Resume()
@@ -187,6 +182,12 @@ namespace Glyph.Animation
 
             Direction = Vector2.Zero;
             Type = MoveType.Trajectory;
+        }
+
+        public enum MoveType
+        {
+            Continuous,
+            Trajectory
         }
 
         private class GoToTrajectory : StandardTrajectory

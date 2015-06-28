@@ -6,7 +6,6 @@ namespace Glyph.Animation.Trajectories
     {
         public abstract Vector2 Destination { get; }
         public abstract float Length { get; }
-
         public abstract Vector2 GetPosition(float advance);
 
         public ITimedTrajectory AsTimed(float duration)

@@ -6,21 +6,16 @@ namespace Glyph.Animation.Trajectories.Players
     {
         TrajectoryPlayerState State { get; }
         ITrajectory Trajectory { get; }
-
         float Advance { get; }
         float Time { get; }
         float Distance { get; }
-
         float EstimatedDuration { get; }
         float EstimatedLength { get; }
-
         Vector2 Position { get; }
         Vector2 StartPosition { get; }
         Vector2 Direction { get; }
-
         float Speed { get; set; }
         bool ReadOnlySpeed { get; }
-
         void Play(Vector2 startPosition);
         void Resume();
         void Pause();

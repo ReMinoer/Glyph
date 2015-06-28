@@ -8,23 +8,13 @@ namespace Glyph.Animation.Trajectories.Players
     {
         protected Vector2 LastPosition;
         protected float CurrentSpeed;
-
         public bool Enabled { get; set; }
-
         public TrajectoryPlayerState State { get; private set; }
         public TTrajectory Trajectory { get; set; }
-
-        ITrajectory ITrajectoryPlayer.Trajectory
-        {
-            get { return Trajectory; }
-        }
-
         public float Time { get; protected set; }
         public float Distance { get; protected set; }
         public float Advance { get; protected set; }
-
         public bool UseUnscaledTime { get; set; }
-
         public Vector2 Position { get; protected set; }
         public Vector2 StartPosition { get; private set; }
         public Vector2 Direction { get; protected set; }
@@ -45,10 +35,17 @@ namespace Glyph.Animation.Trajectories.Players
         public abstract float EstimatedDuration { get; }
         public abstract float EstimatedLength { get; }
 
+        ITrajectory ITrajectoryPlayer.Trajectory
+        {
+            get { return Trajectory; }
+        }
+
         protected TrajectoryPlayerBase()
         {
             State = TrajectoryPlayerState.End;
         }
+
+        protected abstract void UpdateThis(ElapsedTime elapsedTime);
 
         public virtual void Update(ElapsedTime elapsedTime)
         {
@@ -57,8 +54,6 @@ namespace Glyph.Animation.Trajectories.Players
 
             UpdateThis(elapsedTime);
         }
-
-        protected abstract void UpdateThis(ElapsedTime elapsedTime);
 
         public void Play(Vector2 startPosition)
         {
