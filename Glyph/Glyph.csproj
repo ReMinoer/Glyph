@@ -57,7 +57,6 @@
     <Compile Include="GlyphContainer.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="GameObject2D.cs" />
-    <Compile Include="GlyphUpdateBase.cs" />
     <Compile Include="IDependencyProvider.cs" />
     <Compile Include="IDependent.cs" />
     <Compile Include="IEnableable.cs" />
