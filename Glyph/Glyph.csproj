@@ -74,6 +74,7 @@
     <Compile Include="Matrix3x3.cs" />
     <Compile Include="Point.Extension.cs" />
     <Compile Include="Rectangle.Extension.cs" />
+    <Compile Include="Referential.cs" />
     <Compile Include="SceneNode.cs" />
     <Compile Include="SinglePerParentAttribute.cs" />
     <Compile Include="SpriteBatch.Extension.cs" />

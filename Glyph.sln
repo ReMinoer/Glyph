@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Composition", "Extern
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Effects", "Glyph.Effects\Glyph.Effects.csproj", "{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Animation", "Glyph.Animation\Glyph.Animation.csproj", "{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,6 +128,10 @@ Global
 		{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
 		{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}.Windows|Any CPU.Build.0 = Windows|Any CPU
+		{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
+		{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}.Windows|Any CPU.Build.0 = Windows|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
