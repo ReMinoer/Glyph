@@ -52,6 +52,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Animation", "Glyph.An
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Graphics", "Glyph.Graphics\Glyph.Graphics.csproj", "{CC4D895F-646F-43C8-B25E-81CF5803ED7A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Injection", "External\Diese\Diese.Injection\Diese.Injection.csproj", "{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,12 @@ Global
 		{CC4D895F-646F-43C8-B25E-81CF5803ED7A}.Release|Any CPU.Build.0 = Windows|Any CPU
 		{CC4D895F-646F-43C8-B25E-81CF5803ED7A}.Windows|Any CPU.ActiveCfg = Windows|Any CPU
 		{CC4D895F-646F-43C8-B25E-81CF5803ED7A}.Windows|Any CPU.Build.0 = Windows|Any CPU
+		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}.Windows|Any CPU.ActiveCfg = Release|Any CPU
+		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}.Windows|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,5 +198,6 @@ Global
 		{E2707575-12C2-4CE6-B8E4-E7EFD8D4E301} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{F2F3FEB2-8453-409E-B00C-96DC64AC8020} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{E8D6F663-89A6-497F-A02F-D0FC562D2D0E} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
+		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 	EndGlobalSection
 EndGlobal

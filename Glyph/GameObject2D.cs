@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Diese.Injection;
+using Microsoft.Xna.Framework;
 
 namespace Glyph
 {
@@ -42,7 +43,8 @@ namespace Glyph
             set { SceneNode.LocalScale = value; }
         }
 
-        public GameObject2D()
+        public GameObject2D(IDependencyRegistry dependencyRegistry)
+            : base(dependencyRegistry)
         {
             SceneNode = Add<SceneNode>();
         }

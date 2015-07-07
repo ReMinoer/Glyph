@@ -55,10 +55,9 @@
     <Compile Include="GlyphComponent.cs" />
     <Compile Include="GlyphComposite.cs" />
     <Compile Include="GlyphContainer.cs" />
+    <Compile Include="GlyphInjector.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="GameObject2D.cs" />
-    <Compile Include="IDependencyProvider.cs" />
-    <Compile Include="IDependent.cs" />
     <Compile Include="IEnableable.cs" />
     <Compile Include="IGlyphComponent.cs" />
     <Compile Include="IDraw.cs" />
@@ -107,6 +106,10 @@
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
       <Project>{e8d6f663-89a6-497f-a02f-d0fc562d2d0e}</Project>
       <Name>Diese.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
+      <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
+      <Name>Diese.Injection</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

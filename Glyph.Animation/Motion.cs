@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework;
 namespace Glyph.Animation
 {
     [SinglePerParent]
-    public class Motion : GlyphContainer, IEnableable, IUpdate, ITimeUnscalable, IDependent, IDependencyProvider
+    public class Motion : GlyphContainer, IEnableable, IUpdate, ITimeUnscalable
     {
-        private SceneNode _sceneNode;
+        private readonly SceneNode _sceneNode;
         private Vector2 _direction;
         public bool Enabled { get; set; }
         public MoveType Type { get; private set; }
@@ -28,22 +28,13 @@ namespace Glyph.Animation
             }
         }
 
-        public Motion()
+        public Motion(SceneNode sceneNode)
             : base(1)
         {
+            _sceneNode = sceneNode;
+
             Type = MoveType.Continuous;
             Referential = Referential.Local;
-        }
-
-        public void BindDependencies(IDependencyProvider dependencyProvider)
-        {
-            _sceneNode = dependencyProvider.Resolve<SceneNode>();
-        }
-
-        public T Resolve<T>()
-            where T : class, IGlyphComponent, new()
-        {
-            return this as T;
         }
 
         public void Update(ElapsedTime elapsedTime)

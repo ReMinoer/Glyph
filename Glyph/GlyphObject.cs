@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Diese.Injection;
 using Glyph.Exceptions;
 
 namespace Glyph
 {
-    public class GlyphObject : GlyphComposite, IEnableable, ILoadContent, IUpdate, IHandleInput, IDraw, IDependencyProvider
+    public class GlyphObject : GlyphComposite, IEnableable, ILoadContent, IUpdate, IHandleInput, IDraw
     {
-        static private readonly Stack<Type> DependencyStack = new Stack<Type>();
-
         protected readonly DelegatedComponent This;
+
+        private readonly GlyphInjector _injector;
 
         private readonly IDependencyGraph<IGlyphComponent> _logicalDependencies;
         private readonly IDependencyGraph<IDraw> _drawDependencies;
@@ -23,9 +24,11 @@ namespace Glyph
         public virtual bool Enabled { get; set; }
         public virtual bool Visible { get; set; }
 
-        public GlyphObject()
+        public GlyphObject(IDependencyRegistry dependencyRegistry)
         {
             This = new DelegatedComponent(this);
+
+            _injector = new GlyphInjector(this, dependencyRegistry);
 
             _logicalDependencies = new DependencyGraph<IGlyphComponent>();
             _logicalDependencies.AddItem(This);
@@ -107,7 +110,7 @@ namespace Glyph
         public T Add<T>()
             where T : class, IGlyphComponent, new()
         {
-            var component = new T();
+            var component = _injector.Resolve<T>();
             Add(component);
 
             return component;
@@ -115,7 +118,7 @@ namespace Glyph
 
         public IGlyphComponent Add(Type componentType)
         {
-            var component = Activator.CreateInstance(componentType) as IGlyphComponent;
+            var component = _injector.Resolve(componentType) as IGlyphComponent;
             Add(component);
 
             return component;
@@ -130,10 +133,6 @@ namespace Glyph
 
             if (GetComponent(type) != null && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
                 throw new SingleComponentException(type);
-
-            var dependent = item as IDependent;
-            if (dependent != null)
-                dependent.BindDependencies(this);
 
             base.Add(item);
             AddComponentToCache(item);
@@ -161,46 +160,24 @@ namespace Glyph
             return true;
         }
 
-        public T Resolve<T>()
-            where T : class, IGlyphComponent, new()
-        {
-            Type type = typeof(T);
-
-            if (DependencyStack.Contains(type))
-                throw new CyclicDependencyException(DependencyStack);
-
-            if (this is T)
-                return this as T;
-
-            var dependency = GetComponent<T>();
-            if (dependency == null)
-            {
-                DependencyStack.Push(type);
-                dependency = Add<T>();
-                DependencyStack.Pop();
-            }
-
-            return dependency;
-        }
-
-        protected internal void AddLogicalDependency(IGlyphComponent dependent, IGlyphComponent dependency)
+        protected void AddLogicalDependency(IGlyphComponent dependent, IGlyphComponent dependency)
         {
             _logicalDependencies.AddDependency(dependent, dependency);
             RefreshLogicalOrder();
         }
 
-        protected internal void RemoveLogicalDependency(IGlyphComponent dependent, IGlyphComponent dependency)
+        protected void RemoveLogicalDependency(IGlyphComponent dependent, IGlyphComponent dependency)
         {
             _logicalDependencies.RemoveDependency(dependent, dependency);
         }
 
-        protected internal void AddDrawDependency(IDraw dependent, IDraw dependency)
+        protected void AddDrawDependency(IDraw dependent, IDraw dependency)
         {
             _drawDependencies.AddDependency(dependent, dependency);
             RefreshDrawOrder();
         }
 
-        protected internal void RemoveDrawDependency(IDraw dependent, IDraw dependency)
+        protected void RemoveDrawDependency(IDraw dependent, IDraw dependency)
         {
             _drawDependencies.RemoveDependency(dependent, dependency);
         }
