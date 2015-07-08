@@ -43,8 +43,8 @@ namespace Glyph
             set { SceneNode.LocalScale = value; }
         }
 
-        public GameObject2D(IDependencyRegistry dependencyRegistry)
-            : base(dependencyRegistry)
+        public GameObject2D(IDependencyInjector dependencyInjector)
+            : base(dependencyInjector)
         {
             SceneNode = Add<SceneNode>();
         }

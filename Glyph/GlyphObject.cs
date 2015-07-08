@@ -11,7 +11,7 @@ namespace Glyph
     {
         protected readonly DelegatedComponent This;
 
-        private readonly GlyphInjector _injector;
+        protected readonly IDependencyInjector DependencyInjector;
 
         private readonly IDependencyGraph<IGlyphComponent> _logicalDependencies;
         private readonly IDependencyGraph<IDraw> _drawDependencies;
@@ -24,11 +24,11 @@ namespace Glyph
         public virtual bool Enabled { get; set; }
         public virtual bool Visible { get; set; }
 
-        public GlyphObject(IDependencyRegistry dependencyRegistry)
+        public GlyphObject(IDependencyInjector dependencyInjector)
         {
             This = new DelegatedComponent(this);
 
-            _injector = new GlyphInjector(this, dependencyRegistry);
+            DependencyInjector = dependencyInjector;
 
             _logicalDependencies = new DependencyGraph<IGlyphComponent>();
             _logicalDependencies.AddItem(This);
@@ -110,7 +110,7 @@ namespace Glyph
         public T Add<T>()
             where T : class, IGlyphComponent, new()
         {
-            var component = _injector.Resolve<T>();
+            var component = DependencyInjector.Resolve<T>();
             Add(component);
 
             return component;
@@ -118,7 +118,7 @@ namespace Glyph
 
         public IGlyphComponent Add(Type componentType)
         {
-            var component = _injector.Resolve(componentType) as IGlyphComponent;
+            var component = DependencyInjector.Resolve(componentType) as IGlyphComponent;
             Add(component);
 
             return component;

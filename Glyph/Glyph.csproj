@@ -55,7 +55,6 @@
     <Compile Include="GlyphComponent.cs" />
     <Compile Include="GlyphComposite.cs" />
     <Compile Include="GlyphContainer.cs" />
-    <Compile Include="GlyphInjector.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="GameObject2D.cs" />
     <Compile Include="IEnableable.cs" />
