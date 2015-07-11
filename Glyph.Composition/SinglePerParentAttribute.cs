@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Glyph
+namespace Glyph.Composition
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class SinglePerParentAttribute : Attribute

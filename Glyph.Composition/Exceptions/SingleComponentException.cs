@@ -1,6 +1,7 @@
 ﻿using System;
+using Glyph.Exceptions;
 
-namespace Glyph.Exceptions
+namespace Glyph.Composition.Exceptions
 {
     public class SingleComponentException : GlyphException
     {

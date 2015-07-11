@@ -1,6 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Glyph.Composition;
+using Microsoft.Xna.Framework;
 
-namespace Glyph
+namespace Glyph.Animation
 {
     [SinglePerParent]
     public class SceneNode : GlyphComponent

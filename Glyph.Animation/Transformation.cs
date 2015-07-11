@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace Glyph
+namespace Glyph.Animation
 {
     public struct Transformation
     {

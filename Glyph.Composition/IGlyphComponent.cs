@@ -1,7 +1,7 @@
 ﻿using System;
 using Diese.Composition;
 
-namespace Glyph
+namespace Glyph.Composition
 {
     public interface IGlyphComponent : IComponent<IGlyphComponent, IGlyphParent>, IDisposable
     {

@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</ProjectGuid>
+    <ProjectGuid>{8D4F4138-EB36-4427-9A2B-10A50723268C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph</RootNamespace>
-    <AssemblyName>Glyph</AssemblyName>
+    <RootNamespace>Glyph.Composition</RootNamespace>
+    <AssemblyName>Glyph.Composition</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -34,61 +33,65 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.3.2.0.0\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Angle.cs" />
-    <Compile Include="Axis.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="Checkpoint.cs" />
-    <Compile Include="Exceptions\GlyphException.cs" />
-    <Compile Include="ITimeUnscalable.cs" />
-    <Compile Include="Point.Extension.cs" />
-    <Compile Include="Rectangle.Extension.cs" />
-    <Compile Include="Referential.cs" />
-    <Compile Include="SpriteBatch.Extension.cs" />
-    <Compile Include="Texture2D.Extension.cs" />
-    <Compile Include="ElapsedTime.cs" />
-    <Compile Include="Transition.Extension.cs" />
-    <Compile Include="Vector2.Extension.cs" />
-    <Compile Include="Vector3.Extension.cs" />
-    <Compile Include="ContentLibrary.cs" />
-    <Compile Include="Resolution.cs" />
-    <Compile Include="Texture2DSplit.cs" />
-    <Compile Include="Orientation.cs" />
-    <Compile Include="Period.cs" />
+    <Compile Include="Scheduler\Base\DependencyGraph.cs" />
+    <Compile Include="Delegates\DrawDelegate.cs" />
+    <Compile Include="Exceptions\CyclicDependencyException.cs" />
+    <Compile Include="Exceptions\SingleComponentException.cs" />
+    <Compile Include="GlyphComponent.cs" />
+    <Compile Include="GlyphComposite.cs" />
+    <Compile Include="GlyphContainer.cs" />
+    <Compile Include="Scheduler\Base\DependencyGraphNode.cs" />
+    <Compile Include="Scheduler\Base\IDependencyGraphNode.cs" />
+    <Compile Include="Scheduler\Base\Priority.cs" />
+    <Compile Include="Scheduler\Base\Scheduler.cs" />
+    <Compile Include="GlyphObject.cs" />
+    <Compile Include="Delegates\HandleInputDelegate.cs" />
+    <Compile Include="Scheduler\Base\IDependencyGraph.cs" />
+    <Compile Include="IDraw.cs" />
+    <Compile Include="IEnableable.cs" />
+    <Compile Include="IGlyphComponent.cs" />
+    <Compile Include="IGlyphComposite.cs" />
+    <Compile Include="IGlyphContainer.cs" />
+    <Compile Include="IGlyphEnumerable.cs" />
+    <Compile Include="IGlyphParent.cs" />
+    <Compile Include="IHandleInput.cs" />
+    <Compile Include="ILoadContent.cs" />
+    <Compile Include="Delegates\InitializeDelegate.cs" />
+    <Compile Include="IUpdate.cs" />
+    <Compile Include="Delegates\LoadContentDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transition\ITimingFunction.cs" />
-    <Compile Include="Transition\ITransition.cs" />
-    <Compile Include="Transition\TransitionVector.cs" />
-    <Compile Include="Transition\BezierFunction.cs" />
-    <Compile Include="Transition\CustomFunction.cs" />
-    <Compile Include="Transition\LinearFunction.cs" />
-    <Compile Include="Transition\StepsFunction.cs" />
-    <Compile Include="Transition\TransitionColor.cs" />
-    <Compile Include="Transition\TransitionFloat.cs" />
-    <Compile Include="Transition\TransitionVector2.cs" />
-    <Compile Include="Transition\TransitionVector3.cs" />
-    <Compile Include="Transition\TransitionVector4.cs" />
+    <Compile Include="Scheduler\GlyphObjectScheduler.cs" />
+    <Compile Include="Scheduler\GlyphScheduler.cs" />
+    <Compile Include="Scheduler\Base\IScheduler.cs" />
+    <Compile Include="Scheduler\Base\ISchedulerController.cs" />
+    <Compile Include="Scheduler\IGlyphScheduler.cs" />
+    <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
+    <Compile Include="SinglePerParentAttribute.cs" />
+    <Compile Include="Delegates\UpdateDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
-      <Project>{e8d6f663-89a6-497f-a02f-d0fc562d2d0e}</Project>
+      <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
+      <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
+      <Name>Glyph.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph\Glyph.csproj">
+      <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
+      <Name>Glyph</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

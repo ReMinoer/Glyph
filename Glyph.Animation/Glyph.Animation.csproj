@@ -39,6 +39,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EasingDelegate.cs" />
+    <Compile Include="Matrix3x3.cs" />
+    <Compile Include="SceneNode.cs" />
     <Compile Include="Trajectories\IProgressiveTrajectory.cs" />
     <Compile Include="Trajectories\IStandardTrajectory.cs" />
     <Compile Include="Trajectories\ITimedTrajectory.cs" />
@@ -51,11 +53,16 @@
     <Compile Include="Trajectories\StandardTrajectory.cs" />
     <Compile Include="Trajectories\Players\TimedTrajectoryPlayer.cs" />
     <Compile Include="Trajectories\Players\TrajectoryPlayerState.cs" />
+    <Compile Include="Transformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
+      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
+      <Name>Glyph.Composition</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

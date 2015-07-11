@@ -1,4 +1,4 @@
-﻿namespace Glyph
+﻿namespace Glyph.Composition
 {
     public interface IEnableable : IGlyphComponent
     {

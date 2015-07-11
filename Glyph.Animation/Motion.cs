@@ -1,5 +1,6 @@
 ﻿using Glyph.Animation.Trajectories;
 using Glyph.Animation.Trajectories.Players;
+using Glyph.Composition;
 using Microsoft.Xna.Framework;
 
 // TODO : Splines

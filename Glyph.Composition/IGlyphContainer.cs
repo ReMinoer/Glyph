@@ -1,6 +1,6 @@
 ﻿using Diese.Composition;
 
-namespace Glyph
+namespace Glyph.Composition
 {
     public interface IGlyphContainer : IGlyphEnumerable<IGlyphComponent>, IContainer<IGlyphComponent, IGlyphParent>
     {

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Glyph.Animation;
+using Glyph.Composition;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {

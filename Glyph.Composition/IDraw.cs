@@ -1,4 +1,4 @@
-﻿namespace Glyph
+﻿namespace Glyph.Composition
 {
     public interface IDraw : IGlyphComponent
     {

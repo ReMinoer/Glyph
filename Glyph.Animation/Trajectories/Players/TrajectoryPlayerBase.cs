@@ -1,4 +1,5 @@
 ﻿using System;
+using Glyph.Composition;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Animation.Trajectories.Players
