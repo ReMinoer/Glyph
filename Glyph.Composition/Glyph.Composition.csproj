@@ -37,20 +37,17 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Scheduler\Base\DependencyGraph.cs" />
     <Compile Include="Delegates\DrawDelegate.cs" />
-    <Compile Include="Exceptions\CyclicDependencyException.cs" />
+    <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
     <Compile Include="GlyphComponent.cs" />
     <Compile Include="GlyphComposite.cs" />
     <Compile Include="GlyphContainer.cs" />
-    <Compile Include="Scheduler\Base\DependencyGraphNode.cs" />
-    <Compile Include="Scheduler\Base\IDependencyGraphNode.cs" />
+    <Compile Include="Scheduler\Base\DependencyGraph.cs" />
     <Compile Include="Scheduler\Base\Priority.cs" />
     <Compile Include="Scheduler\Base\Scheduler.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="Delegates\HandleInputDelegate.cs" />
-    <Compile Include="Scheduler\Base\IDependencyGraph.cs" />
     <Compile Include="IDraw.cs" />
     <Compile Include="IEnableable.cs" />
     <Compile Include="IGlyphComponent.cs" />
@@ -64,6 +61,7 @@
     <Compile Include="IUpdate.cs" />
     <Compile Include="Delegates\LoadContentDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scheduler\Base\TopologicalOrderVisitor.cs" />
     <Compile Include="Scheduler\GlyphObjectScheduler.cs" />
     <Compile Include="Scheduler\GlyphScheduler.cs" />
     <Compile Include="Scheduler\Base\IScheduler.cs" />
@@ -77,6 +75,10 @@
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Graph\Diese.Graph.csproj">
+      <Project>{BBC6C938-95A5-4CBF-AA6B-DA2A9A09C4F1}</Project>
+      <Name>Diese.Graph</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>

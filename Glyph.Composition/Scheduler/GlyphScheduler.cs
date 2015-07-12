@@ -19,46 +19,29 @@ namespace Glyph.Composition.Scheduler
 
         new public IGlyphSchedulerController<TInterface, TDelegate> Plan(TDelegate item)
         {
-            if (!DependencyGraph.ContainsItem(item))
-                DependencyGraph.AddItem(item);
+            base.Plan(item);
 
-            return new GlyphSchedulerController(DependencyGraph, item, _interfaceToDelegate);
+            return new GlyphSchedulerController(this, GetVertex(item), _interfaceToDelegate);
         }
 
         public IGlyphSchedulerController<TInterface, TDelegate> Plan(TInterface item)
         {
-            return new GlyphSchedulerController(DependencyGraph, _interfaceToDelegate(item), _interfaceToDelegate);
+            return Plan(_interfaceToDelegate(item));
         }
 
         public void Unplan(TInterface item)
         {
-            DependencyGraph.ClearDependencies(_interfaceToDelegate(item));
-        }
-
-        internal void Add(TDelegate item)
-        {
-            if (!DependencyGraph.ContainsItem(item))
-                DependencyGraph.AddItem(item);
-        }
-
-        internal void Remove(TDelegate item)
-        {
-            if (DependencyGraph.ContainsItem(item))
-                DependencyGraph.RemoveItem(item);
-        }
-
-        internal void Clear()
-        {
-            DependencyGraph.ClearItems();
+            Unplan(_interfaceToDelegate(item));
         }
 
         private class GlyphSchedulerController : SchedulerController, IGlyphSchedulerController<TInterface, TDelegate>
         {
             private readonly Func<TInterface, TDelegate> _interfaceToDelegate;
 
-            public GlyphSchedulerController(IDependencyGraph<TDelegate> dependencyGraph, TDelegate item,
+            public GlyphSchedulerController(Scheduler<TDelegate> scheduler,
+                DependencyGraph<TDelegate>.Vertex vertex,
                 Func<TInterface, TDelegate> interfaceToDelegate)
-                : base(dependencyGraph, item)
+                : base(scheduler, vertex)
             {
                 _interfaceToDelegate = interfaceToDelegate;
             }

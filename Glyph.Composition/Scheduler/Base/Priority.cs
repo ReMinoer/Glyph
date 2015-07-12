@@ -1,4 +1,4 @@
-namespace Glyph.Composition.Scheduler.Base
+﻿namespace Glyph.Composition.Scheduler.Base
 {
     public enum Priority
     {

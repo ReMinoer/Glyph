@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Glyph.Exceptions;
 
-namespace Glyph.Composition.Exceptions
+namespace Glyph.Composition.Scheduler.Base
 {
-    public class CyclicDependencyException : GlyphException
+    public class CyclicDependencyException : Exception
     {
         private const string MessageByType = "A cyclic dependency has been detected ! (Stack : {0})";
 
         public CyclicDependencyException(IEnumerable<Type> typeStack)
-            : base(MessageByType, typeStack.Aggregate("", (x, y) => x + ", " + y.Name))
+            : base(string.Format(MessageByType, typeStack.Aggregate("", (x, y) => x + ", " + y.Name)))
         {
         }
 
