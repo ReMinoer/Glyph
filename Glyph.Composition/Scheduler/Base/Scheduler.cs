@@ -6,7 +6,9 @@ namespace Glyph.Composition.Scheduler.Base
 {
     public class Scheduler<T> : IScheduler<T>
     {
-        private readonly DependencyGraph<T> _dependencyGraph;
+        protected readonly IDictionary<T, SchedulerGraph<T>.Vertex> ItemsVertex;
+
+        private readonly SchedulerGraph<T> _schedulerGraph;
         private readonly TopologicalOrderVisitor<T> _topologicalOrderVisitor;
         private bool _batchMode;
 
@@ -24,7 +26,9 @@ namespace Glyph.Composition.Scheduler.Base
 
         public Scheduler()
         {
-            _dependencyGraph = new DependencyGraph<T>();
+            ItemsVertex = new Dictionary<T, SchedulerGraph<T>.Vertex>();
+
+            _schedulerGraph = new SchedulerGraph<T>();
             _topologicalOrderVisitor = new TopologicalOrderVisitor<T>();
         }
 
@@ -41,46 +45,83 @@ namespace Glyph.Composition.Scheduler.Base
 
         public virtual ISchedulerController<T> Plan(T item)
         {
-            DependencyGraph<T>.Vertex vertex = GetVertex(item);
+            SchedulerGraph<T>.Vertex vertex;
+            ItemsVertex.TryGetValue(item, out vertex);
 
             if (vertex == null)
             {
-                vertex = new DependencyGraph<T>.Vertex(item);
-                _dependencyGraph.AddVertex(vertex);
+                AddItemVertex(item);
+                Refresh();
             }
-
-            Refresh();
 
             return new SchedulerController(this, vertex);
         }
 
         public virtual void Unplan(T item)
         {
-            _dependencyGraph.ClearEdges(_dependencyGraph.First(x => x.Item.Equals(item)));
+            _schedulerGraph.ClearEdges(ItemsVertex[item]);
             Refresh();
         }
 
-        protected DependencyGraph<T>.Vertex GetVertex(T item)
+        public void ApplyProfile(ISchedulerProfile schedulerProfile)
         {
-            return _dependencyGraph.FirstOrDefault(x => x.Item.Equals(item));
+            SchedulerGraph<T>.Vertex previous = null;
+            foreach (Func<object, bool> predicate in schedulerProfile)
+            {
+                var vertex = new SchedulerGraph<T>.Vertex(predicate);
+                _schedulerGraph.AddVertex(new SchedulerGraph<T>.Vertex(predicate));
+
+                if (previous != null)
+                {
+                    var edge = new SchedulerGraph<T>.Edge(vertex, previous);
+                    _schedulerGraph.AddEdge(ref edge);
+                }
+
+                previous = vertex;
+            }
+
+            Refresh();
         }
 
         internal void Add(T item)
         {
-            if (!_dependencyGraph.Any(x => x.Item.Equals(item)))
-                _dependencyGraph.AddVertex(new DependencyGraph<T>.Vertex(item));
+            if (ItemsVertex.ContainsKey(item))
+                return;
+
+            SchedulerGraph<T>.Vertex vertex = _schedulerGraph.FirstOrDefault(x => x.Predicate(item));
+            if (vertex != null)
+                vertex.Items.Add(item);
+            else
+                AddItemVertex(item);
+
+            Refresh();
         }
 
         internal void Remove(T item)
         {
-            DependencyGraph<T>.Vertex vertice = _dependencyGraph.FirstOrDefault(x => x.Item.Equals(item));
-            if (vertice != null)
-                _dependencyGraph.RemoveVertex(vertice);
+            SchedulerGraph<T>.Vertex vertex;
+            ItemsVertex.TryGetValue(item, out vertex);
+
+            if (vertex != null)
+            {
+                _schedulerGraph.RemoveVertex(vertex);
+                Refresh();
+            }
         }
 
         internal void Clear()
         {
-            _dependencyGraph.ClearVertices();
+            _schedulerGraph.ClearVertices();
+            Refresh();
+        }
+
+        private SchedulerGraph<T>.Vertex AddItemVertex(T item)
+        {
+            var vertex = new SchedulerGraph<T>.Vertex(item);
+            _schedulerGraph.AddVertex(vertex);
+            ItemsVertex.Add(item, vertex);
+
+            return vertex;
         }
 
         private void Refresh()
@@ -88,21 +129,21 @@ namespace Glyph.Composition.Scheduler.Base
             if (_batchMode)
                 return;
 
-            _topologicalOrderVisitor.Process(_dependencyGraph);
+            _topologicalOrderVisitor.Process(_schedulerGraph);
         }
 
         protected class SchedulerController : ISchedulerController<T>
         {
-            protected readonly DependencyGraph<T> DependencyGraph;
+            protected readonly SchedulerGraph<T> SchedulerGraph;
             private readonly Scheduler<T> _scheduler;
-            private readonly DependencyGraph<T>.Vertex _vertex;
+            private readonly SchedulerGraph<T>.Vertex _vertex;
 
-            public SchedulerController(Scheduler<T> scheduler, DependencyGraph<T>.Vertex vertex)
+            public SchedulerController(Scheduler<T> scheduler, SchedulerGraph<T>.Vertex vertex)
             {
                 _scheduler = scheduler;
                 _vertex = vertex;
 
-                DependencyGraph = _scheduler._dependencyGraph;
+                SchedulerGraph = _scheduler._schedulerGraph;
             }
 
             public void AtStart()
@@ -119,32 +160,28 @@ namespace Glyph.Composition.Scheduler.Base
 
             public void Before(T dependent)
             {
-                DependencyGraph<T>.Vertex otherVertex = _scheduler.GetVertex(dependent);
+                SchedulerGraph<T>.Vertex otherVertex;
+                _scheduler.ItemsVertex.TryGetValue(dependent, out otherVertex);
 
                 if (otherVertex == null)
-                {
-                    otherVertex = new DependencyGraph<T>.Vertex(dependent);
-                    DependencyGraph.AddVertex(otherVertex);
-                }
+                    otherVertex = _scheduler.AddItemVertex(dependent);
 
-                var edge = new DependencyGraph<T>.Edge(otherVertex, _vertex);
-                DependencyGraph.AddEdge(ref edge);
+                var edge = new SchedulerGraph<T>.Edge(otherVertex, _vertex);
+                SchedulerGraph.AddEdge(ref edge);
 
                 _scheduler.Refresh();
             }
 
             public void After(T dependency)
             {
-                DependencyGraph<T>.Vertex otherVertex = _scheduler.GetVertex(dependency);
+                SchedulerGraph<T>.Vertex otherVertex;
+                _scheduler.ItemsVertex.TryGetValue(dependency, out otherVertex);
 
                 if (otherVertex == null)
-                {
-                    otherVertex = new DependencyGraph<T>.Vertex(dependency);
-                    DependencyGraph.AddVertex(otherVertex);
-                }
+                    otherVertex = _scheduler.AddItemVertex(dependency);
 
-                var edge = new DependencyGraph<T>.Edge(_vertex, otherVertex);
-                DependencyGraph.AddEdge(ref edge);
+                var edge = new SchedulerGraph<T>.Edge(_vertex, otherVertex);
+                SchedulerGraph.AddEdge(ref edge);
 
                 _scheduler.Refresh();
             }

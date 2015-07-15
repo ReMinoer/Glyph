@@ -21,7 +21,7 @@ namespace Glyph.Composition.Scheduler
         {
             base.Plan(item);
 
-            return new GlyphSchedulerController(this, GetVertex(item), _interfaceToDelegate);
+            return new GlyphSchedulerController(this, ItemsVertex[item], _interfaceToDelegate);
         }
 
         public IGlyphSchedulerController<TInterface, TDelegate> Plan(TInterface item)
@@ -39,7 +39,7 @@ namespace Glyph.Composition.Scheduler
             private readonly Func<TInterface, TDelegate> _interfaceToDelegate;
 
             public GlyphSchedulerController(Scheduler<TDelegate> scheduler,
-                DependencyGraph<TDelegate>.Vertex vertex,
+                SchedulerGraph<TDelegate>.Vertex vertex,
                 Func<TInterface, TDelegate> interfaceToDelegate)
                 : base(scheduler, vertex)
             {
@@ -59,7 +59,7 @@ namespace Glyph.Composition.Scheduler
             public void Before<T>()
                 where T : TInterface
             {
-                foreach (TDelegate item in DependencyGraph.Select(x => x.Item))
+                foreach (TDelegate item in SchedulerGraph.SelectMany(x => x.Items))
                 {
                     var itemDelegate = item as Delegate;
                     if (itemDelegate != null && itemDelegate.Target is T)
@@ -70,7 +70,7 @@ namespace Glyph.Composition.Scheduler
             public void After<T>()
                 where T : TInterface
             {
-                foreach (TDelegate item in DependencyGraph.Select(x => x.Item))
+                foreach (TDelegate item in SchedulerGraph.SelectMany(x => x.Items))
                 {
                     var itemDelegate = item as Delegate;
                     if (itemDelegate != null && itemDelegate.Target is T)
@@ -80,7 +80,7 @@ namespace Glyph.Composition.Scheduler
 
             public void Before(Type type)
             {
-                foreach (TDelegate item in DependencyGraph.Select(x => x.Item))
+                foreach (TDelegate item in SchedulerGraph.SelectMany(x => x.Items))
                 {
                     var itemDelegate = item as Delegate;
                     if (itemDelegate != null && type.IsInstanceOfType(itemDelegate.Target))
@@ -90,7 +90,7 @@ namespace Glyph.Composition.Scheduler
 
             public void After(Type type)
             {
-                foreach (TDelegate item in DependencyGraph.Select(x => x.Item))
+                foreach (TDelegate item in SchedulerGraph.SelectMany(x => x.Items))
                 {
                     var itemDelegate = item as Delegate;
                     if (itemDelegate != null && type.IsInstanceOfType(itemDelegate.Target))

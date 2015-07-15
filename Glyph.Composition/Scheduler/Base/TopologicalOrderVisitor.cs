@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace Glyph.Composition.Scheduler.Base
 {
-    public class TopologicalOrderVisitor<T> : DependencyGraph<T>.Visitor
+    public class TopologicalOrderVisitor<T> : SchedulerGraph<T>.Visitor
     {
         private readonly List<T> _result;
         private readonly IReadOnlyCollection<T> _readOnlyResult;
-        private readonly Stack<T> _visited;
+        private readonly Stack<SchedulerGraph<T>.Vertex> _visited;
 
         public IEnumerable<T> Result
         {
@@ -19,16 +19,16 @@ namespace Glyph.Composition.Scheduler.Base
             _result = new List<T>();
             _readOnlyResult = _result.AsReadOnly();
 
-            _visited = new Stack<T>();
+            _visited = new Stack<SchedulerGraph<T>.Vertex>();
         }
 
-        public override void Process(DependencyGraph<T> graph)
+        public override void Process(SchedulerGraph<T> graph)
         {
             _result.Clear();
             _visited.Clear();
 
-            foreach (IGrouping<Priority, DependencyGraph<T>.Vertex> group in graph.Vertices.GroupBy(x => x.Priority))
-                foreach (DependencyGraph<T>.Vertex vertex in group)
+            foreach (IGrouping<Priority, SchedulerGraph<T>.Vertex> group in graph.Vertices.GroupBy(x => x.Priority))
+                foreach (SchedulerGraph<T>.Vertex vertex in group)
                 {
                     vertex.Accept(this);
 
@@ -37,22 +37,22 @@ namespace Glyph.Composition.Scheduler.Base
                 }
         }
 
-        public override void Visit(DependencyGraph<T>.Vertex vertex)
+        public override void Visit(SchedulerGraph<T>.Vertex vertex)
         {
-            if (_visited.Contains(vertex.Item))
-                throw new CyclicDependencyException(_visited.Cast<object>());
+            if (_visited.Contains(vertex))
+                throw new CyclicDependencyException(_visited.Select(x => x.Items.First()).Cast<object>());
 
-            if (_result.Contains(vertex.Item))
+            if (_result.Contains(vertex.Items.First()))
                 return;
 
-            _visited.Push(vertex.Item);
+            _visited.Push(vertex);
 
-            foreach (DependencyGraph<T>.Vertex successor in vertex.Successors)
+            foreach (SchedulerGraph<T>.Vertex successor in vertex.Successors)
                 successor.Accept(this);
 
             _visited.Pop();
 
-            _result.Add(vertex.Item);
+            _result.AddRange(vertex.Items);
         }
     }
 }

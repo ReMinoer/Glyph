@@ -1,4 +1,6 @@
-﻿using Glyph.Composition.Delegates;
+﻿using Diese.Injection;
+using Glyph.Composition.Delegates;
+using Glyph.Composition.Scheduler.Base;
 
 namespace Glyph.Composition.Scheduler
 {
@@ -10,13 +12,19 @@ namespace Glyph.Composition.Scheduler
         public GlyphScheduler<IHandleInput, HandleInputDelegate> HandleInput { get; private set; }
         public GlyphScheduler<IDraw, DrawDelegate> Draw { get; private set; }
 
-        public GlyphObjectScheduler()
+        public GlyphObjectScheduler(IDependencyInjector injector)
         {
             Initialize = new GlyphScheduler<IGlyphComponent, InitializeDelegate>(x => x.Initialize);
             LoadContent = new GlyphScheduler<ILoadContent, LoadContentDelegate>(x => x.LoadContent);
             Update = new GlyphScheduler<IUpdate, UpdateDelegate>(x => x.Update);
             HandleInput = new GlyphScheduler<IHandleInput, HandleInputDelegate>(x => x.HandleInput);
             Draw = new GlyphScheduler<IDraw, DrawDelegate>(x => x.Draw);
+
+            Initialize.ApplyProfile(injector.Resolve<SchedulerProfile<IGlyphComponent>>());
+            LoadContent.ApplyProfile(injector.Resolve<SchedulerProfile<ILoadContent>>());
+            Update.ApplyProfile(injector.Resolve<SchedulerProfile<IUpdate>>());
+            HandleInput.ApplyProfile(injector.Resolve<SchedulerProfile<IHandleInput>>());
+            Draw.ApplyProfile(injector.Resolve<SchedulerProfile<IDraw>>());
         }
 
         public void BatchStart()

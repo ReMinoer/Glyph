@@ -19,7 +19,7 @@ namespace Glyph.Composition
         public GlyphObject(IDependencyInjector injector)
         {
             Injector = injector;
-            Scheduler = new GlyphObjectScheduler();
+            Scheduler = injector.Resolve<GlyphObjectScheduler>();
         }
 
         public override void Initialize()

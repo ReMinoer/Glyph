@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class SpriteDescriptor : GlyphComponent
+    public class SpriteDescriptor : GlyphComponent, ILoadContent
     {
         private enum AnchorType
         {
@@ -17,6 +17,7 @@ namespace Glyph.Graphics
         private Vector2 _pivot;
         private AnchorType _lastAnchorType;
 
+        public string Asset { get; set; }
         public Rectangle? SourceRectangle { get; set; }
         public Color Color { get; set; }
         public SpriteEffects Effects { get; set; }
@@ -65,6 +66,11 @@ namespace Glyph.Graphics
         {
             Color = Color.White;
             Pivot = Vector2.One * 0.5f;
+        }
+
+        public void LoadContent(ContentLibrary contentLibrary)
+        {
+            Texture = contentLibrary.GetTexture(Asset);
         }
 
         public override void Dispose()
