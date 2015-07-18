@@ -20,6 +20,7 @@ namespace Glyph.Graphics
         public string Asset { get; set; }
         public Rectangle? SourceRectangle { get; set; }
         public Color Color { get; set; }
+        public Vector2 Scale { get; set; }
         public SpriteEffects Effects { get; set; }
 
         public Texture2D Texture
