@@ -6,17 +6,10 @@ namespace Glyph.Graphics
 {
     public class SpriteDescriptor : GlyphComponent, ILoadContent
     {
-        private enum AnchorType
-        {
-            Origin,
-            Pivot
-        }
-
         private Texture2D _texture;
         private Vector2 _origin;
         private Vector2 _pivot;
         private AnchorType _lastAnchorType;
-
         public string Asset { get; set; }
         public Rectangle? SourceRectangle { get; set; }
         public Color Color { get; set; }
@@ -92,6 +85,12 @@ namespace Glyph.Graphics
                     _origin = Texture.Size() * _pivot;
                     break;
             }
+        }
+
+        private enum AnchorType
+        {
+            Origin,
+            Pivot
         }
     }
 }

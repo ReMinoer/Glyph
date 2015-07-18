@@ -2,15 +2,15 @@
 
 namespace Glyph.Math.Shapes
 {
-    public static class IntersectionUtils
+    static public class IntersectionUtils
     {
-        public static bool TwoRectangles(IRectangle rectangleA, IRectangle rectangleB)
+        static public bool TwoRectangles(IRectangle rectangleA, IRectangle rectangleB)
         {
             IRectangle intersection;
             return TwoRectangles(rectangleA, rectangleB, out intersection);
         }
 
-        public static bool TwoRectangles(IRectangle rectangleA, IRectangle rectangleB, out IRectangle intersection)
+        static public bool TwoRectangles(IRectangle rectangleA, IRectangle rectangleB, out IRectangle intersection)
         {
             float left = MathHelper.Max(rectangleA.Left, rectangleB.Left);
             float right = MathHelper.Min(rectangleA.Right, rectangleB.Right);
@@ -28,12 +28,12 @@ namespace Glyph.Math.Shapes
             return true;
         }
 
-        public static bool TwoCircles(ICircle circleA, ICircle circleB)
+        static public bool TwoCircles(ICircle circleA, ICircle circleB)
         {
             return (circleA.Center - circleB.Center).Length() <= circleA.Radius + circleB.Radius;
         }
 
-        public static bool RectangleAndCircle(IRectangle rectangle, ICircle circle)
+        static public bool RectangleAndCircle(IRectangle rectangle, ICircle circle)
         {
             // Find the closest point to the circle within the rectangle
             float closestX = MathHelper.Clamp(circle.Center.X, rectangle.Left, rectangle.Right);

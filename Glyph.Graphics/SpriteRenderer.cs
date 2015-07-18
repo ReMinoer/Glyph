@@ -7,12 +7,13 @@ namespace Glyph.Graphics
 {
     public class SpriteRenderer : GlyphComponent, IDraw
     {
+        private readonly SceneNode _sceneNode;
+        private readonly SpriteBatch _spriteBatch;
+
         [Injectable]
         public SpriteDescriptor Sprite { get; set; }
 
         public bool Visible { get; set; }
-        private readonly SceneNode _sceneNode;
-        private readonly SpriteBatch _spriteBatch;
 
         public SpriteRenderer(SceneNode sceneNode, SpriteBatch spriteBatch)
         {

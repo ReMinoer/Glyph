@@ -9,10 +9,9 @@ namespace Glyph.Physics.Colliders
     public abstract class ShapeColliderBase<TShape> : ColliderBase, ICollider<TShape>
         where TShape : IShape
     {
-        public TShape Shape { get; protected set; }
-
         protected readonly SpriteDescriptor SpriteDescriptor;
         private readonly SpriteRenderer _spriteRenderer;
+        public TShape Shape { get; protected set; }
 
         public ShapeColliderBase(SceneNode sceneNode, SpriteBatch spriteBatch)
         {
