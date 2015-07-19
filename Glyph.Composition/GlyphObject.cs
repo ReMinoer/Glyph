@@ -11,14 +11,16 @@ namespace Glyph.Composition
 {
     public class GlyphObject : GlyphComposite, IEnableable, ILoadContent, IUpdate, IHandleInput, IDraw
     {
-        protected readonly IDependencyInjector Injector;
+        protected readonly GlyphObjectInjector Injector;
         protected readonly GlyphObjectScheduler Scheduler;
         public virtual bool Enabled { get; set; }
         public virtual bool Visible { get; set; }
 
         public GlyphObject(IDependencyInjector injector)
         {
-            Injector = injector;
+            Injector = injector.Resolve<GlyphObjectInjector>();
+            Injector.GlyphObject = this;
+
             Scheduler = injector.Resolve<GlyphObjectScheduler>();
         }
 
