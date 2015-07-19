@@ -32,13 +32,6 @@ namespace Glyph.Application
             }
         }
 
-        public class HandleInput : SchedulerProfile<IHandleInput>
-        {
-            public HandleInput()
-            {
-            }
-        }
-
         public class Draw : SchedulerProfile<IDraw>
         {
             public Draw()

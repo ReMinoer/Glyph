@@ -9,7 +9,6 @@ namespace Glyph.Composition.Scheduler
         public GlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; private set; }
         public GlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; private set; }
         public GlyphScheduler<IUpdate, UpdateDelegate> Update { get; private set; }
-        public GlyphScheduler<IHandleInput, HandleInputDelegate> HandleInput { get; private set; }
         public GlyphScheduler<IDraw, DrawDelegate> Draw { get; private set; }
 
         public GlyphObjectScheduler(IDependencyInjector injector)
@@ -17,13 +16,11 @@ namespace Glyph.Composition.Scheduler
             Initialize = new GlyphScheduler<IGlyphComponent, InitializeDelegate>(x => x.Initialize);
             LoadContent = new GlyphScheduler<ILoadContent, LoadContentDelegate>(x => x.LoadContent);
             Update = new GlyphScheduler<IUpdate, UpdateDelegate>(x => x.Update);
-            HandleInput = new GlyphScheduler<IHandleInput, HandleInputDelegate>(x => x.HandleInput);
             Draw = new GlyphScheduler<IDraw, DrawDelegate>(x => x.Draw);
 
             Initialize.ApplyProfile(injector.Resolve<SchedulerProfile<IGlyphComponent>>());
             LoadContent.ApplyProfile(injector.Resolve<SchedulerProfile<ILoadContent>>());
             Update.ApplyProfile(injector.Resolve<SchedulerProfile<IUpdate>>());
-            HandleInput.ApplyProfile(injector.Resolve<SchedulerProfile<IHandleInput>>());
             Draw.ApplyProfile(injector.Resolve<SchedulerProfile<IDraw>>());
         }
 
@@ -32,7 +29,6 @@ namespace Glyph.Composition.Scheduler
             Initialize.BatchStart();
             LoadContent.BatchStart();
             Update.BatchStart();
-            HandleInput.BatchStart();
             Draw.BatchStart();
         }
 
@@ -41,7 +37,6 @@ namespace Glyph.Composition.Scheduler
             Initialize.BatchEnd();
             LoadContent.BatchEnd();
             Update.BatchEnd();
-            HandleInput.BatchEnd();
             Draw.BatchEnd();
         }
 
@@ -57,10 +52,6 @@ namespace Glyph.Composition.Scheduler
             if (update != null)
                 Update.Add(update.Update);
 
-            var handleInput = item as IHandleInput;
-            if (handleInput != null)
-                HandleInput.Add(handleInput.HandleInput);
-
             var draw = item as IDraw;
             if (draw != null)
                 Draw.Add(draw.Draw);
@@ -71,7 +62,6 @@ namespace Glyph.Composition.Scheduler
             Initialize.Add(item.Initialize);
             LoadContent.Add(item.LoadContent);
             Update.Add(item.Update);
-            HandleInput.Add(item.HandleInput);
             Draw.Add(item.Draw);
         }
 
@@ -87,10 +77,6 @@ namespace Glyph.Composition.Scheduler
             if (update != null)
                 Update.Remove(update.Update);
 
-            var handleInput = item as IHandleInput;
-            if (handleInput != null)
-                HandleInput.Remove(handleInput.HandleInput);
-
             var draw = item as IDraw;
             if (draw != null)
                 Draw.Remove(draw.Draw);
@@ -101,7 +87,6 @@ namespace Glyph.Composition.Scheduler
             Initialize.Remove(item.Initialize);
             LoadContent.Remove(item.LoadContent);
             Update.Remove(item.Update);
-            HandleInput.Remove(item.HandleInput);
             Draw.Remove(item.Draw);
         }
 
@@ -110,7 +95,6 @@ namespace Glyph.Composition.Scheduler
             Initialize.Clear();
             LoadContent.Clear();
             Update.Clear();
-            HandleInput.Clear();
             Draw.Clear();
         }
     }

@@ -5,11 +5,10 @@ using Diese.Injection;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
 using Glyph.Composition.Scheduler;
-using Glyph.Input;
 
 namespace Glyph.Composition
 {
-    public class GlyphObject : GlyphComposite, IEnableable, ILoadContent, IUpdate, IHandleInput, IDraw
+    public class GlyphObject : GlyphComposite, IEnableable, ILoadContent, IUpdate, IDraw
     {
         protected readonly GlyphObjectInjector Injector;
         protected readonly GlyphObjectScheduler Scheduler;
@@ -43,15 +42,6 @@ namespace Glyph.Composition
 
             foreach (UpdateDelegate update in Scheduler.Update.TopologicalOrder)
                 update(elapsedTime);
-        }
-
-        public void HandleInput(InputManager inputManager)
-        {
-            if (!Enabled)
-                return;
-
-            foreach (HandleInputDelegate handleInput in Scheduler.HandleInput.TopologicalOrder)
-                handleInput(inputManager);
         }
 
         public void Draw()

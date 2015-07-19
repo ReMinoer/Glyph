@@ -49,7 +49,6 @@
     <Compile Include="Scheduler\Base\Priority.cs" />
     <Compile Include="Scheduler\Base\Scheduler.cs" />
     <Compile Include="GlyphObject.cs" />
-    <Compile Include="Delegates\HandleInputDelegate.cs" />
     <Compile Include="IDraw.cs" />
     <Compile Include="IEnableable.cs" />
     <Compile Include="IGlyphComponent.cs" />
@@ -57,7 +56,6 @@
     <Compile Include="IGlyphContainer.cs" />
     <Compile Include="IGlyphEnumerable.cs" />
     <Compile Include="IGlyphParent.cs" />
-    <Compile Include="IHandleInput.cs" />
     <Compile Include="ILoadContent.cs" />
     <Compile Include="Delegates\InitializeDelegate.cs" />
     <Compile Include="IUpdate.cs" />
@@ -86,10 +84,6 @@
     <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
-      <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
-      <Name>Glyph.Input</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
