@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Diese.Composition;
 
 namespace Glyph.Input.Converters
@@ -23,13 +24,12 @@ namespace Glyph.Input.Converters
             foreach (IInputHandler<TInput> component in Components)
                 component.Update(inputStates);
 
-            for (int i = 0; i < Components.Length; i++)
-                if (Components[i] == null)
-                {
-                    IsActivated = false;
-                    Value = default(TOutput);
-                    return;
-                }
+            if (Components.Any(t => t == null))
+            {
+                IsActivated = false;
+                Value = default(TOutput);
+                return;
+            }
 
             HandleInput(Components);
         }

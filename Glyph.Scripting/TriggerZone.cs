@@ -24,7 +24,7 @@ namespace Glyph.Scripting
         {
             Enable = gameObject.Hitbox.Intersects(Zone.Hitbox)
                      && (!(gameObject is ILayable)
-                         || Math.Abs((gameObject as ILayable).Layer - Zone.Layer) < float.Epsilon);
+                         || Math.Abs(((ILayable)gameObject).Layer - Zone.Layer) < float.Epsilon);
         }
 
         public void Draw(SpriteBatch spriteBatch)

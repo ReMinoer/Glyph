@@ -67,20 +67,20 @@ namespace Glyph.Input
 
         private void RefreshDeviceUsage(InputSource inputSource)
         {
-            if (inputSource == InputSource.GamePad)
+            switch (inputSource)
             {
-                IsGamePadUsed = true;
-                IsMouseUsed = false;
-            }
-            else if (inputSource == InputSource.Keyboard)
-            {
-                IsGamePadUsed = false;
-                IsMouseUsed = false;
-            }
-            else if (inputSource == InputSource.Mouse)
-            {
-                IsGamePadUsed = false;
-                IsMouseUsed = true;
+                case InputSource.GamePad:
+                    IsGamePadUsed = true;
+                    IsMouseUsed = false;
+                    break;
+                case InputSource.Keyboard:
+                    IsGamePadUsed = false;
+                    IsMouseUsed = false;
+                    break;
+                case InputSource.Mouse:
+                    IsGamePadUsed = false;
+                    IsMouseUsed = true;
+                    break;
             }
         }
     }

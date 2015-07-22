@@ -182,7 +182,7 @@ namespace Glyph.Animation
             Trajectory
         }
 
-        private class GoToTrajectory : StandardTrajectory
+        private sealed class GoToTrajectory : StandardTrajectory
         {
             private readonly Vector2 _destination;
 

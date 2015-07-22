@@ -108,13 +108,17 @@ namespace Glyph.Entities.Platform
         {
             ObstructionType type = CollisionRectangle(obj.Hitbox);
 
-            if (type == ObstructionType.Floor && obj is IDynamicFloor)
-            {
-                if (Math.Abs((obj as IDynamicFloor).DynamicX) > float.Epsilon)
-                    Collision.NewDynamiqueX = (obj as IDynamicFloor).DynamicX;
-                if (Math.Abs((obj as IDynamicFloor).DynamicY) > float.Epsilon)
-                    Collision.NewDynamiqueY = (obj as IDynamicFloor).DynamicY;
-            }
+            if (type != ObstructionType.Floor)
+                return type;
+
+            var dynamicFloor = obj as IDynamicFloor;
+            if (dynamicFloor == null)
+                return type;
+
+            if (Math.Abs(dynamicFloor.DynamicX) > float.Epsilon)
+                Collision.NewDynamiqueX = dynamicFloor.DynamicX;
+            if (Math.Abs(dynamicFloor.DynamicY) > float.Epsilon)
+                Collision.NewDynamiqueY = dynamicFloor.DynamicY;
 
             return type;
         }

@@ -21,9 +21,7 @@ namespace Glyph
         static public void DrawRepeat(this SpriteBatch spriteBatch, Texture2D texture, Rectangle destinationRectangle,
             Rectangle? sourceRectangle, Angle.Rotation rotation, Color color)
         {
-            Rectangle source = sourceRectangle.HasValue
-                ? sourceRectangle.Value
-                : new Rectangle(0, 0, texture.Width, texture.Height);
+            Rectangle source = sourceRectangle ?? new Rectangle(0, 0, texture.Width, texture.Height);
 
             bool reverse = (Math.Abs(rotation.Value - Angle.Rotation.RotateLeft.Value) < float.Epsilon
                             || Math.Abs(rotation.Value - Angle.Rotation.RotateRight.Value) < float.Epsilon);

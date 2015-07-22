@@ -27,7 +27,6 @@ namespace Glyph.Transition
         private T _tempEnd;
         private ITimingFunction _tempFunction;
         private T _tempStart;
-        private T _value;
 
         public T LastUpdate
         {
@@ -177,10 +176,7 @@ namespace Glyph.Transition
             }
         }
 
-        public T Value
-        {
-            get { return _value; }
-        }
+        public T Value { get; private set; }
 
         public float ElapsedTime
         {
@@ -264,7 +260,7 @@ namespace Glyph.Transition
 
         public void ShiftValuesRelative(T modif)
         {
-            _value = Add(Value, modif);
+            Value = Add(Value, modif);
             Start = Add(Start, modif);
             End = Add(End, modif);
             _actualStart = Add(_actualStart, modif);
@@ -297,7 +293,7 @@ namespace Glyph.Transition
 
         public void Reset(bool fromEnd = false)
         {
-            _value = fromEnd ? CalculateValue(Duration) : CalculateValue(0);
+            Value = fromEnd ? CalculateValue(Duration) : CalculateValue(0);
 
             _elapsedTime = fromEnd ? Duration : 0;
             _elapsedDelay = fromEnd ? Delay : 0;
@@ -352,11 +348,11 @@ namespace Glyph.Transition
                 T newValue = CalculateValue(ElapsedTime);
                 _lastUpdate = Subtract(newValue, Value);
                 _lastSpeed = Scalar(LastUpdate, (1 / (float)gameTime.ElapsedGameTime.TotalMilliseconds));
-                _value = newValue;
+                Value = newValue;
             }
             else
             {
-                _value = _actualEnd;
+                Value = _actualEnd;
                 _lastUpdate = default(T);
                 _lastSpeed = default(T);
             }

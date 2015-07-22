@@ -45,12 +45,11 @@ namespace Glyph.Scripting
 
         public void LoadContent(ContentLibrary ressources)
         {
-            foreach (Trigger t in Triggers.Values)
-                if (t is TriggerZone)
-                    (t as TriggerZone).LoadContent(ressources);
+            foreach (TriggerZone t in Triggers.Values.OfType<TriggerZone>())
+                t.LoadContent(ressources);
         }
 
-        public string[] GetLuaGlobals()
+        public IEnumerable<string> GetLuaGlobals()
         {
             return Lua.Globals.ToArray();
         }
@@ -116,9 +115,8 @@ namespace Glyph.Scripting
 
         public void Update(GameTime gameTime, GameObject entity)
         {
-            foreach (Trigger t in Triggers.Values)
-                if (t is TriggerZone)
-                    (t as TriggerZone).Update(entity);
+            foreach (TriggerZone t in Triggers.Values.OfType<TriggerZone>())
+                t.Update(entity);
 
             Dictionary<string, LuaCoroutineResult> results =
                 Lua.UpdateCoroutines(gameTime.ElapsedGameTime.TotalMilliseconds);
@@ -140,9 +138,8 @@ namespace Glyph.Scripting
             if (!DrawTriggerZone)
                 return;
 
-            foreach (Trigger t in Triggers.Values)
-                if (t is TriggerZone)
-                    (t as TriggerZone).Draw(spriteBatch);
+            foreach (TriggerZone t in Triggers.Values.OfType<TriggerZone>())
+                t.Draw(spriteBatch);
         }
 
         public void TriggerOnEnabled(object sender, EventArgs eventArgs)

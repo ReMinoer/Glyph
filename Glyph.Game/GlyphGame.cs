@@ -185,16 +185,16 @@ namespace Glyph.Game
             ScreenEffectManager.Instance.CleanFirstRender(GraphicsDevice);
 
             // Pre-draw process
-            PreDraw(SpriteBatch, Graphics);
+            PreDraw();
 
             // Draw in scene
             SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, cameraMatrix);
-            DrawScene(SpriteBatch, Graphics);
+            DrawScene();
             SpriteBatch.End();
 
             // Draw in screen
             SpriteBatch.Begin();
-            DrawScreen(SpriteBatch, Graphics);
+            DrawScreen();
             SpriteBatch.End();
 
             // Apply screen effects
@@ -202,12 +202,12 @@ namespace Glyph.Game
 
             // Draw post effects in scene
             SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, cameraMatrix);
-            DrawPostScene(SpriteBatch, Graphics);
+            DrawPostScene();
             SpriteBatch.End();
 
             // Draw post effects in screen
             SpriteBatch.Begin();
-            DrawPostScreen(SpriteBatch, Graphics);
+            DrawPostScreen();
             SpriteBatch.End();
 
             Graphics.GraphicsDevice.SetRenderTarget(null);
@@ -222,36 +222,36 @@ namespace Glyph.Game
 
             // Draw in window space
             SpriteBatch.Begin();
-            DrawWindow(SpriteBatch, Graphics);
+            DrawWindow();
             SpriteBatch.End();
         }
 
-        protected virtual void PreDraw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        protected virtual void PreDraw()
         {
             Modes[ModeManager.State].PreDraw(SpriteBatch, Graphics);
         }
 
-        protected virtual void DrawScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        protected virtual void DrawScene()
         {
             Modes[ModeManager.State].DrawScene(SpriteBatch, Graphics);
         }
 
-        protected virtual void DrawScreen(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        protected virtual void DrawScreen()
         {
             Modes[ModeManager.State].DrawScreen(SpriteBatch, Graphics);
         }
 
-        protected virtual void DrawPostScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        protected virtual void DrawPostScene()
         {
             Modes[ModeManager.State].DrawPostScene(SpriteBatch, Graphics);
         }
 
-        protected virtual void DrawPostScreen(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        protected virtual void DrawPostScreen()
         {
             Modes[ModeManager.State].DrawPostScreen(SpriteBatch, Graphics);
         }
 
-        protected virtual void DrawWindow(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        protected virtual void DrawWindow()
         {
             Modes[ModeManager.State].DrawWindow(SpriteBatch, Graphics);
             StatusDisplay.Draw(SpriteBatch);

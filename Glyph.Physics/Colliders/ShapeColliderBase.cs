@@ -13,7 +13,7 @@ namespace Glyph.Physics.Colliders
         private readonly SpriteRenderer _spriteRenderer;
         public TShape Shape { get; protected set; }
 
-        public ShapeColliderBase(SceneNode sceneNode, SpriteBatch spriteBatch)
+        protected ShapeColliderBase(SceneNode sceneNode, SpriteBatch spriteBatch)
         {
             SpriteDescriptor = new SpriteDescriptor();
             _spriteRenderer = new SpriteRenderer(sceneNode, spriteBatch)

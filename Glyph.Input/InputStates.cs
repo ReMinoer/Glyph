@@ -23,9 +23,11 @@ namespace Glyph.Input
             _gamePadStates = new Dictionary<PlayerIndex, GamePadState>();
             _padPlayerIndexes = Enum.GetValues(typeof(PlayerIndex)) as PlayerIndex[];
 
-            if (_padPlayerIndexes != null)
-                foreach (PlayerIndex playerIndex in _padPlayerIndexes)
-                    _gamePadStates[playerIndex] = new GamePadState();
+            if (_padPlayerIndexes == null)
+                return;
+
+            foreach (PlayerIndex playerIndex in _padPlayerIndexes)
+                _gamePadStates[playerIndex] = new GamePadState();
         }
 
         public void Update(bool isGameActive)

@@ -20,7 +20,7 @@ namespace Glyph.Input.Handlers.Vectors
 
         public ThumbStickVectorHandler(string name, ThumbStick thumbStick, float deadZone = 0, bool inverseX = false,
             bool inverseY = false, InputActivity inputActivity = InputActivity.Pressed)
-            : this("", PlayerIndex.One, thumbStick, deadZone, inverseX, inverseY, inputActivity)
+            : this(name, PlayerIndex.One, thumbStick, deadZone, inverseX, inverseY, inputActivity)
         {
         }
 
@@ -35,12 +35,15 @@ namespace Glyph.Input.Handlers.Vectors
 
         protected override Vector2 GetState(InputStates inputStates)
         {
-            if (ThumbStick == ThumbStick.None)
-                return Vector2.Zero;
-            if (ThumbStick == ThumbStick.Left)
-                return inputStates.GamePadStates[PlayerIndex].ThumbSticks.Left;
-            if (ThumbStick == ThumbStick.Right)
-                return inputStates.GamePadStates[PlayerIndex].ThumbSticks.Right;
+            switch (ThumbStick)
+            {
+                case ThumbStick.None:
+                    return Vector2.Zero;
+                case ThumbStick.Left:
+                    return inputStates.GamePadStates[PlayerIndex].ThumbSticks.Left;
+                case ThumbStick.Right:
+                    return inputStates.GamePadStates[PlayerIndex].ThumbSticks.Right;
+            }
 
             throw new NotImplementedException();
         }

@@ -19,7 +19,7 @@ namespace Glyph.Effects.Masked
             set { base.Enabled = value; }
         }
 
-        public MaskedEffect()
+        protected MaskedEffect()
         {
             Patches = new List<MaskPatch>();
         }
