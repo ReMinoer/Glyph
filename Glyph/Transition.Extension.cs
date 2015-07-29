@@ -7,24 +7,44 @@ namespace Glyph
     {
         static public float Transition(this float value, float goal, float speed, GameTime gameTime)
         {
+            return Transition(value, goal, speed, (float)gameTime.ElapsedGameTime.TotalMilliseconds);
+        }
+
+        static public Vector2 Transition(this Vector2 value, Vector2 goal, float speed, GameTime gameTime)
+        {
+            return Transition(value, goal, speed, (float)gameTime.ElapsedGameTime.TotalMilliseconds);
+        }
+
+        static public float Transition(this float value, float goal, float speed, ElapsedTime elapsedTime)
+        {
+            return Transition(value, goal, speed, elapsedTime.Delta * 1000);
+        }
+
+        static public Vector2 Transition(this Vector2 value, Vector2 goal, float speed, ElapsedTime elapsedTime)
+        {
+            return Transition(value, goal, speed, elapsedTime.Delta * 1000);
+        }
+
+        static private float Transition(this float value, float goal, float speed, float deltaTime)
+        {
             float ecart = goal - value;
             if (!(Math.Abs(ecart) > float.Epsilon))
                 return value;
 
-            float modif = Math.Sign(ecart) * speed * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            float modif = Math.Sign(ecart) * speed * deltaTime;
             if (Math.Abs(modif) < Math.Abs(ecart))
                 return value + modif;
 
             return goal;
         }
 
-        static public Vector2 Transition(this Vector2 value, Vector2 goal, float speed, GameTime gameTime)
+        static private Vector2 Transition(this Vector2 value, Vector2 goal, float speed, float deltaTime)
         {
             Vector2 ecart = goal - value;
             if (ecart == Vector2.Zero)
                 return value;
 
-            Vector2 modif = Vector2.Normalize(ecart) * speed * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            Vector2 modif = Vector2.Normalize(ecart) * speed * deltaTime;
             if (modif.Length() < ecart.Length())
                 return value + modif;
 

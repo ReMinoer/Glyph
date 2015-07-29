@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using NLog;
+using SongPlayer = Glyph.Tools.SongPlayer;
 
 namespace Glyph.Game
 {
