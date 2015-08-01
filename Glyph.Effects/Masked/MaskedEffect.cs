@@ -13,12 +13,6 @@ namespace Glyph.Effects.Masked
         public float Opacity { get; set; }
         public List<MaskPatch> Patches { get; set; }
 
-        public override bool Enabled
-        {
-            get { return base.Enabled && Math.Abs(Opacity) >= float.Epsilon; }
-            set { base.Enabled = value; }
-        }
-
         protected MaskedEffect()
         {
             Patches = new List<MaskPatch>();
