@@ -55,23 +55,18 @@ namespace Glyph.Composition
                 SchedulerAssigner.AssignComponent(item);
         }
 
-        public override sealed bool Remove(IGlyphComponent item)
+        public override sealed void Remove(IGlyphComponent item)
         {
             if (!Contains(item))
                 throw new ArgumentException("Component provided is not contained by this entity !");
 
-            bool valid = base.Remove(item);
-
-            if (!valid)
-                return false;
+            base.Remove(item);
 
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)
                 SchedulerAssigner.RemoveComponent(glyphObject);
             else
                 SchedulerAssigner.RemoveComponent(item);
-
-            return true;
         }
 
         public override sealed void Clear()

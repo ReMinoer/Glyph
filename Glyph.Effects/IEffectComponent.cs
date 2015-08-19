@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Effects
 {
-    public interface IEffect : IComponent<IEffect, IEffectParent>, IDisposable
+    public interface IEffectComponent : IComponent<IEffectComponent, IEffectParent>, IDisposable
     {
         bool Enabled { get; set; }
         void Initialize();

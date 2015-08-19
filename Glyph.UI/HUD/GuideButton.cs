@@ -92,7 +92,7 @@ namespace Glyph.UI.HUD
             if (inputHandler == null)
                 return;
 
-            var keyHandler = inputHandler.GetComponentInChildren<KeyHandler>(true);
+            KeyHandler keyHandler = inputHandler as KeyHandler ?? inputHandler.GetComponentInChildren<KeyHandler>();
             if (keyHandler == null)
                 return;
 

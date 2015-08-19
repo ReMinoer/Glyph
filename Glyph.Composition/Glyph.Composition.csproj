@@ -55,7 +55,6 @@
     <Compile Include="IGlyphComponent.cs" />
     <Compile Include="IGlyphComposite.cs" />
     <Compile Include="IGlyphContainer.cs" />
-    <Compile Include="IGlyphEnumerable.cs" />
     <Compile Include="IGlyphParent.cs" />
     <Compile Include="ILoadContent.cs" />
     <Compile Include="Delegates\InitializeDelegate.cs" />

@@ -3,7 +3,7 @@ using Diese.Composition;
 
 namespace Glyph.Composition
 {
-    public abstract class GlyphComposite : Composite<IGlyphComponent, IGlyphParent>, IGlyphComposite
+    public abstract class GlyphComposite : Composite<IGlyphComponent, IGlyphParent, IGlyphComponent>, IGlyphComposite
     {
         public virtual void Initialize()
         {

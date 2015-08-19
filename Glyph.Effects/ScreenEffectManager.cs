@@ -44,7 +44,7 @@ namespace Glyph.Effects
         public override void Apply(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             _renderStep = 0;
-            foreach (IEffect effect in GetAllComponentsInChildren<IEffect>())
+            foreach (IEffectComponent effect in GetAllComponentsInChildren<IEffectComponent>())
             {
                 if (!effect.Enabled)
                     continue;

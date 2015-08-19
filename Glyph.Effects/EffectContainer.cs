@@ -5,37 +5,45 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Effects
 {
-    public class EffectSynthesizer<TInput> : Synthesizer<IEffect, IEffectParent, TInput>, IEffectSynthesizer<TInput>
-        where TInput : IEffect
+    public class EffectContainer : EffectContainer<IEffectComponent>, IEffectContainer
+    {
+        protected EffectContainer(int size)
+            : base(size)
+        {
+        }
+    }
+
+    public class EffectContainer<TComponent> : Container<IEffectComponent, IEffectParent, TComponent>, IEffectContainer<TComponent>
+        where TComponent : class, IEffectComponent
     {
         public bool Enabled { get; set; }
 
-        protected EffectSynthesizer(int size)
+        protected EffectContainer(int size)
             : base(size)
         {
         }
 
         public void Initialize()
         {
-            foreach (TInput component in Components)
+            foreach (TComponent component in this)
                 component.Initialize();
         }
 
         public void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice)
         {
-            foreach (TInput component in Components)
+            foreach (TComponent component in this)
                 component.LoadContent(contentLibrary, graphicsDevice);
         }
 
         public void Update(GameTime gameTime)
         {
-            foreach (TInput component in Components)
+            foreach (TComponent component in this)
                 component.Update(gameTime);
         }
 
         public void Prepare(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
-            foreach (TInput component in Components)
+            foreach (TComponent component in this)
                 component.Prepare(spriteBatch, graphicsDevice);
         }
 
@@ -46,7 +54,7 @@ namespace Glyph.Effects
 
         public void Dispose()
         {
-            foreach (TInput component in Components)
+            foreach (TComponent component in this)
                 component.Dispose();
         }
     }

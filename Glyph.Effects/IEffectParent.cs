@@ -2,8 +2,7 @@
 
 namespace Glyph.Effects
 {
-    public interface IEffectParent : IParent<IEffect, IEffectParent>, IEffect
+    public interface IEffectParent : IParent<IEffectComponent, IEffectParent>, IEffectComponent
     {
-         
     }
 }

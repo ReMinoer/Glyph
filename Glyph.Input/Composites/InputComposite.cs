@@ -2,7 +2,7 @@
 
 namespace Glyph.Input.Composites
 {
-    public abstract class InputComposite<TValue> : Composite<IInputHandler, IInputParent>, IInputComposite<TValue>
+    public abstract class InputComposite<TValue> : Composite<IInputHandler, IInputParent, IInputHandler>, IInputComposite<TValue>
     {
         public InputActivity DesiredActivity { get; set; }
         public abstract bool IsActivated { get; }

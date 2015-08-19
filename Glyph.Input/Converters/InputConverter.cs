@@ -4,7 +4,7 @@ using Diese.Composition;
 
 namespace Glyph.Input.Converters
 {
-    public abstract class InputConverter<TInput, TOutput> : Synthesizer<IInputHandler, IInputParent, IInputHandler<TInput>>,
+    public abstract class InputConverter<TInput, TOutput> : Container<IInputHandler, IInputParent, IInputHandler<TInput>>,
         IInputConverter<TInput, TOutput>
     {
         public bool IsActivated { get; protected set; }
@@ -21,17 +21,17 @@ namespace Glyph.Input.Converters
 
         public void Update(InputStates inputStates)
         {
-            foreach (IInputHandler<TInput> component in Components)
+            foreach (IInputHandler<TInput> component in this)
                 component.Update(inputStates);
 
-            if (Components.Any(t => t == null))
+            if (this.Any(t => t == null))
             {
                 IsActivated = false;
                 Value = default(TOutput);
                 return;
             }
 
-            HandleInput(Components);
+            HandleInput(this);
         }
     }
 }

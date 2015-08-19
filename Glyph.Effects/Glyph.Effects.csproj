@@ -37,11 +37,11 @@
   <ItemGroup>
     <Compile Include="EffectComponent.cs" />
     <Compile Include="EffectComposite.cs" />
-    <Compile Include="EffectSynthesizer.cs" />
-    <Compile Include="IEffect.cs" />
+    <Compile Include="EffectContainer.cs" />
+    <Compile Include="IEffectComponent.cs" />
     <Compile Include="IEffectComposite.cs" />
     <Compile Include="IEffectParent.cs" />
-    <Compile Include="IEffectSynthesizer.cs" />
+    <Compile Include="IEffectContainer.cs" />
     <Compile Include="Masked\MaskedEffect.cs" />
     <Compile Include="Masked\MaskPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
