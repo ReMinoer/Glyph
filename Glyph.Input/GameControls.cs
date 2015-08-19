@@ -3,7 +3,7 @@ using Diese.Serialization;
 
 namespace Glyph.Input
 {
-    public class GameControls : SerializableDictionary<string, IInputHandler>
+    public class GameControls : SerializableDictionary<object, IInputHandler>
     {
         public void Add(IEnumerable<IInputHandler> inputHandlers)
         {

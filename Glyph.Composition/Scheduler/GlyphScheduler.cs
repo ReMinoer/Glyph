@@ -1,20 +1,25 @@
 using System;
 using System.Linq;
+using Diese.Injection;
 using Glyph.Composition.Scheduler.Base;
 
 namespace Glyph.Composition.Scheduler
 {
     public class GlyphScheduler<TInterface, TDelegate> : Scheduler<TDelegate>, IGlyphScheduler<TInterface, TDelegate>
-        where TInterface : IGlyphComponent
+        where TInterface : class, IGlyphComponent
     {
         private readonly Func<TInterface, TDelegate> _interfaceToDelegate;
+        private readonly Func<GlyphObject, TDelegate> _glyphObjectToDelegate;
 
-        public GlyphScheduler(Func<TInterface, TDelegate> interfaceToDelegate)
+        public GlyphScheduler(IDependencyInjector injector, Func<TInterface, TDelegate> interfaceToDelegate, Func<GlyphObject, TDelegate> glyphObjectToDelegate)
         {
             if (!typeof(TDelegate).IsSubclassOf(typeof(Delegate)))
                 throw new InvalidOperationException(typeof(TDelegate).Name + " is not a delegate type");
 
             _interfaceToDelegate = interfaceToDelegate;
+            _glyphObjectToDelegate = glyphObjectToDelegate;
+
+            ApplyProfile(injector.Resolve<SchedulerProfile<TInterface>>());
         }
 
         new public IGlyphSchedulerController<TInterface, TDelegate> Plan(TDelegate item)
@@ -34,7 +39,36 @@ namespace Glyph.Composition.Scheduler
             Unplan(_interfaceToDelegate(item));
         }
 
-        private class GlyphSchedulerController : SchedulerController, IGlyphSchedulerController<TInterface, TDelegate>
+        void IGlyphSchedulerAssigner.AssignComponent(IGlyphComponent component)
+        {
+            var castedComponent = component as TInterface;
+            if (castedComponent != null)
+                Add(_interfaceToDelegate(castedComponent));
+        }
+
+        void IGlyphSchedulerAssigner.AssignComponent(GlyphObject glyphObject)
+        {
+            Add(_glyphObjectToDelegate(glyphObject));
+        }
+
+        void IGlyphSchedulerAssigner.RemoveComponent(IGlyphComponent component)
+        {
+            var castedComponent = component as TInterface;
+            if (castedComponent != null)
+                Remove(_interfaceToDelegate(castedComponent));
+        }
+
+        void IGlyphSchedulerAssigner.RemoveComponent(GlyphObject glyphObject)
+        {
+            Remove(_glyphObjectToDelegate(glyphObject));
+        }
+
+        void IGlyphSchedulerAssigner.ClearComponents()
+        {
+            Clear();
+        }
+
+        private sealed class GlyphSchedulerController : SchedulerController, IGlyphSchedulerController<TInterface, TDelegate>
         {
             private readonly Func<TInterface, TDelegate> _interfaceToDelegate;
 

@@ -9,11 +9,11 @@ namespace Glyph.Composition.Scheduler.Base
     {
         public class Vertex : VertexBase<SchedulerGraph<T>, Vertex, Edge, Visitor>
         {
-            public Func<object, bool> Predicate { get; set; } 
+            public Predicate<object> Predicate { get; set; } 
             public IList<T> Items { get; private set; }
             public Priority Priority { get; set; }
 
-            public Vertex(Func<object, bool> predicate)
+            public Vertex(Predicate<object> predicate)
             {
                 Predicate = predicate;
 

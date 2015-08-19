@@ -32,12 +32,12 @@ namespace Glyph.Composition.Scheduler.Base
             _topologicalOrderVisitor = new TopologicalOrderVisitor<T>();
         }
 
-        public void BatchStart()
+        public void StartBatch()
         {
             _batchMode = true;
         }
 
-        public void BatchEnd()
+        public void EndBatch()
         {
             _batchMode = false;
             Refresh();
@@ -66,7 +66,7 @@ namespace Glyph.Composition.Scheduler.Base
         public void ApplyProfile(ISchedulerProfile schedulerProfile)
         {
             SchedulerGraph<T>.Vertex previous = null;
-            foreach (Func<object, bool> predicate in schedulerProfile)
+            foreach (Predicate<object> predicate in schedulerProfile)
             {
                 var vertex = new SchedulerGraph<T>.Vertex(predicate);
                 _schedulerGraph.AddVertex(new SchedulerGraph<T>.Vertex(predicate));

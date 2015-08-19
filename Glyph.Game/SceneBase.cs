@@ -1,27 +1,33 @@
 ﻿using Diese.Injection;
+using Glyph.Animation;
+using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Scheduler;
+using Glyph.Graphics;
 
-namespace Glyph.Composition
+namespace Glyph.Game
 {
-    public class GlyphObject : GlyphSchedulableBase, IEnableable, ILoadContent, IUpdate, IDraw
+    public abstract class SceneBase : GlyphSchedulableBase, IScene
     {
-        protected readonly SchedulerHandler Schedulers;
         public bool Enabled { get; set; }
-        public bool Visible { get; set; }
+        public bool Visible { get; private set; }
+        public SceneNode RootNode { get; private set; }
 
         protected override sealed IGlyphSchedulerAssigner SchedulerAssigner
         {
             get { return Schedulers; }
         }
+        
+        protected abstract SchedulerHandlerBase Schedulers { get; }
+        protected abstract ISceneRenderer SceneRenderer { get; }
 
-        public GlyphObject(IDependencyInjector injector)
+        protected SceneBase(IDependencyInjector injector)
             : base(injector)
         {
             Enabled = true;
             Visible = true;
 
-            Schedulers = new SchedulerHandler(injector);
+            RootNode = Add<SceneNode>();
         }
 
         public override void Initialize()
@@ -50,24 +56,29 @@ namespace Glyph.Composition
             if (!Visible)
                 return;
 
-            foreach (DrawDelegate draw in Schedulers.Draw.TopologicalOrder)
-                draw();
+            SceneRenderer.RenderingProcess();
         }
 
-        protected class SchedulerHandler : GlyphSchedulerHandler
+        public virtual void PreDraw()
+        {
+        }
+
+        public virtual void PostDraw()
+        {
+        }
+
+        public class SchedulerHandlerBase : GlyphSchedulerHandler
         {
             public IGlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; private set; }
             public IGlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; private set; }
             public IGlyphScheduler<IUpdate, UpdateDelegate> Update { get; private set; }
-            public IGlyphScheduler<IDraw, DrawDelegate> Draw { get; private set; }
 
-            public SchedulerHandler(IDependencyInjector injector)
+            public SchedulerHandlerBase(IDependencyInjector injector)
                 : base(injector)
             {
                 Initialize = Add<IGlyphComponent, InitializeDelegate>();
                 LoadContent = Add<ILoadContent, LoadContentDelegate>();
                 Update = Add<IUpdate, UpdateDelegate>();
-                Draw = Add<IDraw, DrawDelegate>();
             }
         }
     }

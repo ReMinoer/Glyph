@@ -38,7 +38,7 @@ namespace Glyph.Input
                 inputHandler.Update(InputStates);
         }
 
-        public bool this[string name]
+        public bool this[object name]
         {
             get
             {

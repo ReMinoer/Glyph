@@ -1,4 +1,5 @@
-﻿using Diese.Composition;
+﻿using System;
+using Diese.Composition;
 
 namespace Glyph.Composition
 {
@@ -10,6 +11,13 @@ namespace Glyph.Composition
 
         public virtual void Dispose()
         {
+            foreach (IGlyphComponent component in Components)
+                component.Dispose();
+
+            Clear();
         }
+
+        public abstract T Add<T>() where T : class, IGlyphComponent, new();
+        public abstract IGlyphComponent Add(Type componentType);
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Glyph.Composition.Scheduler.Base
 {
-    public class SchedulerProfile<T> : List<Func<object, bool>>, ISchedulerProfile
+    public class SchedulerProfile<T> : List<Predicate<object>>, ISchedulerProfile
         where T : IGlyphComponent
     {
         protected void Add<TComponent>()

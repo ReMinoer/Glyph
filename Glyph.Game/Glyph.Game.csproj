@@ -41,23 +41,42 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IScene.cs" />
+    <Compile Include="NewGlyphGame.cs" />
     <Compile Include="GlyphGame.cs" />
     <Compile Include="IGameMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ModeManager.cs" />
+    <Compile Include="SceneBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
+      <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
+      <Name>Diese.Injection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
+      <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>
+      <Name>Glyph.Animation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
       <Project>{46aa8a4b-5a43-45f3-99e4-b7bad0d47fea}</Project>
       <Name>Glyph.Audio</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
+      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
+      <Name>Glyph.Composition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Effects\Glyph.Effects.csproj">
       <Project>{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}</Project>
       <Name>Glyph.Effects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
+      <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
+      <Name>Glyph.Graphics</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
       <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
