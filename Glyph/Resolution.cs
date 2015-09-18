@@ -192,7 +192,8 @@ namespace Glyph
                 int maxWidth = 0;
                 int maxHeight = 0;
                 foreach (DisplayMode dm in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
-                    if (dm.Width >= maxWidth && dm.Height >= maxHeight)
+                    if (dm.Width >= maxWidth && dm.Height >= maxHeight
+                        && dm.Width <= VirtualSize.X && dm.Height <= VirtualSize.Y)
                     {
                         maxWidth = dm.Width;
                         maxHeight = dm.Height;
