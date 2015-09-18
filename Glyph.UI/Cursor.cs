@@ -39,7 +39,7 @@ namespace Glyph.UI
             if (!Enable || !_isMouseUsed)
                 return;
 
-            Position = input.GetValue<Vector2>(MouseInputs.ScreenPosition);
+            Position = input.GetValue<Vector2>(MouseInputs.WindowPosition);
         }
 
         static public void Draw(SpriteBatch spriteBatch)
