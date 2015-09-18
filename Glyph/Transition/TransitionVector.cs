@@ -231,23 +231,6 @@ namespace Glyph.Transition
         protected abstract float Ratio(T a, T b);
         protected abstract T Normalize(T a);
 
-        public T Update(GameTime gameTime, T start, T end, float duration, bool reverse = false, bool reset = false)
-        {
-            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(duration))
-                Init(start, end, duration, reset);
-
-            return Update(gameTime, reverse);
-        }
-
-        public T UpdateBySpeed(GameTime gameTime, T start, T end, float meanSpeed, bool reverse = false,
-            bool reset = false)
-        {
-            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(MeanSpeedToDuration(meanSpeed)))
-                InitBySpeed(start, end, meanSpeed, reset);
-
-            return Update(gameTime, reverse);
-        }
-
         static public implicit operator T(TransitionVector<T> x)
         {
             return x.Value;
@@ -309,7 +292,7 @@ namespace Glyph.Transition
             _reverseFactor = 1f;
         }
 
-        public T Update(GameTime gameTime, bool reverse)
+        private T Update(float delta, bool reverse)
         {
             if (!IsAllAttributesInit)
                 throw new InvalidOperationException((!_isAttributeInit[0] ? "Start not initialized ! " : "")
@@ -332,13 +315,13 @@ namespace Glyph.Transition
 
             if (_elapsedDelay < Delay && Value.Equals(_actualStart))
             {
-                _elapsedDelay += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                _elapsedDelay += delta;
                 if (_elapsedDelay > Delay)
                     _elapsedTime += _elapsedDelay - Delay;
             }
             else
             {
-                _elapsedTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                _elapsedTime += delta;
                 if (ElapsedTime > _actualDuration)
                     _elapsedTime = _actualDuration;
             }
@@ -347,7 +330,7 @@ namespace Glyph.Transition
             {
                 T newValue = CalculateValue(ElapsedTime);
                 _lastUpdate = Subtract(newValue, Value);
-                _lastSpeed = Scalar(LastUpdate, (1 / (float)gameTime.ElapsedGameTime.TotalMilliseconds));
+                _lastSpeed = Scalar(LastUpdate, 1f / delta);
                 Value = newValue;
             }
             else
@@ -360,9 +343,31 @@ namespace Glyph.Transition
             return Value;
         }
 
+        public T Update(GameTime gameTime, bool reverse)
+        {
+            return Update((float)gameTime.ElapsedGameTime.TotalMilliseconds, reverse);
+        }
+
         public T Update(GameTime gameTime)
         {
             return Update(gameTime, _lastReverse);
+        }
+
+        public T Update(GameTime gameTime, T start, T end, float duration, bool reverse = false, bool reset = false)
+        {
+            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(duration))
+                Init(start, end, duration, reset);
+
+            return Update(gameTime, reverse);
+        }
+
+        public T UpdateBySpeed(GameTime gameTime, T start, T end, float meanSpeed, bool reverse = false,
+            bool reset = false)
+        {
+            if (!Start.Equals(start) || !End.Equals(end) || !Duration.Equals(MeanSpeedToDuration(meanSpeed)))
+                InitBySpeed(start, end, meanSpeed, reset);
+
+            return Update(gameTime, reverse);
         }
 
         public void ToggleReverse()

@@ -1,12 +1,14 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using Diese.Injection;
 using Glyph.Audio;
 using Glyph.Effects;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
 using Glyph.Tools;
 using Glyph.Tools.StatusDisplayChannels;
+using Glyph.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -18,6 +20,8 @@ namespace Glyph.Game
     public abstract class NewGlyphGame : Microsoft.Xna.Framework.Game
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        protected IDependencyRegistry Registry;
+        protected IDependencyInjector Injector;
         protected int DefautWindowHeight;
         protected int DefautWindowWidth;
         private IScene _scene;
@@ -70,7 +74,7 @@ namespace Glyph.Game
             get { return IsActive; }
         }
 
-        protected NewGlyphGame(string[] args)
+        protected NewGlyphGame(string[] args, IDependencyRegistry dependencyRegistry)
         {
             Logger.Info("Start game");
             Logger.Info("Launch arguments : " + (args.Any() ? args.Aggregate((x, y) => x + " " + y) : ""));
@@ -92,22 +96,37 @@ namespace Glyph.Game
             Content.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
 
-            InputManager = InputManager.Instance;
+            InputManager = new InputManager();
 
             Culture = CultureInfo.CurrentCulture;
 
             PerformanceViewer = new PerformanceViewer();
             StatusDisplay = new StatusDisplay();
             StatusDisplay.Channels.Add(new DefautStatusDisplayChannel(PerformanceViewer));
+
             EditorCursor.Initialize();
+            Cursor.Initialize(false);
+            Cursor.OriginCursor = new Vector2(4, 4);
 
             Chronometer.Init();
+
+            Registry = dependencyRegistry;
+            Injector = new RegistryInjector(Registry);
+            Registry.RegisterInstance<IDependencyInjector>(Injector);
+
+            Registry.RegisterInstance<NewGlyphGame>(this);
+            Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
+            Registry.RegisterInstance<InputManager>(InputManager);
+            Registry.RegisterLazy(() => SpriteBatch);
+            Registry.RegisterLazy(() => GraphicsDevice);
         }
 
         protected override void Initialize()
         {
             ScreenEffectManager.Instance.Initialize();
+
             Scene.Initialize();
+
             base.Initialize();
         }
 
@@ -131,13 +150,16 @@ namespace Glyph.Game
         protected override void Update(GameTime gameTime)
         {
             ElapsedTime.Instance.Refresh(gameTime);
-
             PerformanceViewer.UpdateCall();
 
             base.Update(gameTime);
 
-            if (!_sceneChanged)
-                HandleInput();
+            InputManager.Update(IsFocus);
+
+            if (!IsFocus)
+                return;
+
+            HandleInput();
 
             ScreenEffectManager.Instance.Update(gameTime);
             AudioManager.Update(gameTime);
@@ -150,6 +172,8 @@ namespace Glyph.Game
                 {
                     Scene.Initialize();
                     Scene.LoadContent(ContentLibrary);
+
+                    _sceneChanged = false;
                 }
                 Scene.Update(ElapsedTime.Instance);
             } while (_sceneChanged);
@@ -159,10 +183,6 @@ namespace Glyph.Game
 
         protected virtual void HandleInput()
         {
-            InputManager.Update(IsFocus);
-            if (!IsFocus)
-                return;
-
             if (InputManager[DeveloperInputs.Mute])
                 MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
 
@@ -177,6 +197,8 @@ namespace Glyph.Game
             SongPlayer.HandleInput(InputManager);
             StatusDisplay.HandleInput(InputManager);
 
+            Cursor.HandleInput(InputManager);
+
 #if WINDOWS
             EditorCursor.HandleInput(InputManager);
 #endif
@@ -186,13 +208,17 @@ namespace Glyph.Game
         {
             base.Draw(gameTime);
 
+            if (!IsFocus)
+                return;
+
             ScreenEffectManager.Instance.Prepare(SpriteBatch, GraphicsDevice);
             ScreenEffectManager.Instance.CleanFirstRender(GraphicsDevice);
 
             Scene.PreDraw();
+            Scene.Draw();
 
             SpriteBatch.Begin();
-            Scene.Draw();
+            Cursor.Draw(SpriteBatch);
             StatusDisplay.Draw(SpriteBatch);
 #if WINDOWS
             EditorCursor.Draw(SpriteBatch);

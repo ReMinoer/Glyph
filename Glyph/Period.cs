@@ -86,16 +86,6 @@ namespace Glyph
             return Update((float)gameTime.ElapsedGameTime.TotalMilliseconds, out loop);
         }
 
-        public bool Update(ElapsedTime elapsedTime)
-        {
-            return Update(elapsedTime.Delta * 1000);
-        }
-
-        public bool Update(ElapsedTime elapsedTime, out int loop)
-        {
-            return Update(elapsedTime.Delta * 1000, out loop);
-        }
-
         static public Period Parse(string s)
         {
             return new Period(Int32.Parse(s));

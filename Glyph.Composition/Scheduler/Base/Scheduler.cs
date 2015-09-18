@@ -69,7 +69,7 @@ namespace Glyph.Composition.Scheduler.Base
             foreach (Predicate<object> predicate in schedulerProfile)
             {
                 var vertex = new SchedulerGraph<T>.Vertex(predicate);
-                _schedulerGraph.AddVertex(new SchedulerGraph<T>.Vertex(predicate));
+                _schedulerGraph.AddVertex(vertex);
 
                 if (previous != null)
                 {

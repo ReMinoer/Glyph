@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Diese.Lua;
 using Diese.Lua.Properties;
+using Glyph.Composition;
 using Glyph.Effects;
 using Glyph.Entities;
 using Glyph.Localization;
@@ -14,21 +15,23 @@ using NLua;
 
 namespace Glyph.Scripting
 {
-    public abstract class ScriptManager
+    public class ScriptManager : GlyphComponent, IDraw
     {
         protected readonly Lua Lua;
         private readonly LanguageFile _languageFile;
         private readonly Dictionary<string, Dictionary<string, LuaFunction>> _luaFunctions;
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly SpriteBatch _spriteBatch;
         public TriggerManager Triggers { get; private set; }
-        public bool DrawTriggerZone { get; set; }
+        public bool Visible { get; set; }
 
-        protected ScriptManager(ContentLibrary contentLibrary, LanguageFile languageFile, GraphicsDevice graphicsDevice)
+        public ScriptManager(ContentLibrary contentLibrary, LanguageFile languageFile, GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
             _languageFile = languageFile;
+            _spriteBatch = spriteBatch;
 
             Triggers = new TriggerManager(this);
-            DrawTriggerZone = false;
+            Visible = false;
             _luaFunctions = new Dictionary<string, Dictionary<string, LuaFunction>>();
 
             Lua = new Lua();
@@ -133,13 +136,13 @@ namespace Glyph.Scripting
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw()
         {
-            if (!DrawTriggerZone)
+            if (!Visible)
                 return;
 
             foreach (TriggerZone t in Triggers.Values.OfType<TriggerZone>())
-                t.Draw(spriteBatch);
+                t.Draw(_spriteBatch);
         }
 
         public void TriggerOnEnabled(object sender, EventArgs eventArgs)

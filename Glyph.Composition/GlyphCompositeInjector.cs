@@ -3,7 +3,7 @@ using Diese.Injection;
 
 namespace Glyph.Composition
 {
-    internal class GlyphCompositeInjector : IDependencyInjector
+    public class GlyphCompositeInjector : IDependencyInjector
     {
         private readonly IDependencyInjector _dependencyInjector;
         internal GlyphComposite CompositeContext { private get; set; }
@@ -21,7 +21,7 @@ namespace Glyph.Composition
         public object Resolve(Type type, object serviceKey = null)
         {
             if (serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
-                return CompositeContext.GetComponent(type);
+                return CompositeContext.GetComponent(type) ?? _dependencyInjector.Resolve(type);
             
             return _dependencyInjector.Resolve(type, serviceKey);
         }

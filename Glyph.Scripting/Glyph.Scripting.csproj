@@ -65,6 +65,10 @@
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
       <Name>Diese.Serialization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
+      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
+      <Name>Glyph.Composition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Effects\Glyph.Effects.csproj">
       <Project>{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}</Project>
       <Name>Glyph.Effects</Name>

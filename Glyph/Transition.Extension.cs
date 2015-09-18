@@ -15,16 +15,6 @@ namespace Glyph
             return Transition(value, goal, speed, (float)gameTime.ElapsedGameTime.TotalMilliseconds);
         }
 
-        static public float Transition(this float value, float goal, float speed, ElapsedTime elapsedTime)
-        {
-            return Transition(value, goal, speed, elapsedTime.Delta * 1000);
-        }
-
-        static public Vector2 Transition(this Vector2 value, Vector2 goal, float speed, ElapsedTime elapsedTime)
-        {
-            return Transition(value, goal, speed, elapsedTime.Delta * 1000);
-        }
-
         static private float Transition(this float value, float goal, float speed, float deltaTime)
         {
             float ecart = goal - value;

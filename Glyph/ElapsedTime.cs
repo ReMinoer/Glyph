@@ -11,7 +11,8 @@ namespace Glyph
         {
             get { return _instance ?? (_instance = new ElapsedTime()); }
         }
-        
+
+        public GameTime GameTime { get; private set; }
         public TimeSpan Total { get; set; }
         public float Delta { get; set; }
         public float Scale { get; set; }
@@ -25,6 +26,8 @@ namespace Glyph
 
         public void Refresh(GameTime gameTime)
         {
+            GameTime = gameTime;
+
             UnscaledTotal = gameTime.TotalGameTime;
             UnscaledDelta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 

@@ -7,27 +7,26 @@ using Glyph.Graphics;
 
 namespace Glyph.Game
 {
-    public abstract class SceneBase : GlyphSchedulableBase, IScene
+    public abstract class SceneBase<TSchedulerHandler> : GlyphSchedulableBase, IScene
+        where TSchedulerHandler : SceneSchedulerHandlerBase
     {
         public bool Enabled { get; set; }
         public bool Visible { get; private set; }
-        public SceneNode RootNode { get; private set; }
+        public abstract SceneNode RootNode { get; }
 
         protected override sealed IGlyphSchedulerAssigner SchedulerAssigner
         {
             get { return Schedulers; }
         }
-        
-        protected abstract SchedulerHandlerBase Schedulers { get; }
-        protected abstract ISceneRenderer SceneRenderer { get; }
+
+        protected abstract TSchedulerHandler Schedulers { get; }
+        protected abstract ISceneRenderer Renderer { get; }
 
         protected SceneBase(IDependencyInjector injector)
             : base(injector)
         {
             Enabled = true;
             Visible = true;
-
-            RootNode = Add<SceneNode>();
         }
 
         public override void Initialize()
@@ -56,7 +55,7 @@ namespace Glyph.Game
             if (!Visible)
                 return;
 
-            SceneRenderer.RenderingProcess();
+            Renderer.RenderingProcess();
         }
 
         public virtual void PreDraw()
@@ -65,21 +64,6 @@ namespace Glyph.Game
 
         public virtual void PostDraw()
         {
-        }
-
-        public class SchedulerHandlerBase : GlyphSchedulerHandler
-        {
-            public IGlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; private set; }
-            public IGlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; private set; }
-            public IGlyphScheduler<IUpdate, UpdateDelegate> Update { get; private set; }
-
-            public SchedulerHandlerBase(IDependencyInjector injector)
-                : base(injector)
-            {
-                Initialize = Add<IGlyphComponent, InitializeDelegate>();
-                LoadContent = Add<ILoadContent, LoadContentDelegate>();
-                Update = Add<IUpdate, UpdateDelegate>();
-            }
         }
     }
 }

@@ -138,7 +138,7 @@ namespace Glyph
             _device.GraphicsDevice.Clear(Color.Black);
         }
 
-        public void ResetViewport()
+        private void ResetViewport()
         {
             float targetAspectRatio = GetVirtualAspectRatio();
 
@@ -239,8 +239,8 @@ namespace Glyph
         private void RecreateScaleMatrix()
         {
             _dirtyMatrix = false;
-            _scaleMatrix = Matrix.CreateScale((float)_device.GraphicsDevice.Viewport.Width / _virtualWidth,
-                (float)_device.GraphicsDevice.Viewport.Width / _virtualWidth, 1f);
+            _scaleMatrix = Matrix.CreateScale((float)_windowWidth / _virtualWidth,
+                (float)_windowWidth / _virtualWidth, 1f);
 
             UpdateResolution();
         }

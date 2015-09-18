@@ -5,18 +5,12 @@ namespace Glyph.Input
 {
     public class InputManager
     {
-        static private InputManager _instance;
         public GameControls Controls { get; set; }
         public InputStates InputStates { get; private set; }
         public bool IsGamePadUsed { get; private set; }
         public bool IsMouseUsed { get; private set; }
 
-        static public InputManager Instance
-        {
-            get { return _instance ?? (_instance = new InputManager()); }
-        }
-
-        protected InputManager()
+        public InputManager()
         {
             IsGamePadUsed = false;
             IsMouseUsed = false;

@@ -82,7 +82,7 @@ namespace Glyph.Audio
                     break;
 
                 case AudioTransitionState.Wait:
-                    _waitTime.Update(elapsedTime);
+                    _waitTime.Update(elapsedTime.GameTime);
                     if (_waitTime.IsEnd)
                         _transitionState = AudioTransitionState.Play;
                     break;
@@ -100,7 +100,7 @@ namespace Glyph.Audio
                     break;
             }
 
-            MediaPlayer.Volume = MediaPlayer.Volume.Transition(Volume * _volumeFondu, VolumeSpeed, elapsedTime);
+            MediaPlayer.Volume = MediaPlayer.Volume.Transition(Volume * _volumeFondu, VolumeSpeed, elapsedTime.GameTime);
             _transitionRequire = false;
         }
 

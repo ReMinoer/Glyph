@@ -42,7 +42,7 @@ namespace Glyph.Composition.Scheduler.Base
             if (_visited.Contains(vertex))
                 throw new CyclicDependencyException(_visited.Select(x => x.Items.First()).Cast<object>());
 
-            if (_result.Contains(vertex.Items.First()))
+            if (!vertex.Items.Any() || _result.Contains(vertex.Items.First()))
                 return;
 
             _visited.Push(vertex);
