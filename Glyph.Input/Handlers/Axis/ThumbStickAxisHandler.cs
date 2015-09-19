@@ -49,7 +49,7 @@ namespace Glyph.Input.Handlers.Axis
                     vector = inputStates.GamePadStates[PlayerIndex].ThumbSticks.Right;
                     break;
                 default:
-                    throw new NotImplementedException();
+                    throw new InvalidOperationException();
             }
 
             switch (Axis)
@@ -61,7 +61,7 @@ namespace Glyph.Input.Handlers.Axis
                 case Glyph.Axis.Vertical:
                     return vector.Y;
                 default:
-                    throw new NotImplementedException();
+                    throw new InvalidOperationException();
             }
         }
     }

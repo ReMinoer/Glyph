@@ -44,7 +44,7 @@ namespace Glyph.Input.Handlers.Axis
                 case Trigger.Right:
                     return inputStates.GamePadStates[PlayerIndex].Triggers.Right;
                 default:
-                    throw new NotImplementedException();
+                    throw new InvalidOperationException();
             }
         }
     }

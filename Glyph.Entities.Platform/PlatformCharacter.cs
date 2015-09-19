@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Entities.Platform
 {
+    // BUG : Correction de position quand changement de sens
+    // TODO : Reflechir à la sauvegarde des perso (jumelle, AI,...)
+    // WATCH : Cohésion du sol sur longue chute
     public abstract class PlatformCharacter : GameObject, ILayable
     {
         protected Collision Collision;
-        // BUG : Correction de position quand changement de sens
-        // TODO : Reflechir à la sauvegarde des perso (jumelle, AI,...)
-        // WATCH : Cohésion du sol sur longue chute
 
         [XmlIgnore]
         public virtual float VerticalSpeed { get; set; }

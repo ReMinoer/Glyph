@@ -45,7 +45,7 @@ namespace Glyph.Input.Handlers.Vectors
                     return inputStates.GamePadStates[PlayerIndex].ThumbSticks.Right;
             }
 
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
 }

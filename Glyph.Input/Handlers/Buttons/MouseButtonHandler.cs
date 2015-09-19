@@ -37,7 +37,7 @@ namespace Glyph.Input.Handlers.Buttons
                 case MouseButton.Middle:
                     return inputStates.MouseState.MiddleButton == ButtonState.Pressed;
                 default:
-                    throw new NotImplementedException();
+                    throw new InvalidOperationException();
             }
         }
     }

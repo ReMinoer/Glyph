@@ -3,10 +3,9 @@ using Glyph.Animation.Trajectories.Players;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 
-// TODO : Splines
-
 namespace Glyph.Animation
 {
+    // TODO : Splines
     [SinglePerParent]
     public class Motion : GlyphContainer, IEnableable, IUpdate, ITimeUnscalable
     {

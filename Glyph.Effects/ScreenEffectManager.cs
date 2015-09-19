@@ -60,7 +60,7 @@ namespace Glyph.Effects
                 {
                     effect.Apply(spriteBatch, graphicsDevice);
                 }
-                catch (NotImplementedException)
+                catch (InvalidOperationException)
                 {
                     continue;
                 }

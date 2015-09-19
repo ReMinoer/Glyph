@@ -8,10 +8,10 @@ using NLog;
 
 namespace Glyph.Audio
 {
+    // TODO : Finaliser et tester le manager audio (controle volume, plusieurs effets,...)
     static public class AudioManager
     {
         static public Dictionary<string, Song> Musics;
-        // TODO : Finaliser et tester le manager audio (controle volume, plusieurs effets,...)
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         static private Dictionary<string, SoundEffect> _sounds;
         static private Dictionary<string, SoundCollection> _soundCollections;

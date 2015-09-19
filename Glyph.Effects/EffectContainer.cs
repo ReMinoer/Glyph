@@ -49,7 +49,7 @@ namespace Glyph.Effects
 
         public void Apply(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
 
         public void Dispose()
