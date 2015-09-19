@@ -240,8 +240,12 @@ namespace Glyph
         private void RecreateScaleMatrix()
         {
             _dirtyMatrix = false;
-            _scaleMatrix = Matrix.CreateScale((float)_windowWidth / _virtualWidth,
-                (float)_windowWidth / _virtualWidth, 1f);
+
+            float scale = (float)_windowWidth / _windowHeight < GetVirtualAspectRatio()
+                ? (float)_windowWidth / _virtualWidth
+                : (float)_windowHeight / _virtualHeight;
+
+            _scaleMatrix = Matrix.CreateScale(scale, scale, 1f);
 
             UpdateResolution();
         }
