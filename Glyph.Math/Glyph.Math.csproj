@@ -40,6 +40,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IntegerSequenceBuilder.cs" />
     <Compile Include="Shapes\Circle.cs" />
     <Compile Include="Shapes\IntersectionUtils.cs" />
     <Compile Include="Shapes\ICircle.cs" />
