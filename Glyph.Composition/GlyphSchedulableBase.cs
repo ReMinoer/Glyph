@@ -9,7 +9,7 @@ namespace Glyph.Composition
 {
     public abstract class GlyphSchedulableBase : GlyphComposite
     {
-        protected readonly IDependencyInjector Injector;
+        protected readonly GlyphCompositeInjector Injector;
         protected abstract IGlyphSchedulerAssigner SchedulerAssigner { get; }
 
         protected GlyphSchedulableBase(IDependencyInjector injector)
@@ -22,18 +22,12 @@ namespace Glyph.Composition
 
         public override sealed T Add<T>()
         {
-            var component = Injector.Resolve<T>();
-            Add(component);
-
-            return component;
+            return Injector.Add<T>();
         }
 
         public override sealed IGlyphComponent Add(Type componentType)
         {
-            var component = Injector.Resolve(componentType) as IGlyphComponent;
-            Add(component);
-
-            return component;
+            return Injector.Add(componentType) as IGlyphComponent;
         }
 
         public override sealed void Add(IGlyphComponent item)

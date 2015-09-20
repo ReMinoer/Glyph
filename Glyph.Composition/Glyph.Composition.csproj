@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Delegates\DrawDelegate.cs" />
+    <Compile Include="Exceptions\ComponentNotFoundException.cs" />
     <Compile Include="GlyphCompositeInjector.cs" />
     <Compile Include="GlyphSchedulableBase.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
