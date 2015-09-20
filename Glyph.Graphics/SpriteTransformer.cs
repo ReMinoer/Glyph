@@ -4,13 +4,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class SpriteDescriptor : GlyphComponent, ILoadContent
+    public class SpriteTransformer : GlyphComponent
     {
         private Texture2D _texture;
         private Vector2 _origin;
         private Vector2 _pivot;
         private AnchorType _lastAnchorType;
-        public string Asset { get; set; }
         public Rectangle? SourceRectangle { get; set; }
         public Color Color { get; set; }
         public Vector2 Scale { get; set; }
@@ -56,15 +55,10 @@ namespace Glyph.Graphics
             }
         }
 
-        public SpriteDescriptor()
+        public SpriteTransformer()
         {
             Color = Color.White;
             Pivot = Vector2.One * 0.5f;
-        }
-
-        public void LoadContent(ContentLibrary contentLibrary)
-        {
-            Texture = contentLibrary.GetTexture(Asset);
         }
 
         public override void Dispose()

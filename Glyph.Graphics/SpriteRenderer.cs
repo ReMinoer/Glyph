@@ -1,5 +1,4 @@
-﻿using Diese.Injection;
-using Glyph.Animation;
+﻿using Glyph.Animation;
 using Glyph.Composition;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -7,27 +6,27 @@ namespace Glyph.Graphics
 {
     public class SpriteRenderer : GlyphComponent, IDraw
     {
+        private readonly ISpriteSource _source;
+        private readonly SpriteTransformer _transformer;
         private readonly SceneNode _sceneNode;
         private readonly SpriteBatch _spriteBatch;
-
-        [Injectable]
-        public SpriteDescriptor Sprite { get; set; }
-
         public bool Visible { get; set; }
 
-        public SpriteRenderer(SceneNode sceneNode, SpriteBatch spriteBatch)
+        public SpriteRenderer(ISpriteSource source, SpriteTransformer transformer, SceneNode sceneNode, SpriteBatch spriteBatch)
         {
+            _source = source;
+            _transformer = transformer;
             _sceneNode = sceneNode;
             _spriteBatch = spriteBatch;
         }
 
         public void Draw()
         {
-            if (!Visible || Sprite == null)
+            if (!Visible || _source.Texture == null)
                 return;
 
-            _spriteBatch.Draw(Sprite.Texture, _sceneNode.Position, Sprite.SourceRectangle, Sprite.Color,
-                _sceneNode.Rotation, Sprite.Origin, _sceneNode.Scale * Sprite.Scale, Sprite.Effects, 0);
+            _spriteBatch.Draw(_source.Texture, _sceneNode.Position, _transformer.SourceRectangle, _transformer.Color,
+                _sceneNode.Rotation, _transformer.Origin, _sceneNode.Scale * _transformer.Scale, _transformer.Effects, 0);
         }
     }
 }

@@ -20,8 +20,8 @@ namespace Glyph.Physics.Colliders
 
         public override void LoadContent(ContentLibrary contentLibrary)
         {
-            SpriteDescriptor.Texture = _textureFactory.CreateFilledRectangle(1, 1, Color.Blue);
-            SpriteDescriptor.Scale = Shape.Size;
+            SpriteTransformer.Texture = _textureFactory.CreateFilledRectangle(1, 1, Color.Blue);
+            SpriteTransformer.Scale = Shape.Size;
         }
 
         public override bool Intersects(RectangleCollider collider)

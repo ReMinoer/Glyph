@@ -20,7 +20,7 @@ namespace Glyph.Application
         {
             public LoadContent()
             {
-                Add<SpriteDescriptor>();
+                Add<SpriteTransformer>();
             }
         }
 
