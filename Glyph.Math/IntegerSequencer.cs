@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Glyph.Math
 {
-    public class IntegerSequenceBuilder : IEnumerable<int>
+    public class IntegerSequencer : IEnumerable<int>
     {
         private readonly List<int> _sequence;
 
@@ -18,37 +18,37 @@ namespace Glyph.Math
             get { return _sequence[index]; }
         }
 
-        internal IntegerSequenceBuilder()
+        internal IntegerSequencer()
         {
             _sequence = new List<int>();
         }
 
-        public IntegerSequenceBuilder(int start)
+        public IntegerSequencer(int start)
             : this()
         {
             Then(start);
         }
 
-        public IntegerSequenceBuilder(params int[] sequence)
+        public IntegerSequencer(params int[] sequence)
             : this()
         {
             Then(sequence);
         }
 
-        public IntegerSequenceBuilder(int startFrame, int endFrame)
+        public IntegerSequencer(int startFrame, int endFrame)
             : this()
         {
             Then(startFrame);
             ThenGoTo(endFrame);
         }
 
-        public IntegerSequenceBuilder Then(params int[] n)
+        public IntegerSequencer Then(params int[] n)
         {
             _sequence.AddRange(n);
             return this;
         }
 
-        public IntegerSequenceBuilder ThenGoTo(int n, int step = 1)
+        public IntegerSequencer ThenGoTo(int n, int step = 1)
         {
             int origin = this.Last();
             int increment = -(origin.CompareTo(n)) * step;
@@ -59,7 +59,7 @@ namespace Glyph.Math
             return this;
         }
 
-        public IntegerSequenceBuilder ThenReverse(int endIndex)
+        public IntegerSequencer ThenReverse(int endIndex)
         {
             int initialCount = Count;
             for (int i = initialCount - 2; i >= endIndex; i--)
@@ -68,12 +68,12 @@ namespace Glyph.Math
             return this;
         }
 
-        public IntegerSequenceBuilder ThenReverse(bool endLoop)
+        public IntegerSequencer ThenReverse(bool endLoop)
         {
             return ThenReverse(endLoop ? 1 : 0);
         }
 
-        public IntegerSequenceBuilder ThenRepeat(int times, int[] subsequence)
+        public IntegerSequencer ThenRepeat(int times, int[] subsequence)
         {
             for (int t = 0; t < times; t++)
                 for (int i = 0; i < subsequence.Length; i++)
@@ -82,7 +82,7 @@ namespace Glyph.Math
             return this;
         }
 
-        public IntegerSequenceBuilder ShiftTo(int startIndex)
+        public IntegerSequencer ShiftTo(int startIndex)
         {
             var temp = new int[Count];
 
@@ -94,7 +94,7 @@ namespace Glyph.Math
             return this;
         }
 
-        public IntegerSequenceBuilder Repeat(int times)
+        public IntegerSequencer Repeat(int times)
         {
             var temp = new int[Count];
 
@@ -111,12 +111,12 @@ namespace Glyph.Math
             _sequence.Clear();
         }
 
-        static public IntegerSequenceBuilder Linear(params int[] linearPoints)
+        static public IntegerSequencer Linear(params int[] linearPoints)
         {
             if (!linearPoints.Any())
-                return new IntegerSequenceBuilder();
+                return new IntegerSequencer();
 
-            var result = new IntegerSequenceBuilder(linearPoints[0]);
+            var result = new IntegerSequencer(linearPoints[0]);
             for (int i = 1; i < linearPoints.Length; i++)
                 result = result.ThenGoTo(linearPoints[i]);
 
