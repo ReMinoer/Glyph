@@ -3,7 +3,12 @@ using Diese.Composition;
 
 namespace Glyph.Composition
 {
-    public abstract class GlyphComposite : Composite<IGlyphComponent, IGlyphParent, IGlyphComponent>, IGlyphComposite
+    public abstract class GlyphComposite : GlyphComposite<IGlyphComponent>
+    {
+    }
+
+    public abstract class GlyphComposite<TComponent> : Composite<IGlyphComponent, IGlyphParent, TComponent>, IGlyphComposite<TComponent>
+        where TComponent : class, IGlyphComponent
     {
         public virtual void Initialize()
         {
@@ -11,13 +16,10 @@ namespace Glyph.Composition
 
         public virtual void Dispose()
         {
-            foreach (IGlyphComponent component in Components)
+            foreach (TComponent component in Components)
                 component.Dispose();
 
             Clear();
         }
-
-        public abstract T Add<T>() where T : class, IGlyphComponent, new();
-        public abstract IGlyphComponent Add(Type componentType);
     }
 }

@@ -20,12 +20,12 @@ namespace Glyph.Composition
             Injector = compositeInjector;
         }
 
-        public override sealed T Add<T>()
+        public T Add<T>()
         {
             return Injector.Add<T>();
         }
 
-        public override sealed IGlyphComponent Add(Type componentType)
+        public IGlyphComponent Add(Type componentType)
         {
             return Injector.Add(componentType) as IGlyphComponent;
         }
