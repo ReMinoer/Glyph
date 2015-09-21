@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-
-namespace Glyph.Graphics
+﻿namespace Glyph.Graphics
 {
     public interface ISceneRenderer
     {

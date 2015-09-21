@@ -49,6 +49,10 @@
       <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>
       <Name>Glyph.Animation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
+      <Project>{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}</Project>
+      <Name>Glyph.Audio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
@@ -56,6 +60,10 @@
     <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
       <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
       <Name>Glyph.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Physics\Glyph.Physics.csproj">
+      <Project>{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}</Project>
+      <Name>Glyph.Physics</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

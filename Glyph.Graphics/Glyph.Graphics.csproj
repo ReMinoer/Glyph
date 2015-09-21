@@ -39,20 +39,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ISceneRenderer.cs" />
+    <Compile Include="ISpriteSheet.cs" />
+    <Compile Include="ISpriteSheetCarver.cs" />
     <Compile Include="ISpriteSource.cs" />
-    <Compile Include="TextureFactory.cs" />
+    <Compile Include="SpriteAnimation.cs" />
+    <Compile Include="SpriteAnimatorTransition.cs" />
+    <Compile Include="Shapes\CircleSprite.cs" />
+    <Compile Include="Shapes\FilledRectangleSprite.cs" />
+    <Compile Include="Shapes\RectangleSprite.cs" />
+    <Compile Include="Shapes\ShapedSpriteBase.cs" />
+    <Compile Include="SpriteLoader.cs" />
+    <Compile Include="SpriteAnimator.cs" />
+    <Compile Include="SpriteSheet.cs" />
+    <Compile Include="SpriteSheetSplit.cs" />
     <Compile Include="SpriteTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpriteRenderer.cs" />
+    <Compile Include="UniformCarver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
-      <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
-      <Name>Diese.Injection</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
       <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>

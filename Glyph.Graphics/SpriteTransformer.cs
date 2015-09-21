@@ -6,7 +6,7 @@ namespace Glyph.Graphics
 {
     public class SpriteTransformer : GlyphComponent
     {
-        private Texture2D _texture;
+        private ISpriteSource _spriteSource;
         private Vector2 _origin;
         private Vector2 _pivot;
         private AnchorType _lastAnchorType;
@@ -15,17 +15,17 @@ namespace Glyph.Graphics
         public Vector2 Scale { get; set; }
         public SpriteEffects Effects { get; set; }
 
-        public Texture2D Texture
+        public ISpriteSource SpriteSource
         {
-            get { return _texture; }
-            set
+            get { return _spriteSource; }
+            private set
             {
-                _texture = value;
+                _spriteSource = value;
 
-                if (Texture == null)
+                if (_spriteSource.Texture == null)
                     SourceRectangle = null;
                 else if (SourceRectangle == null)
-                    SourceRectangle = Texture.Bounds;
+                    SourceRectangle = _spriteSource.Texture.Bounds;
 
                 RefreshAnchor();
             }
@@ -55,28 +55,27 @@ namespace Glyph.Graphics
             }
         }
 
-        public SpriteTransformer()
+        public SpriteTransformer(ISpriteSource spriteSource)
         {
+            SpriteSource = spriteSource;
+
             Color = Color.White;
             Pivot = Vector2.One * 0.5f;
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            Texture.Dispose();
-        }
-
         private void RefreshAnchor()
         {
+            Vector2 size = _spriteSource != null && _spriteSource.Texture != null
+                ? SpriteSource.Texture.Size()
+                : Vector2.Zero;
+
             switch (_lastAnchorType)
             {
                 case AnchorType.Origin:
-                    _pivot = Texture.Size() / _origin;
+                    _pivot = size / _origin;
                     break;
                 case AnchorType.Pivot:
-                    _origin = Texture.Size() * _pivot;
+                    _origin = size * _pivot;
                     break;
             }
         }
