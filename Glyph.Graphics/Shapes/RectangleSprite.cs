@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Shapes
@@ -8,8 +9,8 @@ namespace Glyph.Graphics.Shapes
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public RectangleSprite(GraphicsDevice graphicsDevice)
-            : base(graphicsDevice)
+        public RectangleSprite(Lazy<GraphicsDevice> lazyGraphicsDevice)
+            : base(lazyGraphicsDevice)
         {
             Width = 100;
             Height = 100;
@@ -32,7 +33,7 @@ namespace Glyph.Graphics.Shapes
                 data[i * Width + (Width - 1)] = Color;
             }
 
-            Texture = new Texture2D(GraphicsDevice, Width, Height);
+            Texture = new Texture2D(LazyGraphicsDevice.Value, Width, Height);
             Texture.SetData(data);
         }
     }

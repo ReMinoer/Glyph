@@ -1,4 +1,5 @@
-﻿using Glyph.Animation;
+﻿using System;
+using Glyph.Animation;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
@@ -8,8 +9,8 @@ namespace Glyph.Physics.Colliders
 {
     public class RectangleCollider : ShapeColliderBase<CenteredRectangle>
     {
-        public RectangleCollider(SceneNode sceneNode, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
-            : base(new FilledRectangleSprite(graphicsDevice), sceneNode, spriteBatch)
+        public RectangleCollider(SceneNode sceneNode, Lazy<SpriteBatch> lazySpriteBatch, Lazy<GraphicsDevice> lazyGraphicsDevice)
+            : base(new FilledRectangleSprite(lazyGraphicsDevice), sceneNode, lazySpriteBatch)
         {
             Shape = new CenteredRectangle(Vector2.Zero, 10, 10);
         }

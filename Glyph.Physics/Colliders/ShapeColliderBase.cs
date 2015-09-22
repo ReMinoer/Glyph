@@ -1,4 +1,5 @@
-﻿using Glyph.Animation;
+﻿using System;
+using Glyph.Animation;
 using Glyph.Graphics;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
@@ -15,11 +16,11 @@ namespace Glyph.Physics.Colliders
         private readonly SpriteRenderer _spriteRenderer;
         public TShape Shape { get; protected set; }
 
-        protected ShapeColliderBase(ShapedSpriteBase shapedSprite, SceneNode sceneNode, SpriteBatch spriteBatch)
+        protected ShapeColliderBase(ShapedSpriteBase shapedSprite, SceneNode sceneNode, Lazy<SpriteBatch> lazySpriteBatch)
         {
             ShapedSprite = shapedSprite;
             SpriteTransformer = new SpriteTransformer(ShapedSprite);
-            _spriteRenderer = new SpriteRenderer(ShapedSprite, SpriteTransformer, sceneNode, spriteBatch);
+            _spriteRenderer = new SpriteRenderer(ShapedSprite, SpriteTransformer, sceneNode, lazySpriteBatch);
         }
 
         public override void LoadContent(ContentLibrary contentLibrary)

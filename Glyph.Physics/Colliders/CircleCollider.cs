@@ -1,4 +1,5 @@
-﻿using Glyph.Animation;
+﻿using System;
+using Glyph.Animation;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
@@ -8,8 +9,8 @@ namespace Glyph.Physics.Colliders
 {
     public class CircleCollider : ShapeColliderBase<Circle>
     {
-        public CircleCollider(SceneNode sceneNode, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
-            : base(new CircleSprite(graphicsDevice), sceneNode, spriteBatch)
+        public CircleCollider(SceneNode sceneNode, Lazy<SpriteBatch> lazySpriteBatch, Lazy<GraphicsDevice> lazyGraphicsDevice)
+            : base(new CircleSprite(lazyGraphicsDevice), sceneNode, lazySpriteBatch)
         {
             Shape = new Circle(Vector2.Zero, 10);
         }

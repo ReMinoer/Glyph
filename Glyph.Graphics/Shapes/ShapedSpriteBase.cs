@@ -1,4 +1,5 @@
-﻿using Glyph.Composition;
+﻿using System;
+using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,13 +7,13 @@ namespace Glyph.Graphics.Shapes
 {
     public abstract class ShapedSpriteBase : GlyphComponent, ISpriteSource, ILoadContent
     {
-        protected readonly GraphicsDevice GraphicsDevice;
+        protected readonly Lazy<GraphicsDevice> LazyGraphicsDevice;
         public Texture2D Texture { get; protected set; }
         public Color Color { get; set; }
 
-        protected ShapedSpriteBase(GraphicsDevice graphicsDevice)
+        protected ShapedSpriteBase(Lazy<GraphicsDevice> lazyGraphicsDevice)
         {
-            GraphicsDevice = graphicsDevice;
+            LazyGraphicsDevice = lazyGraphicsDevice;
         }
 
         public abstract void LoadContent(ContentLibrary contentLibrary);
