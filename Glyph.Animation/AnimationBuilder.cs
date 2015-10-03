@@ -7,6 +7,11 @@ namespace Glyph.Animation
     {
         private readonly List<AnimationStep<T>> _list;
 
+        public AnimationStepDelegate<T> this[float instant]
+        {
+            set { this[instant, instant] = value; }
+        }
+
         public AnimationStepDelegate<T> this[float begin, float end]
         {
             set
