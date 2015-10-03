@@ -189,6 +189,9 @@ namespace Glyph.Game
             if (InputManager[DeveloperInputs.XboxQuit])
                 Exit();
 
+            if (InputManager[DeveloperInputs.CompositionLog])
+                CompositionLog.Write(Scene);
+
 #if WINDOWS
             if (InputManager[DeveloperInputs.Fullscreen])
                 Resolution.Instance.ToogleFullscreen();

@@ -11,6 +11,8 @@
     <AssemblyName>Glyph.Tools</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,11 +36,16 @@
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=3.2.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\NLog.3.2.0.0\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chronometer.cs" />
+    <Compile Include="CompositionLog.cs" />
     <Compile Include="EditorCursor.cs" />
     <Compile Include="PerformanceViewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -51,9 +58,17 @@
     <Compile Include="StatusDisplayChannels\StatusDisplayText.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
+      <Project>{e8d6f663-89a6-497f-a02f-d0fc562d2d0e}</Project>
+      <Name>Diese.Composition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
       <Project>{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}</Project>
       <Name>Glyph.Audio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
+      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
+      <Name>Glyph.Composition</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Entities\Glyph.Entities.csproj">
       <Project>{729cf52c-d06c-42fd-a2ee-6c19e07d185f}</Project>
@@ -72,7 +87,17 @@
       <Name>Glyph</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
