@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Audio;
 namespace Glyph.Audio
 {
     // TASK : Add AudioSource component
-    // TASK : Spatialisation du son
+    // TODO : Spatialisation du son
     public class SoundEmitter : GlyphComponent
     {
         private readonly SoundListenerManager _soundListenerManager;
