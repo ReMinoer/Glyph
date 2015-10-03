@@ -59,6 +59,7 @@ namespace Glyph.Graphics
         {
             SpriteSource = spriteSource;
 
+            Scale = Vector2.One;
             Color = Color.White;
             Pivot = Vector2.One * 0.5f;
         }
