@@ -1,10 +1,15 @@
 ﻿using Diese.Injection;
 using Glyph.Animation;
+using Glyph.Animation.Trajectories;
 using Glyph.Application;
+using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
+using Glyph.Graphics;
+using Glyph.Graphics.Particles;
+using Glyph.Physics.Colliders;
 
 namespace Glyph.Game
 {
@@ -12,6 +17,7 @@ namespace Glyph.Game
     {
         public GlyphRegistry()
         {
+            RegisterInstance<IDependencyRegistry>(this);
             Register<GlyphCompositeInjector>();
 
             Register<GlyphScheduler<IGlyphComponent, InitializeDelegate>>();
@@ -36,6 +42,21 @@ namespace Glyph.Game
 
             Register<SceneNode>();
             Register<Motion>();
+
+            Register<SpriteLoader>();
+            Register<SpriteSheet>();
+            Register<SpriteSheetSplit>();
+            Register<SpriteTransformer>();
+            Register<SpriteAnimator>();
+            Register<SpriteRenderer>();
+            Register<ParticleEmitter>();
+
+            Register<SongPlayer>();
+            Register<SoundListener>();
+            Register<SoundEmitter>();
+
+            Register<RectangleCollider>();
+            Register<CircleCollider>();
         }
     }
 }
