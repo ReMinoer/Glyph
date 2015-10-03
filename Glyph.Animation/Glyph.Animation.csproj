@@ -38,7 +38,15 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StandardAnimation.cs" />
+    <Compile Include="AnimationBuilder.cs" />
+    <Compile Include="StandardAnimationPlayer.cs" />
+    <Compile Include="AnimationStep.cs" />
+    <Compile Include="Animator.cs" />
     <Compile Include="EasingDelegate.cs" />
+    <Compile Include="IAnimation.cs" />
+    <Compile Include="IAnimationPlayer.cs" />
+    <Compile Include="ITimeOffsetable.cs" />
     <Compile Include="Matrix3x3.cs" />
     <Compile Include="SceneNode.cs" />
     <Compile Include="Trajectories\IProgressiveTrajectory.cs" />

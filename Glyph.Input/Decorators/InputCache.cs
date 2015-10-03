@@ -5,7 +5,7 @@
         private readonly Period _resetPeriod = new Period();
         private TValue _cache;
 
-        public int ResetTimeout
+        public float ResetTimeout
         {
             get { return _resetPeriod.Interval; }
             set { _resetPeriod.Interval = value; }

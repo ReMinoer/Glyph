@@ -18,7 +18,7 @@ namespace Glyph.Input.Decorators
             get { return _buttonBehaviour.Activity; }
         }
 
-        public int Period
+        public float Period
         {
             get { return _period.Interval; }
             set { _period.Interval = value; }

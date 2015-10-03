@@ -6,7 +6,7 @@ namespace Glyph
 {
     public class Period
     {
-        public int Interval { get; set; }
+        public float Interval { get; set; }
 
         [XmlIgnore]
         public float ElapsedTime { get; private set; }
@@ -50,7 +50,7 @@ namespace Glyph
             if (!(ElapsedTime > Interval))
                 return false;
 
-            while (ElapsedTime > Interval && Interval != 0)
+            while (ElapsedTime > Interval && Math.Abs(Interval) > float.Epsilon)
                 ElapsedTime -= Interval;
 
             IsEnd = true;
@@ -66,13 +66,31 @@ namespace Glyph
             if (!(ElapsedTime > Interval))
                 return false;
 
-            while (ElapsedTime > Interval && Interval != 0)
+            while (ElapsedTime > Interval && Math.Abs(Interval) > float.Epsilon)
             {
                 ElapsedTime -= Interval;
                 loop++;
             }
 
             IsEnd = true;
+            return true;
+        }
+
+        public bool Update(float elapsedMilliseconds, out float[] times)
+        {
+            int loop;
+            if (Update(elapsedMilliseconds, out loop))
+            {
+                times = new float[0];
+                return false;
+            }
+
+            times = new float[loop];
+            times[0] = Interval - ElapsedTime;
+
+            for (int i = 1; i < loop; i++)
+                times[i] = times[0] + i * Interval;
+
             return true;
         }
 
@@ -84,6 +102,11 @@ namespace Glyph
         public bool Update(GameTime gameTime, out int loop)
         {
             return Update((float)gameTime.ElapsedGameTime.TotalMilliseconds, out loop);
+        }
+
+        public bool Update(GameTime gameTime, out float[] times)
+        {
+            return Update((float)gameTime.ElapsedGameTime.TotalMilliseconds, out times);
         }
 
         static public Period Parse(string s)
