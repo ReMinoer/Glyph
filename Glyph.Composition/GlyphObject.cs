@@ -38,11 +38,13 @@ namespace Glyph.Composition
 
         public void Update(ElapsedTime elapsedTime)
         {
-            if (!Enabled)
-                return;
-
             foreach (UpdateDelegate update in Schedulers.Update.TopologicalOrder)
+            {
+                if (!Enabled)
+                    return;
+
                 update(elapsedTime);
+            }
         }
 
         public void Draw()
