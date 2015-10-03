@@ -1,5 +1,4 @@
-﻿using System;
-using Diese.Composition;
+﻿using Diese.Composition;
 
 namespace Glyph.Composition
 {

@@ -4,22 +4,16 @@ using Glyph.Composition.Exceptions;
 
 namespace Glyph.Composition
 {
-    public class GlyphCompositeInjector : IDependencyInjector
+    public class GlyphCompositeInjector : RegistryInjector
     {
-        private readonly IDependencyInjector _dependencyInjector;
         internal GlyphComposite CompositeContext { private get; set; }
 
-        public GlyphCompositeInjector(IDependencyInjector dependencyInjector)
+        public GlyphCompositeInjector(IDependencyRegistry registry)
+            : base(registry)
         {
-            _dependencyInjector = dependencyInjector;
         }
 
-        public T Resolve<T>(object serviceKey = null)
-        {
-            return (T)Resolve(typeof(T), serviceKey);
-        }
-
-        public object Resolve(Type type, object serviceKey = null)
+        public override object Resolve(Type type, object serviceKey = null)
         {
             if (serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
             {
@@ -30,7 +24,7 @@ namespace Glyph.Composition
                 return component;
             }
             
-            return _dependencyInjector.Resolve(type, serviceKey);
+            return base.Resolve(type, serviceKey);
         }
 
         public T Add<T>()
@@ -43,7 +37,7 @@ namespace Glyph.Composition
             if (!typeof(IGlyphComponent).IsAssignableFrom(type))
                 throw new InvalidCastException(string.Format("Type must implements {0} !", typeof(IGlyphComponent)));
 
-            var component = (IGlyphComponent)_dependencyInjector.Resolve(type);
+            var component = (IGlyphComponent)base.Resolve(type);
             CompositeContext.Add(component);
 
             return component;
