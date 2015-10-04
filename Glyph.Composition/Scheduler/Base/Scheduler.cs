@@ -132,6 +132,7 @@ namespace Glyph.Composition.Scheduler.Base
             _topologicalOrderVisitor.Process(_schedulerGraph);
         }
 
+        // BUG : SchedulerController.AtStart() don't works
         protected class SchedulerController : ISchedulerController<T>
         {
             protected readonly SchedulerGraph<T> SchedulerGraph;

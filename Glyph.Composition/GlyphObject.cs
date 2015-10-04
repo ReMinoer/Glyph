@@ -4,6 +4,7 @@ using Glyph.Composition.Scheduler;
 
 namespace Glyph.Composition
 {
+    // TASK : Schedule methods with attributes
     public class GlyphObject : GlyphSchedulableBase, IEnableable, ILoadContent, IUpdate, IDraw
     {
         protected readonly SchedulerHandler Schedulers;
