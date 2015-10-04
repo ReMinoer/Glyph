@@ -8,7 +8,6 @@ using Glyph.Input;
 using Glyph.Input.StandardInputs;
 using Glyph.Tools;
 using Glyph.Tools.StatusDisplayChannels;
-using Glyph.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -105,9 +104,6 @@ namespace Glyph.Game
             StatusDisplay.Channels.Add(new DefautStatusDisplayChannel(PerformanceViewer));
 
             EditorCursor.Initialize();
-            Cursor.Initialize(false);
-            Cursor.OriginCursor = new Vector2(4, 4);
-
             Chronometer.Init();
 
             Registry = dependencyRegistry;
@@ -200,8 +196,6 @@ namespace Glyph.Game
             SongPlayer.HandleInput(InputManager);
             StatusDisplay.HandleInput(InputManager);
 
-            Cursor.HandleInput(InputManager);
-
 #if WINDOWS
             EditorCursor.HandleInput(InputManager);
 #endif
@@ -221,7 +215,6 @@ namespace Glyph.Game
             Scene.Draw();
 
             SpriteBatch.Begin();
-            Cursor.Draw(SpriteBatch);
             StatusDisplay.Draw(SpriteBatch);
 #if WINDOWS
             EditorCursor.Draw(SpriteBatch);

@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="Controls\Button.cs" />
     <Compile Include="Menus\ButtonsMenu.cs" />
-    <Compile Include="Cursor.cs" />
     <Compile Include="HUD\GuideButton.cs" />
     <Compile Include="Padding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,13 +52,25 @@
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
+      <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
+      <Name>Diese.Injection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Serialization\Diese.Serialization.csproj">
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
       <Name>Diese.Serialization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
+      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
+      <Name>Glyph.Composition</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Entities\Glyph.Entities.csproj">
       <Project>{729CF52C-D06C-42FD-A2EE-6C19E07D185F}</Project>
       <Name>Glyph.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
+      <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
+      <Name>Glyph.Graphics</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
       <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
