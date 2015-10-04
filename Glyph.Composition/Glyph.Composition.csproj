@@ -68,6 +68,7 @@
     <Compile Include="Scheduler\Base\IScheduler.cs" />
     <Compile Include="Scheduler\Base\ISchedulerController.cs" />
     <Compile Include="Scheduler\GlyphSchedulerHandler.cs" />
+    <Compile Include="Scheduler\GlyphSchedulerSorter.cs" />
     <Compile Include="Scheduler\IGlyphScheduler.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerAssigner.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerController.cs" />

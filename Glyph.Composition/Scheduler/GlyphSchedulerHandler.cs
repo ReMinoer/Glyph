@@ -6,7 +6,7 @@ namespace Glyph.Composition.Scheduler
     public class GlyphSchedulerHandler : IGlyphSchedulerAssigner
     {
         private readonly IDependencyInjector _injector;
-        private readonly ICollection<IGlyphSchedulerAssigner> _schedulers;
+        protected readonly ICollection<IGlyphSchedulerAssigner> _schedulers;
 
         public GlyphSchedulerHandler(IDependencyInjector injector)
         {
@@ -20,6 +20,11 @@ namespace Glyph.Composition.Scheduler
             var scheduler = _injector.Resolve<GlyphScheduler<TInterface, TDelegate>>();
             _schedulers.Add(scheduler);
             return scheduler;
+        }
+
+        public void Add(IGlyphSchedulerAssigner schedulerAssigner)
+        {
+            _schedulers.Add(schedulerAssigner);
         }
 
         public void StartBatch()
