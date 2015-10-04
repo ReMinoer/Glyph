@@ -1,4 +1,5 @@
-﻿using Glyph.Composition;
+﻿using System.Collections.Generic;
+using Glyph.Composition;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Animation
@@ -7,19 +8,26 @@ namespace Glyph.Animation
     public class SceneNode : GlyphComponent
     {
         private SceneNode _parentNode;
+        private readonly List<SceneNode> _childrenNodes;
         private Transformation _transformation;
         private Vector2 _position;
         private float _rotation;
         private float _scale;
         private Matrix3X3 _matrix;
-        private bool _hasChange;
 
         public SceneNode ParentNode
         {
             get { return _parentNode; }
             set
             {
+                if (_parentNode != null)
+                    _parentNode.RemoveChild(this);
+
                 _parentNode = value;
+
+                if (_parentNode != null)
+                    _parentNode.AddChild(this);
+
                 Refresh();
             }
         }
@@ -30,7 +38,7 @@ namespace Glyph.Animation
             set
             {
                 _transformation = value;
-                _hasChange = true;
+                Refresh();
             }
         }
 
@@ -40,7 +48,7 @@ namespace Glyph.Animation
             set
             {
                 Transformation.SetTranslation(value);
-                _hasChange = true;
+                Refresh();
             }
         }
 
@@ -50,7 +58,7 @@ namespace Glyph.Animation
             set
             {
                 Transformation.SetRotation(value);
-                _hasChange = true;
+                Refresh();
             }
         }
 
@@ -60,7 +68,7 @@ namespace Glyph.Animation
             set
             {
                 Transformation.SetScale(value);
-                _hasChange = true;
+                Refresh();
             }
         }
 
@@ -71,15 +79,10 @@ namespace Glyph.Animation
 
         public Vector2 Position
         {
-            get
-            {
-                Refresh();
-                return _position;
-            }
+            get { return _position; }
             set
             {
-                Refresh();
-                _position = ParentNode.Matrix.Inverse * value;
+                LocalPosition = ParentNode.Matrix.Inverse * value;
             }
         }
 
@@ -87,12 +90,10 @@ namespace Glyph.Animation
         {
             get
             {
-                Refresh();
                 return _rotation;
             }
             set
             {
-                Refresh();
                 LocalRotation = value - ParentNode.Rotation;
             }
         }
@@ -101,12 +102,10 @@ namespace Glyph.Animation
         {
             get
             {
-                Refresh();
                 return _scale;
             }
             set
             {
-                Refresh();
                 LocalScale = value / ParentNode.Scale;
             }
         }
@@ -115,38 +114,60 @@ namespace Glyph.Animation
         {
             get
             {
-                Refresh();
                 return _matrix;
             }
         }
 
         public SceneNode()
         {
+            _childrenNodes = new List<SceneNode>();
             Transformation = Transformation.Identity;
-            Refresh();
+        }
+
+        public override void Initialize()
+        {
+            if (Parent != null && Parent.Parent != null)
+                ParentNode = Parent.Parent.GetComponent<SceneNode>();
+        }
+
+        public override void Dispose()
+        {
+            foreach (SceneNode childNode in _childrenNodes)
+                childNode.ParentNode = null;
         }
 
         private void Refresh()
         {
-            if (!ChangeInParents())
-                return;
+            if (ParentNode == null)
+            {
+                _position = LocalPosition;
+                _rotation = LocalRotation;
+                _scale = LocalScale;
+                _matrix = LocalMatrix;
 
-            ParentNode.Refresh();
+                foreach (SceneNode childNode in _childrenNodes)
+                    childNode.Refresh();
+            }
+            else
+            {
+                _position = ParentNode.Transformation.Matrix * LocalPosition;
+                _rotation = ParentNode.Rotation + LocalRotation;
+                _scale = ParentNode.Scale * LocalScale;
+                _matrix = ParentNode.Matrix * LocalMatrix;
 
-            _position = ParentNode.Transformation.Matrix * LocalPosition;
-            _rotation = ParentNode.Rotation + LocalRotation;
-            _scale = ParentNode.Scale * LocalScale;
-            _matrix = ParentNode.Matrix * LocalMatrix;
-
-            _hasChange = false;
+                foreach (SceneNode childNode in _childrenNodes)
+                    childNode.Refresh();
+            }
         }
 
-        private bool ChangeInParents()
+        private void AddChild(SceneNode child)
         {
-            if (ParentNode == null)
-                return false;
+            _childrenNodes.Add(child);
+        }
 
-            return ParentNode._hasChange || ParentNode.ChangeInParents();
+        private void RemoveChild(SceneNode child)
+        {
+            _childrenNodes.Remove(child);
         }
     }
 }

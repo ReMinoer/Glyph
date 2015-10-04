@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Animation
 {
-    public struct Transformation
+    public class Transformation
     {
         public Vector2 Translation { get; set; }
         public float Rotation { get; set; }
@@ -15,16 +15,11 @@ namespace Glyph.Animation
         {
             get
             {
-                return new Transformation {
-                    Translation = Vector2.Zero,
-                    Rotation = 0,
-                    Scale = 1f
-                };
+                return new Transformation(Vector2.Zero, 0, 1f);
             }
         }
 
         public Transformation(Vector2 translation, float rotation, float scale)
-            : this()
         {
             Translation = translation;
             Rotation = rotation;
