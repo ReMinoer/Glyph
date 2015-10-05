@@ -1,5 +1,6 @@
 ﻿using Glyph.Composition;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Physics.Colliders
 {
@@ -10,6 +11,6 @@ namespace Glyph.Physics.Colliders
         public abstract bool Intersects(RectangleCollider collider);
         public abstract bool Intersects(CircleCollider collider);
         public abstract bool ContainsPoint(Vector2 point);
-        public abstract void Draw();
+        public abstract void Draw(SpriteBatch spriteBatch);
     }
 }

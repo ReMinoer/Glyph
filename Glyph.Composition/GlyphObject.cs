@@ -1,6 +1,7 @@
 ﻿using Diese.Injection;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Scheduler;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Composition
 {
@@ -48,13 +49,13 @@ namespace Glyph.Composition
             }
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch)
         {
             if (!Visible)
                 return;
 
             foreach (DrawDelegate draw in Schedulers.Draw.TopologicalOrder)
-                draw();
+                draw(spriteBatch);
         }
 
         protected class SchedulerHandler : GlyphSchedulerHandler

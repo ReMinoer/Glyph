@@ -21,7 +21,7 @@ namespace Glyph.Graphics
             _lazySpriteBatch = lazySpriteBatch;
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch)
         {
             if (!Visible || _source.Texture == null)
                 return;

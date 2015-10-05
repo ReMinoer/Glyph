@@ -33,6 +33,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.3.0.2238, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -51,15 +52,11 @@
     <Compile Include="Scheduler\Base\Priority.cs" />
     <Compile Include="Scheduler\Base\Scheduler.cs" />
     <Compile Include="GlyphObject.cs" />
-    <Compile Include="IDraw.cs" />
-    <Compile Include="IEnableable.cs" />
     <Compile Include="IGlyphComponent.cs" />
     <Compile Include="IGlyphComposite.cs" />
     <Compile Include="IGlyphContainer.cs" />
     <Compile Include="IGlyphParent.cs" />
-    <Compile Include="ILoadContent.cs" />
     <Compile Include="Delegates\InitializeDelegate.cs" />
-    <Compile Include="IUpdate.cs" />
     <Compile Include="Delegates\LoadContentDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler\Base\SchedulerProfile.cs" />

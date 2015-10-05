@@ -4,6 +4,7 @@ using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Scheduler;
 using Glyph.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Game
 {
@@ -50,15 +51,15 @@ namespace Glyph.Game
                 update(elapsedTime);
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch)
         {
             if (!Visible)
                 return;
 
-            Renderer.RenderingProcess();
+            Renderer.RenderingProcess(spriteBatch);
         }
 
-        public virtual void PreDraw()
+        public virtual void PreDraw(SpriteBatch spriteBatch)
         {
         }
 

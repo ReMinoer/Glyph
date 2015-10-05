@@ -136,7 +136,7 @@ namespace Glyph.Scripting
             }
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch)
         {
             if (!Visible)
                 return;

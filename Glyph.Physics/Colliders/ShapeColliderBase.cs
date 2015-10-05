@@ -33,12 +33,12 @@ namespace Glyph.Physics.Colliders
             return Shape.Contains(point);
         }
 
-        public override void Draw()
+        public override void Draw(SpriteBatch spriteBatch)
         {
             if (!Visible)
                 return;
 
-            _spriteRenderer.Draw();
+            _spriteRenderer.Draw(spriteBatch);
         }
 
         public override void Dispose()

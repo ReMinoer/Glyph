@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glyph.Composition;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Particles
 {
-    public class ParticleEmitter : GlyphComponent, IUpdate, IDraw, ITimeUnscalable
+    public class ParticleEmitter : GlyphComponent, IEnableable, IUpdate, IDraw, ITimeUnscalable
     {
-        public bool Visible { get; private set; }
+        public bool Enabled { get; set; }
+        public bool Visible { get; set; }
         public Func<IParticle> Factory { get; private set; }
         public bool UseUnscaledTime { get; set; }
 
@@ -27,6 +29,9 @@ namespace Glyph.Graphics.Particles
 
         public void Update(ElapsedTime elapsedTime)
         {
+            if (!Enabled)
+                return;
+
             float[] spawnTimes;
             _period.Update(elapsedTime.GameTime, out spawnTimes);
 
@@ -58,10 +63,13 @@ namespace Glyph.Graphics.Particles
             }
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch)
         {
+            if (!Visible)
+                return;
+
             foreach (IParticle particle in _particlesInstances)
-                particle.Draw();
+                particle.Draw(spriteBatch);
         }
     }
 }

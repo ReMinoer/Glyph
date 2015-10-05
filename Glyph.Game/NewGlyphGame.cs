@@ -211,8 +211,8 @@ namespace Glyph.Game
             ScreenEffectManager.Instance.Prepare(SpriteBatch, GraphicsDevice);
             ScreenEffectManager.Instance.CleanFirstRender(GraphicsDevice);
 
-            Scene.PreDraw();
-            Scene.Draw();
+            Scene.PreDraw(SpriteBatch);
+            Scene.Draw(SpriteBatch);
 
             SpriteBatch.Begin();
             StatusDisplay.Draw(SpriteBatch);
