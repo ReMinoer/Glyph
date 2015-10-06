@@ -31,7 +31,7 @@ namespace Glyph.Composition
             return Injector.Add(componentType) as IGlyphComponent;
         }
 
-        public override sealed void Add(IGlyphComponent item)
+        public override void Add(IGlyphComponent item)
         {
             if (Contains(item))
                 throw new ArgumentException("Component provided is already contained by this entity !");
