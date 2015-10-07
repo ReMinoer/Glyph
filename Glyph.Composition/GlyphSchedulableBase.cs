@@ -7,7 +7,6 @@ using Glyph.Composition.Scheduler;
 
 namespace Glyph.Composition
 {
-    // TASK : Initialize when add a component after parent Initialize
     public abstract class GlyphSchedulableBase : GlyphComposite
     {
         protected readonly GlyphCompositeInjector Injector;

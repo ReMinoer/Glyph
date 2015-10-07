@@ -31,10 +31,10 @@ namespace Glyph.Composition
         {
             base.Add(item);
 
-            if (!_initialized)
+            if (_initialized)
                 item.Initialize();
 
-            if (!_contentLoaded)
+            if (_contentLoaded)
             {
                 var loadContent = item as ILoadContent;
                 if (loadContent != null)
