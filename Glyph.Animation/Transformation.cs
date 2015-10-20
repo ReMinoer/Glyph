@@ -1,59 +1,55 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Glyph.Animation
 {
     public class Transformation
     {
-        public Vector2 Translation { get; set; }
-        public float Rotation { get; set; }
-        public float Scale { get; set; }
-
+        private Vector2 _translation;
+        private float _rotation;
+        private float _scale;
         public Matrix3X3 Matrix { get; private set; }
+
+        public Vector2 Translation
+        {
+            get { return _translation; }
+            set
+            {
+                _translation = value;
+                RefreshMatrix();
+            }
+        }
+
+        public float Rotation
+        {
+            get { return _rotation; }
+            set
+            {
+                _rotation = MathHelper.WrapAngle(value);
+                RefreshMatrix();
+            }
+        }
+
+        public float Scale
+        {
+            get { return _scale; }
+            set
+            {
+                _scale = value;
+                RefreshMatrix();
+            }
+        }
 
         public static Transformation Identity
         {
-            get
-            {
-                return new Transformation(Vector2.Zero, 0, 1f);
-            }
+            get { return new Transformation(Vector2.Zero, 0, 1f); }
         }
 
         public Transformation(Vector2 translation, float rotation, float scale)
         {
-            Translation = translation;
-            Rotation = rotation;
-            Scale = scale;
+            _translation = translation;
+            _rotation = MathHelper.WrapAngle(rotation);
+            _scale = scale;
 
-            RefreshMatrix();
-        }
-
-        public void SetTranslation(Vector2 value)
-        {
-            if (value == Translation)
-                return;
-
-            Translation = value;
-            RefreshMatrix();
-        }
-
-        public void SetRotation(float value)
-        {
-            float angle = MathHelper.WrapAngle(value);
-
-            if (Math.Abs(angle - Rotation) < float.Epsilon)
-                return;
-
-            Rotation = angle;
-            RefreshMatrix();
-        }
-
-        public void SetScale(float value)
-        {
-            if (Math.Abs(value - Scale) < float.Epsilon)
-                return;
-
-            Scale = value;
             RefreshMatrix();
         }
 

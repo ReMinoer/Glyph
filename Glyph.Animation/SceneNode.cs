@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 
@@ -13,7 +14,8 @@ namespace Glyph.Animation
         private Vector2 _position;
         private float _rotation;
         private float _scale;
-        private Matrix3X3 _matrix;
+
+        public event Action<SceneNode> Refreshed;
 
         public SceneNode ParentNode
         {
@@ -47,7 +49,7 @@ namespace Glyph.Animation
             get { return Transformation.Translation; }
             set
             {
-                Transformation.SetTranslation(value);
+                Transformation.Translation = value;
                 Refresh();
             }
         }
@@ -57,7 +59,7 @@ namespace Glyph.Animation
             get { return Transformation.Rotation; }
             set
             {
-                Transformation.SetRotation(value);
+                Transformation.Rotation = value;
                 Refresh();
             }
         }
@@ -67,7 +69,7 @@ namespace Glyph.Animation
             get { return Transformation.Scale; }
             set
             {
-                Transformation.SetScale(value);
+                Transformation.Scale = value;
                 Refresh();
             }
         }
@@ -110,18 +112,18 @@ namespace Glyph.Animation
             }
         }
 
-        public Matrix3X3 Matrix
-        {
-            get
-            {
-                return _matrix;
-            }
-        }
+        public Matrix3X3 Matrix { get; private set; }
 
         public SceneNode()
         {
             _childrenNodes = new List<SceneNode>();
             Transformation = Transformation.Identity;
+        }
+
+        public SceneNode(SceneNode parentNode)
+            : this()
+        {
+            ParentNode = parentNode;
         }
 
         public override void Initialize()
@@ -143,21 +145,21 @@ namespace Glyph.Animation
                 _position = LocalPosition;
                 _rotation = LocalRotation;
                 _scale = LocalScale;
-                _matrix = LocalMatrix;
-
-                foreach (SceneNode childNode in _childrenNodes)
-                    childNode.Refresh();
+                Matrix = LocalMatrix;
             }
             else
             {
                 _position = ParentNode.Transformation.Matrix * LocalPosition;
                 _rotation = ParentNode.Rotation + LocalRotation;
                 _scale = ParentNode.Scale * LocalScale;
-                _matrix = ParentNode.Matrix * LocalMatrix;
-
-                foreach (SceneNode childNode in _childrenNodes)
-                    childNode.Refresh();
+                Matrix = ParentNode.Matrix * LocalMatrix;
             }
+
+            foreach (SceneNode childNode in _childrenNodes)
+                childNode.Refresh();
+
+            if (Refreshed != null)
+                Refreshed.Invoke(this);
         }
 
         private void AddChild(SceneNode child)
