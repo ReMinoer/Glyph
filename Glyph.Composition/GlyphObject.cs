@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Composition
 {
+    // TASK : get Injectable at runtime
     public class GlyphObject : GlyphSchedulableBase, IEnableable, ILoadContent, IUpdate, IDraw
     {
         protected readonly SchedulerHandler Schedulers;
@@ -12,6 +13,12 @@ namespace Glyph.Composition
         private bool _contentLoaded;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
+
+        new public bool IsStatic
+        {
+            get { return base.IsStatic; }
+            set { base.IsStatic = value; }
+        }
 
         protected override sealed IGlyphSchedulerAssigner SchedulerAssigner
         {
@@ -42,7 +49,7 @@ namespace Glyph.Composition
             }
         }
 
-        public override void Initialize()
+        public override sealed void Initialize()
         {
             foreach (InitializeDelegate initialize in Schedulers.Initialize.TopologicalOrder)
                 initialize();

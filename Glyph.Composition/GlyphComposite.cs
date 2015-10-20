@@ -9,6 +9,8 @@ namespace Glyph.Composition
     public abstract class GlyphComposite<TComponent> : Composite<IGlyphComponent, IGlyphParent, TComponent>, IGlyphComposite<TComponent>
         where TComponent : class, IGlyphComponent
     {
+        public virtual bool IsStatic { get; protected set; }
+
         public virtual void Initialize()
         {
         }
