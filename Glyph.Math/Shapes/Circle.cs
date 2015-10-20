@@ -13,9 +13,19 @@ namespace Glyph.Math.Shapes
             Radius = radius;
         }
 
-        public bool Contains(Vector2 point)
+        public bool ContainsPoint(Vector2 point)
         {
             return (point - Center).Length() <= Radius;
+        }
+
+        public bool Intersects(IRectangle collider)
+        {
+            return IntersectionUtils.RectangleAndCircle(collider, this);
+        }
+
+        public bool Intersects(ICircle collider)
+        {
+            return IntersectionUtils.TwoCircles(this, collider);
         }
     }
 }

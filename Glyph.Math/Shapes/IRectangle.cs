@@ -5,7 +5,6 @@ namespace Glyph.Math.Shapes
     public interface IRectangle : IShape
     {
         Vector2 Origin { get; }
-        Vector2 Center { get; }
         float Left { get; }
         float Right { get; }
         float Top { get; }

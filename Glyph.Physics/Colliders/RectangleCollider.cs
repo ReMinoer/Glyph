@@ -1,5 +1,4 @@
 ﻿using System;
-using Glyph.Animation;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
@@ -9,8 +8,8 @@ namespace Glyph.Physics.Colliders
 {
     public class RectangleCollider : ShapeColliderBase<CenteredRectangle>
     {
-        public RectangleCollider(SceneNode sceneNode, Lazy<SpriteBatch> lazySpriteBatch, Lazy<GraphicsDevice> lazyGraphicsDevice)
-            : base(new FilledRectangleSprite(lazyGraphicsDevice), sceneNode, lazySpriteBatch)
+        public RectangleCollider(Context context, Lazy<GraphicsDevice> lazyGraphicsDevice)
+            : base(new FilledRectangleSprite(lazyGraphicsDevice), context)
         {
             Shape = new CenteredRectangle(Vector2.Zero, 10, 10);
         }
@@ -21,14 +20,61 @@ namespace Glyph.Physics.Colliders
             SpriteTransformer.Scale = Shape.Size;
         }
 
-        public override bool Intersects(RectangleCollider collider)
+        public override bool IsColliding(RectangleCollider collider, out Collision collision)
         {
-            return IntersectionUtils.TwoRectangles(Shape, collider.Shape);
+            IRectangle intersection;
+            if (IntersectionUtils.TwoRectangles(Shape, collider.Shape, out intersection))
+            {
+                Vector2 correction;
+
+                bool isWiderThanTall = intersection.Width > intersection.Height;
+
+                if (isWiderThanTall)
+                {
+                    correction = Shape.Top <= collider.Shape.Top
+                        ? new Vector2(0, -intersection.Height)
+                        : new Vector2(0, intersection.Height);
+                }
+                else
+                {
+                    correction = Shape.Right >= collider.Shape.Right
+                        ? new Vector2(intersection.Width, 0)
+                        : new Vector2(-intersection.Width, 0);
+                }
+
+                collision = new Collision
+                {
+                    Sender = this,
+                    OtherCollider = collider,
+                    Correction = correction,
+                    NewPosition = SceneNode.Position + correction
+                };
+
+                return true;
+            }
+
+            collision = new Collision();
+            return false;
         }
 
-        public override bool Intersects(CircleCollider collider)
+        public override bool IsColliding(CircleCollider collider, out Collision collision)
         {
-            return IntersectionUtils.RectangleAndCircle(Shape, collider.Shape);
+            Vector2 correction;
+            if (IntersectionUtils.RectangleAndCircle(Shape, collider.Shape, out correction))
+            {
+                collision = new Collision
+                {
+                    Sender = this,
+                    OtherCollider = collider,
+                    Correction = correction,
+                    NewPosition = SceneNode.Position + correction
+                };
+
+                return true;
+            }
+
+            collision = new Collision();
+            return false;
         }
     }
 }

@@ -30,22 +30,36 @@ namespace Glyph.Math.Shapes
 
         static public bool TwoCircles(ICircle circleA, ICircle circleB)
         {
-            return (circleA.Center - circleB.Center).Length() <= circleA.Radius + circleB.Radius;
+            float radiusIntersection;
+            return TwoCircles(circleA, circleB, out radiusIntersection);
+        }
+
+        static public bool TwoCircles(ICircle circleA, ICircle circleB, out float radiusIntersection)
+        {
+            radiusIntersection = circleA.Radius + circleB.Radius - (circleA.Center - circleB.Center).Length();
+            return radiusIntersection >= 0;
         }
 
         static public bool RectangleAndCircle(IRectangle rectangle, ICircle circle)
         {
+            Vector2 correction;
+            return RectangleAndCircle(rectangle, circle, out correction);
+        }
+
+        static public bool RectangleAndCircle(IRectangle rectangle, ICircle circle, out Vector2 correction)
+        {
             // Find the closest point to the circle within the rectangle
             float closestX = MathHelper.Clamp(circle.Center.X, rectangle.Left, rectangle.Right);
             float closestY = MathHelper.Clamp(circle.Center.Y, rectangle.Top, rectangle.Bottom);
+            var closest = new Vector2(closestX, closestY);
 
             // Calculate the distance between the circle's center and this closest point
-            float distanceX = circle.Center.X - closestX;
-            float distanceY = circle.Center.Y - closestY;
+            Vector2 distance = circle.Center - closest;
 
             // If the distance is less than the circle's radius, an intersection occurs
-            float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
-            return distanceSquared <= (circle.Radius * circle.Radius);
+            float radiusIntersection = circle.Radius - distance.Length();
+            correction = radiusIntersection * (closest - rectangle.Center);
+            return radiusIntersection >= 0;
         }
     }
 }

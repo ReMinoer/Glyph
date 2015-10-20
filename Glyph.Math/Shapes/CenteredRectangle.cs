@@ -50,9 +50,19 @@ namespace Glyph.Math.Shapes
             Height = height;
         }
 
-        public bool Contains(Vector2 point)
+        public bool ContainsPoint(Vector2 point)
         {
             return point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom;
+        }
+
+        public bool Intersects(IRectangle collider)
+        {
+            return IntersectionUtils.TwoRectangles(this, collider);
+        }
+
+        public bool Intersects(ICircle collider)
+        {
+            return IntersectionUtils.RectangleAndCircle(this, collider);
         }
     }
 }

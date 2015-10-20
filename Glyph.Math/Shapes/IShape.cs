@@ -4,6 +4,9 @@ namespace Glyph.Math.Shapes
 {
     public interface IShape
     {
-        bool Contains(Vector2 point);
+        Vector2 Center { get; set; }
+        bool Intersects(IRectangle collider);
+        bool Intersects(ICircle collider);
+        bool ContainsPoint(Vector2 point);
     }
 }

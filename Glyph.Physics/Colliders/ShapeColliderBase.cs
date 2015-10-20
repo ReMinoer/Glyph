@@ -3,7 +3,6 @@ using Glyph.Animation;
 using Glyph.Graphics;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Physics.Colliders
@@ -16,21 +15,19 @@ namespace Glyph.Physics.Colliders
         private readonly SpriteRenderer _spriteRenderer;
         public TShape Shape { get; protected set; }
 
-        protected ShapeColliderBase(ShapedSpriteBase shapedSprite, SceneNode sceneNode, Lazy<SpriteBatch> lazySpriteBatch)
+        protected ShapeColliderBase(ShapedSpriteBase shapedSprite, Context context)
+            : base(context)
         {
             ShapedSprite = shapedSprite;
             SpriteTransformer = new SpriteTransformer(ShapedSprite);
-            _spriteRenderer = new SpriteRenderer(ShapedSprite, SpriteTransformer, sceneNode, lazySpriteBatch);
+            _spriteRenderer = new SpriteRenderer(ShapedSprite, SpriteTransformer, SceneNode, context.LazySpriteBatch);
+
+            SceneNode.Refreshed += x => Shape.Center = x.Position;
         }
 
         public override void LoadContent(ContentLibrary contentLibrary)
         {
             ShapedSprite.LoadContent(contentLibrary);
-        }
-
-        public override bool ContainsPoint(Vector2 point)
-        {
-            return Shape.Contains(point);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -45,6 +42,17 @@ namespace Glyph.Physics.Colliders
         {
             SpriteTransformer.Dispose();
             base.Dispose();
+        }
+
+        new public class Context : ColliderBase.Context
+        {
+            public Lazy<SpriteBatch> LazySpriteBatch { get; set; }
+
+            public Context(SceneNode sceneNode, ColliderManager colliderManager, Lazy<SpriteBatch> lazySpriteBatch)
+                : base(sceneNode, colliderManager)
+            {
+                LazySpriteBatch = lazySpriteBatch;
+            }
         }
     }
 }
