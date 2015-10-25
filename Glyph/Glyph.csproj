@@ -59,6 +59,7 @@
     <Compile Include="Texture2D.Extension.cs" />
     <Compile Include="ElapsedTime.cs" />
     <Compile Include="Transition.Extension.cs" />
+    <Compile Include="Float.Extension.cs" />
     <Compile Include="Vector2.Extension.cs" />
     <Compile Include="Vector3.Extension.cs" />
     <Compile Include="ContentLibrary.cs" />
