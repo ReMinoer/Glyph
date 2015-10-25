@@ -55,6 +55,12 @@ namespace Glyph.Graphics
             }
         }
 
+        public float Opacity
+        {
+            get { return Color.A; }
+            set { Color = new Color(Color.R, Color.G, Color.B, value); }
+        }
+
         public SpriteTransformer(ISpriteSource spriteSource)
         {
             SpriteSource = spriteSource;
