@@ -15,7 +15,7 @@ namespace Glyph
             return Transition(value, goal, speed, (float)gameTime.ElapsedGameTime.TotalMilliseconds);
         }
 
-        static private float Transition(this float value, float goal, float speed, float deltaTime)
+        static public float Transition(this float value, float goal, float speed, float deltaTime)
         {
             float ecart = goal - value;
             if (!(Math.Abs(ecart) > float.Epsilon))
@@ -28,7 +28,7 @@ namespace Glyph
             return goal;
         }
 
-        static private Vector2 Transition(this Vector2 value, Vector2 goal, float speed, float deltaTime)
+        static public Vector2 Transition(this Vector2 value, Vector2 goal, float speed, float deltaTime)
         {
             Vector2 ecart = goal - value;
             if (ecart == Vector2.Zero)
