@@ -9,8 +9,8 @@ namespace Glyph.Graphics.Particles
         public float LifeTime { get; set; }
         public SceneNode SceneNode { get; private set; }
         public Motion Motion { get; private set; }
-        public ISpriteSource SpriteSource { get; private set; }
-        public SpriteTransformer Transformer { get; private set; }
+        public SpriteLoader SpriteLoader { get; private set; }
+        public SpriteTransformer SpriteTransformer { get; private set; }
         public StandardAnimationPlayer<StandardParticle> AnimationPlayer { get; private set; }
 
         public bool Ended
@@ -23,8 +23,8 @@ namespace Glyph.Graphics.Particles
         {
             SceneNode = Add<SceneNode>();
             Motion = Add<Motion>();
-            SpriteSource = Add<SpriteLoader>();
-            Transformer = Add<SpriteTransformer>();
+            SpriteLoader = Add<SpriteLoader>();
+            SpriteTransformer = Add<SpriteTransformer>();
             AnimationPlayer = Add<StandardAnimationPlayer<StandardParticle>>();
 
             Add<SpriteRenderer>();
