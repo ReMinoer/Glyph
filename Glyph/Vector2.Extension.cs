@@ -20,11 +20,6 @@ namespace Glyph
             return new Vector3(value.X, value.Y, 0);
         }
 
-        static public Point ToPoint(this Vector2 value)
-        {
-            return new Point((int)value.X, (int)value.Y);
-        }
-
         static public float ToRotation(this Vector2 value)
         {
             float result;
@@ -89,6 +84,16 @@ namespace Glyph
         static public Vector2 Divide(this Vector2 value, float x, float y)
         {
             return new Vector2(value.X / x, value.Y / y);
+        }
+
+        static public Vector2 RotateToward(this Vector2 value, Vector2 directionGoal, float angularSpeed, float deltaTime)
+        {
+            float angle = value.ToRotation();
+            float angleGoal = directionGoal.ToRotation();
+
+            float newAngle = angle.Transition(angleGoal, angularSpeed, deltaTime);
+
+            return new Vector2((float)Math.Cos(newAngle), (float)Math.Sin(newAngle));
         }
     }
 }
