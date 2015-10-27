@@ -6,6 +6,7 @@ namespace Glyph.Animation
     public class AnimationBuilder<T> : IEnumerable<AnimationStep<T>>
     {
         private readonly List<AnimationStep<T>> _list;
+        public bool Loop { get; set; }
 
         public AnimationStepDelegate<T> this[float instant]
         {
@@ -34,7 +35,12 @@ namespace Glyph.Animation
 
         public StandardAnimation<T> Generate()
         {
-            return new StandardAnimation<T>(_list);
+            var animation = new StandardAnimation<T>(_list)
+            {
+                Loop = Loop
+            };
+
+            return animation;
         }
 
         public IEnumerator<AnimationStep<T>> GetEnumerator()

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Glyph.Composition;
 
 namespace Glyph.Animation
@@ -6,10 +8,11 @@ namespace Glyph.Animation
     public class StandardAnimationPlayer<T> : GlyphComponent, IAnimationPlayer
         where T : class
     {
-        public T Animatable { get; private set; }
-        public float ElapsedTime { get; private set; }
         private readonly List<AnimationStep<T>> _stepsToRead;
         private StandardAnimation<T> _animation;
+        public bool UseUnscaledTime { get; set; }
+        public WeakReference<T> Animatable { get; private set; }
+        public float ElapsedTime { get; private set; }
 
         public StandardAnimation<T> Animation
         {
@@ -23,6 +26,7 @@ namespace Glyph.Animation
                     return;
 
                 _animation = value;
+                IsLooping = _animation.Loop;
                 _stepsToRead.AddRange(_animation);
             }
         }
@@ -33,10 +37,11 @@ namespace Glyph.Animation
         }
 
         public bool Paused { get; private set; }
+        public bool IsLooping { get; set; }
 
         public StandardAnimationPlayer(T animatable)
         {
-            Animatable = animatable;
+            Animatable = new WeakReference<T>(animatable);
 
             _stepsToRead = new List<AnimationStep<T>>();
             Paused = true;
@@ -44,32 +49,48 @@ namespace Glyph.Animation
 
         public void Update(ElapsedTime elapsedTime)
         {
-            if (Animation == null || Animatable == null)
+            if (Animation == null)
                 return;
 
             if (Paused)
                 return;
 
-            ElapsedTime += (float)elapsedTime.GameTime.ElapsedGameTime.TotalSeconds;
+            if (!_stepsToRead.Any())
+                return;
 
-            var stepsToRemove = new List<AnimationStep<T>>();
-            foreach (AnimationStep<T> step in _stepsToRead)
+            ElapsedTime += elapsedTime.GetDelta(this);
+
+            do
             {
-                if (ElapsedTime < step.Begin)
-                    break;
+                var stepsToRemove = new List<AnimationStep<T>>();
+                foreach (AnimationStep<T> step in _stepsToRead)
+                {
+                    if (ElapsedTime < step.Begin)
+                        break;
 
-                float advance = (ElapsedTime - step.Begin) / (step.End - step.Begin);
-                if (advance > 1f)
-                    advance = 1f;
+                    float advance = (ElapsedTime - step.Begin) / (step.End - step.Begin);
+                    if (advance > 1f)
+                        advance = 1f;
 
-                step.Apply(Animatable, advance);
+                    T animatable;
+                    if (Animatable.TryGetTarget(out animatable))
+                        step.Apply(animatable, advance);
 
-                if (ElapsedTime > step.End)
-                    stepsToRemove.Add(step);
-            }
+                    if (ElapsedTime > step.End)
+                        stepsToRemove.Add(step);
+                }
 
-            foreach (AnimationStep<T> step in stepsToRemove)
-                _stepsToRead.Remove(step);
+                foreach (AnimationStep<T> step in stepsToRemove)
+                    _stepsToRead.Remove(step);
+
+                if (!_stepsToRead.Any())
+                {
+                    _stepsToRead.AddRange(Animation);
+                    ElapsedTime -= Animation.Duration;
+                }
+
+            } while (ElapsedTime > 0);
+            ElapsedTime -= Animation.Duration;
         }
 
         public void Play()

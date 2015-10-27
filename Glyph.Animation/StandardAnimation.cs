@@ -8,6 +8,7 @@ namespace Glyph.Animation
     {
         private readonly List<AnimationStep<T>> _chronology;
         public float Duration { get; private set; }
+        public bool Loop { get; set; }
 
         public StandardAnimation(IEnumerable<AnimationStep<T>> animationSteps)
         {
