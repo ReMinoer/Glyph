@@ -12,18 +12,13 @@ namespace Glyph.Physics.Colliders
         protected readonly SceneNode SceneNode;
         protected readonly SceneNode ParentNode;
         private readonly ColliderManager _colliderManager;
-        private Vector2 _center;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
 
         public Vector2 Center
         {
-            get { return _center; }
-            set
-            {
-                _center = value;
-                SceneNode.LocalPosition = _center;
-            }
+            get { return SceneNode.LocalPosition; }
+            set { SceneNode.LocalPosition = value; }
         }
 
         public event Action<Collision> Collided;
