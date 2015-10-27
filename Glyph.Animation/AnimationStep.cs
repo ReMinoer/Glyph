@@ -1,8 +1,10 @@
-﻿namespace Glyph.Animation
+﻿using System;
+
+namespace Glyph.Animation
 {
     public delegate void AnimationStepDelegate<in T>(T animatable, float advance);
 
-    public class AnimationStep<T>
+    public class AnimationStep<T> : IComparable<AnimationStep<T>>
     {
         public float Begin { get; set; }
         public float End { get; set; }
