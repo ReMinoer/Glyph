@@ -8,6 +8,11 @@ namespace Glyph.Composition
     {
         internal GlyphComposite CompositeContext { private get; set; }
 
+        public IDependencyInjector Base
+        {
+            get { return Resolve<IDependencyInjector>(); }
+        }
+
         public GlyphCompositeInjector(IDependencyRegistry registry)
             : base(registry)
         {
@@ -27,12 +32,12 @@ namespace Glyph.Composition
             return base.Resolve(type, serviceKey);
         }
 
-        public T Add<T>()
+        internal T Add<T>()
         {
             return (T)Add(typeof(T));
         }
 
-        public object Add(Type type)
+        internal object Add(Type type)
         {
             if (!typeof(IGlyphComponent).IsAssignableFrom(type))
                 throw new InvalidCastException(string.Format("Type must implements {0} !", typeof(IGlyphComponent)));
