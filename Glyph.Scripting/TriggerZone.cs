@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Glyph.Composition;
 using Glyph.Entities;
+using Glyph.Math;
+using Glyph.Math.Shapes;
+using Glyph.Physics.Colliders;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -20,11 +23,14 @@ namespace Glyph.Scripting
             Zone.LoadContent(ressources);
         }
 
-        public void Update(GameObject gameObject)
+        public void Update(GlyphObject glyphObject)
         {
-            Enable = gameObject.Hitbox.Intersects(Zone.Hitbox)
-                     && (!(gameObject is ILayable)
-                         || Math.Abs(((ILayable)gameObject).Layer - Zone.Layer) < float.Epsilon);
+            var collider = glyphObject.GetComponent<ICollider<IShape>>();
+            var layable = glyphObject as ILayable;
+
+            Enable = collider.Shape.Intersects(Zone.Hitbox.ToCenteredRectangle())
+                     && (layable == null
+                        || layable.Layer == Zone.Layer);
         }
 
         public void Draw(SpriteBatch spriteBatch)

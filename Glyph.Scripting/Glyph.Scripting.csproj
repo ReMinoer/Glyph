@@ -81,6 +81,14 @@
       <Project>{1F7A7855-3E63-45CD-907A-D23AA61A02D2}</Project>
       <Name>Glyph.Localization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
+      <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
+      <Name>Glyph.Math</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Physics\Glyph.Physics.csproj">
+      <Project>{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}</Project>
+      <Name>Glyph.Physics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
       <Name>Glyph</Name>

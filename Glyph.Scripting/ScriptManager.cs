@@ -116,7 +116,7 @@ namespace Glyph.Scripting
             Logger.Info("Script loaded : {0}", path);
         }
 
-        public void Update(GameTime gameTime, GameObject entity)
+        public void Update(GameTime gameTime, GlyphObject entity)
         {
             foreach (TriggerZone t in Triggers.Values.OfType<TriggerZone>())
                 t.Update(entity);
