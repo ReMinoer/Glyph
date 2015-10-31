@@ -5,11 +5,23 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class SpriteSheet : GlyphContainer, ISpriteSheet
+    public class SpriteSheet : GlyphContainer, ISpriteSheet, ILoadContent
     {
+        private readonly SpriteTransformer _spriteTransformer;
         private readonly SpriteLoader _spriteLoader;
+        private int _currentFrame;
         public ISpriteSheetCarver Carver { get; private set; }
         public List<Rectangle> Frames { get; private set; }
+
+        public int CurrentFrame
+        {
+            get { return _currentFrame; }
+            set
+            {
+                _currentFrame = value;
+                _spriteTransformer.SourceRectangle = CurrentRectangle;
+            }
+        }
 
         public int Count
         {
@@ -27,14 +39,15 @@ namespace Glyph.Graphics
             get { return _spriteLoader.Texture; }
         }
 
-        public Rectangle this[int index]
+        public Rectangle CurrentRectangle
         {
-            get { return Frames[index]; }
+            get { return GetFrameRectangle(CurrentFrame); }
         }
 
-        public SpriteSheet()
+        public SpriteSheet(SpriteTransformer spriteTransformer)
             : base(1)
         {
+            _spriteTransformer = spriteTransformer;
             Components[0] = _spriteLoader = new SpriteLoader();
             Frames = new List<Rectangle>();
         }
@@ -47,17 +60,22 @@ namespace Glyph.Graphics
                 ApplyCarver(Carver);
         }
 
-        public Texture2D GetFrameTexture(int frameIndex)
-        {
-            return _spriteLoader.Texture;
-        }
-
         public void ApplyCarver(ISpriteSheetCarver carver)
         {
             Carver = carver;
 
             Frames.Clear();
             carver.Process(this);
+        }
+
+        public Rectangle GetFrameRectangle(int frameIndex)
+        {
+            return Frames[frameIndex];
+        }
+
+        Texture2D ISpriteSheet.GetFrameTexture(int frameIndex)
+        {
+            return Texture;
         }
     }
 }

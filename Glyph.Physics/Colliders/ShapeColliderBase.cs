@@ -19,7 +19,7 @@ namespace Glyph.Physics.Colliders
             : base(context)
         {
             ShapedSprite = shapedSprite;
-            SpriteTransformer = new SpriteTransformer(ShapedSprite);
+            SpriteTransformer = new SpriteTransformer();
             _spriteRenderer = new SpriteRenderer(ShapedSprite, SpriteTransformer, SceneNode, context.LazySpriteBatch);
 
             SceneNode.Refreshed += x => Shape.Center = x.Position;

@@ -5,24 +5,47 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public sealed class SpriteSheetSplit : GlyphComposite<SpriteSheet>, ISpriteSheet
+    public sealed class SpriteSheetSplit : GlyphComposite<SpriteSheet>, ISpriteSheet, ILoadContent
     {
+        private int _currentFrame;
+        private readonly SpriteTransformer _spriteTransformer;
         public ISpriteSheetCarver Carver { get; private set; }
         public List<FrameData> Frames { get; private set; }
 
-        public Rectangle this[int index]
+        public int CurrentFrame
         {
-            get { return Frames[index].Bounds; }
+            get { return _currentFrame; }
+            set
+            {
+                _currentFrame = value;
+                _spriteTransformer.SourceRectangle = CurrentRectangle;
+            }
         }
 
-        public SpriteSheetSplit(params string[] assets)
+        public Rectangle CurrentRectangle
         {
+            get { return GetFrameRectangle(CurrentFrame); }
+        }
+
+        public Texture2D CurrentTexture
+        {
+            get { return Frames[CurrentFrame].Texture; }
+        }
+
+        Texture2D ISpriteSource.Texture
+        {
+            get { return CurrentTexture; }
+        }
+
+        public SpriteSheetSplit(SpriteTransformer spriteTransformer)
+        {
+            _spriteTransformer = spriteTransformer;
             Frames = new List<FrameData>();
         }
 
         public void Add(string asset)
         {
-            Add(new SpriteSheet { Asset = asset });
+            Add(new SpriteSheet(_spriteTransformer) { Asset = asset });
         }
 
         public void LoadContent(ContentLibrary contentLibrary)
@@ -34,6 +57,11 @@ namespace Glyph.Graphics
                 if (Carver != null)
                     spriteSheet.ApplyCarver(Carver);
             }
+        }
+
+        public Rectangle GetFrameRectangle(int frameIndex)
+        {
+            return Frames[frameIndex].Bounds;
         }
 
         public Texture2D GetFrameTexture(int frameIndex)

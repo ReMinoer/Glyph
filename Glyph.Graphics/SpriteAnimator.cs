@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Glyph.Composition;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
     [SinglePerParent]
-    public class SpriteAnimator : GlyphComponent, ISpriteSource, IEnableable, IUpdate
+    public class SpriteAnimator : GlyphComponent, IEnableable, IUpdate
     {
         private readonly ISpriteSheet _spriteSheet;
-        private readonly SpriteTransformer _transformer;
         private readonly Period _period;
         private readonly Queue<object> _keysQueue;
         public bool Enabled { get; set; }
@@ -18,22 +16,15 @@ namespace Glyph.Graphics
         public SpriteAnimation CurrentAnimation { get; private set; }
         public object CurrentKey { get; private set; }
         public int CurrentStep { get; private set; }
-        public int CurrentFrame { get; private set; }
-
-        public Texture2D Texture
-        {
-            get { return _spriteSheet.GetFrameTexture(CurrentFrame); }
-        }
 
         public IReadOnlyCollection<object> KeysQueue
         {
             get { return _keysQueue.ToArray(); }
         }
 
-        public SpriteAnimator(ISpriteSheet spriteSheet, SpriteTransformer transformer)
+        public SpriteAnimator(ISpriteSheet spriteSheet)
         {
             _spriteSheet = spriteSheet;
-            _transformer = transformer;
 
             Animations = new Dictionary<object, SpriteAnimation>();
             _keysQueue = new Queue<object>();
@@ -69,9 +60,8 @@ namespace Glyph.Graphics
 
         private void RefreshStep()
         {
-            CurrentFrame = CurrentAnimation.Frames[CurrentStep];
+            _spriteSheet.CurrentFrame = CurrentAnimation.Frames[CurrentStep];
             _period.Interval = CurrentAnimation.Intervals[CurrentStep];
-            _transformer.SourceRectangle = _spriteSheet[CurrentFrame];
         }
 
         public void Update(ElapsedTime elapsedTime)
