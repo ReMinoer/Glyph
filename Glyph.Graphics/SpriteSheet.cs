@@ -63,9 +63,10 @@ namespace Glyph.Graphics
         public void ApplyCarver(ISpriteSheetCarver carver)
         {
             Carver = carver;
-
             Frames.Clear();
-            carver.Process(this);
+
+            if (Texture != null)
+                carver.Process(this);
         }
 
         public Rectangle GetFrameRectangle(int frameIndex)
