@@ -41,7 +41,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlyphRegistry.cs" />
     <Compile Include="IScene.cs" />
     <Compile Include="NewGlyphGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,10 +59,6 @@
     <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
       <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>
       <Name>Glyph.Animation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Application\Glyph.Application.csproj">
-      <Project>{5D6CC7F3-0720-4242-A0FB-678E7D76F147}</Project>
-      <Name>Glyph.Application</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
       <Project>{46aa8a4b-5a43-45f3-99e4-b7bad0d47fea}</Project>
@@ -84,14 +79,6 @@
     <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
       <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
       <Name>Glyph.Input</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
-      <Project>{43692ee3-467a-41c9-8c18-9e7fcf7cc9dc}</Project>
-      <Name>Glyph.Math</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Physics\Glyph.Physics.csproj">
-      <Project>{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}</Project>
-      <Name>Glyph.Physics</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Tools\Glyph.Tools.csproj">
       <Project>{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}</Project>

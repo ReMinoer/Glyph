@@ -1,7 +1,5 @@
 ﻿using Diese.Injection;
 using Glyph.Animation;
-using Glyph.Animation.Trajectories;
-using Glyph.Application;
 using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
@@ -9,9 +7,11 @@ using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Graphics;
 using Glyph.Graphics.Particles;
+using Glyph.Math.Shapes;
+using Glyph.Physics;
 using Glyph.Physics.Colliders;
 
-namespace Glyph.Game
+namespace Glyph.Application
 {
     public class GlyphRegistry : DependencyRegistry
     {
@@ -40,6 +40,8 @@ namespace Glyph.Game
             RegisterFunc<GlyphObject, UpdateDelegate>(x => x.Update);
             RegisterFunc<GlyphObject, DrawDelegate>(x => x.Draw);
 
+            Register<GlyphObject>();
+
             Register<SceneNode>();
             Register<Motion>();
 
@@ -55,8 +57,12 @@ namespace Glyph.Game
             Register<SoundListener>();
             Register<SoundEmitter>();
 
+            Register<PhysicsManager>(Subsistence.Singleton);
+            Register<ColliderManager>(Subsistence.Singleton);
             Register<RectangleCollider>();
             Register<CircleCollider>();
+            Register<ShapeColliderBase<CenteredRectangle>.Context>();
+            Register<ShapeColliderBase<Circle>.Context>();
         }
     }
 }
