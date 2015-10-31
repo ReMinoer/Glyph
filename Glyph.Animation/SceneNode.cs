@@ -84,7 +84,10 @@ namespace Glyph.Animation
             get { return _position; }
             set
             {
-                LocalPosition = ParentNode.Matrix.Inverse * value;
+                if (ParentNode != null)
+                    LocalPosition = ParentNode.Matrix.Inverse * value;
+                else
+                    LocalPosition = value;
             }
         }
 
@@ -96,7 +99,10 @@ namespace Glyph.Animation
             }
             set
             {
-                LocalRotation = value - ParentNode.Rotation;
+                if (ParentNode != null)
+                    LocalRotation = value - ParentNode.Rotation;
+                else
+                    LocalRotation = value;
             }
         }
 
@@ -108,7 +114,10 @@ namespace Glyph.Animation
             }
             set
             {
-                LocalScale = value / ParentNode.Scale;
+                if (ParentNode != null)
+                    LocalScale = value / ParentNode.Scale;
+                else
+                    LocalScale = value;
             }
         }
 
