@@ -22,7 +22,7 @@ namespace Glyph.Animation
                 Stop();
                 _stepsToRead.Clear();
 
-                if (_animation == null)
+                if (value == null)
                     return;
 
                 _animation = value;
@@ -106,7 +106,7 @@ namespace Glyph.Animation
 
         public void Stop()
         {
-            Animation = null;
+            _animation = null;
             ElapsedTime = 0;
             Paused = true;
         }
