@@ -20,7 +20,7 @@ namespace Glyph.Graphics
         public ISpriteSource SpriteSource
         {
             get { return _spriteSource; }
-            private set
+            set
             {
                 _spriteSource = value;
 
@@ -72,9 +72,6 @@ namespace Glyph.Graphics
 
         private void RefreshAnchor()
         {
-            if (SpriteSource == null && Parent != null)
-                SpriteSource = Parent.GetComponent<ISpriteSource>();
-
             Vector2 size = SpriteSource != null && SpriteSource.Texture != null
                 ? SpriteSource.Texture.Size()
                 : Vector2.Zero;

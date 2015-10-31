@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Diese.Composition;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,6 +8,7 @@ namespace Glyph.Composition
 {
     public interface IGlyphComponent : IComponent<IGlyphComponent, IGlyphParent>, IDisposable
     {
+        IEnumerable<PropertyInfo> InjectableProperties { get; }
         void Initialize();
     }
 

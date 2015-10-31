@@ -1,14 +1,14 @@
 ﻿using System;
-using Glyph.Exceptions;
+using Diese.Injection.Exceptions;
 
 namespace Glyph.Composition.Exceptions
 {
-    public class ComponentNotFoundException : GlyphException
+    public class ComponentNotFoundException : NotRegisterException
     {
         new private const string Message = "Component of type {0} not found !";
 
         public ComponentNotFoundException(Type type)
-            : base(Message, type.Name)
+            : base(string.Format(Message, type.Name))
         {
         }
     }

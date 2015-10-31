@@ -36,11 +36,11 @@ namespace Glyph.Composition
                 throw new ArgumentException("Component provided is already contained by this entity !");
 
             Type type = item.GetType();
-
             if (GetComponent(type) != null && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
                 throw new SingleComponentException(type);
 
             base.Add(item);
+            InjectToOtherComponents(item);
 
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)
@@ -68,6 +68,14 @@ namespace Glyph.Composition
             SchedulerAssigner.ClearComponents();
 
             base.Clear();
+        }
+
+        private void InjectToOtherComponents(IGlyphComponent item)
+        {
+            foreach (IGlyphComponent component in this)
+                foreach (PropertyInfo property in component.InjectableProperties)
+                    if (property.GetValue(component) == null && item.GetType().IsInstanceOfType(property.PropertyType))
+                        property.SetValue(component, item);
         }
     }
 }
