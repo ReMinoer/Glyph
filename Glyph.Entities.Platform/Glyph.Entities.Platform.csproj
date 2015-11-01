@@ -40,8 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IDynamicFloor.cs" />
-    <Compile Include="IPlatformerSpace.cs" />
-    <Compile Include="PlatformCharacter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
