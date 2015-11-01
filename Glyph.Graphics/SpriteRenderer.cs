@@ -22,6 +22,8 @@ namespace Glyph.Graphics
             _source = source;
             _sceneNode = sceneNode;
             _lazySpriteBatch = lazySpriteBatch;
+
+            Visible = true;
         }
 
         public void Draw(SpriteBatch spriteBatch)
