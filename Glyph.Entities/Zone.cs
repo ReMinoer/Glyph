@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Entities
 {
-    public class Zone : ILayable
+    public class Zone
     {
         private Texture2D _texture;
         public Vector2 Position { get; set; }

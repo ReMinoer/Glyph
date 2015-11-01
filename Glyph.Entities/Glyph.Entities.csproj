@@ -44,7 +44,6 @@
     <Compile Include="Collision.cs" />
     <Compile Include="FrameSequence.cs" />
     <Compile Include="GameObject.cs" />
-    <Compile Include="ILayable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ISpace.cs" />
     <Compile Include="Sprite.cs" />
