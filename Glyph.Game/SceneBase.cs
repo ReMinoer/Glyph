@@ -14,7 +14,7 @@ namespace Glyph.Game
         private bool _initialized;
         private bool _contentLoaded;
         public bool Enabled { get; set; }
-        public bool Visible { get; private set; }
+        public bool Visible { get; set; }
         public abstract SceneNode RootNode { get; }
 
         protected override sealed IGlyphSchedulerAssigner SchedulerAssigner
