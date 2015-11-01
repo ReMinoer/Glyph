@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,9 +8,9 @@ namespace Glyph.Graphics
     public sealed class SpriteSheetSplit : GlyphComposite<SpriteSheet>, ISpriteSheet, ILoadContent
     {
         private int _currentFrame;
+        private FrameData _frameData;
         private readonly SpriteTransformer _spriteTransformer;
         public ISpriteSheetCarver Carver { get; private set; }
-        public List<FrameData> Frames { get; private set; }
 
         public int CurrentFrame
         {
@@ -18,18 +18,19 @@ namespace Glyph.Graphics
             set
             {
                 _currentFrame = value;
+                _frameData = GetFrameData(_currentFrame);
                 _spriteTransformer.SourceRectangle = CurrentRectangle;
             }
         }
 
         public Rectangle CurrentRectangle
         {
-            get { return GetFrameRectangle(CurrentFrame); }
+            get { return _frameData.Rectangle; }
         }
 
         public Texture2D CurrentTexture
         {
-            get { return Frames[CurrentFrame].Texture; }
+            get { return _frameData.Texture; }
         }
 
         Texture2D ISpriteSource.Texture
@@ -40,7 +41,6 @@ namespace Glyph.Graphics
         public SpriteSheetSplit(SpriteTransformer spriteTransformer)
         {
             _spriteTransformer = spriteTransformer;
-            Frames = new List<FrameData>();
         }
 
         public void Add(string asset)
@@ -61,27 +61,48 @@ namespace Glyph.Graphics
 
         public Rectangle GetFrameRectangle(int frameIndex)
         {
-            return Frames[frameIndex].Bounds;
+            return GetFrameData(frameIndex).Rectangle;
         }
 
         public Texture2D GetFrameTexture(int frameIndex)
         {
-            return Frames[frameIndex].Texture;
+            return GetFrameData(frameIndex).Texture;
         }
 
         public void ApplyCarver(ISpriteSheetCarver carver)
         {
             Carver = carver;
 
-            Frames.Clear();
             foreach (SpriteSheet spriteSheet in this)
                 spriteSheet.ApplyCarver(carver);
         }
 
-        public struct FrameData
+        private FrameData GetFrameData(int frameIndex)
+        {
+            int sum = 0;
+            foreach (SpriteSheet spriteSheet in this)
+            {
+                sum += spriteSheet.Count;
+
+                if (frameIndex >= sum)
+                    continue;
+
+                int localFrame = frameIndex - (sum - spriteSheet.Count);
+
+                return new FrameData
+                {
+                    Texture = spriteSheet.Texture,
+                    Rectangle = spriteSheet.GetFrameRectangle(localFrame)
+                };
+            }
+
+            throw new ArgumentOutOfRangeException();
+        }
+
+        private struct FrameData
         {
             public Texture2D Texture { get; set; }
-            public Rectangle Bounds { get; set; }
+            public Rectangle Rectangle { get; set; }
         }
     }
 }
