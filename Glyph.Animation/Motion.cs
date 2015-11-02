@@ -119,7 +119,11 @@ namespace Glyph.Animation
                             throw new NotSupportedException();
                     }
 
-                    _direction = Direction.RotateToward(Destination - position, AngularSpeed, elapsedTime.GetDelta(this));
+                    Vector2 remainingDistance = Destination - position;
+                    if (remainingDistance == Vector2.Zero)
+                        Stop();
+
+                    _direction = Direction.RotateToward(remainingDistance, AngularSpeed, elapsedTime.GetDelta(this));
                     moveDelta = Direction * Speed * elapsedTime.GetDelta(this);
 
                     switch (Referential)
@@ -130,6 +134,24 @@ namespace Glyph.Animation
                         case Referential.Local:
                             _sceneNode.LocalPosition += moveDelta;
                             break;
+                    }
+
+                    remainingDistance = Destination - position;
+                    if (Vector2.Dot(remainingDistance, moveDelta) <= 0)
+                    {
+                        switch (Referential)
+                        {
+                            case Referential.World:
+                                _sceneNode.Position = Destination;
+                                break;
+                            case Referential.Local:
+                                _sceneNode.LocalPosition = Destination;
+                                break;
+                            default:
+                                throw new NotSupportedException();
+                        }
+
+                        Stop();
                     }
 
                     break;
@@ -248,7 +270,7 @@ namespace Glyph.Animation
 
             _direction = Vector2.Zero;
             _destination = Vector2.Zero;
-            _angularSpeed = 0;
+            _angularSpeed = float.MaxValue;
             TrajectoryPlayer = null;
         }
 
