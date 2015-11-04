@@ -1,4 +1,5 @@
 ﻿using Glyph.Composition;
+using Glyph.Composition.Layers;
 using Glyph.Entities;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -26,11 +27,10 @@ namespace Glyph.Scripting
         public void Update(GlyphObject glyphObject)
         {
             var collider = glyphObject.GetComponent<ICollider<IShape>>();
-            var layable = glyphObject as ILayable;
+            var layerRoot = glyphObject.GetComponent<ILayerRoot>();
 
             Enable = collider.Shape.Intersects(Zone.Hitbox.ToCenteredRectangle())
-                     && (layable == null
-                        || layable.Layer == Zone.Layer);
+                     && (layerRoot == null || layerRoot.Layer.Index == Zone.Layer);
         }
 
         public void Draw(SpriteBatch spriteBatch)

@@ -7,18 +7,18 @@ namespace Glyph.Composition.Layers
     public class LayerManager<TLayer> : GlyphComponent, IUpdate
         where TLayer : class, ILayer<TLayer>
     {
-        private readonly Dictionary<LayerRoot<TLayer>, TLayer> _layers;
-        public Func<LayerRoot<TLayer>, TLayer> LayerFactory { get; set; }
+        private readonly Dictionary<ILayerRoot<TLayer>, TLayer> _layers;
+        public Func<ILayerRoot<TLayer>, TLayer> LayerFactory { get; set; }
 
         public IReadOnlyCollection<TLayer> Layers
         {
             get { return _layers.Values.ToList().AsReadOnly(); }
         }
 
-        public LayerManager(Func<LayerRoot<TLayer>, TLayer> layerFactory)
+        public LayerManager(Func<ILayerRoot<TLayer>, TLayer> layerFactory)
         {
             LayerFactory = layerFactory;
-            _layers = new Dictionary<LayerRoot<TLayer>, TLayer>();
+            _layers = new Dictionary<ILayerRoot<TLayer>, TLayer>();
         }
 
         public override void Initialize()
@@ -27,7 +27,7 @@ namespace Glyph.Composition.Layers
                 layer.Initialize();
         }
 
-        internal TLayer Add(LayerRoot<TLayer> layerRoot)
+        internal TLayer Add(ILayerRoot<TLayer> layerRoot)
         {
             TLayer layer = LayerFactory(layerRoot);
             _layers.Add(layerRoot, layer);
@@ -35,7 +35,7 @@ namespace Glyph.Composition.Layers
             return layer;
         }
 
-        internal void Remove(LayerRoot<TLayer> layerRoot)
+        internal void Remove(ILayerRoot<TLayer> layerRoot)
         {
             _layers.Remove(layerRoot);
         }

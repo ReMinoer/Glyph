@@ -43,6 +43,8 @@
     <Compile Include="GlyphCompositeInjector.cs" />
     <Compile Include="GlyphSchedulableBase.cs" />
     <Compile Include="Layers\ILayer.cs" />
+    <Compile Include="Layers\ILayerRoot.cs" />
+    <Compile Include="Layers\LayerBase.cs" />
     <Compile Include="Layers\LayerManager.cs" />
     <Compile Include="Layers\LayerRoot.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
