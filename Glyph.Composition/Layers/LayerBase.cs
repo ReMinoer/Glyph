@@ -1,4 +1,6 @@
-﻿namespace Glyph.Composition.Layers
+﻿using System;
+
+namespace Glyph.Composition.Layers
 {
     public abstract class LayerBase<TLayer> : ILayer<TLayer>
         where TLayer : class, ILayer<TLayer>
@@ -18,6 +20,5 @@
 
         public abstract void Initialize();
         public abstract void Update(ElapsedTime elapsedTime);
-        public abstract int CompareTo(TLayer other);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Glyph.Composition.Layers
+﻿using Diese.Injection;
+
+namespace Glyph.Composition.Layers
 {
     public class LayerRoot<TLayer> : GlyphComponent, ILayerRoot<TLayer>
         where TLayer : class, ILayer<TLayer>
@@ -11,9 +13,9 @@
             get { return Layer; }
         }
 
-        public LayerRoot(LayerManager<TLayer> layerManager)
+        public LayerRoot(IDependencyInjector injector)
         {
-            _layerManager = layerManager;
+            _layerManager = injector.Resolve<LayerManager<TLayer>>();
             Layer = _layerManager.Add(this);
         }
 

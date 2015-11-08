@@ -9,7 +9,7 @@ namespace Glyph.Composition.Layers
         void Update(ElapsedTime elapsedTime);
     }
 
-    public interface ILayer<TLayer> : ILayer, IComparable<TLayer>
+    public interface ILayer<out TLayer> : ILayer
         where TLayer : class, ILayer<TLayer>
     {
         ILayerRoot<TLayer> Root { get; }
