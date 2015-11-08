@@ -7,6 +7,7 @@ namespace Glyph.Graphics
 {
     public sealed class SpriteSheetSplit : GlyphComposite<SpriteSheet>, ISpriteSheet, ILoadContent
     {
+        private bool _loadedContent;
         private int _currentFrame;
         private FrameData _frameData;
         private readonly SpriteTransformer _spriteTransformer;
@@ -18,8 +19,8 @@ namespace Glyph.Graphics
             set
             {
                 _currentFrame = value;
-                _frameData = GetFrameData(_currentFrame);
-                _spriteTransformer.SourceRectangle = CurrentRectangle;
+                if (_loadedContent)
+                    Refresh();
             }
         }
 
@@ -57,6 +58,9 @@ namespace Glyph.Graphics
                 if (Carver != null)
                     spriteSheet.ApplyCarver(Carver);
             }
+
+            Refresh();
+            _loadedContent = true;
         }
 
         public Rectangle GetFrameRectangle(int frameIndex)
@@ -97,6 +101,12 @@ namespace Glyph.Graphics
             }
 
             throw new ArgumentOutOfRangeException();
+        }
+
+        private void Refresh()
+        {
+            _frameData = GetFrameData(_currentFrame);
+            _spriteTransformer.SourceRectangle = CurrentRectangle;
         }
 
         private struct FrameData

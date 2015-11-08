@@ -10,6 +10,7 @@ namespace Glyph.Graphics
         private readonly SpriteTransformer _spriteTransformer;
         private readonly SpriteLoader _spriteLoader;
         private int _currentFrame;
+        private bool _loadedContent;
         public ISpriteSheetCarver Carver { get; private set; }
         public List<Rectangle> Frames { get; private set; }
 
@@ -19,7 +20,8 @@ namespace Glyph.Graphics
             set
             {
                 _currentFrame = value;
-                _spriteTransformer.SourceRectangle = CurrentRectangle;
+                if (_loadedContent)
+                    Refresh();
             }
         }
 
@@ -58,6 +60,9 @@ namespace Glyph.Graphics
 
             if (Carver != null)
                 ApplyCarver(Carver);
+
+            Refresh();
+            _loadedContent = true;
         }
 
         public void ApplyCarver(ISpriteSheetCarver carver)
@@ -77,6 +82,11 @@ namespace Glyph.Graphics
         Texture2D ISpriteSheet.GetFrameTexture(int frameIndex)
         {
             return Texture;
+        }
+
+        private void Refresh()
+        {
+            _spriteTransformer.SourceRectangle = CurrentRectangle;
         }
     }
 }
