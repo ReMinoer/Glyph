@@ -29,6 +29,8 @@ namespace Glyph.Graphics
             Animations = new Dictionary<object, SpriteAnimation>();
             _keysQueue = new Queue<object>();
             _period = new Period();
+
+            Enabled = true;
         }
 
         public void ChangeAnimation(object key, SpriteAnimatorTransition transition = SpriteAnimatorTransition.Queued)
@@ -42,7 +44,12 @@ namespace Glyph.Graphics
                     ChangeAnimationInstant(key);
                     break;
                 case SpriteAnimatorTransition.Queued:
-                    _keysQueue.Enqueue(key);
+
+                    if (CurrentAnimation == null)
+                        ChangeAnimationInstant(key);
+                    else
+                        _keysQueue.Enqueue(key);
+
                     break;
             }
         }
