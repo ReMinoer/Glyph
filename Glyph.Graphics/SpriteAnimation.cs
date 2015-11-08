@@ -31,12 +31,12 @@ namespace Glyph.Graphics
         }
 
         public SpriteAnimation(int begin, int end, int period, bool loop)
-            : this(Enumerable.Range(begin, end - begin + 1), period, loop)
+            : this(Enumerable.Range(Math.Min(begin, end), Math.Max(begin, end) - Math.Min(begin, end) + 1), period, loop)
         {
         }
 
         public SpriteAnimation(int begin, int end, IEnumerable<int> intervals, bool loop)
-            : this(Enumerable.Range(begin, end - begin + 1), intervals, loop)
+            : this(Enumerable.Range(Math.Min(begin, end), Math.Max(begin, end) - Math.Min(begin, end) + 1), intervals, loop)
         {
         }
 
