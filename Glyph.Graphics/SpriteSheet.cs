@@ -7,12 +7,12 @@ namespace Glyph.Graphics
 {
     public class SpriteSheet : GlyphContainer, ISpriteSheet, ILoadContent
     {
-        private readonly SpriteTransformer _spriteTransformer;
         private readonly SpriteLoader _spriteLoader;
         private int _currentFrame;
         private bool _loadedContent;
         public ISpriteSheetCarver Carver { get; private set; }
         public List<Rectangle> Frames { get; private set; }
+        public Rectangle? Rectangle { get; private set; }
 
         public int CurrentFrame
         {
@@ -41,15 +41,9 @@ namespace Glyph.Graphics
             get { return _spriteLoader.Texture; }
         }
 
-        public Rectangle CurrentRectangle
-        {
-            get { return GetFrameRectangle(CurrentFrame); }
-        }
-
-        public SpriteSheet(SpriteTransformer spriteTransformer)
+        public SpriteSheet()
             : base(1)
         {
-            _spriteTransformer = spriteTransformer;
             Components[0] = _spriteLoader = new SpriteLoader();
             Frames = new List<Rectangle>();
         }
@@ -86,7 +80,7 @@ namespace Glyph.Graphics
 
         private void Refresh()
         {
-            _spriteTransformer.SourceRectangle = CurrentRectangle;
+            Rectangle = GetFrameRectangle(CurrentFrame);
         }
     }
 }

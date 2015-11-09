@@ -9,6 +9,7 @@ namespace Glyph.Graphics.Shapes
     {
         protected readonly Lazy<GraphicsDevice> LazyGraphicsDevice;
         public Texture2D Texture { get; protected set; }
+        public Rectangle? Rectangle { get; set; }
         public Color Color { get; set; }
 
         protected ShapedSpriteBase(Lazy<GraphicsDevice> lazyGraphicsDevice)

@@ -32,10 +32,10 @@ namespace Glyph.Graphics
                 return;
 
             if (SpriteTransformer != null)
-                _lazySpriteBatch.Value.Draw(_source.Texture, _sceneNode.Position, SpriteTransformer.SourceRectangle, SpriteTransformer.Color,
+                _lazySpriteBatch.Value.Draw(_source.Texture, _sceneNode.Position, _source.Rectangle, SpriteTransformer.Color,
                     _sceneNode.Rotation, SpriteTransformer.Origin, _sceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, 0);
             else
-                _lazySpriteBatch.Value.Draw(_source.Texture, _sceneNode.Position, null, Color.White,
+                _lazySpriteBatch.Value.Draw(_source.Texture, _sceneNode.Position, _source.Rectangle, Color.White,
                     _sceneNode.Rotation, Vector2.Zero, _sceneNode.Scale, SpriteEffects.None, 0);
         }
     }

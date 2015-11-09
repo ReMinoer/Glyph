@@ -10,7 +10,6 @@ namespace Glyph.Graphics
         private bool _loadedContent;
         private int _currentFrame;
         private FrameData _frameData;
-        private readonly SpriteTransformer _spriteTransformer;
         public ISpriteSheetCarver Carver { get; private set; }
 
         public int CurrentFrame
@@ -24,7 +23,7 @@ namespace Glyph.Graphics
             }
         }
 
-        public Rectangle CurrentRectangle
+        public Rectangle? Rectangle
         {
             get { return _frameData.Rectangle; }
         }
@@ -39,14 +38,9 @@ namespace Glyph.Graphics
             get { return CurrentTexture; }
         }
 
-        public SpriteSheetSplit(SpriteTransformer spriteTransformer)
-        {
-            _spriteTransformer = spriteTransformer;
-        }
-
         public void Add(string asset)
         {
-            Add(new SpriteSheet(_spriteTransformer) { Asset = asset });
+            Add(new SpriteSheet { Asset = asset });
         }
 
         public void LoadContent(ContentLibrary contentLibrary)
@@ -106,7 +100,6 @@ namespace Glyph.Graphics
         private void Refresh()
         {
             _frameData = GetFrameData(_currentFrame);
-            _spriteTransformer.SourceRectangle = CurrentRectangle;
         }
 
         private struct FrameData

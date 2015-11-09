@@ -11,7 +11,6 @@ namespace Glyph.Graphics
         private Vector2 _origin;
         private Vector2 _pivot;
         private AnchorType _lastAnchorType;
-        public Rectangle? SourceRectangle { get; set; }
         public Color Color { get; set; }
         public Vector2 Scale { get; set; }
         public SpriteEffects Effects { get; set; }
@@ -23,12 +22,6 @@ namespace Glyph.Graphics
             set
             {
                 _spriteSource = value;
-
-                if (_spriteSource.Texture == null)
-                    SourceRectangle = null;
-                else if (SourceRectangle == null)
-                    SourceRectangle = _spriteSource.Texture.Bounds;
-
                 RefreshAnchor();
             }
         }
@@ -73,7 +66,9 @@ namespace Glyph.Graphics
         private void RefreshAnchor()
         {
             Vector2 size = SpriteSource != null && SpriteSource.Texture != null
-                ? SpriteSource.Texture.Size()
+                ? SpriteSource.Rectangle != null
+                    ? SpriteSource.Rectangle.Value.Size.ToVector2()
+                    : SpriteSource.Texture.Size()
                 : Vector2.Zero;
 
             switch (_lastAnchorType)
