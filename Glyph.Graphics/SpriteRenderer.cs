@@ -1,42 +1,24 @@
-﻿using System;
-using Diese.Injection;
-using Glyph.Animation;
-using Glyph.Composition;
+﻿using Glyph.Animation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class SpriteRenderer : GlyphComponent, IDraw
+    public class SpriteRenderer : Renderer
     {
-        private readonly ISpriteSource _source;
-        private readonly SceneNode _sceneNode;
-        private readonly Lazy<SpriteBatch> _lazySpriteBatch;
-        public bool Visible { get; set; }
-
-        [Injectable]
-        public SpriteTransformer SpriteTransformer { get; set; }
-
-        public SpriteRenderer(ISpriteSource source, SceneNode sceneNode, Lazy<SpriteBatch> lazySpriteBatch)
+        public SpriteRenderer(ISpriteSource source, SceneNode sceneNode)
+            : base(source, sceneNode)
         {
-            _source = source;
-            _sceneNode = sceneNode;
-            _lazySpriteBatch = lazySpriteBatch;
-
-            Visible = true;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        protected override void Render(SpriteBatch spriteBatch)
         {
-            if (!Visible || _source.Texture == null)
-                return;
-
             if (SpriteTransformer != null)
-                _lazySpriteBatch.Value.Draw(_source.Texture, _sceneNode.Position, _source.Rectangle, SpriteTransformer.Color,
-                    _sceneNode.Rotation, SpriteTransformer.Origin, _sceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, 0);
+                spriteBatch.Draw(Source.Texture, SceneNode.Position, Source.Rectangle, SpriteTransformer.Color,
+                    SceneNode.Rotation, SpriteTransformer.Origin, SceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, 0);
             else
-                _lazySpriteBatch.Value.Draw(_source.Texture, _sceneNode.Position, _source.Rectangle, Color.White,
-                    _sceneNode.Rotation, Vector2.Zero, _sceneNode.Scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(Source.Texture, SceneNode.Position, Source.Rectangle, Color.White,
+                    SceneNode.Rotation, Vector2.Zero, SceneNode.Scale, SpriteEffects.None, 0);
         }
     }
 }
