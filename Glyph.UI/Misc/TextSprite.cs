@@ -3,7 +3,7 @@ using Glyph.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.UI
+namespace Glyph.UI.Misc
 {
     public class TextSprite : Sprite
     {

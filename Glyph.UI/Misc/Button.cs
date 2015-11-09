@@ -3,7 +3,7 @@ using Glyph.Input;
 using Glyph.Input.StandardInputs;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.UI.Controls
+namespace Glyph.UI.Misc
 {
     public class Button : TextSprite
     {

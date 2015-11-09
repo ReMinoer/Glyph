@@ -39,19 +39,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\Button.cs" />
+    <Compile Include="IBorder.cs" />
+    <Compile Include="IControl.cs" />
+    <Compile Include="IFrame.cs" />
+    <Compile Include="ISizableBorder.cs" />
+    <Compile Include="Misc\Button.cs" />
     <Compile Include="Menus\ButtonsMenu.cs" />
     <Compile Include="HUD\GuideButton.cs" />
     <Compile Include="Padding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rectangle.Extension.cs" />
+    <Compile Include="Shadow.cs" />
+    <Compile Include="Simple\SimpleBorder.cs" />
+    <Compile Include="Simple\SimpleFrame.cs" />
     <Compile Include="Text.cs" />
-    <Compile Include="TextSprite.cs" />
+    <Compile Include="Misc\TextSprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
+      <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
+      <Name>Diese.Injection</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Serialization\Diese.Serialization.csproj">
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
@@ -77,10 +88,17 @@
       <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
       <Name>Glyph.Input</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
+      <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
+      <Name>Glyph.Math</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
       <Name>Glyph</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controls\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

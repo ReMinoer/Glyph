@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
-using Glyph.UI.Controls;
+using Glyph.UI.Misc;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
