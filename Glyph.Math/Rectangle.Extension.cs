@@ -9,5 +9,10 @@ namespace Glyph.Math
         {
             return new CenteredRectangle(value.Center.ToVector2(), value.Width, value.Height);
         }
+
+        static public Rectangle ToStruct(this IRectangle value)
+        {
+            return new Rectangle((int)value.Left, (int)value.Top, (int)value.Width, (int)value.Height);
+        }
     }
 }
