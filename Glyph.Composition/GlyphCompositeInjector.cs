@@ -22,6 +22,9 @@ namespace Glyph.Composition
         {
             if (serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
             {
+                if (type.IsInstanceOfType(CompositeContext))
+                    return CompositeContext;
+
                 IGlyphComponent component = CompositeContext.GetComponent(type);
                 if (component == null)
                     throw new ComponentNotFoundException(type);
