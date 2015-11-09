@@ -1,6 +1,4 @@
-﻿using System;
-using Glyph.Animation;
-using Glyph.Graphics;
+﻿using Glyph.Graphics;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,7 +18,7 @@ namespace Glyph.Physics.Colliders
         {
             ShapedSprite = shapedSprite;
             SpriteTransformer = new SpriteTransformer();
-            _spriteRenderer = new SpriteRenderer(ShapedSprite, SceneNode, context.LazySpriteBatch);
+            _spriteRenderer = new SpriteRenderer(ShapedSprite, SceneNode);
 
             SceneNode.Refreshed += x => Shape.Center = x.Position;
         }
@@ -42,17 +40,6 @@ namespace Glyph.Physics.Colliders
         {
             SpriteTransformer.Dispose();
             base.Dispose();
-        }
-
-        new public class Context : ColliderBase.Context
-        {
-            public Lazy<SpriteBatch> LazySpriteBatch { get; set; }
-
-            public Context(SceneNode sceneNode, ColliderManager colliderManager, Lazy<SpriteBatch> lazySpriteBatch)
-                : base(sceneNode, colliderManager)
-            {
-                LazySpriteBatch = lazySpriteBatch;
-            }
         }
     }
 }

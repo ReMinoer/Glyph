@@ -26,11 +26,11 @@ namespace Glyph.Graphics.Shapes
             // Work out the minimum step necessary using trigonometry + sine approximation.
             double angleStep = 1f / Radius;
 
-            for (double angle = 0; angle < Math.PI * 2; angle += angleStep)
+            for (double angle = 0; angle < System.Math.PI * 2; angle += angleStep)
             {
                 // Use the parametric definition of a circle: http://en.wikipedia.org/wiki/Circle#Cartesian_coordinates
-                int x = (int)Math.Round(Radius + Radius * Math.Cos(angle));
-                int y = (int)Math.Round(Radius + Radius * Math.Sin(angle));
+                int x = (int)System.Math.Round(Radius + Radius * System.Math.Cos(angle));
+                int y = (int)System.Math.Round(Radius + Radius * System.Math.Sin(angle));
 
                 data[y * outerRadius + x + 1] = Color;
             }
