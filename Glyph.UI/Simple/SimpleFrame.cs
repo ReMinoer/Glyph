@@ -19,7 +19,7 @@ namespace Glyph.UI.Simple
         public SimpleBorder Border { get; private set; }
         public IRectangle Bounds { get; set; }
 
-        public Color Background
+        public Color Color
         {
             get { return _spriteTransformer.Color; }
             set { _spriteTransformer.Color = value; }

@@ -3,7 +3,7 @@ using Glyph.Composition;
 
 namespace Glyph.UI
 {
-    public interface IControl : IDraw
+    public interface IControl : IEnableable, IDraw
     {
         SceneNode SceneNode { get; }
         Motion Motion { get; }

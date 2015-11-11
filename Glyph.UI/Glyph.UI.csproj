@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ButtonBase.cs" />
     <Compile Include="IBorder.cs" />
     <Compile Include="IControl.cs" />
     <Compile Include="IFrame.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Rectangle.Extension.cs" />
     <Compile Include="Shadow.cs" />
     <Compile Include="Simple\SimpleBorder.cs" />
+    <Compile Include="Simple\SimpleButton.cs" />
     <Compile Include="Simple\SimpleFrame.cs" />
     <Compile Include="Text.cs" />
     <Compile Include="Misc\TextSprite.cs" />
@@ -97,9 +99,7 @@
       <Name>Glyph</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
