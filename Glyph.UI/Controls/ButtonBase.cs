@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.UI.Controls
 {
-    public abstract class ButtonBase : GlyphObject, IControl
+    public abstract class ButtonBase : GlyphObject, IButton
     {
         private readonly InputManager _inputManager;
         private bool _hover;
@@ -16,7 +16,7 @@ namespace Glyph.UI.Controls
         public Motion Motion { get; private set; }
         public Text Text { get; private set; }
         public bool Pressed { get; private set; }
-        protected abstract IFrame FrameBase { get; }
+        public abstract IFrame Frame { get; }
 
         public bool Hover
         {
@@ -37,8 +37,8 @@ namespace Glyph.UI.Controls
 
         public virtual Shadow? Shadow
         {
-            get { return FrameBase.Shadow; }
-            set { FrameBase.Shadow = value; }
+            get { return Frame.Shadow; }
+            set { Frame.Shadow = value; }
         }
 
         public event EventHandler Triggered;
@@ -58,13 +58,13 @@ namespace Glyph.UI.Controls
             Schedulers.Update.Plan(HandleInput);
         }
 
-        public void HandleInput(ElapsedTime elapsedTime)
+        private void HandleInput(ElapsedTime elapsedTime)
         {
             bool hover = Hover;
             if (_inputManager.IsMouseUsed)
             {
                 var mouseInScreen = _inputManager.GetValue<Vector2>(MouseInputs.VirtualScreenPosition);
-                hover = FrameBase.Bounds.ContainsPoint(mouseInScreen);
+                hover = Frame.Bounds.ContainsPoint(mouseInScreen);
             }
 
             if (Hover)

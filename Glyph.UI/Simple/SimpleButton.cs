@@ -8,20 +8,20 @@ namespace Glyph.UI.Simple
 {
     public class SimpleButton : ButtonBase
     {
-        public SimpleFrame Frame { get; private set; }
+        public SimpleFrame SimpleFrame { get; private set; }
         public StatesColor FrameColors { get; set; }
         public StatesColor BorderColors { get; set; }
         public StatesColor TextColors { get; set; }
 
-        protected override IFrame FrameBase
+        public override IFrame Frame
         {
-            get { return Frame; }
+            get { return SimpleFrame; }
         }
 
         public SimpleButton(InputManager inputManager, IDependencyInjector injector)
             : base(inputManager, injector)
         {
-            Frame = Add<SimpleFrame>();
+            SimpleFrame = Add<SimpleFrame>();
 
             FrameColors = new StatesColor
             {
@@ -33,7 +33,7 @@ namespace Glyph.UI.Simple
             BorderColors = new StatesColor(Color.Black);
             TextColors = new StatesColor(Color.Black);
 
-            Frame.Color = FrameColors.Released;
+            SimpleFrame.Color = FrameColors.Released;
             Text.SpriteTransformer.Color = TextColors.Released;
 
             Triggered += OnTriggered;
@@ -44,29 +44,29 @@ namespace Glyph.UI.Simple
 
         private void OnTriggered(object sender, EventArgs eventArgs)
         {
-            Frame.Color = FrameColors.Pressed;
-            Frame.Border.Color = BorderColors.Pressed;
+            SimpleFrame.Color = FrameColors.Pressed;
+            SimpleFrame.Border.Color = BorderColors.Pressed;
             Text.SpriteTransformer.Color = TextColors.Pressed;
         }
 
         private void OnReleased(object sender, EventArgs eventArgs)
         {
-            Frame.Color = FrameColors.Hover;
-            Frame.Border.Color = BorderColors.Hover;
+            SimpleFrame.Color = FrameColors.Hover;
+            SimpleFrame.Border.Color = BorderColors.Hover;
             Text.SpriteTransformer.Color = TextColors.Hover;
         }
 
         private void OnEntered(object sender, EventArgs eventArgs)
         {
-            Frame.Color = FrameColors.Hover;
-            Frame.Border.Color = BorderColors.Hover;
+            SimpleFrame.Color = FrameColors.Hover;
+            SimpleFrame.Border.Color = BorderColors.Hover;
             Text.SpriteTransformer.Color = TextColors.Hover;
         }
 
         private void OnLeaved(object sender, EventArgs eventArgs)
         {
-            Frame.Color = FrameColors.Released;
-            Frame.Border.Color = BorderColors.Released;
+            SimpleFrame.Color = FrameColors.Released;
+            SimpleFrame.Border.Color = BorderColors.Released;
             Text.SpriteTransformer.Color = TextColors.Released;
         }
 

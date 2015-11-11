@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
-using Glyph.UI.Misc;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.UI.Menus
+namespace Glyph.UI.Misc
 {
     public class ButtonsMenu
     {
