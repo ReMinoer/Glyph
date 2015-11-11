@@ -17,6 +17,7 @@ namespace Glyph.Input.StandardInputs
         public const string Launch = Prefix + "Launch";
         public const string Exit = Prefix + "Exit";
         public const string Clic = Prefix + "Clic";
+        public const string ReleaseClic = Prefix + "ReleaseClic";
         private const string Prefix = "Menu-";
 
         public MenuInputs(bool gamepad, bool mouse, bool keyboard)
@@ -30,6 +31,7 @@ namespace Glyph.Input.StandardInputs
             var launch = new InputSet<InputActivity>(Launch);
             var exit = new InputSet<InputActivity>(Exit);
             var clic = new InputSet<InputActivity>(Clic);
+            var releaseClic = new InputSet<InputActivity>(ReleaseClic);
 
             if (gamepad)
             {
@@ -61,7 +63,10 @@ namespace Glyph.Input.StandardInputs
             }
 
             if (mouse)
+            {
                 clic.Add(new MouseButtonHandler("Clic", MouseButton.Left));
+                releaseClic.Add(new MouseButtonHandler("ReleaseClic", MouseButton.Left, InputActivity.Released));
+            }
 
             if (keyboard)
             {
