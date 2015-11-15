@@ -61,8 +61,7 @@ namespace Glyph.Application
             Register<ColliderManager>(Subsistence.Singleton);
             Register<RectangleCollider>();
             Register<CircleCollider>();
-            Register<ShapeColliderBase<CenteredRectangle>.Context>();
-            Register<ShapeColliderBase<Circle>.Context>();
+            Register<ColliderBase.Context>();
         }
     }
 }
