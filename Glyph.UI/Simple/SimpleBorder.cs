@@ -13,11 +13,13 @@ namespace Glyph.UI.Simple
         public bool Visible { get; set; }
         public Color Color { get; set; }
         public int Thickness { get; set; }
-        public IRectangle Bounds { get; set; }
+        public OriginRectangle Bounds { get; private set; }
 
         public SimpleBorder(RectangleSprite rectangleSprite)
         {
             _rectangleSprite = rectangleSprite;
+
+            Bounds = new OriginRectangle();
         }
 
         public void LoadContent(ContentLibrary contentLibrary)

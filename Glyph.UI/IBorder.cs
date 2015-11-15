@@ -1,11 +1,12 @@
 ﻿using Glyph.Composition;
-using Glyph.Graphics;
+using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.UI
 {
-    public interface IBorder : IDraw, IBounded
+    public interface IBorder : IDraw
     {
         Color Color { get; set; }
+        OriginRectangle Bounds { get; }
     }
 }

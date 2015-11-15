@@ -8,16 +8,18 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.UI.Simple
 {
-    public class SimpleFrame : GlyphObject, IFrame, ILoadContent
+    public class SimpleFrame : GlyphObject, IFrame
     {
-        private readonly FilledRectangleSprite _filledRectangleSprite;
-        private readonly FillingRenderer _fillingRenderer;
         private readonly SpriteTransformer _spriteTransformer;
         public SceneNode SceneNode { get; private set; }
         public Motion Motion { get; private set; }
         public Shadow? Shadow { get; set; }
         public SimpleBorder Border { get; private set; }
-        public IRectangle Bounds { get; set; }
+
+        public OriginRectangle Bounds
+        {
+            get { return Border.Bounds; }
+        }
 
         public Color Color
         {
@@ -30,10 +32,12 @@ namespace Glyph.UI.Simple
         {
             SceneNode = Add<SceneNode>();
             Motion = Add<Motion>();
-            Border = Add<SimpleBorder>();
             _spriteTransformer = Add<SpriteTransformer>();
-            _filledRectangleSprite = Add<FilledRectangleSprite>();
-            _fillingRenderer = Add<FillingRenderer>();
+
+            Add<FilledRectangleSprite>();
+            Add<FillingRenderer>();
+
+            Border = Add<SimpleBorder>();
 
             SceneNode.Refreshed += node =>
             {

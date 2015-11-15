@@ -1,8 +1,9 @@
-﻿using Glyph.Graphics;
+﻿using Glyph.Math.Shapes;
 
 namespace Glyph.UI
 {
-    public interface IFrame : IControl, IBounded
+    public interface IFrame : IControl
     {
+        OriginRectangle Bounds { get; }
     }
 }
