@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Controls\ButtonBase.cs" />
     <Compile Include="Controls\IButton.cs" />
+    <Compile Include="Guide\GuideIcon.cs" />
     <Compile Include="IBorder.cs" />
     <Compile Include="IControl.cs" />
     <Compile Include="IFrame.cs" />
@@ -50,7 +51,7 @@
     <Compile Include="Menus\SelectionEventArgs.cs" />
     <Compile Include="Misc\Button.cs" />
     <Compile Include="Misc\ButtonsMenu.cs" />
-    <Compile Include="HUD\GuideButton.cs" />
+    <Compile Include="Misc\GuideButton.cs" />
     <Compile Include="Padding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rectangle.Extension.cs" />
