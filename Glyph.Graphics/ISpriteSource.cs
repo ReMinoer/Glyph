@@ -9,5 +9,6 @@ namespace Glyph.Graphics
     {
         Texture2D Texture { get; }
         Rectangle? Rectangle { get; }
+        Rectangle GetDrawnRectangle();
     }
 }

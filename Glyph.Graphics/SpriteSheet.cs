@@ -73,6 +73,11 @@ namespace Glyph.Graphics
             return Frames[frameIndex];
         }
 
+        Rectangle ISpriteSource.GetDrawnRectangle()
+        {
+            return Rectangle.GetValueOrDefault();
+        }
+
         Texture2D ISpriteSheet.GetFrameTexture(int frameIndex)
         {
             return Texture;

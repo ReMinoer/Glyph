@@ -17,8 +17,10 @@ namespace Glyph.Graphics
                 spriteBatch.Draw(Source.Texture, SceneNode.Position, Source.Rectangle, SpriteTransformer.Color,
                     SceneNode.Rotation, SpriteTransformer.Origin, SceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, 0);
             else
+            {
                 spriteBatch.Draw(Source.Texture, SceneNode.Position, Source.Rectangle, Color.White,
-                    SceneNode.Rotation, Vector2.Zero, SceneNode.Scale, SpriteEffects.None, 0);
+                    SceneNode.Rotation, Source.GetDrawnRectangle().Center.ToVector2(), SceneNode.Scale, SpriteEffects.None, 0);
+            }
         }
     }
 }

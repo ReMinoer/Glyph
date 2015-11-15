@@ -75,6 +75,11 @@ namespace Glyph.Graphics
                 spriteSheet.ApplyCarver(carver);
         }
 
+        Rectangle ISpriteSource.GetDrawnRectangle()
+        {
+            return Rectangle.GetValueOrDefault();
+        }
+
         private FrameData GetFrameData(int frameIndex)
         {
             int sum = 0;

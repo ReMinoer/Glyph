@@ -38,7 +38,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IBounded.cs" />
     <Compile Include="ISceneRenderer.cs" />
     <Compile Include="ISpriteSheet.cs" />
     <Compile Include="ISpriteSheetCarver.cs" />
@@ -58,6 +57,7 @@
     <Compile Include="SpriteAnimator.cs" />
     <Compile Include="SpriteSheet.cs" />
     <Compile Include="SpriteSheetSplit.cs" />
+    <Compile Include="SpriteSourceBase.cs" />
     <Compile Include="SpriteTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpriteRenderer.cs" />
