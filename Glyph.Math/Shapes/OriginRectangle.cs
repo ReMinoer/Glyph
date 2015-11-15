@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Glyph.Composition;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public class OriginRectangle : IRectangle
+    public class OriginRectangle : GlyphComponent, IRectangle
     {
         public float Left { get; set; }
         public float Top { get; set; }
@@ -45,6 +46,11 @@ namespace Glyph.Math.Shapes
                 Width = value.X;
                 Height = value.Y;
             }
+        }
+
+        public OriginRectangle()
+            : this(0, 0, 0, 0)
+        {
         }
 
         public OriginRectangle(float x, float y, float width, float height)

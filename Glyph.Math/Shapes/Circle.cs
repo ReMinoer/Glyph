@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Glyph.Composition;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public class Circle : ICircle
+    public class Circle : GlyphComponent, ICircle
     {
         public Vector2 Center { get; set; }
         public float Radius { get; set; }

@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Glyph.Composition;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public class CenteredRectangle : IRectangle
+    public class CenteredRectangle : GlyphComponent, IRectangle
     {
         public Vector2 Center { get; set; }
         public float Width { get; set; }
@@ -41,6 +42,11 @@ namespace Glyph.Math.Shapes
                 Width = value.X;
                 Height = value.Y;
             }
+        }
+
+        public CenteredRectangle()
+            : this(Vector2.Zero, 0, 0)
+        {
         }
 
         public CenteredRectangle(Vector2 center, float width, float height)
