@@ -7,6 +7,5 @@ namespace Glyph.UI
     {
         SceneNode SceneNode { get; }
         Motion Motion { get; }
-        Shadow? Shadow { get; set; }
     }
 }

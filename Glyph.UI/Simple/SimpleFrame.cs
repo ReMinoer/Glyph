@@ -11,14 +11,27 @@ namespace Glyph.UI.Simple
     public class SimpleFrame : GlyphObject, IFrame
     {
         private readonly SpriteTransformer _spriteTransformer;
+        private readonly FillingRectangle _fillingRectangle;
+        private Vector2 _size;
         public SceneNode SceneNode { get; private set; }
         public Motion Motion { get; private set; }
-        public Shadow? Shadow { get; set; }
         public SimpleBorder Border { get; private set; }
+
+        public Vector2 Size
+        {
+            get { return _size; }
+            set
+            {
+                _size = value;
+                Border.Size = value;
+
+                _fillingRectangle.Rectangle = Bounds;
+            }
+        }
 
         public OriginRectangle Bounds
         {
-            get { return Border.Bounds; }
+            get { return new OriginRectangle(SceneNode.Position, Size); }
         }
 
         public Color Color
@@ -34,16 +47,14 @@ namespace Glyph.UI.Simple
             Motion = Add<Motion>();
             _spriteTransformer = Add<SpriteTransformer>();
 
+            _fillingRectangle = Add<FillingRectangle>();
+            _fillingRectangle.Rectangle = Bounds;
             Add<FilledRectangleSprite>();
             Add<FillingRenderer>();
 
             Border = Add<SimpleBorder>();
 
-            SceneNode.Refreshed += node =>
-            {
-                Bounds.Center = SceneNode.Position;
-                Border.Bounds.Center = SceneNode.Position;
-            };
+            SceneNode.Refreshed += node => _fillingRectangle.Rectangle = Bounds;
         }
     }
 }

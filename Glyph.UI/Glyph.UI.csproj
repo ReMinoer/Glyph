@@ -45,8 +45,7 @@
     <Compile Include="IBorder.cs" />
     <Compile Include="IControl.cs" />
     <Compile Include="IFrame.cs" />
-    <Compile Include="IMenu.cs" />
-    <Compile Include="ISizableBorder.cs" />
+    <Compile Include="Menus\IMenu.cs" />
     <Compile Include="Menus\LinearMenu.cs" />
     <Compile Include="Menus\SelectionEventArgs.cs" />
     <Compile Include="Misc\Button.cs" />

@@ -35,12 +35,6 @@ namespace Glyph.UI.Controls
             }
         }
 
-        public virtual Shadow? Shadow
-        {
-            get { return Frame.Shadow; }
-            set { Frame.Shadow = value; }
-        }
-
         public event EventHandler Triggered;
         public event EventHandler Released;
         public event EventHandler Entered;

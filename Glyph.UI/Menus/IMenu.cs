@@ -1,9 +1,8 @@
 ﻿using System;
 using Glyph.Composition;
 using Glyph.UI.Controls;
-using Glyph.UI.Menus;
 
-namespace Glyph.UI
+namespace Glyph.UI.Menus
 {
     public interface IMenu : IGlyphComposite<IButton>
     {
