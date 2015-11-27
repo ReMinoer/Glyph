@@ -46,11 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\DynamicActor.cs" />
+    <Compile Include="Actors\StaticActor.cs" />
+    <Compile Include="IActor.cs" />
+    <Compile Include="IScriptPlayer.cs" />
+    <Compile Include="ITrigger.cs" />
+    <Compile Include="ITriggerArea.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptPlayer.cs" />
     <Compile Include="ScriptManager.cs" />
-    <Compile Include="Trigger.cs" />
-    <Compile Include="TriggerManager.cs" />
-    <Compile Include="TriggerZone.cs" />
+    <Compile Include="Triggers\TriggerVar.cs" />
+    <Compile Include="Triggers\TriggerArea.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
@@ -65,6 +71,10 @@
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
       <Name>Diese.Serialization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
+      <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>
+      <Name>Glyph.Animation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
@@ -76,6 +86,10 @@
     <ProjectReference Include="..\Glyph.Entities\Glyph.Entities.csproj">
       <Project>{729CF52C-D06C-42FD-A2EE-6C19E07D185F}</Project>
       <Name>Glyph.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
+      <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
+      <Name>Glyph.Graphics</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Localization\Glyph.Localization.csproj">
       <Project>{1F7A7855-3E63-45CD-907A-D23AA61A02D2}</Project>
