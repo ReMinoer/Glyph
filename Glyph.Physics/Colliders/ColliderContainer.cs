@@ -1,5 +1,6 @@
 ﻿using System;
 using Glyph.Composition;
+using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -102,6 +103,33 @@ namespace Glyph.Physics.Colliders
                     return true;
 
             collision = new Collision();
+            return false;
+        }
+
+        public bool Intersects(IRectangle rectangle)
+        {
+            foreach (ICollider component in this)
+                if (component.Intersects(rectangle))
+                    return true;
+
+            return false;
+        }
+
+        public bool Intersects(ICircle circle)
+        {
+            foreach (ICollider component in this)
+                if (component.Intersects(circle))
+                    return true;
+
+            return false;
+        }
+
+        public bool ContainsPoint(Vector2 point)
+        {
+            foreach (ICollider component in this)
+                if (component.ContainsPoint(point))
+                    return true;
+
             return false;
         }
     }

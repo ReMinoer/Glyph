@@ -1,6 +1,7 @@
 ﻿using Glyph.Graphics;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Physics.Colliders
@@ -11,7 +12,7 @@ namespace Glyph.Physics.Colliders
         protected readonly ShapedSpriteBase ShapedSprite;
         protected readonly SpriteTransformer SpriteTransformer;
         private readonly SpriteRenderer _spriteRenderer;
-        public TShape Shape { get; protected set; }
+        public abstract TShape Bounds { get; }
 
         protected ShapeColliderBase(ShapedSpriteBase shapedSprite, Context context)
             : base(context)
@@ -19,8 +20,6 @@ namespace Glyph.Physics.Colliders
             ShapedSprite = shapedSprite;
             SpriteTransformer = new SpriteTransformer();
             _spriteRenderer = new SpriteRenderer(ShapedSprite, SceneNode);
-
-            SceneNode.Refreshed += x => Shape.Center = x.Position;
         }
 
         public override void LoadContent(ContentLibrary contentLibrary)
@@ -34,6 +33,11 @@ namespace Glyph.Physics.Colliders
                 return;
 
             _spriteRenderer.Draw(spriteBatch);
+        }
+
+        public override bool ContainsPoint(Vector2 point)
+        {
+            return Bounds.ContainsPoint(point);
         }
 
         public override void Dispose()

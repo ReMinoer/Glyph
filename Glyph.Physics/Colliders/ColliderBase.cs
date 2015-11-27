@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Glyph.Animation;
 using Glyph.Composition;
+using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -74,6 +75,9 @@ namespace Glyph.Physics.Colliders
         public abstract void LoadContent(ContentLibrary contentLibrary);
         public abstract bool IsColliding(RectangleCollider collider, out Collision collision);
         public abstract bool IsColliding(CircleCollider collider, out Collision collision);
+        public abstract bool Intersects(IRectangle rectangle);
+        public abstract bool Intersects(ICircle circle);
+        public abstract bool ContainsPoint(Vector2 point);
         public abstract void Draw(SpriteBatch spriteBatch);
 
         public override void Dispose()
