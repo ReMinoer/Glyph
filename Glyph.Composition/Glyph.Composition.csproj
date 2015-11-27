@@ -42,6 +42,10 @@
     <Compile Include="Exceptions\ComponentNotFoundException.cs" />
     <Compile Include="GlyphCompositeInjector.cs" />
     <Compile Include="GlyphSchedulableBase.cs" />
+    <Compile Include="IDraw.cs" />
+    <Compile Include="IEnableable.cs" />
+    <Compile Include="ILoadContent.cs" />
+    <Compile Include="IUpdate.cs" />
     <Compile Include="Layers\ILayer.cs" />
     <Compile Include="Layers\ILayerRoot.cs" />
     <Compile Include="Layers\LayerBase.cs" />
