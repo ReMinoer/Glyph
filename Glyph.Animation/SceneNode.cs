@@ -14,8 +14,8 @@ namespace Glyph.Animation
         private Vector2 _position;
         private float _rotation;
         private float _scale;
-
         public event Action<SceneNode> Refreshed;
+        public Matrix3X3 Matrix { get; private set; }
 
         public SceneNode ParentNode
         {
@@ -120,8 +120,6 @@ namespace Glyph.Animation
                     LocalScale = value;
             }
         }
-
-        public Matrix3X3 Matrix { get; private set; }
 
         public SceneNode()
         {
