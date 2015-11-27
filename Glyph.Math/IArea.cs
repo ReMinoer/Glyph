@@ -1,9 +1,8 @@
-﻿using Glyph.Composition;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Glyph.Math
 {
-    public interface IArea : IGlyphComponent
+    public interface IArea
     {
         bool ContainsPoint(Vector2 point);
     }

@@ -1,14 +1,14 @@
-﻿using Glyph.Composition;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public class Circle : GlyphComponent, ICircle
+    public struct Circle : ICircle
     {
         public Vector2 Center { get; set; }
         public float Radius { get; set; }
 
         public Circle(Vector2 center, float radius)
+            : this()
         {
             Center = center;
             Radius = radius;
@@ -19,14 +19,14 @@ namespace Glyph.Math.Shapes
             return (point - Center).Length() <= Radius;
         }
 
-        public bool Intersects(IRectangle collider)
+        public bool Intersects(IRectangle rectangle)
         {
-            return IntersectionUtils.RectangleAndCircle(collider, this);
+            return IntersectionUtils.RectangleAndCircle(rectangle, this);
         }
 
-        public bool Intersects(ICircle collider)
+        public bool Intersects(ICircle circle)
         {
-            return IntersectionUtils.TwoCircles(this, collider);
+            return IntersectionUtils.TwoCircles(this, circle);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Glyph.Math.Shapes
     public interface IShape : IArea
     {
         Vector2 Center { get; set; }
-        bool Intersects(IRectangle collider);
-        bool Intersects(ICircle collider);
+        bool Intersects(IRectangle rectangle);
+        bool Intersects(ICircle circle);
     }
 }

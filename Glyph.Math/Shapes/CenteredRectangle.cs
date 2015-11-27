@@ -1,9 +1,8 @@
-﻿using Glyph.Composition;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public class CenteredRectangle : GlyphComponent, IRectangle
+    public struct CenteredRectangle : IRectangle
     {
         public Vector2 Center { get; set; }
         public float Width { get; set; }
@@ -44,12 +43,8 @@ namespace Glyph.Math.Shapes
             }
         }
 
-        public CenteredRectangle()
-            : this(Vector2.Zero, 0, 0)
-        {
-        }
-
         public CenteredRectangle(Vector2 center, float width, float height)
+            : this()
         {
             Center = center;
             Width = width;
@@ -61,14 +56,14 @@ namespace Glyph.Math.Shapes
             return point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom;
         }
 
-        public bool Intersects(IRectangle collider)
+        public bool Intersects(IRectangle rectangle)
         {
-            return IntersectionUtils.TwoRectangles(this, collider);
+            return IntersectionUtils.TwoRectangles(this, rectangle);
         }
 
-        public bool Intersects(ICircle collider)
+        public bool Intersects(ICircle circle)
         {
-            return IntersectionUtils.RectangleAndCircle(this, collider);
+            return IntersectionUtils.RectangleAndCircle(this, circle);
         }
     }
 }

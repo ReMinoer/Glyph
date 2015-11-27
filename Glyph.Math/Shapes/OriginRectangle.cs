@@ -1,14 +1,13 @@
-﻿using Glyph.Composition;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public class OriginRectangle : GlyphComponent, IRectangle
+    public struct OriginRectangle : IRectangle
     {
         public float Left { get; set; }
         public float Top { get; set; }
-        public float Width { get; private set; }
-        public float Height { get; private set; }
+        public float Width { get; set; }
+        public float Height { get; set; }
 
         public Vector2 Origin
         {
@@ -48,12 +47,15 @@ namespace Glyph.Math.Shapes
             }
         }
 
-        public OriginRectangle()
-            : this(0, 0, 0, 0)
+        public OriginRectangle(Vector2 origin, Vector2 size)
+            : this()
         {
+            Origin = origin;
+            Size = size;
         }
 
         public OriginRectangle(float x, float y, float width, float height)
+            : this()
         {
             Left = x;
             Top = y;
@@ -66,14 +68,14 @@ namespace Glyph.Math.Shapes
             return point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom;
         }
 
-        public bool Intersects(IRectangle collider)
+        public bool Intersects(IRectangle rectangle)
         {
-            return IntersectionUtils.TwoRectangles(this, collider);
+            return IntersectionUtils.TwoRectangles(this, rectangle);
         }
 
-        public bool Intersects(ICircle collider)
+        public bool Intersects(ICircle circle)
         {
-            return IntersectionUtils.RectangleAndCircle(this, collider);
+            return IntersectionUtils.RectangleAndCircle(this, circle);
         }
     }
 }
