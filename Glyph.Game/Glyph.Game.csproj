@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IScene.cs" />
-    <Compile Include="NewGlyphGame.cs" />
+    <Compile Include="GlyphGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneBase.cs" />
     <Compile Include="SceneSchedulerHandlerBase.cs" />
@@ -79,6 +79,10 @@
     <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
       <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
       <Name>Glyph.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Scripting\Glyph.Scripting.csproj">
+      <Project>{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}</Project>
+      <Name>Glyph.Scripting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Tools\Glyph.Tools.csproj">
       <Project>{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}</Project>

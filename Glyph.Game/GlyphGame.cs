@@ -6,6 +6,7 @@ using Glyph.Audio;
 using Glyph.Effects;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
+using Glyph.Scripting;
 using Glyph.Tools;
 using Glyph.Tools.StatusDisplayChannels;
 using Microsoft.Xna.Framework;
@@ -16,13 +17,13 @@ using SongPlayer = Glyph.Tools.SongPlayer;
 
 namespace Glyph.Game
 {
-    public abstract class NewGlyphGame : Microsoft.Xna.Framework.Game
+    public abstract class GlyphGame : Microsoft.Xna.Framework.Game
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected IDependencyRegistry Registry;
         protected IDependencyInjector Injector;
-        protected int DefautWindowHeight;
-        protected int DefautWindowWidth;
+        protected int DefaultWindowHeight;
+        protected int DefaultWindowWidth;
         private IScene _scene;
         private bool _sceneChanged;
         private CultureInfo _culture;
@@ -31,6 +32,7 @@ namespace Glyph.Game
         public SpriteBatch SpriteBatch { get; private set; }
         public ContentLibrary ContentLibrary { get; private set; }
         public InputManager InputManager { get; private set; }
+        public ScriptManager ScriptManager { get; private set; }
         public PerformanceViewer PerformanceViewer { get; private set; }
         public StatusDisplay StatusDisplay { get; private set; }
 
@@ -73,7 +75,7 @@ namespace Glyph.Game
             get { return IsActive; }
         }
 
-        protected NewGlyphGame(string[] args, IDependencyRegistry dependencyRegistry)
+        protected GlyphGame(string[] args, IDependencyRegistry dependencyRegistry)
         {
             Logger.Info("Start game");
             Logger.Info("Launch arguments : " + (args.Any() ? args.Aggregate((x, y) => x + " " + y) : ""));
@@ -85,8 +87,8 @@ namespace Glyph.Game
 
             Resolution.Instance.Init(GraphicsDeviceManager, Window);
 
-            DefautWindowHeight = (int)Resolution.Instance.WindowSize.Y;
-            DefautWindowWidth = (int)Resolution.Instance.WindowSize.X;
+            DefaultWindowHeight = (int)Resolution.Instance.WindowSize.Y;
+            DefaultWindowWidth = (int)Resolution.Instance.WindowSize.X;
 
             GraphicsDeviceManager.PreferMultiSampling = true;
             GraphicsDeviceManager.ApplyChanges();
@@ -96,7 +98,7 @@ namespace Glyph.Game
             ContentLibrary = new ContentLibrary();
 
             InputManager = new InputManager();
-
+            ScriptManager = new ScriptManager();
             Culture = CultureInfo.CurrentCulture;
 
             PerformanceViewer = new PerformanceViewer();
@@ -110,9 +112,10 @@ namespace Glyph.Game
             Injector = new RegistryInjector(Registry);
             Registry.RegisterInstance<IDependencyInjector>(Injector);
 
-            Registry.RegisterInstance<NewGlyphGame>(this);
+            Registry.RegisterInstance<GlyphGame>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
             Registry.RegisterInstance<InputManager>(InputManager);
+            Registry.RegisterInstance<ScriptManager>(ScriptManager);
             Registry.RegisterLazy(() => SpriteBatch);
             Registry.RegisterLazy(() => GraphicsDevice);
         }
