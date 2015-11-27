@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Glyph.Composition.Layers
 {
-    public class LayerManager<TLayer> : GlyphComponent, IUpdate
+    public class LayerManager<TLayer> : GlyphComponent, ILayerManager
         where TLayer : class, ILayer<TLayer>
     {
         private readonly Dictionary<ILayerRoot<TLayer>, TLayer> _layers;
@@ -27,6 +27,30 @@ namespace Glyph.Composition.Layers
                 layer.Initialize();
         }
 
+        public void Update(ElapsedTime elapsedTime)
+        {
+            foreach (TLayer layer in _layers.Values)
+                layer.Update(elapsedTime);
+        }
+
+        public ILayerRoot<TLayer> GetLayerRoot(IGlyphComponent component)
+        {
+            foreach (ILayerRoot<TLayer> layerRoot in _layers.Keys)
+                if (layerRoot.ContainsInChildren(component))
+                    return layerRoot;
+
+            return null;
+        }
+
+        ILayerRoot ILayerManager.GetLayerRoot(IGlyphComponent component)
+        {
+            foreach (ILayerRoot<TLayer> layerRoot in _layers.Keys)
+                if (layerRoot.ContainsInChildren(component))
+                    return layerRoot;
+
+            return null;
+        }
+
         internal TLayer Add(ILayerRoot<TLayer> layerRoot)
         {
             TLayer layer = LayerFactory(layerRoot);
@@ -38,12 +62,6 @@ namespace Glyph.Composition.Layers
         internal void Remove(ILayerRoot<TLayer> layerRoot)
         {
             _layers.Remove(layerRoot);
-        }
-
-        public void Update(ElapsedTime elapsedTime)
-        {
-            foreach (TLayer layer in _layers.Values)
-                layer.Update(elapsedTime);
         }
     }
 }

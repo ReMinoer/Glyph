@@ -47,6 +47,7 @@
     <Compile Include="ILoadContent.cs" />
     <Compile Include="IUpdate.cs" />
     <Compile Include="Layers\ILayer.cs" />
+    <Compile Include="Layers\ILayerManager.cs" />
     <Compile Include="Layers\ILayerRoot.cs" />
     <Compile Include="Layers\LayerBase.cs" />
     <Compile Include="Layers\LayerManager.cs" />
