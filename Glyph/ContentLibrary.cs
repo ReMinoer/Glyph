@@ -11,14 +11,13 @@ namespace Glyph
 {
     public class ContentLibrary
     {
+        // TODO : Etudier le chargement asynchrone
         private readonly Dictionary<string, Effect> _effects;
         private readonly Dictionary<string, SpriteFont> _fonts;
         private readonly Dictionary<string, Song> _musics;
         private readonly Dictionary<string, SoundEffect> _sounds;
         private readonly Dictionary<string, Texture2D> _textures;
-        private GraphicsDevice _graphicsDevice;
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        // TODO : Etudier le chargement asynchrone
 
         public Dictionary<string, Texture2D>.KeyCollection Assets
         {
@@ -34,10 +33,8 @@ namespace Glyph
             _effects = new Dictionary<string, Effect>();
         }
 
-        public void LoadContent(ContentManager content, GraphicsDevice graphicsDevice)
+        public void LoadContent(ContentManager content)
         {
-            _graphicsDevice = graphicsDevice;
-
             _textures.Clear();
             _fonts.Clear();
             _sounds.Clear();
@@ -48,7 +45,6 @@ namespace Glyph
 
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(path, "*.xnb", SearchOption.AllDirectories));
-            files.AddRange(Directory.GetFiles(path, "*.mgfx", SearchOption.AllDirectories));
 
             foreach (string s in files)
             {
@@ -62,7 +58,7 @@ namespace Glyph
                 else if (s.Contains("Music"))
                     AddMusic(s.Replace("Content\\", ""), content);
                 else if (s.Contains("Effect"))
-                    AddEffect(s, content);
+                    AddEffect(s.Replace("Content\\", ""), content);
                 else
                     AddTexture(s.Replace("Content\\", ""), content);
 
@@ -118,10 +114,8 @@ namespace Glyph
 
         public void AddEffect(string path, ContentManager content)
         {
-            string asset = path.Replace(".mgfx", "");
-            byte[] bytecode = File.ReadAllBytes(path);
-            var effect = new Effect(_graphicsDevice, bytecode);
-            _effects.Add(asset.Substring(asset.LastIndexOf('\\') + 1), effect);
+            string asset = path.Replace(".xnb", "");
+            _effects.Add(asset.Substring(asset.LastIndexOf('\\') + 1), content.Load<Effect>(asset));
         }
 
         public Effect GetEffect(string asset)

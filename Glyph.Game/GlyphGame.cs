@@ -133,7 +133,7 @@ namespace Glyph.Game
         {
             base.LoadContent();
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            ContentLibrary.LoadContent(Content, GraphicsDevice);
+            ContentLibrary.LoadContent(Content);
 
             ScreenEffectManager.Instance.LoadContent(ContentLibrary, GraphicsDevice);
             AudioManager.LoadContent(ContentLibrary);
