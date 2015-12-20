@@ -35,6 +35,12 @@ namespace Glyph.Scripting.Triggers
             get { return _triggerVar.SingleUse; }
         }
 
+        public Vector2 LocalPosition
+        {
+            get { return _sceneNode.LocalPosition; }
+            set { _sceneNode.LocalPosition = value; }
+        }
+
         public Vector2 Size
         {
             get { return _size; }
@@ -53,7 +59,7 @@ namespace Glyph.Scripting.Triggers
         Vector2 IShape.Center
         {
             get { return Bounds.Center; }
-            set { _sceneNode.LocalPosition = value - Size / 2; }
+            set { _sceneNode.Position = value - Size / 2; }
         }
 
         public event TriggerAreaEventHandler Triggered;
@@ -64,7 +70,7 @@ namespace Glyph.Scripting.Triggers
             remove { _triggerVar.Triggered -= value; }
         }
 
-        public TriggerArea(bool singleUse, ILayerManager layerManager, Lazy<GraphicsDevice> graphicsDevice)
+        public TriggerArea(bool singleUse, Lazy<GraphicsDevice> graphicsDevice, ILayerManager layerManager)
             : base(4)
         {
             _layerManager = layerManager;
@@ -81,7 +87,8 @@ namespace Glyph.Scripting.Triggers
             base.Initialize();
 
             // TODO : Handle layer root change at runtime
-            _parentLayer = _layerManager.GetLayerRoot(this);
+            if (_layerManager != null)
+                _parentLayer = _layerManager.GetLayerRoot(this);
         }
 
         public void LoadContent(ContentLibrary ressources)
