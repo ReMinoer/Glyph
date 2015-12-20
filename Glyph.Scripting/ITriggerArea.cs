@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 
 namespace Glyph.Scripting

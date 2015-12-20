@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="AnimSprite.cs" />
-    <Compile Include="Collision.cs" />
     <Compile Include="FrameSequence.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

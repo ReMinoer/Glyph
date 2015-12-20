@@ -1,6 +1,6 @@
 ﻿using System;
 using Glyph.Composition;
-using Glyph.Math.Shapes;
+using Glyph.Math;
 
 namespace Glyph.Physics.Colliders
 {

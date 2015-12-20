@@ -5,6 +5,7 @@ using Glyph.Composition;
 using Glyph.Composition.Layers;
 using Glyph.Graphics;
 using Glyph.Graphics.Shapes;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Physics.Colliders;
 using Microsoft.Xna.Framework;

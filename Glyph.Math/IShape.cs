@@ -1,6 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Glyph.Math.Shapes;
+using Microsoft.Xna.Framework;
 
-namespace Glyph.Math.Shapes
+namespace Glyph.Math
 {
     public interface IShape : IArea
     {
