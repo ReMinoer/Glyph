@@ -12,7 +12,7 @@ using NLua;
 
 namespace Glyph.Scripting
 {
-    public class ScriptPlayer : GlyphComponent, IScriptPlayer
+    public class LuaScriptPlayer : GlyphComponent, IScriptPlayer
     {
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly Lua _lua;
@@ -26,7 +26,7 @@ namespace Glyph.Scripting
         public IReadOnlyDictionary<string, ITrigger> Triggers { get; private set; }
         public IReadOnlyDictionary<string, ITriggerArea> TriggerAreas { get; private set; }
 
-        public ScriptPlayer(ScriptManager scriptManager)
+        public LuaScriptPlayer(ScriptManager scriptManager)
         {
             Enabled = true;
 
