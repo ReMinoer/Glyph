@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Glyph.Input.Composites;
 using Glyph.Input.Handlers.Axis;
 using Glyph.Input.Handlers.Buttons;
@@ -6,6 +7,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Glyph.Input.StandardInputs
 {
+    [Flags]
+    public enum MenuInputsType
+    {
+        Gamepad     = 0,
+        Mouse       = 1 << 0,
+        Keyboard    = 1 << 1
+    }
+
     public class MenuInputs : List<IInputHandler>
     {
         public const string Up = Prefix + "Up";
@@ -20,7 +29,7 @@ namespace Glyph.Input.StandardInputs
         public const string ReleaseClic = Prefix + "ReleaseClic";
         private const string Prefix = "Menu-";
 
-        public MenuInputs(bool gamepad, bool mouse, bool keyboard)
+        public MenuInputs(MenuInputsType type)
         {
             var up = new InputSet<InputActivity>(Up);
             var down = new InputSet<InputActivity>(Down);
@@ -33,7 +42,7 @@ namespace Glyph.Input.StandardInputs
             var clic = new InputSet<InputActivity>(Clic);
             var releaseClic = new InputSet<InputActivity>(ReleaseClic);
 
-            if (gamepad)
+            if (type.HasFlag(MenuInputsType.Gamepad))
             {
                 up.Add(new PadButtonHandler("DPad", Buttons.DPadUp));
                 up.Add(new ThumbStickAxisHandler("ThumbStick", ThumbStick.Left, Axis.Vertical, 0.5f, AxisSign.Positive,
@@ -62,13 +71,13 @@ namespace Glyph.Input.StandardInputs
                 exit.Add(new PadButtonHandler("Button", Buttons.Back));
             }
 
-            if (mouse)
+            if (type.HasFlag(MenuInputsType.Mouse))
             {
                 clic.Add(new MouseButtonHandler("Clic", MouseButton.Left));
                 releaseClic.Add(new MouseButtonHandler("ReleaseClic", MouseButton.Left, InputActivity.Released));
             }
 
-            if (keyboard)
+            if (type.HasFlag(MenuInputsType.Keyboard))
             {
                 up.Add(new KeyHandler("Key", Keys.Up));
                 down.Add(new KeyHandler("Key", Keys.Down));
