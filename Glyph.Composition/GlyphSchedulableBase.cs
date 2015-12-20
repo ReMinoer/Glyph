@@ -65,9 +65,9 @@ namespace Glyph.Composition
 
         public override sealed void Clear()
         {
-            SchedulerAssigner.ClearComponents();
-
             base.Clear();
+
+            SchedulerAssigner.ClearComponents();
         }
 
         private void InjectToOtherComponents(IGlyphComponent item)
