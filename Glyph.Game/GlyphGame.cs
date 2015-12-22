@@ -27,7 +27,6 @@ namespace Glyph.Game
         private IScene _scene;
         private bool _sceneChanged;
         private CultureInfo _culture;
-        private bool _synchroVertical;
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public ContentLibrary ContentLibrary { get; private set; }
@@ -57,16 +56,6 @@ namespace Glyph.Game
             {
                 _culture = value;
                 Logger.Info("Current culture : " + _culture.EnglishName);
-            }
-        }
-
-        public bool SynchroVertical
-        {
-            get { return _synchroVertical; }
-            set
-            {
-                GraphicsDeviceManager.SynchronizeWithVerticalRetrace = value;
-                _synchroVertical = value;
             }
         }
 
