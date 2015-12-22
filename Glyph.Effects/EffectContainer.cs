@@ -7,8 +7,7 @@ namespace Glyph.Effects
 {
     public class EffectContainer : EffectContainer<IEffectComponent>, IEffectContainer
     {
-        protected EffectContainer(int size)
-            : base(size)
+        protected EffectContainer()
         {
         }
     }
@@ -18,8 +17,7 @@ namespace Glyph.Effects
     {
         public bool Enabled { get; set; }
 
-        protected EffectContainer(int size)
-            : base(size)
+        protected EffectContainer()
         {
         }
 

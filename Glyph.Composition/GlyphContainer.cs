@@ -8,10 +8,6 @@ namespace Glyph.Composition
 {
     public abstract class GlyphContainer : GlyphContainer<IGlyphComponent>
     {
-        protected GlyphContainer(int size)
-            : base(size)
-        {
-        }
     }
 
     public abstract class GlyphContainer<TComponent> : Container<IGlyphComponent, IGlyphParent, TComponent>, IGlyphContainer<TComponent>
@@ -25,8 +21,7 @@ namespace Glyph.Composition
             get { return _injectableProperties; }
         }
 
-        protected GlyphContainer(int size)
-            : base(size)
+        protected GlyphContainer()
         {
             _injectableProperties = GetType().GetProperties().Where(x => x.GetCustomAttributes(typeof(InjectableAttribute)).Any());
         }

@@ -18,7 +18,7 @@ namespace Glyph.Physics.Colliders
                 Vector2 center = Vector2.Zero;
                 foreach (ICollider collider in this)
                     center += collider.Center;
-                return center / Components.Length;
+                return center / Components.Count;
             }
             set
             {
@@ -45,11 +45,6 @@ namespace Glyph.Physics.Colliders
                 foreach (ICollider collider in this)
                     collider.Collided -= value;
             }
-        }
-
-        protected ColliderContainer(int size)
-            : base(size)
-        {
         }
 
         public void LoadContent(ContentLibrary contentLibrary)

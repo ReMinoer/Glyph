@@ -11,8 +11,7 @@ namespace Glyph.Input.Converters
         public TOutput Value { get; protected set; }
         public abstract InputSource InputSource { get; }
 
-        protected InputConverter(string name, int size)
-            : base(size)
+        protected InputConverter(string name)
         {
             Name = name;
         }

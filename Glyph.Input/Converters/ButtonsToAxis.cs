@@ -30,8 +30,10 @@ namespace Glyph.Input.Converters
         }
 
         public ButtonsToAxis(string name = "")
-            : base(name, 2)
+            : base(name)
         {
+            Components.Add(null);
+            Components.Add(null);
         }
 
         protected override void HandleInput(IEnumerable<IInputHandler<InputActivity>> components)

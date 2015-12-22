@@ -42,9 +42,10 @@ namespace Glyph.Graphics
         }
 
         public SpriteSheet()
-            : base(1)
         {
-            Components[0] = _spriteLoader = new SpriteLoader();
+            _spriteLoader = new SpriteLoader();
+            Components.Add(_spriteLoader);
+
             Frames = new List<Rectangle>();
         }
 

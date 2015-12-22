@@ -72,15 +72,14 @@ namespace Glyph.Scripting.Triggers
         }
 
         public TriggerArea(bool singleUse, Lazy<GraphicsDevice> graphicsDevice, ILayerManager layerManager)
-            : base(4)
         {
             _layerManager = layerManager;
             _triggerVar = new TriggerVar(singleUse);
 
-            Components[0] = _sceneNode = new SceneNode();
-            Components[1] = _rectangleSprite = new RectangleSprite(graphicsDevice);
-            Components[2] = _spriteTransformer = new SpriteTransformer();
-            Components[3] = _spriteRenderer = new SpriteRenderer(_rectangleSprite, _sceneNode);
+            Components.Add(_sceneNode = new SceneNode());
+            Components.Add(_rectangleSprite = new RectangleSprite(graphicsDevice));
+            Components.Add(_spriteTransformer = new SpriteTransformer());
+            Components.Add(_spriteRenderer = new SpriteRenderer(_rectangleSprite, _sceneNode));
         }
 
         public override void Initialize()

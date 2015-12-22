@@ -8,7 +8,7 @@ namespace Glyph.Animation
 {
     // TODO : Splines
     [SinglePerParent]
-    public class Motion : GlyphContainer, IEnableable, IUpdate, ITimeUnscalable
+    public class Motion : GlyphContainer<ITrajectoryPlayer>, IEnableable, IUpdate, ITimeUnscalable
     {
         public enum MoveType
         {
@@ -26,8 +26,13 @@ namespace Glyph.Animation
         public bool UseUnscaledTime { get; set; }
         public bool AffectsRotation { get; set; }
         public MoveType Type { get; private set; }
-        public ITrajectoryPlayer TrajectoryPlayer { get; private set; }
         public Referential Referential { get; private set; }
+
+        public ITrajectoryPlayer TrajectoryPlayer
+        {
+            get { return Components[0]; }
+            set { Components[0] = value; }
+        }
 
         public Vector2 Direction
         {
@@ -70,9 +75,10 @@ namespace Glyph.Animation
         }
 
         public Motion(SceneNode sceneNode)
-            : base(1)
         {
             _sceneNode = sceneNode;
+
+            Components.Add(null);
 
             Type = MoveType.Dynamic;
             Referential = Referential.Local;
@@ -278,7 +284,7 @@ namespace Glyph.Animation
         {
             Vector2 startPosition = referential == Referential.Local ? _sceneNode.LocalPosition : _sceneNode.Position;
 
-            Components[0] = TrajectoryPlayer = trajectoryPlayer;
+            TrajectoryPlayer = trajectoryPlayer;
             TrajectoryPlayer.Play(startPosition);
 
             Referential = referential;
