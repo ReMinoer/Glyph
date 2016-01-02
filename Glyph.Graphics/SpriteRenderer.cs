@@ -15,11 +15,11 @@ namespace Glyph.Graphics
         {
             if (SpriteTransformer != null)
                 spriteBatch.Draw(Source.Texture, SceneNode.Position, Source.Rectangle, SpriteTransformer.Color,
-                    SceneNode.Rotation, SpriteTransformer.Origin, SceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, 0);
+                    SceneNode.Rotation, SpriteTransformer.Origin, SceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, SceneNode.Depth);
             else
             {
                 spriteBatch.Draw(Source.Texture, SceneNode.Position, Source.Rectangle, Color.White,
-                    SceneNode.Rotation, Source.GetDrawnRectangle().Center.ToVector2(), SceneNode.Scale, SpriteEffects.None, 0);
+                    SceneNode.Rotation, Source.GetDrawnRectangle().Center.ToVector2(), SceneNode.Scale, SpriteEffects.None, SceneNode.Depth);
             }
         }
     }

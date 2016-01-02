@@ -19,10 +19,10 @@ namespace Glyph.Graphics
         {
             if (SpriteTransformer != null)
                 spriteBatch.Draw(Source.Texture, _fillingRectangle.Rectangle.ToStruct(), Source.Rectangle, SpriteTransformer.Color,
-                    SceneNode.Rotation, SpriteTransformer.Origin, SpriteTransformer.Effects, 0);
+                    SceneNode.Rotation, SpriteTransformer.Origin, SpriteTransformer.Effects, SceneNode.Depth);
             else
                 spriteBatch.Draw(Source.Texture, _fillingRectangle.Rectangle.ToStruct(), Source.Rectangle, Color.White,
-                    SceneNode.Rotation, Vector2.Zero, SpriteEffects.None, 0);
+                    SceneNode.Rotation, Vector2.Zero, SpriteEffects.None, SceneNode.Depth);
         }
     }
 }

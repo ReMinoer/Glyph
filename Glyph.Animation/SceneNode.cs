@@ -14,8 +14,10 @@ namespace Glyph.Animation
         private Vector2 _position;
         private float _rotation;
         private float _scale;
-        public event Action<SceneNode> Refreshed;
+        private float _localDepth;
+        private float _depth;
         public Matrix3X3 Matrix { get; private set; }
+        public event Action<SceneNode> Refreshed;
 
         public SceneNode ParentNode
         {
@@ -74,6 +76,16 @@ namespace Glyph.Animation
             }
         }
 
+        public float LocalDepth
+        {
+            get { return _localDepth; }
+            set
+            {
+                _localDepth = value;
+                Refresh();
+            }
+        }
+
         public Matrix3X3 LocalMatrix
         {
             get { return Transformation.Matrix; }
@@ -93,10 +105,7 @@ namespace Glyph.Animation
 
         public float Rotation
         {
-            get
-            {
-                return _rotation;
-            }
+            get { return _rotation; }
             set
             {
                 if (ParentNode != null)
@@ -108,16 +117,25 @@ namespace Glyph.Animation
 
         public float Scale
         {
-            get
-            {
-                return _scale;
-            }
+            get { return _scale; }
             set
             {
                 if (ParentNode != null)
                     LocalScale = value / ParentNode.Scale;
                 else
                     LocalScale = value;
+            }
+        }
+
+        public float Depth
+        {
+            get { return _depth; }
+            set
+            {
+                if (ParentNode != null)
+                    LocalDepth = value - ParentNode.Depth;
+                else
+                    LocalDepth = value;
             }
         }
 
@@ -152,6 +170,7 @@ namespace Glyph.Animation
                 _position = LocalPosition;
                 _rotation = LocalRotation;
                 _scale = LocalScale;
+                _depth = LocalDepth;
                 Matrix = LocalMatrix;
             }
             else
@@ -159,6 +178,7 @@ namespace Glyph.Animation
                 _position = ParentNode.Transformation.Matrix * LocalPosition;
                 _rotation = ParentNode.Rotation + LocalRotation;
                 _scale = ParentNode.Scale * LocalScale;
+                _depth = ParentNode.Depth + LocalDepth;
                 Matrix = ParentNode.Matrix * LocalMatrix;
             }
 
