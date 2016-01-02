@@ -7,17 +7,17 @@ namespace Glyph
     {
         static private ElapsedTime _instance;
 
-        static public ElapsedTime Instance
-        {
-            get { return _instance ?? (_instance = new ElapsedTime()); }
-        }
-
         public GameTime GameTime { get; private set; }
         public TimeSpan Total { get; set; }
         public float Delta { get; set; }
         public float Scale { get; set; }
         public TimeSpan UnscaledTotal { get; set; }
         public float UnscaledDelta { get; set; }
+
+        static public ElapsedTime Instance
+        {
+            get { return _instance ?? (_instance = new ElapsedTime()); }
+        }
 
         protected ElapsedTime()
         {

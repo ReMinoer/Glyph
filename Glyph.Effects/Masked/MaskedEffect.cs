@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -17,8 +16,6 @@ namespace Glyph.Effects.Masked
         {
             Patches = new List<MaskPatch>();
         }
-
-        protected abstract void ApplyEffect(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
 
         public override void Initialize()
         {
@@ -81,5 +78,7 @@ namespace Glyph.Effects.Masked
         {
             MaskRender.Dispose();
         }
+
+        protected abstract void ApplyEffect(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
     }
 }

@@ -10,9 +10,9 @@ namespace Glyph.Input.StandardInputs
     [Flags]
     public enum MenuInputsType
     {
-        Gamepad     = 0,
-        Mouse       = 1 << 0,
-        Keyboard    = 1 << 1
+        Gamepad = 0,
+        Mouse = 1 << 0,
+        Keyboard = 1 << 1
     }
 
     public class MenuInputs : List<IInputHandler>

@@ -5,8 +5,8 @@ namespace Glyph.Input
 {
     public class MouseManager
     {
-        private Vector2 _windowSize;
         static private MouseManager _instance;
+        private Vector2 _windowSize;
         public Point DefaultPosition { get; set; }
 
         static public MouseManager Instance

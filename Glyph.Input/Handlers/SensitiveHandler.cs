@@ -9,13 +9,13 @@
         {
         }
 
-        protected abstract void HandleInput(InputStates inputStates);
-
         new public void Update(InputStates inputStates)
         {
             HandleInput(inputStates);
             base.Update(inputStates);
         }
+
+        protected abstract void HandleInput(InputStates inputStates);
 
         protected override sealed bool GetActivity(InputStates inputStates)
         {

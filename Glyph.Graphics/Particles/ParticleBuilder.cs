@@ -7,7 +7,7 @@ namespace Glyph.Graphics.Particles
     {
         private readonly IDependencyInjector _injector;
         protected AnimationBuilder<StandardParticle> Animation { get; private set; }
-        protected float? LifeTime { get; set; } 
+        protected float? LifeTime { get; set; }
 
         protected ParticleBuilder(IDependencyInjector injector)
         {

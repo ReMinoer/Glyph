@@ -14,6 +14,9 @@ namespace Glyph.Animation
         public WeakReference<T> Animatable { get; private set; }
         public float ElapsedTime { get; private set; }
 
+        public bool Paused { get; private set; }
+        public bool IsLooping { get; set; }
+
         public StandardAnimation<T> Animation
         {
             get { return _animation; }
@@ -35,9 +38,6 @@ namespace Glyph.Animation
         {
             get { return ElapsedTime > Animation.Duration; }
         }
-
-        public bool Paused { get; private set; }
-        public bool IsLooping { get; set; }
 
         public StandardAnimationPlayer(T animatable)
         {
@@ -88,7 +88,6 @@ namespace Glyph.Animation
                     _stepsToRead.AddRange(Animation);
                     ElapsedTime -= Animation.Duration;
                 }
-
             } while (ElapsedTime > 0);
             ElapsedTime -= Animation.Duration;
         }

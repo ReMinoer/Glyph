@@ -16,8 +16,6 @@ namespace Glyph.UI.Menus
         public int DefaultSelection { get; set; }
         public Axis NavigationAxis { get; set; }
         public bool NavigationLoop { get; set; }
-        public event EventHandler<SelectionEventArgs> SelectionChanged;
-        public event EventHandler<SelectionEventArgs> SelectionTriggered;
 
         public IButton SelectedControl
         {
@@ -28,6 +26,9 @@ namespace Glyph.UI.Menus
                     : null;
             }
         }
+
+        public event EventHandler<SelectionEventArgs> SelectionChanged;
+        public event EventHandler<SelectionEventArgs> SelectionTriggered;
 
         public LinearMenu(InputManager inputManager, IDependencyInjector injector)
             : base(injector)

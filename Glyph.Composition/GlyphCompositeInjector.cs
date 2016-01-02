@@ -31,7 +31,7 @@ namespace Glyph.Composition
 
                 return component;
             }
-            
+
             return base.Resolve(type, serviceKey);
         }
 

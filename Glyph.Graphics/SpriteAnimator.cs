@@ -54,23 +54,6 @@ namespace Glyph.Graphics
             }
         }
 
-        private void ChangeAnimationInstant(object key)
-        {
-            CurrentKey = key;
-            CurrentAnimation = Animations[key];
-
-            CurrentStep = 0;
-            RefreshStep();
-
-            Ended = false;
-        }
-
-        private void RefreshStep()
-        {
-            _spriteSheet.CurrentFrame = CurrentAnimation.Frames[CurrentStep];
-            _period.Interval = CurrentAnimation.Intervals[CurrentStep];
-        }
-
         public void Update(ElapsedTime elapsedTime)
         {
             if (!Enabled || Ended)
@@ -96,6 +79,23 @@ namespace Glyph.Graphics
             }
 
             RefreshStep();
+        }
+
+        private void ChangeAnimationInstant(object key)
+        {
+            CurrentKey = key;
+            CurrentAnimation = Animations[key];
+
+            CurrentStep = 0;
+            RefreshStep();
+
+            Ended = false;
+        }
+
+        private void RefreshStep()
+        {
+            _spriteSheet.CurrentFrame = CurrentAnimation.Frames[CurrentStep];
+            _period.Interval = CurrentAnimation.Intervals[CurrentStep];
         }
     }
 }

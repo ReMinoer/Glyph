@@ -19,7 +19,7 @@ namespace Glyph.Animation.Trajectories.Players
             get { return true; }
         }
 
-        protected override void UpdateThis(ElapsedTime elapsedTime)
+        protected override void UpdateLocal(ElapsedTime elapsedTime)
         {
             if (State == TrajectoryPlayerState.Play)
             {

@@ -6,7 +6,7 @@ namespace Glyph.Physics
 {
     public class ColliderManager
     {
-        private readonly List<ICollider> _colliders; 
+        private readonly List<ICollider> _colliders;
 
         public ColliderManager()
         {

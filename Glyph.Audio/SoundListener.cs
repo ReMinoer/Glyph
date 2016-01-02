@@ -7,7 +7,7 @@ namespace Glyph.Audio
     {
         public AudioListener Model { get; private set; }
 
-        public SoundListener(SoundListenerManager soundListenerManager) 
+        public SoundListener(SoundListenerManager soundListenerManager)
         {
             Model = new AudioListener();
 

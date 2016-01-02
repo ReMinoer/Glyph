@@ -47,11 +47,6 @@ namespace Glyph.Composition.Layers
             return null;
         }
 
-        ILayerRoot ILayerManager.GetLayerRoot(IGlyphComponent component)
-        {
-            return GetLayerRoot(component);
-        }
-
         protected internal virtual TLayer Add(ILayerRoot<TLayer> layerRoot)
         {
             TLayer layer = LayerFactory(layerRoot);
@@ -62,6 +57,11 @@ namespace Glyph.Composition.Layers
         protected internal virtual void Remove(ILayerRoot<TLayer> layerRoot)
         {
             _layers.Remove(layerRoot);
+        }
+
+        ILayerRoot ILayerManager.GetLayerRoot(IGlyphComponent component)
+        {
+            return GetLayerRoot(component);
         }
     }
 }

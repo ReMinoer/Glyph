@@ -31,7 +31,7 @@ namespace Glyph.Scripting
             Enabled = true;
 
             _lua = scriptManager.Lua;
-            
+
             _loadedFunctions = new Dictionary<string, LuaFunction>();
             _coroutines = new Dictionary<string, LuaFunction>();
 

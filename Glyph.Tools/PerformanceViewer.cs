@@ -6,6 +6,7 @@ namespace Glyph.Tools
 {
     public class PerformanceViewer
     {
+        private const int RefreshIntervalle = 1000;
         private readonly Stopwatch _drawTimer = new Stopwatch();
         private readonly Period _refreshPeriod = new Period(RefreshIntervalle);
         private readonly Stopwatch _updateTimer = new Stopwatch();
@@ -16,7 +17,6 @@ namespace Glyph.Tools
         private float _updateCompteur;
         private float _updateMax;
         private float _updateTotals;
-        private const int RefreshIntervalle = 1000;
         public string ProcessName { get; private set; }
         public float Memory { get; private set; }
         public float MemoryMax { get; private set; }

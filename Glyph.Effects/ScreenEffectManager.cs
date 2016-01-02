@@ -6,10 +6,10 @@ namespace Glyph.Effects
 {
     public class ScreenEffectManager : EffectComposite
     {
+        static private ScreenEffectManager _instance;
         private RenderTarget2D _renderTargetA;
         private RenderTarget2D _renderTargetB;
         private int _renderStep;
-        static private ScreenEffectManager _instance;
 
         static public ScreenEffectManager Instance
         {

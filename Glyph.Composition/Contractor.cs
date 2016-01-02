@@ -22,6 +22,12 @@ namespace Glyph.Composition
             get { return false; }
         }
 
+        public Contractor(GlyphSchedulableBase parent)
+        {
+            _parent = parent;
+            _list = new List<WeakReference<T>>();
+        }
+
         public T this[int index]
         {
             get
@@ -42,12 +48,6 @@ namespace Glyph.Composition
                 _parent.Add(value);
                 _list[index].SetTarget(value);
             }
-        }
-
-        public Contractor(GlyphSchedulableBase parent)
-        {
-            _parent = parent;
-            _list = new List<WeakReference<T>>();
         }
 
         public void Init(IEnumerable<T> items)

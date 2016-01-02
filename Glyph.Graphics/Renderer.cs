@@ -8,9 +8,9 @@ namespace Glyph.Graphics
     [SinglePerParent]
     public abstract class Renderer : GlyphComponent, IDraw
     {
-        public bool Visible { get; set; }
         protected readonly ISpriteSource Source;
         protected readonly SceneNode SceneNode;
+        public bool Visible { get; set; }
 
         [Injectable]
         public SpriteTransformer SpriteTransformer { get; set; }

@@ -46,14 +46,12 @@ namespace Glyph.Animation.Trajectories.Players
             State = TrajectoryPlayerState.End;
         }
 
-        protected abstract void UpdateThis(ElapsedTime elapsedTime);
-
         public virtual void Update(ElapsedTime elapsedTime)
         {
             if (!Enabled)
                 return;
 
-            UpdateThis(elapsedTime);
+            UpdateLocal(elapsedTime);
         }
 
         public void Play(Vector2 startPosition)
@@ -81,6 +79,8 @@ namespace Glyph.Animation.Trajectories.Players
             if (State == TrajectoryPlayerState.Play)
                 State = TrajectoryPlayerState.Pause;
         }
+
+        protected abstract void UpdateLocal(ElapsedTime elapsedTime);
 
         protected void End()
         {

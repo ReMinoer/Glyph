@@ -22,7 +22,7 @@ namespace Glyph.Tools.StatusDisplayChannels
                 float y = OriginBottom
                     ? 2 * Resolution.Instance.WindowMargin.Y + Resolution.Instance.Size.Y - ScreenMargin.Y
                     : ScreenMargin.Y;
-                return new Vector2(x,y);
+                return new Vector2(x, y);
             }
         }
 
@@ -35,8 +35,6 @@ namespace Glyph.Tools.StatusDisplayChannels
             OriginBottom = false;
             Spacing = 0;
         }
-
-        protected abstract void UpdateValues(GameTime gameTime);
 
         public void LoadContent(ContentLibrary ressources)
         {
@@ -64,5 +62,7 @@ namespace Glyph.Tools.StatusDisplayChannels
             foreach (StatusDisplayText t in Text.Values)
                 t.Draw(spriteBatch);
         }
+
+        protected abstract void UpdateValues(GameTime gameTime);
     }
 }

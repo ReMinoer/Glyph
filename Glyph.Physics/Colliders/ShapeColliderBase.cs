@@ -1,7 +1,6 @@
 ﻿using Glyph.Graphics;
 using Glyph.Graphics.Shapes;
 using Glyph.Math;
-using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

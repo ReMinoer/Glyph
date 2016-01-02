@@ -39,7 +39,7 @@ namespace Glyph.Animation
             }
         }
 
-        public static Transformation Identity
+        static public Transformation Identity
         {
             get { return new Transformation(Vector2.Zero, 0, 1f); }
         }

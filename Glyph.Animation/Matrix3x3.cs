@@ -51,7 +51,7 @@ namespace Glyph.Animation
             M33 = 1;
         }
 
-        public static Vector2 operator *(Matrix3X3 matrix, Vector2 vector)
+        public static Vector2 operator*(Matrix3X3 matrix, Vector2 vector)
         {
             return new Vector2
             {
@@ -60,7 +60,7 @@ namespace Glyph.Animation
             };
         }
 
-        public static Matrix3X3 operator *(Matrix3X3 matrixA, Matrix3X3 matrixB)
+        public static Matrix3X3 operator*(Matrix3X3 matrixA, Matrix3X3 matrixB)
         {
             return new Matrix3X3
             {

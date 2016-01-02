@@ -13,11 +13,6 @@ namespace Glyph.Math
             get { return _sequence.Count; }
         }
 
-        public int this[int index]
-        {
-            get { return _sequence[index]; }
-        }
-
         internal IntegerSequencer()
         {
             _sequence = new List<int>();
@@ -40,6 +35,11 @@ namespace Glyph.Math
         {
             Then(startFrame);
             ThenGoTo(endFrame);
+        }
+
+        public int this[int index]
+        {
+            get { return _sequence[index]; }
         }
 
         public IntegerSequencer Then(params int[] n)
@@ -106,11 +106,6 @@ namespace Glyph.Math
             return this;
         }
 
-        private void Clear()
-        {
-            _sequence.Clear();
-        }
-
         static public IntegerSequencer Linear(params int[] linearPoints)
         {
             if (!linearPoints.Any())
@@ -126,6 +121,11 @@ namespace Glyph.Math
         public IEnumerator<int> GetEnumerator()
         {
             return _sequence.GetEnumerator();
+        }
+
+        private void Clear()
+        {
+            _sequence.Clear();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

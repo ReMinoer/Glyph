@@ -14,8 +14,6 @@ namespace Glyph.Input.Composites
             Name = name;
         }
 
-        protected abstract void HandleInput(InputStates inputStates);
-
         public virtual void Update(InputStates inputStates)
         {
             foreach (IInputHandler inputHandler in this)
@@ -23,5 +21,7 @@ namespace Glyph.Input.Composites
 
             HandleInput(inputStates);
         }
+
+        protected abstract void HandleInput(InputStates inputStates);
     }
 }

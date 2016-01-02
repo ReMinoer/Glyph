@@ -1,5 +1,4 @@
-﻿using Glyph.UI;
-using Glyph.UI.Misc;
+﻿using Glyph.UI.Misc;
 
 namespace Glyph.Tools.StatusDisplayChannels
 {

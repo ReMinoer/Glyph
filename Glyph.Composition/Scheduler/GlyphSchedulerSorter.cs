@@ -10,15 +10,15 @@ namespace Glyph.Composition.Scheduler
         private readonly IDictionary<object, IGlyphSchedulerAssigner> _schedulers;
         public object DefaultKey { get; set; }
 
-        public IGlyphSchedulerAssigner this[object key]
-        {
-            get { return _schedulers[key]; }
-        }
-
         public GlyphSchedulerSorter(IDependencyInjector injector)
         {
             _injector = injector;
             _schedulers = new Dictionary<object, IGlyphSchedulerAssigner>();
+        }
+
+        public IGlyphSchedulerAssigner this[object key]
+        {
+            get { return _schedulers[key]; }
         }
 
         public GlyphScheduler<TInterface, TDelegate> Add(object key)

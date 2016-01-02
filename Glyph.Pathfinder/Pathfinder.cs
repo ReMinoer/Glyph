@@ -47,11 +47,6 @@ namespace Glyph.Pathfinder
             TimerProcess = new Stopwatch();
         }
 
-        protected abstract void CalculationProcess();
-        protected abstract bool IsMoveValid(Point newPoint, Point parent, Point move, int cond = 0);
-        protected abstract bool IsCaseVide(Point p);
-        protected abstract TMove NewPathfinderMove(Point p, Point m);
-
         public void Initialize(Point d, Point f)
         {
             Success = false;
@@ -143,6 +138,11 @@ namespace Glyph.Pathfinder
             route.Reverse();
             return route;
         }
+
+        protected abstract void CalculationProcess();
+        protected abstract bool IsMoveValid(Point newPoint, Point parent, Point move, int cond = 0);
+        protected abstract bool IsCaseVide(Point p);
+        protected abstract TMove NewPathfinderMove(Point p, Point m);
 
         protected void AddSurroundingCases(Point parent, int limitMax, int limitMin = 1, int cond = 0)
         {

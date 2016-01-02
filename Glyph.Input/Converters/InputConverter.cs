@@ -16,8 +16,6 @@ namespace Glyph.Input.Converters
             Name = name;
         }
 
-        protected abstract void HandleInput(IEnumerable<IInputHandler<TInput>> components);
-
         public void Update(InputStates inputStates)
         {
             foreach (IInputHandler<TInput> component in this)
@@ -32,5 +30,7 @@ namespace Glyph.Input.Converters
 
             HandleInput(this);
         }
+
+        protected abstract void HandleInput(IEnumerable<IInputHandler<TInput>> components);
     }
 }

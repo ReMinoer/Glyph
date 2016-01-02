@@ -9,22 +9,15 @@ namespace Glyph.Audio
 {
     public class SongPlayer : GlyphComponent, ILoadContent, IUpdate
     {
-        public enum AudioTransitionState
-        {
-            Ready,
-            Fading,
-            Wait,
-            Play
-        }
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private const float VolumeSpeed = 0.0005f;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly Period _waitTime = new Period(0);
 
         public Dictionary<string, Song> Musics;
 
         private float _volumeFondu;
         private AudioTransitionState _transitionState = AudioTransitionState.Ready;
-        private readonly Period _waitTime = new Period(0);
         private bool _transitionRequire;
 
         public float Volume { get; set; }
@@ -151,6 +144,14 @@ namespace Glyph.Audio
             string name = id != -1 ? Musics.ElementAt(id == Musics.Count - 1 ? 0 : id + 1).Key : Musics.ElementAt(0).Key;
 
             Play(name);
+        }
+
+        public enum AudioTransitionState
+        {
+            Ready,
+            Fading,
+            Wait,
+            Play
         }
     }
 }

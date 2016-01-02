@@ -8,8 +8,8 @@ namespace Glyph.Animation
     [SinglePerParent]
     public class SceneNode : GlyphComponent
     {
-        private SceneNode _parentNode;
         private readonly List<SceneNode> _childrenNodes;
+        private SceneNode _parentNode;
         private Transformation _transformation;
         private Vector2 _position;
         private float _rotation;
@@ -17,7 +17,6 @@ namespace Glyph.Animation
         private float _localDepth;
         private float _depth;
         public Matrix3X3 Matrix { get; private set; }
-        public event Action<SceneNode> Refreshed;
 
         public SceneNode ParentNode
         {
@@ -138,6 +137,8 @@ namespace Glyph.Animation
                     LocalDepth = value;
             }
         }
+
+        public event Action<SceneNode> Refreshed;
 
         public SceneNode()
         {

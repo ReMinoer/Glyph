@@ -8,6 +8,11 @@ namespace Glyph.Animation
         private readonly List<AnimationStep<T>> _list;
         public bool Loop { get; set; }
 
+        public AnimationBuilder()
+        {
+            _list = new List<AnimationStep<T>>();
+        }
+
         public AnimationStepDelegate<T> this[float instant]
         {
             set { this[instant, instant] = value; }
@@ -26,11 +31,6 @@ namespace Glyph.Animation
 
                 _list.Add(step);
             }
-        }
-
-        public AnimationBuilder()
-        {
-            _list = new List<AnimationStep<T>>();
         }
 
         public StandardAnimation<T> Generate()

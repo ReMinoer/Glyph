@@ -17,8 +17,6 @@ namespace Glyph.Input.Handlers
             DesiredActivity = desiredActivity;
         }
 
-        protected abstract bool GetActivity(InputStates inputStates);
-
         public void Update(InputStates inputStates)
         {
             bool activity = GetActivity(inputStates);
@@ -26,5 +24,7 @@ namespace Glyph.Input.Handlers
             Value = ButtonBehaviour.Update(activity);
             IsActivated = Value == DesiredActivity;
         }
+
+        protected abstract bool GetActivity(InputStates inputStates);
     }
 }

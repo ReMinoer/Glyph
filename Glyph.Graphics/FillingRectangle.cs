@@ -5,6 +5,6 @@ namespace Glyph.Graphics
 {
     public class FillingRectangle : GlyphComponent
     {
-         public IRectangle Rectangle { get; set; }
+        public IRectangle Rectangle { get; set; }
     }
 }

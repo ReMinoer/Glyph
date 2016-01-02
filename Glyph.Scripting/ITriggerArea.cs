@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Glyph.Math;
-using Glyph.Math.Shapes;
 
 namespace Glyph.Scripting
 {
@@ -10,7 +9,7 @@ namespace Glyph.Scripting
     {
         bool Enabled { get; set; }
         bool Visible { get; set; }
-        void UpdateStatus(IEnumerable<IActor> actors);
         new event TriggerAreaEventHandler Triggered;
+        void UpdateStatus(IEnumerable<IActor> actors);
     }
 }
