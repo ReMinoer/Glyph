@@ -7,7 +7,7 @@ namespace Glyph.Composition.Layers
     public class LayerManager<TLayer> : GlyphComponent, ILayerManager
         where TLayer : class, ILayer<TLayer>
     {
-        private readonly Dictionary<ILayerRoot<TLayer>, TLayer> _layers;
+        protected readonly Dictionary<ILayerRoot<TLayer>, TLayer> _layers;
         public Func<ILayerRoot<TLayer>, TLayer> LayerFactory { get; set; }
 
         public IReadOnlyCollection<TLayer> Layers
@@ -15,10 +15,15 @@ namespace Glyph.Composition.Layers
             get { return _layers.Values.ToList().AsReadOnly(); }
         }
 
+        public LayerManager()
+        {
+            _layers = new Dictionary<ILayerRoot<TLayer>, TLayer>();
+        }
+
         public LayerManager(Func<ILayerRoot<TLayer>, TLayer> layerFactory)
+            : this()
         {
             LayerFactory = layerFactory;
-            _layers = new Dictionary<ILayerRoot<TLayer>, TLayer>();
         }
 
         public override void Initialize()
@@ -44,22 +49,17 @@ namespace Glyph.Composition.Layers
 
         ILayerRoot ILayerManager.GetLayerRoot(IGlyphComponent component)
         {
-            foreach (ILayerRoot<TLayer> layerRoot in _layers.Keys)
-                if (layerRoot.ContainsInChildren(component))
-                    return layerRoot;
-
-            return null;
+            return GetLayerRoot(component);
         }
 
-        internal TLayer Add(ILayerRoot<TLayer> layerRoot)
+        protected internal virtual TLayer Add(ILayerRoot<TLayer> layerRoot)
         {
             TLayer layer = LayerFactory(layerRoot);
-            _layers.Add(layerRoot, layer);
-
+            _layers.Add(layerRoot, layerRoot.Layer);
             return layer;
         }
 
-        internal void Remove(ILayerRoot<TLayer> layerRoot)
+        protected internal virtual void Remove(ILayerRoot<TLayer> layerRoot)
         {
             _layers.Remove(layerRoot);
         }

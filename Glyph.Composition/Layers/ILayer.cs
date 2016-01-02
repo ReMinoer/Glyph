@@ -4,7 +4,7 @@ namespace Glyph.Composition.Layers
 {
     public interface ILayer : IComparable<ILayer>
     {
-        int Index { get; }
+        int Index { get; set; }
         void Initialize();
         void Update(ElapsedTime elapsedTime);
     }

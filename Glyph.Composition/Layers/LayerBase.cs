@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace Glyph.Composition.Layers
+﻿namespace Glyph.Composition.Layers
 {
     public abstract class LayerBase<TLayer> : ILayer<TLayer>
         where TLayer : class, ILayer<TLayer>
     {
         public ILayerRoot<TLayer> Root { get; private set; }
-        public virtual int Index { get; protected set; }
+        public virtual int Index { get; set; }
 
         protected LayerBase(ILayerRoot<TLayer> root)
         {
