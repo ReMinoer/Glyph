@@ -81,7 +81,7 @@
     <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
     <Compile Include="SinglePerParentAttribute.cs" />
     <Compile Include="Delegates\UpdateDelegate.cs" />
-    <Compile Include="Contractor.cs" />
+    <Compile Include="Scribe.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
