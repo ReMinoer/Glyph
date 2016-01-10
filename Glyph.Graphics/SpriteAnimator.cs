@@ -11,7 +11,7 @@ namespace Glyph.Graphics
         private readonly Period _period;
         private readonly Queue<object> _keysQueue;
         public bool Enabled { get; set; }
-        public bool Ended { get; set; }
+        public bool Ended { get; private set; }
         public Dictionary<object, SpriteAnimation> Animations { get; private set; }
         public SpriteAnimation CurrentAnimation { get; private set; }
         public object CurrentKey { get; private set; }
@@ -57,6 +57,9 @@ namespace Glyph.Graphics
         public void Update(ElapsedTime elapsedTime)
         {
             if (!Enabled || Ended)
+                return;
+
+            if (CurrentAnimation == null)
                 return;
 
             if (!_period.Update(elapsedTime.GameTime))
