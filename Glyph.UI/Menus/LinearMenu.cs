@@ -40,8 +40,8 @@ namespace Glyph.UI.Menus
             SelectedIndex = -1;
             NavigationLoop = true;
 
-            Schedulers.Initialize.Plan(InitializeLocal);
-            Schedulers.Update.Plan(HandleInput);
+            Schedulers.Initialize.Plan(InitializeLocal).AtStart();
+            Schedulers.Update.Plan(HandleInput).AtStart();
         }
 
         public void Add(IButton component)
