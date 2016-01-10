@@ -149,11 +149,6 @@ namespace Glyph.Game
 
             HandleInput();
 
-            ScreenEffectManager.Instance.Update(gameTime);
-            AudioManager.Update(gameTime);
-            PerformanceViewer.Update(gameTime);
-            StatusDisplay.Update(gameTime);
-
             do
             {
                 if (_sceneChanged)
@@ -165,6 +160,11 @@ namespace Glyph.Game
                 }
                 Scene.Update(ElapsedTime.Instance);
             } while (_sceneChanged);
+
+            ScreenEffectManager.Instance.Update(gameTime);
+            AudioManager.Update(gameTime);
+            PerformanceViewer.Update(gameTime);
+            StatusDisplay.Update(gameTime);
 
             PerformanceViewer.UpdateEnd();
         }
