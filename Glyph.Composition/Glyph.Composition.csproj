@@ -41,6 +41,7 @@
     <Compile Include="Exceptions\ComponentNotFoundException.cs" />
     <Compile Include="GlyphCompositeInjector.cs" />
     <Compile Include="GlyphSchedulableBase.cs" />
+    <Compile Include="IComponentManager.cs" />
     <Compile Include="IDraw.cs" />
     <Compile Include="IEnableable.cs" />
     <Compile Include="ILoadContent.cs" />
@@ -80,7 +81,7 @@
     <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
     <Compile Include="SinglePerParentAttribute.cs" />
     <Compile Include="Delegates\UpdateDelegate.cs" />
-    <Compile Include="Scribe.cs" />
+    <Compile Include="Factory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">

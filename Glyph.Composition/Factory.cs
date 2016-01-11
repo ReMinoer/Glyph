@@ -6,7 +6,7 @@ using Diese.Modelization;
 
 namespace Glyph.Composition
 {
-    public class Scribe<T> : IList<T>, ICreator<T>
+    public class Factory<T> : IList<T>, ICreator<T>
         where T : class, IGlyphComponent
     {
         private readonly GlyphSchedulableBase _parent;
@@ -22,7 +22,7 @@ namespace Glyph.Composition
             get { return false; }
         }
 
-        public Scribe(GlyphSchedulableBase parent)
+        public Factory(GlyphSchedulableBase parent)
         {
             _parent = parent;
             _list = new List<WeakReference<T>>();
