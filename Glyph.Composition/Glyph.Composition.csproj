@@ -32,7 +32,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.3.0.2238, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="MonoGame.Framework">
+      <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -41,7 +43,6 @@
     <Compile Include="Exceptions\ComponentNotFoundException.cs" />
     <Compile Include="GlyphCompositeInjector.cs" />
     <Compile Include="GlyphSchedulableBase.cs" />
-    <Compile Include="IComponentManager.cs" />
     <Compile Include="IDraw.cs" />
     <Compile Include="IEnableable.cs" />
     <Compile Include="ILoadContent.cs" />
@@ -52,6 +53,11 @@
     <Compile Include="Layers\LayerBase.cs" />
     <Compile Include="Layers\LayerManager.cs" />
     <Compile Include="Layers\LayerRoot.cs" />
+    <Compile Include="Messaging\IInterpreter.cs" />
+    <Compile Include="Messaging\IRouter.cs" />
+    <Compile Include="Messaging\Message.cs" />
+    <Compile Include="Messaging\Receiver.cs" />
+    <Compile Include="Messaging\Router.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
     <Compile Include="GlyphComponent.cs" />

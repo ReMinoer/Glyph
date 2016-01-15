@@ -3,6 +3,7 @@ using Glyph.Animation;
 using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
+using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Graphics;
@@ -40,6 +41,8 @@ namespace Glyph.Application
             RegisterFunc<GlyphObject, DrawDelegate>(x => x.Draw);
 
             Register<GlyphObject>();
+            RegisterGeneric(typeof(IRouter<>), typeof(Router<>));
+            RegisterGeneric(typeof(Receiver<>));
 
             Register<SceneNode>();
             Register<Motion>();

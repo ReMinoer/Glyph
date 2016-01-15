@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Diese.Injection;
 using Glyph.Composition.Exceptions;
+using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler;
 
 namespace Glyph.Composition
@@ -18,6 +19,9 @@ namespace Glyph.Composition
             compositeInjector.CompositeContext = this;
 
             Injector = compositeInjector;
+
+            foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IInterpreter<>)))
+                Add(typeof(Receiver<>).MakeGenericType(type.GetGenericArguments()));
         }
 
         public T Add<T>()
@@ -68,6 +72,13 @@ namespace Glyph.Composition
             base.Clear();
 
             SchedulerAssigner.ClearComponents();
+        }
+
+        public void SendMessage<TMessage>(TMessage message)
+            where TMessage : Message
+        {
+            var router = Injector.Resolve<IRouter<TMessage>>();
+            router.Send(message);
         }
 
         private void InjectToOtherComponents(IGlyphComponent item)
