@@ -112,7 +112,7 @@ namespace Glyph.Scripting
             }
         }
 
-        public void RegisterVar(string name, bool singleUse = false)
+        public TriggerVar RegisterVar(string name, bool singleUse = false)
         {
             var triggerVar = new TriggerVar(singleUse)
             {
@@ -120,6 +120,7 @@ namespace Glyph.Scripting
             };
 
             Register(triggerVar);
+            return triggerVar;
         }
 
         public void RegisterArea(ITriggerArea triggerArea)
