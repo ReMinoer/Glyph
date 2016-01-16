@@ -8,7 +8,7 @@ namespace Glyph.Composition.Messaging
         private readonly List<IInterpreter<TMessage>> _interpreters;
         public IReadOnlyList<IInterpreter<TMessage>> Interpreters { get; private set; }
 
-        protected Router()
+        public Router()
         {
             _interpreters = new List<IInterpreter<TMessage>>();
             Interpreters = _interpreters.AsReadOnly();

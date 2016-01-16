@@ -41,7 +41,7 @@ namespace Glyph.Application
             RegisterFunc<GlyphObject, DrawDelegate>(x => x.Draw);
 
             Register<GlyphObject>();
-            RegisterGeneric(typeof(IRouter<>), typeof(Router<>));
+            RegisterGeneric(typeof(IRouter<>), typeof(Router<>), Subsistence.Singleton);
             RegisterGeneric(typeof(Receiver<>));
 
             Register<SceneNode>();
