@@ -3,6 +3,7 @@ using Glyph.Animation;
 using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
+using Glyph.Composition.Injection;
 using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
@@ -18,7 +19,9 @@ namespace Glyph.Application
         public GlyphRegistry()
         {
             RegisterInstance<IDependencyRegistry>(this);
+
             Register<GlyphCompositeInjector>();
+            Register<IDependencyRegistry, LocalGlyphRegistry>(Subsistence.Singleton, InjectionScope.Local);
 
             Register<GlyphScheduler<IGlyphComponent, InitializeDelegate>>();
             Register<GlyphScheduler<ILoadContent, LoadContentDelegate>>();

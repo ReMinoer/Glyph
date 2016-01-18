@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Diese.Injection;
 using Glyph.Composition.Exceptions;
+using Glyph.Composition.Injection;
 using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler;
 
@@ -10,13 +11,12 @@ namespace Glyph.Composition
 {
     public abstract class GlyphSchedulableBase : GlyphComposite
     {
-        protected readonly GlyphCompositeInjector Injector;
+        protected internal readonly GlyphCompositeInjector Injector;
         protected abstract IGlyphSchedulerAssigner SchedulerAssigner { get; }
 
         protected GlyphSchedulableBase(IDependencyInjector injector)
         {
-            var compositeInjector = injector.Resolve<GlyphCompositeInjector>();
-            compositeInjector.CompositeContext = this;
+            var compositeInjector = new GlyphCompositeInjector(this, injector.Resolve<IDependencyRegistry>(), injector.Resolve<IDependencyRegistry>(InjectionScope.Local));
 
             Injector = compositeInjector;
 
@@ -48,7 +48,10 @@ namespace Glyph.Composition
 
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)
+            {
                 SchedulerAssigner.AssignComponent(glyphObject);
+                glyphObject.Injector.Parent = this;
+            }
             else
                 SchedulerAssigner.AssignComponent(item);
         }

@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="GlyphRegistry.cs" />
     <Compile Include="GlyphSchedulerProfile.cs" />
+    <Compile Include="LocalGlyphRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +76,10 @@
     <ProjectReference Include="..\Glyph.Physics\Glyph.Physics.csproj">
       <Project>{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}</Project>
       <Name>Glyph.Physics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Scripting\Glyph.Scripting.csproj">
+      <Project>{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}</Project>
+      <Name>Glyph.Scripting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
