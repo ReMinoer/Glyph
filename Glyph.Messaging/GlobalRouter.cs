@@ -6,7 +6,7 @@
         public override void Send(TMessage message)
         {
             foreach (IInterpreter<TMessage> interpreter in Interpreters)
-                interpreter.OnMessage(message);
+                interpreter.Interpret(message);
         }
     }
 }
