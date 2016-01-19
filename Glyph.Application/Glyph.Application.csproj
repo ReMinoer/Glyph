@@ -73,6 +73,10 @@
       <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
       <Name>Glyph.Math</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
+      <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>
+      <Name>Glyph.Messaging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Physics\Glyph.Physics.csproj">
       <Project>{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}</Project>
       <Name>Glyph.Physics</Name>

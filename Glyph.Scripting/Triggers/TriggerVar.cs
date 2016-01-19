@@ -1,4 +1,6 @@
-﻿namespace Glyph.Scripting.Triggers
+﻿using System;
+
+namespace Glyph.Scripting.Triggers
 {
     public class TriggerVar : ITrigger
     {
@@ -23,11 +25,16 @@
             }
         }
 
-        public event TriggerEventHandler Triggered;
+        public event Action<ITrigger> Triggered;
 
         public TriggerVar(bool singleUse = false)
         {
             SingleUse = singleUse;
+        }
+
+        internal void SetActive(bool active)
+        {
+            _active = active;
         }
 
         public override string ToString()

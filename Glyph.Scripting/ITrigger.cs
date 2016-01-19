@@ -1,12 +1,12 @@
-﻿namespace Glyph.Scripting
-{
-    public delegate void TriggerEventHandler(ITrigger trigger);
+﻿using System;
 
+namespace Glyph.Scripting
+{
     public interface ITrigger
     {
         string Name { get; set; }
         bool Active { get; }
         bool SingleUse { get; }
-        event TriggerEventHandler Triggered;
+        event Action<ITrigger> Triggered;
     }
 }

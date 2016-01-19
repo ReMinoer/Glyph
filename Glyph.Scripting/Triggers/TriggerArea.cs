@@ -7,6 +7,7 @@ using Glyph.Graphics;
 using Glyph.Graphics.Shapes;
 using Glyph.Math;
 using Glyph.Math.Shapes;
+using Glyph.Messaging;
 using Glyph.Physics.Colliders;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,6 +17,7 @@ namespace Glyph.Scripting.Triggers
     public class TriggerArea : GlyphContainer, IEnableable, ILoadContent, IDraw, ITriggerArea
     {
         private readonly ILayerManager _layerManager;
+        private readonly IRouter<OnEnterTrigger> _router;
         private readonly TriggerVar _triggerVar;
         private readonly SceneNode _sceneNode;
         private readonly RectangleSprite _rectangleSprite;
@@ -63,17 +65,16 @@ namespace Glyph.Scripting.Triggers
             set { _sceneNode.Position = value - Size / 2; }
         }
 
-        public event TriggerAreaEventHandler Triggered;
-
-        event TriggerEventHandler ITrigger.Triggered
+        event Action<ITrigger> ITrigger.Triggered
         {
             add { _triggerVar.Triggered += value; }
             remove { _triggerVar.Triggered -= value; }
         }
 
-        public TriggerArea(bool singleUse, Lazy<GraphicsDevice> graphicsDevice, ILayerManager layerManager)
+        public TriggerArea(bool singleUse, Lazy<GraphicsDevice> graphicsDevice, ILayerManager layerManager, IRouter<OnEnterTrigger> router)
         {
             _layerManager = layerManager;
+            _router = router;
             _triggerVar = new TriggerVar(singleUse);
 
             Components.Add(_sceneNode = new SceneNode());
@@ -107,7 +108,7 @@ namespace Glyph.Scripting.Triggers
         public void UpdateStatus(IEnumerable<IActor> actors)
         {
             if (!_triggerVar.SingleUse)
-                _triggerVar.Active = false;
+                _triggerVar.SetActive(false);
 
             if (!Enabled || SingleUse)
                 return;
@@ -121,9 +122,7 @@ namespace Glyph.Scripting.Triggers
                     if (collider.Intersects(Bounds))
                     {
                         _triggerVar.Active = true;
-
-                        if (Triggered != null)
-                            Triggered.Invoke(this, actor);
+                        _router.Send(new OnEnterTrigger(this, actor));
 
                         return;
                     }
