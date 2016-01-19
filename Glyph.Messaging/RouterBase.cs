@@ -1,31 +1,27 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace Glyph.Composition.Messaging
+namespace Glyph.Messaging
 {
-    public class Router<TMessage> : IRouter<TMessage>
+    public abstract class RouterBase<TMessage> : IRouter<TMessage>
         where TMessage : Message
     {
         private readonly List<IInterpreter<TMessage>> _interpreters;
         public IReadOnlyList<IInterpreter<TMessage>> Interpreters { get; private set; }
 
-        public Router()
+        protected RouterBase()
         {
             _interpreters = new List<IInterpreter<TMessage>>();
             Interpreters = _interpreters.AsReadOnly();
         }
 
-        public void Send(TMessage message)
-        {
-            foreach (IInterpreter<TMessage> interpreter in Interpreters)
-                interpreter.OnMessage(message);
-        }
+        public abstract void Send(TMessage message);
 
-        public void Register(IInterpreter<TMessage> interpreter)
+        public virtual void Register(IInterpreter<TMessage> interpreter)
         {
             _interpreters.Add(interpreter);
         }
 
-        public void Unregister(IInterpreter<TMessage> interpreter)
+        public virtual void Unregister(IInterpreter<TMessage> interpreter)
         {
             _interpreters.Remove(interpreter);
         }

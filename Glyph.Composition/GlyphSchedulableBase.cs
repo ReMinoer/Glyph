@@ -6,6 +6,7 @@ using Glyph.Composition.Exceptions;
 using Glyph.Composition.Injection;
 using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler;
+using Glyph.Messaging;
 
 namespace Glyph.Composition
 {

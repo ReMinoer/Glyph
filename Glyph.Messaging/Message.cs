@@ -1,4 +1,4 @@
-﻿namespace Glyph.Composition.Messaging
+﻿namespace Glyph.Messaging
 {
     public abstract class Message
     {

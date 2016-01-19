@@ -1,4 +1,6 @@
-﻿namespace Glyph.Composition.Messaging
+﻿using Glyph.Messaging;
+
+namespace Glyph.Composition.Messaging
 {
     [SinglePerParent]
     public class Receiver<TMessage> : GlyphComponent, IEnableable

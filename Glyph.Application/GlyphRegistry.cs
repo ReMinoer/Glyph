@@ -9,6 +9,7 @@ using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Graphics;
 using Glyph.Graphics.Particles;
+using Glyph.Messaging;
 using Glyph.Physics;
 using Glyph.Physics.Colliders;
 
@@ -44,8 +45,10 @@ namespace Glyph.Application
             RegisterFunc<GlyphObject, DrawDelegate>(x => x.Draw);
 
             Register<GlyphObject>();
-            RegisterGeneric(typeof(IRouter<>), typeof(Router<>), Subsistence.Singleton);
+
+            RegisterGeneric(typeof(GlobalRouter<>), Subsistence.Singleton);
             RegisterGeneric(typeof(Receiver<>));
+            LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>));
 
             Register<SceneNode>();
             Register<Motion>();

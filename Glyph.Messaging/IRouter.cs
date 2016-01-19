@@ -1,4 +1,4 @@
-﻿namespace Glyph.Composition.Messaging
+﻿namespace Glyph.Messaging
 {
     public interface IRouter<TMessage>
         where TMessage : Message
