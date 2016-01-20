@@ -1,4 +1,4 @@
-﻿using Glyph.Animation;
+﻿using Glyph.Composition;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

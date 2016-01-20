@@ -1,6 +1,5 @@
 ﻿using System;
 using Diese.Injection;
-using Glyph.Animation;
 using Glyph.Composition;
 using Glyph.Graphics;
 using Glyph.Input;

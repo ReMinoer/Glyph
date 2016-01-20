@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Glyph.Animation
+namespace Glyph.Math
 {
     public class Transformation
     {

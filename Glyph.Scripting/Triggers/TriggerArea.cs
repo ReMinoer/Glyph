@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Glyph.Animation;
 using Glyph.Composition;
 using Glyph.Composition.Layers;
 using Glyph.Graphics;

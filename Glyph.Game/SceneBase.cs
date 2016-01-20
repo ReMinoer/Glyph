@@ -1,5 +1,4 @@
 ﻿using Diese.Injection;
-using Glyph.Animation;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Scheduler;

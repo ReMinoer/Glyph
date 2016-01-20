@@ -69,10 +69,6 @@
       <Project>{e2707575-12c2-4ce6-b8e4-e7efd8d4e301}</Project>
       <Name>Diese.Lua</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
-      <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>
-      <Name>Glyph.Animation</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>

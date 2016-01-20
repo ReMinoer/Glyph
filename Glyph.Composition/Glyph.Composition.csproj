@@ -56,6 +56,7 @@
     <Compile Include="Layers\LayerManager.cs" />
     <Compile Include="Layers\LayerRoot.cs" />
     <Compile Include="Messaging\Receiver.cs" />
+    <Compile Include="SceneNode.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
     <Compile Include="GlyphComponent.cs" />
@@ -103,6 +104,10 @@
     <ProjectReference Include="..\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
       <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
       <Name>Diese.Modelization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
+      <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
+      <Name>Glyph.Math</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
       <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>

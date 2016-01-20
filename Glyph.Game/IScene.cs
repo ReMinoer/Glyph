@@ -1,5 +1,4 @@
-﻿using Glyph.Animation;
-using Glyph.Composition;
+﻿using Glyph.Composition;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Game

@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
-namespace Glyph.Animation
+namespace Glyph.Math
 {
     public struct Matrix3X3
     {
@@ -37,8 +36,8 @@ namespace Glyph.Animation
 
         public Matrix3X3(Vector2 translation, float rotation, float scale)
         {
-            float cos = (float)Math.Cos(rotation);
-            float sin = (float)Math.Sin(rotation);
+            float cos = (float)System.Math.Cos(rotation);
+            float sin = (float)System.Math.Sin(rotation);
 
             M11 = cos * scale;
             M12 = sin;

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Glyph.Composition;
+using Glyph.Math;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Animation
+namespace Glyph.Composition
 {
     [SinglePerParent]
     public class SceneNode : GlyphComponent

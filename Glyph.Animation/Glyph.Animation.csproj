@@ -47,8 +47,6 @@
     <Compile Include="IAnimation.cs" />
     <Compile Include="IAnimationPlayer.cs" />
     <Compile Include="ITimeOffsetable.cs" />
-    <Compile Include="Matrix3x3.cs" />
-    <Compile Include="SceneNode.cs" />
     <Compile Include="Trajectories\IProgressiveTrajectory.cs" />
     <Compile Include="Trajectories\IStandardTrajectory.cs" />
     <Compile Include="Trajectories\ITimedTrajectory.cs" />
@@ -61,7 +59,6 @@
     <Compile Include="Trajectories\StandardTrajectory.cs" />
     <Compile Include="Trajectories\Players\TimedTrajectoryPlayer.cs" />
     <Compile Include="Trajectories\Players\TrajectoryPlayerState.cs" />
-    <Compile Include="Transformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
