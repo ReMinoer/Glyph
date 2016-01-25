@@ -47,14 +47,6 @@
     <Compile Include="Partitioning\Base\SpacePartitionerBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
-      <Project>{e8d6f663-89a6-497f-a02f-d0fc562d2d0e}</Project>
-      <Name>Diese.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
-      <Project>{8d4f4138-eb36-4427-9a2b-10a50723268c}</Project>
-      <Name>Glyph.Composition</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
       <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
       <Name>Glyph.Math</Name>
