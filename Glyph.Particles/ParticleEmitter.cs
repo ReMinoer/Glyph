@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Glyph.Animation;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Graphics.Particles
+namespace Glyph.Particles
 {
     public class ParticleEmitter : GlyphComposite<IParticle>, IEnableable, IUpdate, IDraw, ITimeUnscalable
     {

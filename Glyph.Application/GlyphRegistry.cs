@@ -10,6 +10,7 @@ using Glyph.Composition.Scheduler.Base;
 using Glyph.Graphics;
 using Glyph.Graphics.Particles;
 using Glyph.Messaging;
+using Glyph.Particles;
 using Glyph.Physics;
 using Glyph.Physics.Colliders;
 

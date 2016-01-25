@@ -1,7 +1,7 @@
 ﻿using Glyph.Animation;
 using Glyph.Composition;
 
-namespace Glyph.Graphics.Particles
+namespace Glyph.Particles
 {
     public interface IParticle : IUpdate, IDraw, ITimeOffsetable
     {

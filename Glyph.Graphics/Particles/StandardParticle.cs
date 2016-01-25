@@ -1,6 +1,7 @@
 ﻿using Diese.Injection;
 using Glyph.Animation;
 using Glyph.Composition;
+using Glyph.Particles;
 
 namespace Glyph.Graphics.Particles
 {
