@@ -95,5 +95,15 @@ namespace Glyph
 
             return new Vector2((float)Math.Cos(newAngle), (float)Math.Sin(newAngle));
         }
+
+        static public Point Discretize(this Vector2 value, Vector2 localPoint)
+        {
+            return new Point((int)(localPoint.X / value.X), (int)(localPoint.Y / value.Y));
+        }
+
+        static public Vector2 Integrate(this Vector2 value, Point gridPoint)
+        {
+            return new Vector2(gridPoint.X * value.X, gridPoint.Y * value.Y);
+        }
     }
 }
