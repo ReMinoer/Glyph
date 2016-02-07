@@ -45,7 +45,7 @@
     <Compile Include="ISpriteSource.cs" />
     <Compile Include="Particles\ParticleBuilder.cs" />
     <Compile Include="Particles\StandardParticle.cs" />
-    <Compile Include="Renderer.cs" />
+    <Compile Include="RendererBase.cs" />
     <Compile Include="SpriteAnimation.cs" />
     <Compile Include="SpriteAnimatorTransition.cs" />
     <Compile Include="Shapes\CircleSprite.cs" />

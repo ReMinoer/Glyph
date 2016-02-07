@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Glyph.Animation
 {
+    // TODO : AnimationBuilder basé sur des points
     public class AnimationBuilder<T> : IEnumerable<AnimationStep<T>>
     {
         private readonly List<AnimationStep<T>> _list;

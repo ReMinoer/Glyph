@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class FillingRenderer : Renderer
+    public class FillingRenderer : RendererBase
     {
         private readonly FillingRectangle _fillingRectangle;
 

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class SpriteRenderer : Renderer
+    public class SpriteRenderer : RendererBase
     {
         public SpriteRenderer(ISpriteSource source, SceneNode sceneNode)
             : base(source, sceneNode)

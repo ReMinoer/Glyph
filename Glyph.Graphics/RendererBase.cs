@@ -1,12 +1,11 @@
 ﻿using Diese.Injection;
-using Glyph.Animation;
 using Glyph.Composition;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
     [SinglePerParent]
-    public abstract class Renderer : GlyphComponent, IDraw
+    public abstract class RendererBase : GlyphComponent, IDraw
     {
         protected readonly ISpriteSource Source;
         protected readonly SceneNode SceneNode;
@@ -15,7 +14,7 @@ namespace Glyph.Graphics
         [Injectable]
         public SpriteTransformer SpriteTransformer { get; set; }
 
-        protected Renderer(ISpriteSource source, SceneNode sceneNode)
+        protected RendererBase(ISpriteSource source, SceneNode sceneNode)
         {
             Source = source;
             SceneNode = sceneNode;

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Physics.Colliders
 {
+    // TODO : Externaliser le rendu des colliders (ShapeCollectionRenderer)
     public abstract class ShapeColliderBase<TShape> : ColliderBase, ICollider<TShape>
         where TShape : IShape
     {
