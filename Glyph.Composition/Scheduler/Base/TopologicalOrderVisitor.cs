@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Diese.Graph;
 
 namespace Glyph.Composition.Scheduler.Base
 {
-    public class TopologicalOrderVisitor<T> : SchedulerGraph<T>.Visitor
+    public class TopologicalOrderVisitor<T> : IVisitor<SchedulerGraph<T>.Vertex, SchedulerGraph<T>.Edge>
     {
         private readonly List<T> _result;
         private readonly IReadOnlyCollection<T> _readOnlyResult;
@@ -22,7 +23,7 @@ namespace Glyph.Composition.Scheduler.Base
             _visited = new Stack<SchedulerGraph<T>.Vertex>();
         }
 
-        public override void Process(SchedulerGraph<T> graph)
+        public void Process(SchedulerGraph<T> graph)
         {
             _result.Clear();
             _visited.Clear();
@@ -32,12 +33,12 @@ namespace Glyph.Composition.Scheduler.Base
                 {
                     vertex.Accept(this);
 
-                    if (_result.Count >= graph.Vertices.Count)
+                    if (_result.Count >= graph.Vertices.Count())
                         break;
                 }
         }
 
-        public override void Visit(SchedulerGraph<T>.Vertex vertex)
+        public void Visit(SchedulerGraph<T>.Vertex vertex)
         {
             if (_visited.Contains(vertex))
                 throw new CyclicDependencyException(_visited.Select(x => x.Items.First()).Cast<object>());

@@ -73,8 +73,8 @@ namespace Glyph.Composition.Scheduler.Base
 
                 if (previous != null)
                 {
-                    var edge = new SchedulerGraph<T>.Edge(vertex, previous);
-                    _schedulerGraph.AddEdge(ref edge);
+                    var edge = new SchedulerGraph<T>.Edge();
+                    _schedulerGraph.AddEdge(vertex, previous, edge);
                 }
 
                 previous = vertex;
@@ -88,7 +88,7 @@ namespace Glyph.Composition.Scheduler.Base
             if (ItemsVertex.ContainsKey(item))
                 return;
 
-            SchedulerGraph<T>.Vertex vertex = _schedulerGraph.FirstOrDefault(x => x.Predicate(item));
+            SchedulerGraph<T>.Vertex vertex = _schedulerGraph.Vertices.FirstOrDefault(x => x.Predicate(item));
             if (vertex != null)
                 vertex.Items.Add(item);
             else
@@ -167,8 +167,8 @@ namespace Glyph.Composition.Scheduler.Base
                 if (otherVertex == null)
                     otherVertex = _scheduler.AddItemVertex(dependent);
 
-                var edge = new SchedulerGraph<T>.Edge(otherVertex, _vertex);
-                SchedulerGraph.AddEdge(ref edge);
+                var edge = new SchedulerGraph<T>.Edge();
+                SchedulerGraph.AddEdge(otherVertex, _vertex, edge);
 
                 _scheduler.Refresh();
             }
@@ -181,8 +181,8 @@ namespace Glyph.Composition.Scheduler.Base
                 if (otherVertex == null)
                     otherVertex = _scheduler.AddItemVertex(dependency);
 
-                var edge = new SchedulerGraph<T>.Edge(_vertex, otherVertex);
-                SchedulerGraph.AddEdge(ref edge);
+                var edge = new SchedulerGraph<T>.Edge();
+                SchedulerGraph.AddEdge(_vertex, otherVertex, edge);
 
                 _scheduler.Refresh();
             }

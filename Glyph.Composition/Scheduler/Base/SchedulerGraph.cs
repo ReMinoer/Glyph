@@ -4,10 +4,9 @@ using Diese.Graph;
 
 namespace Glyph.Composition.Scheduler.Base
 {
-    public class SchedulerGraph<T> :
-        GraphBase<SchedulerGraph<T>, SchedulerGraph<T>.Vertex, SchedulerGraph<T>.Edge, SchedulerGraph<T>.Visitor>
+    public class SchedulerGraph<T> : Graph<SchedulerGraph<T>.Vertex, SchedulerGraph<T>.Edge>
     {
-        public class Vertex : VertexBase<SchedulerGraph<T>, Vertex, Edge, Visitor>
+        public class Vertex : Vertex<Vertex, Edge>, IVisitable<TopologicalOrderVisitor<T>, Vertex, Edge>
         {
             public Predicate<object> Predicate { get; set; } 
             public IList<T> Items { get; private set; }
@@ -28,17 +27,14 @@ namespace Glyph.Composition.Scheduler.Base
                 Predicate = x => false;
                 Priority = Priority.Normal;
             }
-        }
 
-        public class Edge : EdgeBase<SchedulerGraph<T>, Vertex, Edge, Visitor>
-        {
-            public Edge(Vertex start, Vertex end)
-                : base(start, end)
+            public void Accept(TopologicalOrderVisitor<T> visitor)
             {
+                visitor.Visit(this);
             }
         }
 
-        public abstract class Visitor : VisitorBase<SchedulerGraph<T>, Vertex, Edge, Visitor>
+        public class Edge : Edge<Vertex, Edge>
         {
         }
     }
