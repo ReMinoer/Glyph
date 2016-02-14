@@ -55,8 +55,11 @@
     <Compile Include="Layers\LayerBase.cs" />
     <Compile Include="Layers\LayerManager.cs" />
     <Compile Include="Layers\LayerRoot.cs" />
+    <Compile Include="Messaging\DisposingMessage.cs" />
+    <Compile Include="Messaging\InstantiatingMessage.cs" />
     <Compile Include="Messaging\Receiver.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
+    <Compile Include="Tracking\MessagingTracker.cs" />
     <Compile Include="SceneNode.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
