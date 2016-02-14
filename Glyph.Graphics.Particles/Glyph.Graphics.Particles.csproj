@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</ProjectGuid>
+    <ProjectGuid>{5292934A-D0E4-47FD-98FA-0A32B37657D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph.Graphics</RootNamespace>
-    <AssemblyName>Glyph.Graphics</AssemblyName>
+    <RootNamespace>Glyph.Graphics.Particles</RootNamespace>
+    <AssemblyName>Glyph.Graphics.Particles</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,50 +17,26 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
-    <Optimize>true</Optimize>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework">
-      <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FillingRectangle.cs" />
-    <Compile Include="ISceneRenderer.cs" />
-    <Compile Include="ISpriteSheet.cs" />
-    <Compile Include="ISpriteSheetCarver.cs" />
-    <Compile Include="ISpriteSource.cs" />
-    <Compile Include="RendererBase.cs" />
-    <Compile Include="SpriteAnimation.cs" />
-    <Compile Include="SpriteAnimatorTransition.cs" />
-    <Compile Include="Shapes\CircleSprite.cs" />
-    <Compile Include="Shapes\FilledRectangleSprite.cs" />
-    <Compile Include="Shapes\RectangleSprite.cs" />
-    <Compile Include="Shapes\ShapedSpriteBase.cs" />
-    <Compile Include="SpriteArea.cs" />
-    <Compile Include="SpriteLoader.cs" />
-    <Compile Include="SpriteAnimator.cs" />
-    <Compile Include="SpriteSheet.cs" />
-    <Compile Include="SpriteSheetSplit.cs" />
-    <Compile Include="SpriteSourceBase.cs" />
-    <Compile Include="SpriteTransformer.cs" />
+    <Compile Include="ParticleBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpriteRenderer.cs" />
-    <Compile Include="FillingRenderer.cs" />
-    <Compile Include="UniformCarver.cs" />
+    <Compile Include="StandardParticle.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
@@ -71,16 +47,24 @@
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
+      <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>
+      <Name>Glyph.Animation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
-      <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
-      <Name>Glyph.Math</Name>
+    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
+      <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
+      <Name>Glyph.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Particles\Glyph.Particles.csproj">
+      <Project>{1070485B-D9FE-4AA2-889A-5F809021C447}</Project>
+      <Name>Glyph.Particles</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
-      <Project>{457cbbf3-26c7-478b-b4eb-1f85ff3c07f5}</Project>
+      <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
       <Name>Glyph</Name>
     </ProjectReference>
   </ItemGroup>
