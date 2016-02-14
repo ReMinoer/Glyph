@@ -56,6 +56,7 @@
     <Compile Include="Layers\LayerManager.cs" />
     <Compile Include="Layers\LayerRoot.cs" />
     <Compile Include="Messaging\Receiver.cs" />
+    <Compile Include="Tracking\FactoryData.cs" />
     <Compile Include="SceneNode.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
@@ -86,9 +87,13 @@
     <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
     <Compile Include="SinglePerParentAttribute.cs" />
     <Compile Include="Delegates\UpdateDelegate.cs" />
-    <Compile Include="Factory.cs" />
+    <Compile Include="Tracking\Factory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Diese\Diese.Collections\Diese.Collections.csproj">
+      <Project>{8e354191-e8e5-498b-9c24-a6765da86417}</Project>
+      <Name>Diese.Collections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>

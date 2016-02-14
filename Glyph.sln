@@ -68,6 +68,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Space", "Glyph.Space\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Particles", "Glyph.Particles\Glyph.Particles.csproj", "{1070485B-D9FE-4AA2-889A-5F809021C447}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Collections", "External\Diese\Diese.Collections\Diese.Collections.csproj", "{8E354191-E8E5-498B-9C24-A6765DA86417}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -186,6 +188,10 @@ Global
 		{1070485B-D9FE-4AA2-889A-5F809021C447}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1070485B-D9FE-4AA2-889A-5F809021C447}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1070485B-D9FE-4AA2-889A-5F809021C447}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E354191-E8E5-498B-9C24-A6765DA86417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E354191-E8E5-498B-9C24-A6765DA86417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E354191-E8E5-498B-9C24-A6765DA86417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E354191-E8E5-498B-9C24-A6765DA86417}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,5 +204,6 @@ Global
 		{E8D6F663-89A6-497F-A02F-D0FC562D2D0E} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{BBC6C938-95A5-4CBF-AA6B-DA2A9A09C4F1} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
+		{8E354191-E8E5-498B-9C24-A6765DA86417} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 	EndGlobalSection
 EndGlobal
