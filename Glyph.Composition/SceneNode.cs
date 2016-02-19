@@ -169,7 +169,7 @@ namespace Glyph.Composition
             Refresh(childStaticReferential);
         }
 
-        void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential = Referential.World)
+        void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential)
         {
             if (_childrenNodes.Contains(child))
                 throw new InvalidOperationException("Parent already have this SceneNode as a child !");
@@ -180,7 +180,7 @@ namespace Glyph.Composition
                 _childrenNodes.Add(child);
         }
 
-        void ISceneNode.UnlinkChild(ISceneNode child, Referential childStaticReferential = Referential.World)
+        void ISceneNode.UnlinkChild(ISceneNode child, Referential childStaticReferential)
         {
             _childrenNodes.Remove(child);
         }
