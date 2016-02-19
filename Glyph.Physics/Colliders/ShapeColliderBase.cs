@@ -1,50 +1,32 @@
-﻿using Glyph.Graphics;
-using Glyph.Graphics.Shapes;
+﻿using Glyph.Composition;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Physics.Colliders
 {
-    // TODO : Externaliser le rendu des colliders (ShapeCollectionRenderer)
     public abstract class ShapeColliderBase<TShape> : ColliderBase, ICollider<TShape>
         where TShape : IShape
     {
-        protected readonly ShapedSpriteBase ShapedSprite;
-        protected readonly SpriteTransformer SpriteTransformer;
-        private readonly SpriteRenderer _spriteRenderer;
-        public abstract TShape Bounds { get; }
+        public abstract TShape Shape { get; }
 
-        protected ShapeColliderBase(ShapedSpriteBase shapedSprite, Context context)
+        protected ShapeColliderBase(Context context)
             : base(context)
         {
-            ShapedSprite = shapedSprite;
-            SpriteTransformer = new SpriteTransformer();
-            _spriteRenderer = new SpriteRenderer(ShapedSprite, SceneNode);
-        }
-
-        public override void LoadContent(ContentLibrary contentLibrary)
-        {
-            ShapedSprite.LoadContent(contentLibrary);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (!Visible)
-                return;
-
-            _spriteRenderer.Draw(spriteBatch);
         }
 
         public override bool ContainsPoint(Vector2 point)
         {
-            return Bounds.ContainsPoint(point);
+            return Shape.ContainsPoint(point);
         }
 
-        public override void Dispose()
+        ISceneNode IShapedObject.SceneNode
         {
-            SpriteTransformer.Dispose();
-            base.Dispose();
+            get { return new ReadOnlySceneNode(SceneNode); }
+        }
+
+        IShape IShapedObject.Shape
+        {
+            get { return Shape; }
         }
     }
 }

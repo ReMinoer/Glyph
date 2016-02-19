@@ -1,54 +1,30 @@
-﻿using System;
-using Glyph.Graphics.Shapes;
-using Glyph.Math.Shapes;
+﻿using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Physics.Colliders
 {
     public class RectangleCollider : ShapeColliderBase<CenteredRectangle>
     {
-        private float _width;
-        private float _height;
-
-        public float Width
-        {
-            get { return _width; }
-            set
-            {
-                _width = value;
-                RefreshScale();
-            }
-        }
-
-        public float Height
-        {
-            get { return _height; }
-            set
-            {
-                _height = value;
-                RefreshScale();
-            }
-        }
+        public float Width { get; set; }
+        public float Height { get; set; }
 
         public Vector2 Size
         {
             get { return new Vector2(Width, Height); }
             set
             {
-                _width = value.X;
-                _height = value.Y;
-                RefreshScale();
+                Width = value.X;
+                Height = value.Y;
             }
         }
 
-        public override CenteredRectangle Bounds
+        public override CenteredRectangle Shape
         {
             get { return new CenteredRectangle(Center, Width, Height); }
         }
 
-        public RectangleCollider(Context context, Lazy<GraphicsDevice> lazyGraphicsDevice)
-            : base(new FilledRectangleSprite(lazyGraphicsDevice), context)
+        public RectangleCollider(Context context)
+            : base(context)
         {
             Size = new Vector2(100, 100);
         }
@@ -56,7 +32,7 @@ namespace Glyph.Physics.Colliders
         public override bool IsColliding(RectangleCollider collider, out Collision collision)
         {
             IRectangle intersection;
-            if (IntersectionUtils.TwoRectangles(Bounds, collider.Bounds, out intersection))
+            if (IntersectionUtils.TwoRectangles(Shape, collider.Shape, out intersection))
             {
                 Vector2 correction;
 
@@ -64,13 +40,13 @@ namespace Glyph.Physics.Colliders
 
                 if (isWiderThanTall)
                 {
-                    correction = Bounds.Top <= collider.Bounds.Top
+                    correction = Shape.Top <= collider.Shape.Top
                         ? new Vector2(0, -intersection.Height)
                         : new Vector2(0, intersection.Height);
                 }
                 else
                 {
-                    correction = Bounds.Right >= collider.Bounds.Right
+                    correction = Shape.Right >= collider.Shape.Right
                         ? new Vector2(intersection.Width, 0)
                         : new Vector2(-intersection.Width, 0);
                 }
@@ -93,7 +69,7 @@ namespace Glyph.Physics.Colliders
         public override bool IsColliding(CircleCollider collider, out Collision collision)
         {
             Vector2 correction;
-            if (IntersectionUtils.RectangleAndCircle(Bounds, (collider as ICollider<Circle>).Bounds, out correction))
+            if (IntersectionUtils.RectangleAndCircle(Shape, (collider as ICollider<Circle>).Shape, out correction))
             {
                 collision = new Collision
                 {
@@ -112,17 +88,12 @@ namespace Glyph.Physics.Colliders
 
         public override bool Intersects(IRectangle rectangle)
         {
-            return Bounds.Intersects(rectangle);
+            return Shape.Intersects(rectangle);
         }
 
         public override bool Intersects(ICircle circle)
         {
-            return Bounds.Intersects(circle);
-        }
-
-        private void RefreshScale()
-        {
-            SpriteTransformer.Scale = Size / 100;
+            return Shape.Intersects(circle);
         }
     }
 }

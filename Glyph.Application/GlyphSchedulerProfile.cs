@@ -40,8 +40,6 @@ namespace Glyph.Application
                 Add<ShapedSpriteBase>();
 
                 Add<SongPlayer>();
-
-                Add<ICollider>();
             }
         }
 
@@ -63,8 +61,6 @@ namespace Glyph.Application
             public Draw()
             {
                 Add<SpriteRenderer>();
-
-                Add<ICollider>();
             }
         }
     }
