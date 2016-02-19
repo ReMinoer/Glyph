@@ -6,33 +6,23 @@ using Microsoft.Xna.Framework;
 namespace Glyph.Composition
 {
     [SinglePerParent]
-    public class SceneNode : GlyphComponent
+    public class SceneNode : GlyphComponent, ISceneNode
     {
-        private readonly List<SceneNode> _childrenNodes;
-        private SceneNode _parentNode;
+        private readonly List<ISceneNode> _childrenNodes;
+        private readonly IReadOnlyList<ISceneNode> _readOnlyChildrenNodes;
+        private ISceneNode _parentNode;
         private Transformation _transformation;
         private Vector2 _position;
         private float _rotation;
         private float _scale;
         private float _localDepth;
         private float _depth;
+        public ISceneNode ParentNode { get; private set; }
         public Matrix3X3 Matrix { get; private set; }
 
-        public SceneNode ParentNode
+        public IEnumerable<ISceneNode> Children
         {
-            get { return _parentNode; }
-            set
-            {
-                if (_parentNode != null)
-                    _parentNode.RemoveChild(this);
-
-                _parentNode = value;
-
-                if (_parentNode != null)
-                    _parentNode.AddChild(this);
-
-                Refresh();
-            }
+            get { return _readOnlyChildrenNodes; }
         }
 
         public Transformation Transformation
@@ -41,7 +31,7 @@ namespace Glyph.Composition
             set
             {
                 _transformation = value;
-                Refresh();
+                Refresh(Referential.Local);
             }
         }
 
@@ -51,7 +41,7 @@ namespace Glyph.Composition
             set
             {
                 Transformation.Translation = value;
-                Refresh();
+                Refresh(Referential.Local);
             }
         }
 
@@ -61,7 +51,7 @@ namespace Glyph.Composition
             set
             {
                 Transformation.Rotation = value;
-                Refresh();
+                Refresh(Referential.Local);
             }
         }
 
@@ -71,7 +61,7 @@ namespace Glyph.Composition
             set
             {
                 Transformation.Scale = value;
-                Refresh();
+                Refresh(Referential.Local);
             }
         }
 
@@ -81,7 +71,7 @@ namespace Glyph.Composition
             set
             {
                 _localDepth = value;
-                Refresh();
+                Refresh(Referential.Local);
             }
         }
 
@@ -142,11 +132,13 @@ namespace Glyph.Composition
 
         public SceneNode()
         {
-            _childrenNodes = new List<SceneNode>();
+            _childrenNodes = new List<ISceneNode>();
+            _readOnlyChildrenNodes = _childrenNodes.AsReadOnly();
+
             Transformation = Transformation.Identity;
         }
 
-        public SceneNode(SceneNode parentNode)
+        public SceneNode(ISceneNode parentNode)
             : this()
         {
             ParentNode = parentNode;
@@ -160,11 +152,40 @@ namespace Glyph.Composition
 
         public override void Dispose()
         {
-            foreach (SceneNode childNode in _childrenNodes)
-                childNode.ParentNode = null;
+            foreach (ISceneNode childNode in _childrenNodes)
+                childNode.SetParent(null);
         }
 
-        private void Refresh()
+        public void SetParent(ISceneNode parent, Referential childStaticReferential = Referential.World)
+        {
+            if (_parentNode != null)
+                _parentNode.UnlinkChild(this);
+
+            _parentNode = parent;
+
+            if (_parentNode != null)
+                _parentNode.LinkChild(this);
+
+            Refresh(childStaticReferential);
+        }
+
+        void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential = Referential.World)
+        {
+            if (_childrenNodes.Contains(child))
+                throw new InvalidOperationException("Parent already have this SceneNode as a child !");
+
+            if (child.ParentNode != this)
+                child.SetParent(this, childStaticReferential);
+            else
+                _childrenNodes.Add(child);
+        }
+
+        void ISceneNode.UnlinkChild(ISceneNode child, Referential childStaticReferential = Referential.World)
+        {
+            _childrenNodes.Remove(child);
+        }
+
+        private void Refresh(Referential childStaticReferential)
         {
             if (ParentNode == null)
             {
@@ -176,28 +197,31 @@ namespace Glyph.Composition
             }
             else
             {
-                _position = ParentNode.Transformation.Matrix * LocalPosition;
-                _rotation = ParentNode.Rotation + LocalRotation;
-                _scale = ParentNode.Scale * LocalScale;
-                _depth = ParentNode.Depth + LocalDepth;
+                if (childStaticReferential == Referential.Local)
+                {
+                    _position = ParentNode.Transformation.Matrix * LocalPosition;
+                    _rotation = ParentNode.Rotation + LocalRotation;
+                    _scale = ParentNode.Scale * LocalScale;
+                    _depth = ParentNode.Depth + LocalDepth;
+                }
+                else if (childStaticReferential == Referential.World)
+                {
+                    _transformation = new Transformation(ParentNode.Transformation.Matrix.Inverse * _position, _rotation - ParentNode.Rotation, _scale / ParentNode.Scale);
+                    _localDepth = _depth - ParentNode.Depth;
+                }
                 Matrix = ParentNode.Matrix * LocalMatrix;
             }
 
-            foreach (SceneNode childNode in _childrenNodes)
+            foreach (ISceneNode childNode in _childrenNodes)
                 childNode.Refresh();
 
             if (Refreshed != null)
                 Refreshed.Invoke(this);
         }
 
-        private void AddChild(SceneNode child)
+        void ISceneNode.Refresh()
         {
-            _childrenNodes.Add(child);
-        }
-
-        private void RemoveChild(SceneNode child)
-        {
-            _childrenNodes.Remove(child);
+            Refresh(Referential.Local);
         }
     }
 }

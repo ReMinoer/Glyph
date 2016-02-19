@@ -59,7 +59,7 @@ namespace Glyph.Particles
             foreach (float spawnTime in spawnTimes)
             {
                 IParticle particle = Factory();
-                particle.SceneNode.ParentNode = SceneNode;
+                particle.SceneNode.SetParent(SceneNode);
                 Add(particle);
 
                 float startTime = spawnTime * elapsedTime.Scale - elapsedTime.GetDelta(this);

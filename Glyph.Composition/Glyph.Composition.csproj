@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Delegates\DrawDelegate.cs" />
     <Compile Include="Exceptions\ComponentNotFoundException.cs" />
+    <Compile Include="ISceneNode.cs" />
     <Compile Include="Injection\GlyphCompositeInjector.cs" />
     <Compile Include="GlyphSchedulableBase.cs" />
     <Compile Include="IDraw.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Messaging\DisposingMessage.cs" />
     <Compile Include="Messaging\InstantiatingMessage.cs" />
     <Compile Include="Messaging\Receiver.cs" />
+    <Compile Include="ReadOnlySceneNode.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
     <Compile Include="Tracking\MessagingTracker.cs" />
     <Compile Include="SceneNode.cs" />
