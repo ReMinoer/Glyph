@@ -2,7 +2,7 @@
 
 namespace Glyph.Composition
 {
-    public interface IShapedObject : IGlyphComponent
+    public interface IShapedObject
     {
         ISceneNode SceneNode { get; }
         IShape Shape { get; }
