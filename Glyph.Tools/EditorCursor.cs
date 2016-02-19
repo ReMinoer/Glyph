@@ -1,5 +1,4 @@
-﻿using System;
-using Glyph.Input;
+﻿using Glyph.Input;
 using Glyph.Input.StandardInputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,8 +36,8 @@ namespace Glyph.Tools
             {
                 _selection.X = (int)MathHelper.Min(PointB.X, PointA.X);
                 _selection.Y = (int)MathHelper.Min(PointB.Y, PointA.Y);
-                _selection.Width = (int)Math.Abs(PointB.X - PointA.X);
-                _selection.Height = (int)Math.Abs(PointB.Y - PointA.Y);
+                _selection.Width = (int)System.Math.Abs(PointB.X - PointA.X);
+                _selection.Height = (int)System.Math.Abs(PointB.Y - PointA.Y);
                 return _selection;
             }
         }
@@ -56,9 +55,9 @@ namespace Glyph.Tools
                         ((int)MathHelper.Min(PointB.Y, PointA.Y) / (Resolution.Instance.ScaleRatio * Camera.Zoom) +
                          Camera.VectorPosition.Y);
                 _selectionSpace.Width =
-                    (int)((int)Math.Abs(PointB.X - PointA.X) / (Resolution.Instance.ScaleRatio * Camera.Zoom));
+                    (int)((int)System.Math.Abs(PointB.X - PointA.X) / (Resolution.Instance.ScaleRatio * Camera.Zoom));
                 _selectionSpace.Height =
-                    (int)((int)Math.Abs(PointB.Y - PointA.Y) / (Resolution.Instance.ScaleRatio * Camera.Zoom));
+                    (int)((int)System.Math.Abs(PointB.Y - PointA.Y) / (Resolution.Instance.ScaleRatio * Camera.Zoom));
                 return _selectionSpace;
             }
         }

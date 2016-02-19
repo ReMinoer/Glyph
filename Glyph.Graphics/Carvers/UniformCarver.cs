@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Graphics
+namespace Glyph.Graphics.Carvers
 {
     public class UniformCarver : ISpriteSheetCarver
     {

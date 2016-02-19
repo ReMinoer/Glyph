@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
-using Glyph.Tools.StatusDisplay.Channels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

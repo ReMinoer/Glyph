@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools
@@ -33,7 +32,7 @@ namespace Glyph.Tools
 
         public bool IsIncreaseMax
         {
-            get { return Math.Abs(Memory - MemoryMax) < float.Epsilon; }
+            get { return System.Math.Abs(Memory - MemoryMax) < float.Epsilon; }
         }
 
         public PerformanceViewer()
