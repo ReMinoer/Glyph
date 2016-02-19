@@ -1,4 +1,6 @@
-﻿namespace Glyph.Messaging
+﻿using Glyph.Messaging;
+
+namespace Glyph.Composition.Messaging
 {
     public class InstantiatingMessage<T> : Message
     {
