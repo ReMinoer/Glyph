@@ -9,7 +9,6 @@ using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Composition.Tracking;
 using Glyph.Graphics;
-using Glyph.Messaging;
 using Glyph.Particles;
 using Glyph.Physics;
 using Glyph.Physics.Colliders;
@@ -47,13 +46,13 @@ namespace Glyph.Application
 
             Register<GlyphObject>();
 
-            RegisterGeneric(typeof(GlobalRouter<>), Subsistence.Singleton);
             RegisterGeneric(typeof(Receiver<>));
-            LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>));
+            //RegisterGeneric(typeof(GlobalRouter<>), Subsistence.Singleton);
+            //LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>));
 
             RegisterGeneric(typeof(MessagingTracker<>));
-            RegisterGeneric(typeof(IRouter<InstantiatingMessage<>>), typeof(GlobalRouter<InstantiatingMessage<>>));
-            RegisterGeneric(typeof(IRouter<DisposingMessage<>>), typeof(GlobalRouter<DisposingMessage<>>));
+            //RegisterGeneric(typeof(IRouter<InstantiatingMessage<>>), typeof(GlobalRouter<InstantiatingMessage<>>));
+            //RegisterGeneric(typeof(IRouter<DisposingMessage<>>), typeof(GlobalRouter<DisposingMessage<>>));
 
             Register<SceneNode>();
             Register<Motion>();
