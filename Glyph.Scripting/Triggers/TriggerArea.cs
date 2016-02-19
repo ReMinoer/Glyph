@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Scripting.Triggers
 {
-    public class TriggerArea : GlyphContainer, IEnableable, ILoadContent, IDraw, ITriggerArea
+    public class TriggerArea : GlyphContainer, IEnableable, ILoadContent, IDraw, ITriggerArea<OriginRectangle>
     {
         private readonly ILayerManager _layerManager;
         private readonly IRouter<OnEnterTrigger> _router;
@@ -53,14 +53,24 @@ namespace Glyph.Scripting.Triggers
             }
         }
 
-        public OriginRectangle Bounds
+        public OriginRectangle Shape
         {
             get { return new OriginRectangle(_sceneNode.Position, Size); }
         }
 
+        ISceneNode IShapedObject.SceneNode
+        {
+            get { return new ReadOnlySceneNode(_sceneNode); }
+        }
+
+        IShape IShapedObject.Shape
+        {
+            get { return Shape; }
+        }
+
         Vector2 IShape.Center
         {
-            get { return Bounds.Center; }
+            get { return Shape.Center; }
             set { _sceneNode.Position = value - Size / 2; }
         }
 
@@ -118,7 +128,7 @@ namespace Glyph.Scripting.Triggers
                     continue;
 
                 foreach (ICollider collider in actor.Colliders)
-                    if (collider.Intersects(Bounds))
+                    if (collider.Intersects(Shape))
                     {
                         _triggerVar.Active = true;
                         _router.Send(new OnEnterTrigger(this, actor));
@@ -130,22 +140,22 @@ namespace Glyph.Scripting.Triggers
 
         public bool Intersects(IRectangle rectangle)
         {
-            return Bounds.Intersects(rectangle);
+            return Shape.Intersects(rectangle);
         }
 
         public bool Intersects(ICircle circle)
         {
-            return Bounds.Intersects(circle);
+            return Shape.Intersects(circle);
         }
 
         public bool ContainsPoint(Vector2 point)
         {
-            return Bounds.ContainsPoint(point);
+            return Shape.ContainsPoint(point);
         }
 
         public override string ToString()
         {
-            return string.Format("{0} {1} : {2}", Name, Bounds, Active);
+            return string.Format("{0} {1} : {2}", Name, Shape, Active);
         }
 
         private void RefreshScale()

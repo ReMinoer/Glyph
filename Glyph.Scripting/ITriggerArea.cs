@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Glyph.Composition;
 using Glyph.Math;
 
 namespace Glyph.Scripting
@@ -8,5 +9,10 @@ namespace Glyph.Scripting
         bool Enabled { get; set; }
         bool Visible { get; set; }
         void UpdateStatus(IEnumerable<IActor> actors);
+    }
+
+    public interface ITriggerArea<out T> : ITriggerArea, IShapedObject<T>
+        where T : IShape
+    {
     }
 }
