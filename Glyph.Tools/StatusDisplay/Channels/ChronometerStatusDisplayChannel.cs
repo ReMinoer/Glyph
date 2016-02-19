@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Tools.StatusDisplayChannels
+namespace Glyph.Tools.StatusDisplay.Channels
 {
     public class ChronometerStatusDisplayChannel : StatusDisplayChannel
     {

@@ -1,6 +1,6 @@
 ﻿using Glyph.UI.Misc;
 
-namespace Glyph.Tools.StatusDisplayChannels
+namespace Glyph.Tools.StatusDisplay
 {
     public class StatusDisplayText : TextSprite
     {

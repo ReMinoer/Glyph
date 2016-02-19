@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
-using Glyph.Tools.StatusDisplayChannels;
+using Glyph.Tools.StatusDisplay.Channels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Tools
+namespace Glyph.Tools.StatusDisplay
 {
     public class StatusDisplay
     {
