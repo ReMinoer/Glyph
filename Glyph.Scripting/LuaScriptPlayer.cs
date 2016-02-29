@@ -148,12 +148,6 @@ namespace Glyph.Scripting
             _triggerAreas.Clear();
         }
 
-        public void SetTriggerAreasVisibility(bool visible)
-        {
-            foreach (ITriggerArea triggerArea in _triggerAreas.Values)
-                triggerArea.Visible = false;
-        }
-
         private void Register(ITrigger trigger)
         {
             if (string.IsNullOrWhiteSpace(trigger.Name))

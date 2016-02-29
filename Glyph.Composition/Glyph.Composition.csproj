@@ -121,7 +121,7 @@
       <Name>Glyph.Math</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
-      <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>
+      <Project>{26405f4b-4532-4f48-a96f-594a70c12b3e}</Project>
       <Name>Glyph.Messaging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">

@@ -13,6 +13,5 @@ namespace Glyph.Scripting
         void UnregisterTrigger(ITrigger trigger);
         void UnregisterTrigger(string name);
         void CleanTriggers();
-        void SetTriggerAreasVisibility(bool visible);
     }
 }
