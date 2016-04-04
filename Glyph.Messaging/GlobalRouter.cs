@@ -3,15 +3,8 @@
     public class GlobalRouter<TMessage> : RouterBase<TMessage>
         where TMessage : Message
     {
-        public override void Send(TMessage message)
+        internal GlobalRouter()
         {
-            foreach (IInterpreter<TMessage> interpreter in Interpreters)
-            {
-                if (message.Cancelled)
-                    return;
-
-                interpreter.Interpret(message);
-            }
-        }
+        } 
     }
 }

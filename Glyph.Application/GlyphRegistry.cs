@@ -9,6 +9,7 @@ using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Composition.Tracking;
 using Glyph.Graphics;
+using Glyph.Messaging;
 using Glyph.Particles;
 using Glyph.Physics;
 using Glyph.Physics.Colliders;
@@ -48,8 +49,9 @@ namespace Glyph.Application
             Register<GlyphObject>();
 
             RegisterGeneric(typeof(Receiver<>));
-            //RegisterGeneric(typeof(GlobalRouter<>), Subsistence.Singleton);
-            //LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>));
+            RegisterGeneric(typeof(GlobalRouter<>), Subsistence.Singleton);
+            LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>));
+            LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>), null, InjectionScope.Global);
 
             RegisterGeneric(typeof(MessagingTracker<>));
             //RegisterGeneric(typeof(IRouter<InstantiatingMessage<>>), typeof(GlobalRouter<InstantiatingMessage<>>));

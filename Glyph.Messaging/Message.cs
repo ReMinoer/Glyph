@@ -1,12 +1,12 @@
 ﻿namespace Glyph.Messaging
 {
-    public abstract class Message
+    public abstract class Message : IHandlable
     {
-        public bool Cancelled { get; private set; }
+        public bool IsHandled { get; private set; }
 
-        public void Cancel()
+        public void Handle()
         {
-            Cancelled = true;
+            IsHandled = true;
         }
     }
 }

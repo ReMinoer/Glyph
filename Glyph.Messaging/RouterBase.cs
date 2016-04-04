@@ -1,29 +1,19 @@
-using System.Collections.Generic;
+using Diese.Collections;
 
 namespace Glyph.Messaging
 {
-    public abstract class RouterBase<TMessage> : IRouter<TMessage>
+    public abstract class RouterBase<TMessage> : Tracker<IInterpreter<TMessage>>, IRouter<TMessage>
         where TMessage : Message
     {
-        private readonly List<IInterpreter<TMessage>> _interpreters;
-        public IReadOnlyList<IInterpreter<TMessage>> Interpreters { get; private set; }
-
-        protected RouterBase()
+        public void Send(TMessage message)
         {
-            _interpreters = new List<IInterpreter<TMessage>>();
-            Interpreters = _interpreters.AsReadOnly();
-        }
+            foreach (IInterpreter<TMessage> interpreter in this)
+            {
+                if (message.IsHandled)
+                    return;
 
-        public abstract void Send(TMessage message);
-
-        public virtual void Register(IInterpreter<TMessage> interpreter)
-        {
-            _interpreters.Add(interpreter);
-        }
-
-        public virtual void Unregister(IInterpreter<TMessage> interpreter)
-        {
-            _interpreters.Remove(interpreter);
+                interpreter.Interpret(message);
+            }
         }
     }
 }

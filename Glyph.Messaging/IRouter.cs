@@ -1,10 +1,10 @@
-﻿namespace Glyph.Messaging
+﻿using Diese.Collections;
+
+namespace Glyph.Messaging
 {
-    public interface IRouter<TMessage>
+    public interface IRouter<TMessage> : ITracker<IInterpreter<TMessage>>
         where TMessage : Message
     {
         void Send(TMessage message);
-        void Register(IInterpreter<TMessage> interpreter);
-        void Unregister(IInterpreter<TMessage> interpreter);
     }
 }
