@@ -86,6 +86,11 @@ namespace Glyph
             return new Vector2(value.X / x, value.Y / y);
         }
 
+        static public Vector2 Inverse(this Vector2 value)
+        {
+            return new Vector2(-value.X, -value.Y);
+        }
+
         static public Vector2 RotateToward(this Vector2 value, Vector2 directionGoal, float angularSpeed, float deltaTime)
         {
             float angle = value.ToRotation();

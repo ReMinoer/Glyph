@@ -24,7 +24,7 @@ namespace Glyph.Math
             get { return _rotation; }
             set
             {
-                _rotation = MathHelper.WrapAngle(value);
+                _rotation = Microsoft.Xna.Framework.MathHelper.WrapAngle(value);
                 RefreshMatrix();
             }
         }
@@ -47,7 +47,7 @@ namespace Glyph.Math
         public Transformation(Vector2 translation, float rotation, float scale)
         {
             _translation = translation;
-            _rotation = MathHelper.WrapAngle(rotation);
+            _rotation = Microsoft.Xna.Framework.MathHelper.WrapAngle(rotation);
             _scale = scale;
 
             RefreshMatrix();
