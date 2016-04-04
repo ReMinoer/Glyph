@@ -51,6 +51,7 @@
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="GlyphData.cs" />
     <Compile Include="IBatchable.cs" />
+    <Compile Include="IDirtable.cs" />
     <Compile Include="IHandlable.cs" />
     <Compile Include="ITimeUnscalable.cs" />
     <Compile Include="Point.Extension.cs" />
