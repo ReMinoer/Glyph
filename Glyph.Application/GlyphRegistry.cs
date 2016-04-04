@@ -9,6 +9,7 @@ using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Composition.Tracking;
 using Glyph.Graphics;
+using Glyph.Graphics.Renderer;
 using Glyph.Messaging;
 using Glyph.Particles;
 using Glyph.Physics;

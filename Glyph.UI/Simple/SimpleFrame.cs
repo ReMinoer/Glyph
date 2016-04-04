@@ -2,6 +2,7 @@
 using Glyph.Animation;
 using Glyph.Composition;
 using Glyph.Graphics;
+using Glyph.Graphics.Renderer;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;

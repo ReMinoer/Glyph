@@ -3,6 +3,7 @@ using Diese.Injection;
 using Glyph.Composition;
 using Glyph.Graphics;
 using Glyph.Graphics.Carvers;
+using Glyph.Graphics.Renderer;
 using Glyph.Input;
 using Glyph.Input.Handlers.Buttons;
 using Glyph.Input.StandardInputs;
@@ -69,9 +70,16 @@ namespace Glyph.UI.Guide
 
             SpriteSheetSplit = Add<SpriteSheetSplit>();
 
-            ComputerIcon = new SpriteSheet();
+            ComputerIcon = new SpriteSheet
+            {
+                Asset = ComputerIconAsset
+            };
             SpriteSheetSplit.Add(ComputerIcon);
-            GamePadIcon = new SpriteSheet();
+
+            GamePadIcon = new SpriteSheet
+            {
+                Asset = GamePadIconAsset
+            };
             SpriteSheetSplit.Add(GamePadIcon);
 
             SpriteSheetSplit.ApplyCarver(new UniformCarver(1, 1));

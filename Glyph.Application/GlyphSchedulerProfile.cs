@@ -4,6 +4,7 @@ using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Graphics;
+using Glyph.Graphics.Renderer;
 using Glyph.Graphics.Shapes;
 using Glyph.Physics.Colliders;
 

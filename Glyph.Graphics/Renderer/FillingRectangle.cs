@@ -1,7 +1,7 @@
 ﻿using Glyph.Composition;
 using Glyph.Math.Shapes;
 
-namespace Glyph.Graphics
+namespace Glyph.Graphics.Renderer
 {
     public class FillingRectangle : GlyphComponent
     {
