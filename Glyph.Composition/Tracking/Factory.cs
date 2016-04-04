@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Diese.Collections;
 using Diese.Modelization;
 
@@ -8,6 +9,7 @@ namespace Glyph.Composition.Tracking
         where T : class, IGlyphComponent
     {
         private readonly GlyphSchedulableBase _parent;
+        public event Action<T> ComponentCreated;
 
         public Factory(GlyphSchedulableBase parent)
         {
@@ -37,6 +39,10 @@ namespace Glyph.Composition.Tracking
         public T Create()
         {
             var item = _parent.Add<T>();
+
+            if (ComponentCreated != null)
+                ComponentCreated.Invoke(item);
+
             Register(item);
             return item;
         }
