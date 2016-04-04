@@ -20,6 +20,7 @@ namespace Glyph.Application
         public GlyphRegistry()
         {
             RegisterInstance<IDependencyRegistry>(this);
+            Link<IDependencyRegistry, IDependencyRegistry>(null, InjectionScope.Global);
 
             Register<GlyphCompositeInjector>();
             Register<IDependencyRegistry, LocalGlyphRegistry>(Subsistence.Singleton, InjectionScope.Local);

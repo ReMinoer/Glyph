@@ -2,6 +2,7 @@
 {
     public enum InjectionScope
     {
+        Global,
         Local
     }
 }
