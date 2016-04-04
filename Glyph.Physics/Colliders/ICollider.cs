@@ -4,12 +4,13 @@ using Glyph.Math;
 
 namespace Glyph.Physics.Colliders
 {
-    public interface ICollider : IEnableable, IUpdate, IShape
+    public interface ICollider : IShape, IEnableable, IUpdate
     {
         event Action<Collision> Collided;
         bool IsColliding(ICollider collider, out Collision collision);
         bool IsColliding(RectangleCollider collider, out Collision collision);
         bool IsColliding(CircleCollider collider, out Collision collision);
+        bool IsColliding(IGridCollider collider, out Collision collision);
     }
 
     public interface ICollider<out TShape> : ICollider, IShapedObject<TShape>

@@ -19,6 +19,11 @@ namespace Glyph.Space.Partitioning.Quadtree
             _children = new List<QuadtreePartition<T>>();
         }
 
+        public override IRectangle BoundingBox
+        {
+            get { return _bounds; }
+        }
+
         public override bool ContainsPoint(Vector2 position)
         {
             return _bounds.ContainsPoint(position);

@@ -7,6 +7,11 @@ namespace Glyph.Math.Shapes
         public Vector2 Center { get; set; }
         public float Radius { get; set; }
 
+        public IRectangle BoundingBox
+        {
+            get { return new CenteredRectangle(Center, Radius * 2, Radius * 2); }
+        }
+
         public Circle(Vector2 center, float radius)
             : this()
         {
@@ -21,12 +26,12 @@ namespace Glyph.Math.Shapes
 
         public bool Intersects(IRectangle rectangle)
         {
-            return IntersectionUtils.RectangleAndCircle(rectangle, this);
+            return IntersectionUtils.RectangleWithCircle(rectangle, this);
         }
 
         public bool Intersects(ICircle circle)
         {
-            return IntersectionUtils.TwoCircles(this, circle);
+            return IntersectionUtils.CircleWithCircle(this, circle);
         }
     }
 }

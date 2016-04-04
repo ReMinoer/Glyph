@@ -43,6 +43,9 @@
     <Compile Include="Colliders\CircleCollider.cs" />
     <Compile Include="Colliders\ColliderBase.cs" />
     <Compile Include="Colliders\ColliderContainer.cs" />
+    <Compile Include="Colliders\CollisionUtils.cs" />
+    <Compile Include="Colliders\GridCollider.cs" />
+    <Compile Include="Colliders\IGridCollider.cs" />
     <Compile Include="Colliders\ShapeColliderBase.cs" />
     <Compile Include="Colliders\ICollider.cs" />
     <Compile Include="Colliders\RectangleCollider.cs" />
@@ -62,6 +65,10 @@
     <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
       <Project>{43692ee3-467a-41c9-8c18-9e7fcf7cc9dc}</Project>
       <Name>Glyph.Math</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj">
+      <Project>{068202CC-E943-4718-9771-62D72E50623E}</Project>
+      <Name>Glyph.Space</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

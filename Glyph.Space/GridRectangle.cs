@@ -23,6 +23,11 @@ namespace Glyph.Space
             Delta = Rectangle.Size / GridSize;
         }
 
+        public IRectangle BoundingBox
+        {
+            get { return Rectangle; }
+        }
+
         public bool ContainsPoint(Vector2 worldPoint)
         {
             return Rectangle.ContainsPoint(worldPoint);

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Glyph.Math;
+using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Space.Partitioning.Base
@@ -19,6 +20,8 @@ namespace Glyph.Space.Partitioning.Base
         {
             get { return _readOnlyItems; }
         }
+
+        public abstract IRectangle BoundingBox { get; }
 
         protected PartitionBase(Func<T, Vector2> getPosition, IPartition<T> parent, int capacity)
         {

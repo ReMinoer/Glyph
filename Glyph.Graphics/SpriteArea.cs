@@ -21,22 +21,29 @@ namespace Glyph.Graphics
             _spriteSource = spriteSource;
         }
 
+        public IRectangle BoundingBox
+        {
+            get
+            {
+                Rectangle drawnRectangle = _spriteSource.GetDrawnRectangle();
+
+                var rectangle = new CenteredRectangle
+                {
+                    Center = _sceneNode.Position,
+                    Width = drawnRectangle.Width,
+                    Height = drawnRectangle.Height
+                };
+
+                if (SpriteTransformer != null)
+                    rectangle.Center += SpriteTransformer.Origin - drawnRectangle.Center.ToVector2();
+
+                return rectangle;
+            }
+        }
+
         public bool ContainsPoint(Vector2 point)
         {
-            Rectangle drawnRectangle = _spriteSource.GetDrawnRectangle();
-
-            var rectangle = new CenteredRectangle
-            {
-                Center = _sceneNode.Position
-            };
-
-            if (SpriteTransformer != null)
-                rectangle.Center += SpriteTransformer.Origin - drawnRectangle.Center.ToVector2();
-
-            rectangle.Width = drawnRectangle.Width;
-            rectangle.Height = drawnRectangle.Height;
-
-            return rectangle.ContainsPoint(point);
+            return BoundingBox.ContainsPoint(point);
         }
     }
 }

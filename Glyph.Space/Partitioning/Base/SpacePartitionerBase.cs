@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glyph.Math;
+using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Space.Partitioning.Base
@@ -10,6 +11,11 @@ namespace Glyph.Space.Partitioning.Base
         protected Func<T, Vector2> GetPosition;
         protected abstract PartitionBase<T> Root { get; }
         public SpacePartitionerParameters Parameters { get; private set; }
+
+        IRectangle IArea.BoundingBox
+        {
+            get { return Parameters.Bounds; }
+        }
 
         protected SpacePartitionerBase(Func<T, Vector2> getPosition, SpacePartitionerParameters parameters)
         {

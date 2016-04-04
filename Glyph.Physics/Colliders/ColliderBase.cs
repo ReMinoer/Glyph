@@ -13,6 +13,8 @@ namespace Glyph.Physics.Colliders
         private readonly ColliderManager _colliderManager;
         public bool Enabled { get; set; }
 
+        public abstract IRectangle BoundingBox { get; }
+
         public Vector2 Center
         {
             get { return SceneNode.LocalPosition; }
@@ -48,8 +50,8 @@ namespace Glyph.Physics.Colliders
                 if (Collided != null)
                     Collided.Invoke(collision);
 
-                if (collision.IsCancelled)
-                    continue;
+                if (collision.IsHandled)
+                    break;
 
                 ParentNode.Position = collision.NewPosition;
                 alreadyResolved.Add(collision.OtherCollider);
@@ -71,6 +73,7 @@ namespace Glyph.Physics.Colliders
 
         public abstract bool IsColliding(RectangleCollider collider, out Collision collision);
         public abstract bool IsColliding(CircleCollider collider, out Collision collision);
+        public abstract bool IsColliding(IGridCollider collider, out Collision collision);
         public abstract bool Intersects(IRectangle rectangle);
         public abstract bool Intersects(ICircle circle);
         public abstract bool ContainsPoint(Vector2 point);

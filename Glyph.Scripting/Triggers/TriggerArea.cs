@@ -116,6 +116,11 @@ namespace Glyph.Scripting.Triggers
             return Shape.Intersects(circle);
         }
 
+        IRectangle IArea.BoundingBox
+        {
+            get { return Shape; }
+        }
+
         public bool ContainsPoint(Vector2 point)
         {
             return Shape.ContainsPoint(point);

@@ -1,21 +1,29 @@
 ﻿using Microsoft.Xna.Framework;
+using Glyph;
 
 namespace Glyph.Math.Shapes
 {
+    public delegate bool IntersectionDelegate<in TShape, in TOther>(TShape collider, TOther other)
+        where TShape : IShape
+        where TOther : IShape;
+    public delegate bool CollisionDelegate<in TShape, in TOther>(TShape collider, TOther other, out Vector2 correction)
+        where TShape : IShape
+        where TOther : IShape;
+
     static public class IntersectionUtils
     {
-        static public bool TwoRectangles(IRectangle rectangleA, IRectangle rectangleB)
+        static public bool RectangleWithRectangle(IRectangle rectangleA, IRectangle rectangleB)
         {
             IRectangle intersection;
-            return TwoRectangles(rectangleA, rectangleB, out intersection);
+            return RectangleWithRectangle(rectangleA, rectangleB, out intersection);
         }
 
-        static public bool TwoRectangles(IRectangle rectangleA, IRectangle rectangleB, out IRectangle intersection)
+        static public bool RectangleWithRectangle(IRectangle rectangleA, IRectangle rectangleB, out IRectangle intersection)
         {
-            float left = MathHelper.Max(rectangleA.Left, rectangleB.Left);
-            float right = MathHelper.Min(rectangleA.Right, rectangleB.Right);
-            float top = MathHelper.Max(rectangleA.Top, rectangleB.Top);
-            float bottom = MathHelper.Min(rectangleA.Bottom, rectangleB.Bottom);
+            float left = Microsoft.Xna.Framework.MathHelper.Max(rectangleA.Left, rectangleB.Left);
+            float right = Microsoft.Xna.Framework.MathHelper.Min(rectangleA.Right, rectangleB.Right);
+            float top = Microsoft.Xna.Framework.MathHelper.Max(rectangleA.Top, rectangleB.Top);
+            float bottom = Microsoft.Xna.Framework.MathHelper.Min(rectangleA.Bottom, rectangleB.Bottom);
 
             if (left > right || top > bottom)
             {
@@ -27,30 +35,66 @@ namespace Glyph.Math.Shapes
             intersection = new CenteredRectangle(center, right - left, bottom - top);
             return true;
         }
-
-        static public bool TwoCircles(ICircle circleA, ICircle circleB)
+        
+        static public bool RectangleWithRectangle(IRectangle rectangle, IRectangle other, out Vector2 correction)
         {
-            float radiusIntersection;
-            return TwoCircles(circleA, circleB, out radiusIntersection);
+            IRectangle intersection;
+            if (RectangleWithRectangle(rectangle, other, out intersection))
+            {
+                bool isWiderThanTall = intersection.Width > intersection.Height;
+
+                if (isWiderThanTall)
+                {
+                    correction = rectangle.Top <= other.Top
+                        ? new Vector2(0, -intersection.Height)
+                        : new Vector2(0, intersection.Height);
+                }
+                else
+                {
+                    correction = rectangle.Right >= other.Right
+                        ? new Vector2(intersection.Width, 0)
+                        : new Vector2(-intersection.Width, 0);
+                }
+
+                return true;
+            }
+
+            correction = Vector2.Zero;
+            return false;
         }
 
-        static public bool TwoCircles(ICircle circleA, ICircle circleB, out float radiusIntersection)
-        {
-            radiusIntersection = circleA.Radius + circleB.Radius - (circleA.Center - circleB.Center).Length();
-            return radiusIntersection >= 0;
-        }
-
-        static public bool RectangleAndCircle(IRectangle rectangle, ICircle circle)
+        static public bool CircleWithCircle(ICircle circleA, ICircle circleB)
         {
             Vector2 correction;
-            return RectangleAndCircle(rectangle, circle, out correction);
+            return CircleWithCircle(circleA, circleB, out correction);
         }
 
-        static public bool RectangleAndCircle(IRectangle rectangle, ICircle circle, out Vector2 correction)
+        static public bool CircleWithCircle(ICircle circleA, ICircle circleB, out Vector2 correction)
+        {
+            Vector2 centersDistance = circleA.Center - circleB.Center;
+
+            float radiusIntersection = circleA.Radius + circleB.Radius - centersDistance.Length();
+            if (radiusIntersection >= 0)
+            {
+                correction = radiusIntersection * centersDistance.Normalized();
+                return true;
+            }
+
+            correction = Vector2.Zero;
+            return false;
+        }
+
+        static public bool RectangleWithCircle(IRectangle rectangle, ICircle circle)
+        {
+            Vector2 correction;
+            return RectangleWithCircle(rectangle, circle, out correction);
+        }
+
+        static public bool RectangleWithCircle(IRectangle rectangle, ICircle circle, out Vector2 correction)
         {
             // Find the closest point to the circle within the rectangle
-            float closestX = MathHelper.Clamp(circle.Center.X, rectangle.Left, rectangle.Right);
-            float closestY = MathHelper.Clamp(circle.Center.Y, rectangle.Top, rectangle.Bottom);
+            float closestX = Microsoft.Xna.Framework.MathHelper.Clamp(circle.Center.X, rectangle.Left, rectangle.Right);
+            float closestY = Microsoft.Xna.Framework.MathHelper.Clamp(circle.Center.Y, rectangle.Top, rectangle.Bottom);
             var closest = new Vector2(closestX, closestY);
 
             // Calculate the distance between the circle's center and this closest point
@@ -58,8 +102,27 @@ namespace Glyph.Math.Shapes
 
             // If the distance is less than the circle's radius, an intersection occurs
             float radiusIntersection = circle.Radius - distance.Length();
-            correction = radiusIntersection * (closest - rectangle.Center);
-            return radiusIntersection >= 0;
+
+            if (radiusIntersection >= 0)
+            {
+                correction = radiusIntersection * (closest - rectangle.Center).Normalized();
+                return true;
+            }
+
+            correction = Vector2.Zero;
+            return false;
+        }
+
+        static public bool RectangleWithCircle(ICircle circle, IRectangle rectangle)
+        {
+            return RectangleWithCircle(rectangle, circle);
+        }
+
+        static public bool CircleWithRectangle(ICircle circle, IRectangle rectangle, out Vector2 correction)
+        {
+            bool result = RectangleWithCircle(rectangle, circle, out correction);
+            correction = correction.Inverse();
+            return result;
         }
     }
 }

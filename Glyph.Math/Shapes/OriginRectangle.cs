@@ -47,6 +47,11 @@ namespace Glyph.Math.Shapes
             }
         }
 
+        IRectangle IArea.BoundingBox
+        {
+            get { return this; }
+        }
+
         public OriginRectangle(Vector2 origin, Vector2 size)
             : this()
         {
@@ -70,12 +75,12 @@ namespace Glyph.Math.Shapes
 
         public bool Intersects(IRectangle rectangle)
         {
-            return IntersectionUtils.TwoRectangles(this, rectangle);
+            return IntersectionUtils.RectangleWithRectangle(this, rectangle);
         }
 
         public bool Intersects(ICircle circle)
         {
-            return IntersectionUtils.RectangleAndCircle(this, circle);
+            return IntersectionUtils.RectangleWithCircle(this, circle);
         }
     }
 }
