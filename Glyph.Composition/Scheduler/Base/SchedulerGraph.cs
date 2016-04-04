@@ -6,7 +6,7 @@ namespace Glyph.Composition.Scheduler.Base
 {
     public class SchedulerGraph<T> : Graph<SchedulerGraph<T>.Vertex, SchedulerGraph<T>.Edge>
     {
-        public class Vertex : Vertex<Vertex, Edge>, IVisitable<TopologicalOrderVisitor<T>, Vertex, Edge>
+        public class Vertex : Vertex<Vertex, Edge>, IVisitable<TopologicalOrderVisitor<T>, Vertex, Vertex, Edge>
         {
             public Predicate<object> Predicate { get; set; } 
             public IList<T> Items { get; private set; }
