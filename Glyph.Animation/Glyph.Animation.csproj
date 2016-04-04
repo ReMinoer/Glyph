@@ -38,10 +38,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StandardAnimation.cs" />
+    <Compile Include="Animation.cs" />
     <Compile Include="AnimationBuilder.cs" />
-    <Compile Include="StandardAnimationPlayer.cs" />
-    <Compile Include="AnimationStep.cs" />
+    <Compile Include="AnimationTransition.cs" />
+    <Compile Include="IAnimationBuilder.cs" />
+    <Compile Include="NumericAnimationBuilder.cs" />
+    <Compile Include="PropertiesAnimationBuilder.cs" />
+    <Compile Include="AnimationKeyPoint.cs" />
+    <Compile Include="AnimationPlayer.cs" />
     <Compile Include="Animator.cs" />
     <Compile Include="EasingDelegate.cs" />
     <Compile Include="IAnimation.cs" />
@@ -65,9 +69,17 @@
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
+      <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
+      <Name>Diese.Modelization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
+      <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
+      <Name>Glyph.Math</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

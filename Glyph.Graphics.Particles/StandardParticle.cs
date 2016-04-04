@@ -1,6 +1,7 @@
 ﻿using Diese.Injection;
 using Glyph.Animation;
 using Glyph.Composition;
+using Glyph.Graphics.Renderer;
 using Glyph.Particles;
 
 namespace Glyph.Graphics.Particles
@@ -12,7 +13,7 @@ namespace Glyph.Graphics.Particles
         public Motion Motion { get; private set; }
         public SpriteLoader SpriteLoader { get; private set; }
         public SpriteTransformer SpriteTransformer { get; private set; }
-        public StandardAnimationPlayer<StandardParticle> AnimationPlayer { get; private set; }
+        public AnimationPlayer<StandardParticle> AnimationPlayer { get; private set; }
 
         public bool Ended
         {
@@ -26,7 +27,7 @@ namespace Glyph.Graphics.Particles
             Motion = Add<Motion>();
             SpriteLoader = Add<SpriteLoader>();
             SpriteTransformer = Add<SpriteTransformer>();
-            AnimationPlayer = Add<StandardAnimationPlayer<StandardParticle>>();
+            AnimationPlayer = Add<AnimationPlayer<StandardParticle>>();
 
             Add<SpriteRenderer>();
         }

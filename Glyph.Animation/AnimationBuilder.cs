@@ -3,27 +3,26 @@ using System.Collections.Generic;
 
 namespace Glyph.Animation
 {
-    // TODO : AnimationBuilder basé sur des points
-    public class AnimationBuilder<T> : IEnumerable<AnimationStep<T>>
+    public class AnimationBuilder<T> : IAnimationBuilder<T>, IEnumerable<AnimationTransition<T>>
     {
-        private readonly List<AnimationStep<T>> _list;
+        private readonly List<AnimationTransition<T>> _list;
         public bool Loop { get; set; }
 
         public AnimationBuilder()
         {
-            _list = new List<AnimationStep<T>>();
+            _list = new List<AnimationTransition<T>>();
         }
 
-        public AnimationStepDelegate<T> this[float instant]
+        public AnimationTransitionDelegate<T> this[float instant]
         {
             set { this[instant, instant] = value; }
         }
 
-        public AnimationStepDelegate<T> this[float begin, float end]
+        public AnimationTransitionDelegate<T> this[float begin, float end]
         {
             set
             {
-                var step = new AnimationStep<T>
+                var step = new AnimationTransition<T>
                 {
                     Begin = begin,
                     End = end,
@@ -34,9 +33,9 @@ namespace Glyph.Animation
             }
         }
 
-        public StandardAnimation<T> Generate()
+        public IAnimation<T> Create()
         {
-            var animation = new StandardAnimation<T>(_list)
+            var animation = new Animation<T>(_list)
             {
                 Loop = Loop
             };
@@ -44,7 +43,7 @@ namespace Glyph.Animation
             return animation;
         }
 
-        public IEnumerator<AnimationStep<T>> GetEnumerator()
+        public IEnumerator<AnimationTransition<T>> GetEnumerator()
         {
             return _list.GetEnumerator();
         }

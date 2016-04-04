@@ -5,11 +5,11 @@ using Glyph.Composition;
 
 namespace Glyph.Animation
 {
-    public class StandardAnimationPlayer<T> : GlyphComponent, IAnimationPlayer
+    public class AnimationPlayer<T> : GlyphComponent, IAnimationPlayer
         where T : class
     {
-        private readonly List<AnimationStep<T>> _stepsToRead;
-        private StandardAnimation<T> _animation;
+        private readonly List<AnimationTransition<T>> _stepsToRead;
+        private IAnimation<T> _animation;
         public bool UseUnscaledTime { get; set; }
         public WeakReference<T> Animatable { get; private set; }
         public float ElapsedTime { get; private set; }
@@ -17,7 +17,7 @@ namespace Glyph.Animation
         public bool Paused { get; private set; }
         public bool IsLooping { get; set; }
 
-        public StandardAnimation<T> Animation
+        public IAnimation<T> Animation
         {
             get { return _animation; }
             set
@@ -39,11 +39,11 @@ namespace Glyph.Animation
             get { return ElapsedTime > Animation.Duration; }
         }
 
-        public StandardAnimationPlayer(T animatable)
+        public AnimationPlayer(T animatable)
         {
             Animatable = new WeakReference<T>(animatable);
 
-            _stepsToRead = new List<AnimationStep<T>>();
+            _stepsToRead = new List<AnimationTransition<T>>();
             Paused = true;
         }
 
@@ -62,8 +62,8 @@ namespace Glyph.Animation
 
             do
             {
-                var stepsToRemove = new List<AnimationStep<T>>();
-                foreach (AnimationStep<T> step in _stepsToRead)
+                var stepsToRemove = new List<AnimationTransition<T>>();
+                foreach (AnimationTransition<T> step in _stepsToRead)
                 {
                     if (ElapsedTime < step.Begin)
                         break;
@@ -74,13 +74,13 @@ namespace Glyph.Animation
 
                     T animatable;
                     if (Animatable.TryGetTarget(out animatable))
-                        step.Apply(animatable, advance);
+                        step.Apply(ref animatable, advance);
 
                     if (ElapsedTime > step.End)
                         stepsToRemove.Add(step);
                 }
 
-                foreach (AnimationStep<T> step in stepsToRemove)
+                foreach (AnimationTransition<T> step in stepsToRemove)
                     _stepsToRead.Remove(step);
 
                 if (!_stepsToRead.Any())

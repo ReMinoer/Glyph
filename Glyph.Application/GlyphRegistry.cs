@@ -57,7 +57,7 @@ namespace Glyph.Application
             Register<SceneNode>();
             Register<Motion>();
             RegisterGeneric(typeof(Animator<>));
-            RegisterGeneric(typeof(StandardAnimationPlayer<>));
+            RegisterGeneric(typeof(AnimationPlayer<>));
 
             Register<SpriteLoader>();
             Register<SpriteSheet>();

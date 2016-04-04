@@ -25,11 +25,22 @@ namespace Glyph.Animation
             Animatable = animatable;
         }
 
-        public StandardAnimationPlayer<T> Add(StandardAnimation<T> standardAnimation)
+        public AnimationPlayer<T> Add(Animation<T> animation)
         {
-            var player = new StandardAnimationPlayer<T>(Animatable)
+            var player = new AnimationPlayer<T>(Animatable)
             {
-                Animation = standardAnimation
+                Animation = animation
+            };
+
+            Add(player);
+            return player;
+        }
+
+        public AnimationPlayer<T> Add(IAnimationBuilder<T> animationBuilder)
+        {
+            var player = new AnimationPlayer<T>(Animatable)
+            {
+                Animation = animationBuilder.Create()
             };
 
             Add(player);

@@ -4,22 +4,22 @@ using System.Linq;
 
 namespace Glyph.Animation
 {
-    public class StandardAnimation<T> : IAnimation, IEnumerable<AnimationStep<T>>
+    public class Animation<T> : IAnimation<T>
     {
-        private readonly List<AnimationStep<T>> _chronology;
+        private readonly List<AnimationTransition<T>> _chronology;
         public float Duration { get; private set; }
         public bool Loop { get; set; }
 
-        public StandardAnimation(IEnumerable<AnimationStep<T>> animationSteps)
+        public Animation(IEnumerable<AnimationTransition<T>> animationSteps)
         {
-            _chronology = new List<AnimationStep<T>>();
+            _chronology = new List<AnimationTransition<T>>();
             _chronology.AddRange(animationSteps);
             _chronology.Sort();
 
             Duration = this.Max(x => x.End);
         }
 
-        public IEnumerator<AnimationStep<T>> GetEnumerator()
+        public IEnumerator<AnimationTransition<T>> GetEnumerator()
         {
             return _chronology.GetEnumerator();
         }
