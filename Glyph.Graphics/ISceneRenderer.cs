@@ -1,9 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Glyph.Composition;
 
 namespace Glyph.Graphics
 {
     public interface ISceneRenderer
     {
-        void RenderingProcess(SpriteBatch spriteBatch);
+        void RenderingProcess(IDrawer drawer);
     }
 }

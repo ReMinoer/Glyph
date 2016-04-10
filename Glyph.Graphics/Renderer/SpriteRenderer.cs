@@ -14,14 +14,14 @@ namespace Glyph.Graphics.Renderer
             _sceneNode = sceneNode;
         }
 
-        protected override void Render(SpriteBatch spriteBatch)
+        protected override void Render(IDrawer drawer)
         {
             if (SpriteTransformer != null)
-                spriteBatch.Draw(Source.Texture, _sceneNode.Position, Source.Rectangle, SpriteTransformer.Color,
+                drawer.SpriteBatchStack.Current.Draw(Source.Texture, _sceneNode.Position, Source.Rectangle, SpriteTransformer.Color,
                     _sceneNode.Rotation, SpriteTransformer.Origin, _sceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, _sceneNode.Depth);
             else
             {
-                spriteBatch.Draw(Source.Texture, _sceneNode.Position, Source.Rectangle, Color.White,
+                drawer.SpriteBatchStack.Current.Draw(Source.Texture, _sceneNode.Position, Source.Rectangle, Color.White,
                     _sceneNode.Rotation, Source.GetDrawnRectangle().Center.ToVector2(), _sceneNode.Scale, SpriteEffects.None, _sceneNode.Depth);
             }
         }

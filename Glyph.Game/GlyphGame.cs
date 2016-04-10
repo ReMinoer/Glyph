@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using Diese.Injection;
 using Glyph.Audio;
+using Glyph.Composition;
 using Glyph.Effects;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
@@ -65,6 +66,8 @@ namespace Glyph.Game
             get { return IsActive; }
         }
 
+        private IDrawer _drawer;
+
         protected GlyphGame(string[] args, IDependencyRegistry dependencyRegistry)
         {
             Logger.Info("Start game");
@@ -123,6 +126,8 @@ namespace Glyph.Game
         {
             base.LoadContent();
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+            _drawer = new Drawer(SpriteBatch, GraphicsDeviceManager);
+
             ContentLibrary.LoadContent(Content);
 
             ScreenEffectManager.Instance.LoadContent(ContentLibrary, GraphicsDevice);
@@ -197,20 +202,24 @@ namespace Glyph.Game
         protected override sealed void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+            Draw(_drawer);
+        }
 
+        protected virtual void Draw(IDrawer drawer)
+        {
             if (!IsFocus)
                 return;
 
-            ScreenEffectManager.Instance.Prepare(SpriteBatch, GraphicsDevice);
+            ScreenEffectManager.Instance.Prepare(drawer.SpriteBatchStack.Current, GraphicsDevice);
             ScreenEffectManager.Instance.CleanFirstRender(GraphicsDevice);
 
-            Scene.PreDraw(SpriteBatch);
-            Scene.Draw(SpriteBatch);
+            Scene.PreDraw(drawer.SpriteBatchStack.Current);
+            Scene.Draw(drawer);
 
             SpriteBatch.Begin();
-            StatusDisplay.Draw(SpriteBatch);
+            StatusDisplay.Draw(drawer.SpriteBatchStack.Current);
 #if WINDOWS
-            EditorCursor.Draw(SpriteBatch);
+            EditorCursor.Draw(drawer.SpriteBatchStack.Current);
 #endif
             SpriteBatch.End();
 

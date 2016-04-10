@@ -52,7 +52,6 @@
     <Compile Include="Shapes\RectangleSprite.cs" />
     <Compile Include="Shapes\ShapedSpriteBase.cs" />
     <Compile Include="SpriteArea.cs" />
-    <Compile Include="SpriteBatchStack.cs" />
     <Compile Include="SpriteLoader.cs" />
     <Compile Include="SpriteAnimator.cs" />
     <Compile Include="SpriteSheet.cs" />

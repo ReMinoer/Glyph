@@ -1,4 +1,5 @@
 ﻿using System;
+using Glyph.Composition;
 using Glyph.Math;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
@@ -30,11 +31,11 @@ namespace Glyph.Graphics.Renderer
                     RenderingBehaviour(Grid[i, j], this);
 
                     if (SpriteTransformer != null)
-                        spriteBatch.Draw(Source.Texture, position + Transformation.Translation, Source.Rectangle, SpriteTransformer.Color,
+                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position + Transformation.Translation, Source.Rectangle, SpriteTransformer.Color,
                             Transformation.Rotation, SpriteTransformer.Origin, Transformation.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, Depth);
                     else
                     {
-                        spriteBatch.Draw(Source.Texture, Transformation.Translation, Source.Rectangle, Color.White,
+                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, Transformation.Translation, Source.Rectangle, Color.White,
                             Transformation.Rotation, Source.GetDrawnRectangle().Center.ToVector2(), Transformation.Scale, SpriteEffects.None, Depth);
                     }
                 }

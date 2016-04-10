@@ -76,13 +76,13 @@ namespace Glyph.Composition
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(IDrawer drawer)
         {
             if (!Visible)
                 return;
 
             foreach (DrawDelegate draw in Schedulers.Draw.TopologicalOrder)
-                draw(spriteBatch);
+                draw(drawer);
         }
 
         protected class SchedulerHandler : GlyphSchedulerHandler

@@ -2,5 +2,5 @@
 
 namespace Glyph.Composition.Delegates
 {
-    public delegate void DrawDelegate(SpriteBatch spriteBatch);
+    public delegate void DrawDelegate(IDrawer drawer);
 }

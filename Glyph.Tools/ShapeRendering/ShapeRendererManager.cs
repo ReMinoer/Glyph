@@ -33,13 +33,13 @@ namespace Glyph.Tools.ShapeRendering
                 colliderObject.Update(elapsedTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(IDrawer drawer)
         {
             if (!Visible)
                 return;
 
             foreach (ShapeRendererBase colliderObject in this)
-                colliderObject.Draw(spriteBatch);
+                colliderObject.Draw(drawer);
         }
 
         private void TrackerOnRegistered(T shapedObject)

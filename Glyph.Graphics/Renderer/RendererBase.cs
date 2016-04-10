@@ -19,14 +19,14 @@ namespace Glyph.Graphics.Renderer
             Visible = true;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(IDrawer drawer)
         {
             if (!Visible || Source.Texture == null)
                 return;
 
-            Render(spriteBatch);
+            Render(drawer);
         }
 
-        protected abstract void Render(SpriteBatch spriteBatch);
+        protected abstract void Render(IDrawer drawer);
     }
 }

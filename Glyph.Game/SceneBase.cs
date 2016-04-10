@@ -73,12 +73,12 @@ namespace Glyph.Game
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(IDrawer drawer)
         {
             if (!Visible)
                 return;
 
-            Renderer.RenderingProcess(spriteBatch);
+            Renderer.RenderingProcess(drawer);
         }
 
         public virtual void PreDraw(SpriteBatch spriteBatch)

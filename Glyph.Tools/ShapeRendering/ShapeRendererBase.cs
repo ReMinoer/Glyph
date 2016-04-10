@@ -43,12 +43,12 @@ namespace Glyph.Tools.ShapeRendering
 
         protected abstract void UpdateSize();
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(IDrawer drawer)
         {
             if (!Visible)
                 return;
 
-            _spriteRenderer.Draw(spriteBatch);
+            _spriteRenderer.Draw(drawer);
         }
     }
 }

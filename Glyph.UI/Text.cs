@@ -34,16 +34,16 @@ namespace Glyph.UI
                 Font = contentLibrary.GetFont(Asset);
         }
 
-        public void DrawLocal(SpriteBatch spriteBatch)
+        public void DrawLocal(IDrawer drawer)
         {
             if (!Visible || Font == null)
                 return;
 
             if (Shadow != null)
-                spriteBatch.DrawString(Font, Content, SceneNode.Position + Shadow.Value.Position, Shadow.Value.Color,
+                drawer.SpriteBatchStack.Current.DrawString(Font, Content, SceneNode.Position + Shadow.Value.Position, Shadow.Value.Color,
                     SceneNode.Rotation, SpriteTransformer.Origin, SceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, 0);
 
-            spriteBatch.DrawString(Font, Content, SceneNode.Position, SpriteTransformer.Color,
+            drawer.SpriteBatchStack.Current.DrawString(Font, Content, SceneNode.Position, SpriteTransformer.Color,
                 SceneNode.Rotation, SpriteTransformer.Origin, SceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, 0);
         }
 

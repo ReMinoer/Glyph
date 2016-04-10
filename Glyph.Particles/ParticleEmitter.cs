@@ -68,13 +68,13 @@ namespace Glyph.Particles
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(IDrawer drawer)
         {
             if (!Visible)
                 return;
 
             foreach (IParticle particle in this)
-                particle.Draw(spriteBatch);
+                particle.Draw(drawer);
         }
     }
 }

@@ -43,12 +43,12 @@ namespace Glyph.UI.Simple
             _rectangleSprite.LoadContent(contentLibrary);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(IDrawer drawer)
         {
             if (!Visible)
                 return;
 
-            spriteBatch.Draw(_rectangleSprite.Texture, Bounds.ToStruct(), Color);
+            drawer.SpriteBatchStack.Current.Draw(_rectangleSprite.Texture, Bounds.ToStruct(), Color);
         }
     }
 }
