@@ -2,26 +2,26 @@
 
 namespace Glyph.Space
 {
-    public struct GridSize
+    public struct GridDimension
     {
         public int Columns { get; set; }
         public int Rows { get; set; }
 
-        public GridSize(int columns, int rows)
+        public GridDimension(int columns, int rows)
             : this()
         {
             Columns = columns;
             Rows = rows;
         }
 
-        static public implicit operator Point(GridSize gridSize)
+        static public implicit operator Point(GridDimension gridDimension)
         {
-            return new Point(gridSize.Columns, gridSize.Rows);
+            return new Point(gridDimension.Columns, gridDimension.Rows);
         }
 
-        static public implicit operator Vector2(GridSize gridSize)
+        static public implicit operator Vector2(GridDimension gridDimension)
         {
-            return new Vector2(gridSize.Columns, gridSize.Rows);
+            return new Vector2(gridDimension.Columns, gridDimension.Rows);
         }
     }
 }

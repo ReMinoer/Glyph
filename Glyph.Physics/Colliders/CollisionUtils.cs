@@ -38,7 +38,7 @@ namespace Glyph.Physics.Colliders
             for (int i = topleft.Y; i <= bottomRight.Y; i++)
                 for (int j = topleft.X; j <= bottomRight.X; j++)
                 {
-                    if (!gridCollider.IsCollidableCase(i, j))
+                    if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;
 
                     IRectangle rectangle = new OriginRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
@@ -71,7 +71,7 @@ namespace Glyph.Physics.Colliders
             for (int i = topleft.Y; i <= bottomRight.Y; i++)
                 for (int j = topleft.X; j <= bottomRight.X; j++)
                 {
-                    if (!gridCollider.IsCollidableCase(i, j))
+                    if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;
 
                     IRectangle rectangle = new OriginRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);

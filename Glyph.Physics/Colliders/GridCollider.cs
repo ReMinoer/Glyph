@@ -10,7 +10,7 @@ namespace Glyph.Physics.Colliders
     {
         public IGrid<TData> Grid { get; set; }
 
-        public Func<TData, bool> IsCollidableCaseDelegate { get; set; }
+        public Func<ICollider, TData, bool> IsCollidableCaseDelegate { get; set; }
 
         IGrid IGridCollider.Grid
         {
@@ -61,7 +61,7 @@ namespace Glyph.Physics.Colliders
             for (int i = topleft.Y; i <= bottomRight.Y; i++)
                 for (int j = topleft.X; j <= bottomRight.X; j++)
                 {
-                    if (!IsCollidableCase(i, j))
+                    if (!IsCollidableCase(null, i, j))
                         continue;
 
                     IRectangle rectangle = new OriginRectangle(Grid.ToWorldPoint(i, j), Grid.Delta);
@@ -73,14 +73,14 @@ namespace Glyph.Physics.Colliders
             return false;
         }
 
-        public bool IsCollidableCase(int i, int j)
+        public bool IsCollidableCase(ICollider collider, int i, int j)
         {
-            return IsCollidableCaseDelegate(Grid[i, j]);
+            return IsCollidableCaseDelegate(collider, Grid[i, j]);
         }
 
         public override bool ContainsPoint(Vector2 point)
         {
-            return IsCollidableCaseDelegate(Grid[point]);
+            return IsCollidableCaseDelegate(null, Grid[point]);
         }
     }
 }

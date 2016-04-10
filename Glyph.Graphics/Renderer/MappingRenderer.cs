@@ -10,10 +10,10 @@ namespace Glyph.Graphics.Renderer
     public class MappingRenderer<TData> : RendererBase
     {
         public ISpriteSheet SpriteSheet { get; }
-        public GridRectangle<TData> Grid { get; set; }
+        public IGrid<TData> Grid { get; set; }
         public Transformation Transformation { get; set; }
         public float Depth { get; set; }
-        public Action<TData, MappingRenderer<TData>> RenderingBehaviour { get; set; }
+        public Func<TData, MappingRenderer<TData>, bool> RenderingBehaviour { get; set; }
 
         public MappingRenderer(ISpriteSheet spriteSheet)
             : base(spriteSheet)
@@ -21,14 +21,15 @@ namespace Glyph.Graphics.Renderer
             SpriteSheet = spriteSheet;
         }
 
-        protected override void Render(SpriteBatch spriteBatch)
+        protected override void Render(IDrawer drawer)
         {
-            for (int i = 0; i < Grid.GridSize.Rows; i++)
-                for (int j = 0; j < Grid.GridSize.Columns; j++)
+            for (int i = 0; i < Grid.Dimension.Rows; i++)
+                for (int j = 0; j < Grid.Dimension.Columns; j++)
                 {
                     Vector2 position = Grid.ToWorldPoint(i, j) + Grid.Delta / 2;
 
-                    RenderingBehaviour(Grid[i, j], this);
+                    if (!RenderingBehaviour(Grid[i, j], this))
+                        continue;
 
                     if (SpriteTransformer != null)
                         drawer.SpriteBatchStack.Current.Draw(Source.Texture, position + Transformation.Translation, Source.Rectangle, SpriteTransformer.Color,
