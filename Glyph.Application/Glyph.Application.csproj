@@ -69,6 +69,10 @@
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Graphics.Particles\Glyph.Graphics.Particles.csproj">
+      <Project>{5292934A-D0E4-47FD-98FA-0A32B37657D3}</Project>
+      <Name>Glyph.Graphics.Particles</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
       <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
       <Name>Glyph.Graphics</Name>
@@ -92,6 +96,14 @@
     <ProjectReference Include="..\Glyph.Scripting\Glyph.Scripting.csproj">
       <Project>{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}</Project>
       <Name>Glyph.Scripting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Tools\Glyph.Tools.csproj">
+      <Project>{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}</Project>
+      <Name>Glyph.Tools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.UI\Glyph.UI.csproj">
+      <Project>{47e66422-aefc-4b28-92c3-356ffd2e783c}</Project>
+      <Name>Glyph.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

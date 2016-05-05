@@ -2,11 +2,15 @@
 using Glyph.Animation.Trajectories.Players;
 using Glyph.Audio;
 using Glyph.Composition;
+using Glyph.Composition.Layers;
+using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Graphics;
 using Glyph.Graphics.Renderer;
 using Glyph.Graphics.Shapes;
+using Glyph.Particles;
 using Glyph.Physics.Colliders;
+using Glyph.Scripting.Triggers;
 
 namespace Glyph.Application
 {
@@ -17,19 +21,24 @@ namespace Glyph.Application
             public Initialize()
             {
                 Add<SceneNode>();
+                Add<ILayerRoot>();
                 Add<Motion>();
                 Add<ITrajectoryPlayer>();
 
                 Add<ISpriteSource>();
                 Add<SpriteTransformer>();
                 Add<SpriteAnimator>();
-                Add<SpriteRenderer>();
+                Add<RendererBase>();
 
                 Add<SongPlayer>();
                 Add<SoundListener>();
                 Add<SoundEmitter>();
 
                 Add<ICollider>();
+                Add<TriggerArea>();
+                Add<SpriteArea>();
+
+                Add<ParticleEmitter>();
             }
         }
 
@@ -54,6 +63,10 @@ namespace Glyph.Application
                 Add<SpriteAnimator>();
 
                 Add<SongPlayer>();
+
+                Add<ICollider>();
+
+                Add<ParticleEmitter>();
             }
         }
 
@@ -61,7 +74,9 @@ namespace Glyph.Application
         {
             public Draw()
             {
-                Add<SpriteRenderer>();
+                Add<RendererBase>();
+
+                Add<ParticleEmitter>();
             }
         }
     }

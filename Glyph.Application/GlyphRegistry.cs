@@ -4,16 +4,24 @@ using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Injection;
+using Glyph.Composition.Layers;
 using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Composition.Tracking;
 using Glyph.Graphics;
+using Glyph.Graphics.Particles;
 using Glyph.Graphics.Renderer;
+using Glyph.Graphics.Shapes;
 using Glyph.Messaging;
 using Glyph.Particles;
 using Glyph.Physics;
 using Glyph.Physics.Colliders;
+using Glyph.Scripting.Triggers;
+using Glyph.Tools.ShapeRendering;
+using Glyph.UI;
+using Glyph.UI.Menus;
+using Glyph.UI.Simple;
 
 namespace Glyph.Application
 {
@@ -21,11 +29,17 @@ namespace Glyph.Application
     {
         public GlyphRegistry()
         {
+            #region Injection
+
             RegisterInstance<IDependencyRegistry>(this);
             Link<IDependencyRegistry, IDependencyRegistry>(null, InjectionScope.Global);
 
             Register<GlyphCompositeInjector>();
             Register<IDependencyRegistry, LocalGlyphRegistry>(Subsistence.Singleton, InjectionScope.Local);
+
+            #endregion
+
+            #region Composition & Scheduling
 
             Register<GlyphScheduler<IGlyphComponent, InitializeDelegate>>();
             Register<GlyphScheduler<ILoadContent, LoadContentDelegate>>();
@@ -49,37 +63,111 @@ namespace Glyph.Application
 
             Register<GlyphObject>();
 
+            #endregion
+
+            #region Messaging
+
             RegisterGeneric(typeof(Receiver<>));
             RegisterGeneric(typeof(GlobalRouter<>), Subsistence.Singleton);
             LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>));
             LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>), null, InjectionScope.Global);
-
             RegisterGeneric(typeof(MessagingTracker<>));
-            //RegisterGeneric(typeof(IRouter<InstantiatingMessage<>>), typeof(GlobalRouter<InstantiatingMessage<>>));
-            //RegisterGeneric(typeof(IRouter<DisposingMessage<>>), typeof(GlobalRouter<DisposingMessage<>>));
+
+            #endregion
+
+            #region Fundamental components
 
             Register<SceneNode>();
+            RegisterGeneric(typeof(LayerRoot<>));
+            LinkGeneric(typeof(ILayerRoot<>), typeof(LayerRoot<>));
+
+            #endregion
+
+            #region Animation
+
             Register<Motion>();
             RegisterGeneric(typeof(Animator<>));
             RegisterGeneric(typeof(AnimationPlayer<>));
 
+            #endregion
+
+            #region Particles
+            
+            Register<ParticleEmitter>();
+            Register<StandardParticle>();
+
+            #endregion
+
+            #region Graphics
+
             Register<SpriteLoader>();
+            Register<SpriteTransformer>();
+            Register<SpriteRenderer>();
+
             Register<SpriteSheet>();
             Register<SpriteSheetSplit>();
-            Register<SpriteTransformer>();
             Register<SpriteAnimator>();
-            Register<SpriteRenderer>();
-            Register<ParticleEmitter>();
+
+            Register<SpriteArea>();
+
+            Register<RectangleSprite>();
+            Register<FilledRectangleSprite>();
+            Register<CircleSprite>();
+
+            Register<FillingRectangle>();
+            Register<FillingRenderer>();
+
+            RegisterGeneric(typeof(MappingRenderer<>));
+
+            #endregion
+
+            #region Audio
 
             Register<SongPlayer>();
             Register<SoundListener>();
             Register<SoundEmitter>();
 
+            #endregion
+
+            #region Physics
+
             Register<PhysicsManager>(Subsistence.Singleton);
             Register<ColliderManager>(Subsistence.Singleton);
+
             Register<RectangleCollider>();
             Register<CircleCollider>();
-            Register<ColliderBase.Context>();
+            RegisterGeneric(typeof(GridCollider<>));
+
+            Register<ColliderComposite>();
+
+            #endregion
+
+            #region Scripting
+
+            Register<TriggerArea>();
+
+            #endregion
+
+            #region Tools
+
+            RegisterGeneric(typeof(ShapeRendererManager<>));
+
+            Register<RectangleShapeRenderer>();
+            Register<CircleShapeRenderer>();
+
+            #endregion
+
+            #region UI
+
+            Register<Text>();
+
+            Register<SimpleBorder>();
+            Register<SimpleFrame>();
+            Register<SimpleButton>();
+
+            Register<LinearMenu>();
+
+            #endregion
         }
     }
 }
