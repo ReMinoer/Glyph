@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,32 +47,38 @@ namespace Glyph
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(path, "*.xnb", SearchOption.AllDirectories));
 
-            foreach (string s in files)
+            Parallel.ForEach(files, file =>
             {
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                if (s.Contains("Font"))
-                    AddFont(s.Replace("Content\\", ""), content);
-                else if (s.Contains("Sound"))
-                    AddSound(s.Replace("Content\\", ""), content);
-                else if (s.Contains("Music"))
-                    AddMusic(s.Replace("Content\\", ""), content);
-                else if (s.Contains("Effect"))
-                    AddEffect(s.Replace("Content\\", ""), content);
+                file = file.Replace("Content\\", "");
+
+                if (file.Contains("Font"))
+                    AddFont(file, content);
+                else if (file.Contains("Sound"))
+                    AddSound(file, content);
+                else if (file.Contains("Music"))
+                    AddMusic(file, content);
+                else if (file.Contains("Effect"))
+                    AddEffect(file, content);
                 else
-                    AddTexture(s.Replace("Content\\", ""), content);
+                    AddTexture(file, content);
 
                 stopwatch.Stop();
-                Logger.Info("Loaded {0} ({1}s)", s, stopwatch.Elapsed.ToString(@"s\.fff"));
+                lock (Logger)
+                    Logger.Info("Loaded {0} ({1}s)", file, stopwatch.Elapsed.ToString(@"s\.fff"));
                 stopwatch.Reset();
-            }
+            });
         }
 
         public void AddTexture(string path, ContentManager content)
         {
             string asset = path.Replace(".xnb", "");
-            _textures.Add(asset.Substring(asset.LastIndexOf('\\') + 1), content.Load<Texture2D>(asset));
+            var texture = content.Load<Texture2D>(asset);
+
+            lock (_textures)
+                _textures.Add(asset.Substring(asset.LastIndexOf('\\') + 1), texture);
         }
 
         public Texture2D GetTexture(string asset)
@@ -82,7 +89,10 @@ namespace Glyph
         public void AddFont(string path, ContentManager content)
         {
             string asset = path.Replace(".xnb", "");
-            _fonts.Add(asset.Substring(asset.LastIndexOf('\\') + 1), content.Load<SpriteFont>(asset));
+            var font = content.Load<SpriteFont>(asset);
+
+            lock (_fonts)
+                _fonts.Add(asset.Substring(asset.LastIndexOf('\\') + 1), font);
         }
 
         public SpriteFont GetFont(string asset)
@@ -93,7 +103,10 @@ namespace Glyph
         public void AddSound(string path, ContentManager content)
         {
             string asset = path.Replace(".xnb", "");
-            _sounds.Add(asset.Substring(asset.LastIndexOf('\\') + 1), content.Load<SoundEffect>(asset));
+            var sound = content.Load<SoundEffect>(asset);
+
+            lock (_sounds)
+                _sounds.Add(asset.Substring(asset.LastIndexOf('\\') + 1), sound);
         }
 
         public SoundEffect GetSound(string asset)
@@ -104,7 +117,10 @@ namespace Glyph
         public void AddMusic(string path, ContentManager content)
         {
             string asset = path.Replace(".xnb", "");
-            _musics.Add(asset.Substring(asset.LastIndexOf('\\') + 1), content.Load<Song>(asset));
+            var song = content.Load<Song>(asset);
+
+            lock (_musics)
+                _musics.Add(asset.Substring(asset.LastIndexOf('\\') + 1), song);
         }
 
         public Song GetMusic(string asset)
@@ -115,7 +131,10 @@ namespace Glyph
         public void AddEffect(string path, ContentManager content)
         {
             string asset = path.Replace(".xnb", "");
-            _effects.Add(asset.Substring(asset.LastIndexOf('\\') + 1), content.Load<Effect>(asset));
+            var effect = content.Load<Effect>(asset);
+
+            lock (_effects)
+                _effects.Add(asset.Substring(asset.LastIndexOf('\\') + 1), effect);
         }
 
         public Effect GetEffect(string asset)
