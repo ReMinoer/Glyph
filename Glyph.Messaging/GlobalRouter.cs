@@ -3,7 +3,7 @@
     public class GlobalRouter<TMessage> : RouterBase<TMessage>
         where TMessage : Message
     {
-        internal GlobalRouter()
+        public GlobalRouter()
         {
         } 
     }
