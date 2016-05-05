@@ -20,12 +20,6 @@ namespace Glyph.Composition.Layers
             _layers = new Dictionary<ILayerRoot<TLayer>, TLayer>();
         }
 
-        public LayerManager(Func<ILayerRoot<TLayer>, TLayer> layerFactory)
-            : this()
-        {
-            LayerFactory = layerFactory;
-        }
-
         public override void Initialize()
         {
             foreach (TLayer layer in _layers.Values)
@@ -41,7 +35,7 @@ namespace Glyph.Composition.Layers
         public ILayerRoot<TLayer> GetLayerRoot(IGlyphComponent component)
         {
             foreach (ILayerRoot<TLayer> layerRoot in _layers.Keys)
-                if (layerRoot.ContainsInChildren(component))
+                if (layerRoot.Parent.ContainsInChildren(component))
                     return layerRoot;
 
             return null;
@@ -50,7 +44,7 @@ namespace Glyph.Composition.Layers
         protected internal virtual TLayer Add(ILayerRoot<TLayer> layerRoot)
         {
             TLayer layer = LayerFactory(layerRoot);
-            _layers.Add(layerRoot, layerRoot.Layer);
+            _layers.Add(layerRoot, layer);
             return layer;
         }
 
