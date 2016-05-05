@@ -19,6 +19,7 @@ namespace Glyph.Graphics.Renderer
             : base(spriteSheet)
         {
             SpriteSheet = spriteSheet;
+            Transformation = Transformation.Identity;
         }
 
         protected override void Render(IDrawer drawer)
