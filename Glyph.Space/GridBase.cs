@@ -180,6 +180,18 @@ namespace Glyph.Space
             set { this[gridPositionable.GridPosition] = value; }
         }
 
+        public void Fill(Func<T> valueFactory)
+        {
+            Fill(valueFactory, Point.Zero, new Point(Dimension.Columns - 1, Dimension.Rows - 1));
+        }
+
+        public void Fill(Func<T> valueFactory, Point minPoint, Point maxPoint)
+        {
+            for (int i = minPoint.Y; i <= maxPoint.Y; i++)
+                for (int j = minPoint.X; j <= maxPoint.X; j++)
+                    this[i, j] = valueFactory();
+        }
+
         T[][] IGrid<T>.ToArray()
         {
             return ToArrayProtected();
