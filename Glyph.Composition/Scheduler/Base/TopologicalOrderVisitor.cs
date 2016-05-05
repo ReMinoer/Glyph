@@ -28,7 +28,7 @@ namespace Glyph.Composition.Scheduler.Base
             _result.Clear();
             _visited.Clear();
 
-            foreach (IGrouping<Priority, SchedulerGraph<T>.Vertex> group in graph.Vertices.GroupBy(x => x.Priority))
+            foreach (IGrouping<Priority, SchedulerGraph<T>.Vertex> group in graph.Vertices.GroupBy(x => x.Priority).OrderByDescending(x => (int)x.Key))
                 foreach (SchedulerGraph<T>.Vertex vertex in group)
                 {
                     vertex.Accept(this);
