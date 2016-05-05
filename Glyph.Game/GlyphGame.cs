@@ -70,6 +70,10 @@ namespace Glyph.Game
 
         protected GlyphGame(string[] args, IDependencyRegistry dependencyRegistry)
         {
+            Registry = dependencyRegistry;
+            Injector = new RegistryInjector(Registry);
+            Registry.RegisterInstance<IDependencyInjector>(Injector);
+
             Logger.Info("Start game");
             Logger.Info("Launch arguments : " + (args.Any() ? args.Aggregate((x, y) => x + " " + y) : ""));
 
@@ -100,10 +104,6 @@ namespace Glyph.Game
 
             EditorCursor.Initialize();
             Chronometer.Init();
-
-            Registry = dependencyRegistry;
-            Injector = new RegistryInjector(Registry);
-            Registry.RegisterInstance<IDependencyInjector>(Injector);
 
             Registry.RegisterInstance<GlyphGame>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
