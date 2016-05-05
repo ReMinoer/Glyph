@@ -29,10 +29,12 @@ namespace Glyph.Animation
         public Motion.MoveType Type { get; private set; }
         public Referential Referential { get; private set; }
 
+        private ITrajectoryPlayer _trajectoryPlayer;
+
         public ITrajectoryPlayer TrajectoryPlayer
         {
-            get { return Components[0]; }
-            set { Components[0] = value; }
+            get { return _trajectoryPlayer; }
+            set { Components.Replace(ref _trajectoryPlayer, value); }
         }
 
         public Vector2 Direction
