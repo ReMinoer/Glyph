@@ -1,23 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Diese.Composition;
-using Diese.Injection;
+﻿using Diese.Composition;
 
 namespace Glyph.Composition
 {
     public class GlyphComponent : Component<IGlyphComponent, IGlyphParent>, IGlyphComponent
     {
-        private readonly IEnumerable<PropertyInfo> _injectableProperties;
-
-        IEnumerable<PropertyInfo> IGlyphComponent.InjectableProperties
-        {
-            get { return _injectableProperties; }
-        }
-
         public GlyphComponent()
         {
-            _injectableProperties = GetType().GetProperties().Where(x => x.GetCustomAttributes(typeof(InjectableAttribute)).Any());
+            InstanceManager.ConstructorProcess(this);
         }
 
         public virtual void Initialize()
@@ -26,6 +15,7 @@ namespace Glyph.Composition
 
         public virtual void Dispose()
         {
+            InstanceManager.DisposeProcess(this);
         }
     }
 }

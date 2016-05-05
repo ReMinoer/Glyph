@@ -1,6 +1,6 @@
 ﻿using Diese.Injection;
 using Glyph.Composition;
-using Microsoft.Xna.Framework.Graphics;
+using Glyph.Composition.Injection;
 
 namespace Glyph.Graphics.Renderer
 {
@@ -10,9 +10,12 @@ namespace Glyph.Graphics.Renderer
         public bool Visible { get; set; }
         public ISpriteSource Source { get; private set; }
 
-        [Injectable]
+        [GlyphInjectable(GlyphInjectableTargets.Fraternal)]
         public SpriteTransformer SpriteTransformer { get; set; }
-        
+
+        [GlyphInjectable(GlyphInjectableTargets.Parent)]
+        public IDraw DrawableParent { get; set; }
+
         protected RendererBase(ISpriteSource source)
         {
             Source = source;
@@ -21,7 +24,7 @@ namespace Glyph.Graphics.Renderer
 
         public void Draw(IDrawer drawer)
         {
-            if (!Visible || Source.Texture == null)
+            if (!Visible || (DrawableParent != null && !DrawableParent.Visible) || Source.Texture == null)
                 return;
 
             Render(drawer);

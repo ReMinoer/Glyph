@@ -44,7 +44,7 @@ namespace Glyph.Composition.Tracking
             if (ComponentCreated != null)
                 ComponentCreated.Invoke(item);
 
-            Register(item);
+            base.Register(item);
             return item;
         }
 

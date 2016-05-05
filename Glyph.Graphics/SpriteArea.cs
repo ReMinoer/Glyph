@@ -1,5 +1,6 @@
 ﻿using Diese.Injection;
 using Glyph.Composition;
+using Glyph.Composition.Injection;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
@@ -12,7 +13,7 @@ namespace Glyph.Graphics
         private readonly SceneNode _sceneNode;
         private readonly ISpriteSource _spriteSource;
 
-        [Injectable]
+        [GlyphInjectable(GlyphInjectableTargets.Fraternal)]
         public SpriteTransformer SpriteTransformer { get; set; }
 
         public SpriteArea(SceneNode sceneNode, ISpriteSource spriteSource)

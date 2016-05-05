@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Diese.Composition;
-using Diese.Injection;
+﻿using Diese.Composition;
 
 namespace Glyph.Composition
 {
@@ -13,17 +9,11 @@ namespace Glyph.Composition
     public abstract class GlyphComposite<TComponent> : Composite<IGlyphComponent, IGlyphParent, TComponent>, IGlyphComposite<TComponent>
         where TComponent : class, IGlyphComponent
     {
-        private readonly IEnumerable<PropertyInfo> _injectableProperties;
-        public virtual bool IsStatic { get; protected set; }
-
-        IEnumerable<PropertyInfo> IGlyphComponent.InjectableProperties
-        {
-            get { return _injectableProperties; }
-        }
+        public bool IsFreeze { get; set; }
 
         protected GlyphComposite()
         {
-            _injectableProperties = GetType().GetProperties().Where(x => x.GetCustomAttributes(typeof(InjectableAttribute)).Any());
+            InstanceManager.ConstructorProcess(this);
         }
 
         public virtual void Initialize()
@@ -36,6 +26,8 @@ namespace Glyph.Composition
                 component.Dispose();
 
             Clear();
+
+            InstanceManager.DisposeProcess(this);
         }
     }
 }

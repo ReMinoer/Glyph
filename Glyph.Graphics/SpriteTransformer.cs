@@ -1,5 +1,6 @@
 using Diese.Injection;
 using Glyph.Composition;
+using Glyph.Composition.Injection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,7 +16,7 @@ namespace Glyph.Graphics
         public Vector2 Scale { get; set; }
         public SpriteEffects Effects { get; set; }
 
-        [Injectable]
+        [GlyphInjectable(GlyphInjectableTargets.Fraternal)]
         public ISpriteSource SpriteSource
         {
             get { return _spriteSource; }

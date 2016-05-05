@@ -45,7 +45,13 @@ namespace Glyph.Composition
                 throw new SingleComponentException(type);
 
             base.Add(item);
-            InjectToOtherComponents(item);
+
+            foreach (IGlyphComponent component in this)
+                foreach (InjectablePropertyInfo injectable in InstanceManager.GetInfo(component.GetType()).InjectableProperties)
+                    if (injectable.InjectableTargets.HasFlag(GlyphInjectableTargets.Fraternal)
+                        && injectable.PropertyInfo.GetValue(component) == null
+                        && item.GetType().IsInstanceOfType(injectable.PropertyInfo.PropertyType))
+                        injectable.PropertyInfo.SetValue(component, item);
 
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)
@@ -85,12 +91,7 @@ namespace Glyph.Composition
             router.Send(message);
         }
 
-        private void InjectToOtherComponents(IGlyphComponent item)
         {
-            foreach (IGlyphComponent component in this)
-                foreach (PropertyInfo property in component.InjectableProperties)
-                    if (property.GetValue(component) == null && item.GetType().IsInstanceOfType(property.PropertyType))
-                        property.SetValue(component, item);
         }
     }
 }

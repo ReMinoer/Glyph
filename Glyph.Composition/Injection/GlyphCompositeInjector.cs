@@ -31,50 +31,63 @@ namespace Glyph.Composition.Injection
             _local = new LocalDependencyInjector(this, localRegistry);
         }
 
-        public override object Resolve(Type type, object serviceKey = null)
+        public override object Resolve(Type type, InjectableAttribute injectableAttribute, object serviceKey = null)
         {
-            if (serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
+            var glyphInjectableAttribute = injectableAttribute as GlyphInjectableAttribute;
+            GlyphInjectableTargets targets = glyphInjectableAttribute != null ? glyphInjectableAttribute.Targets : GlyphInjectableTargets.All;
+            
+            if (targets != GlyphInjectableTargets.NewInstance && serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
             {
-                if (type.IsInstanceOfType(_context))
+                if (targets.HasFlag(GlyphInjectableTargets.Parent) && type.IsInstanceOfType(_context))
                     return _context;
 
-                IGlyphComponent component = _context.GetComponent(type);
-                if (component == null)
-                    throw new ComponentNotFoundException(type);
+                if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
+                {
+                    IGlyphComponent component = _context.GetComponent(type);
+                    if (component != null)
+                        return component;
+                }
 
-                return component;
+                throw new ComponentNotFoundException(type);
             }
 
             object obj;
-            if (_local.TryResolve(out obj, type, serviceKey))
+            if (_local.TryResolve(out obj, type, injectableAttribute, serviceKey))
                 return obj;
 
-            return base.Resolve(type, serviceKey);
+            return base.Resolve(type, injectableAttribute, serviceKey);
         }
 
-        public override bool TryResolve(out object obj, Type type, object serviceKey = null)
+        public override bool TryResolve(out object obj, Type type, InjectableAttribute injectableAttribute, object serviceKey = null)
         {
-            if (serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
+            var glyphInjectableAttribute = injectableAttribute as GlyphInjectableAttribute;
+            GlyphInjectableTargets targets = glyphInjectableAttribute != null ? glyphInjectableAttribute.Targets : GlyphInjectableTargets.All;
+
+            if (targets != GlyphInjectableTargets.NewInstance && serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
             {
-                if (type.IsInstanceOfType(_context))
+                if (targets.HasFlag(GlyphInjectableTargets.Parent) && type.IsInstanceOfType(_context))
                 {
                     obj = _context;
                     return true;
                 }
 
-                IGlyphComponent component = _context.GetComponent(type);
-                if (component != null)
+                if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
                 {
-                    obj = component;
-                    return true;
+                    IGlyphComponent component = _context.GetComponent(type);
+                    if (component != null)
+                    {
+                        obj = component;
+                        return true;
+                    }
                 }
             }
 
-            return _local.TryResolve(out obj, type, serviceKey)
-                || base.TryResolve(out obj, type, serviceKey);
+            return _local.TryResolve(out obj, type, injectableAttribute, serviceKey)
+                || base.TryResolve(out obj, type, injectableAttribute, serviceKey);
         }
 
         internal T Add<T>()
+            where T : IGlyphComponent
         {
             return (T)Add(typeof(T));
         }
@@ -84,7 +97,7 @@ namespace Glyph.Composition.Injection
             if (!typeof(IGlyphComponent).IsAssignableFrom(type))
                 throw new InvalidCastException(string.Format("Type must implements {0} !", typeof(IGlyphComponent)));
 
-            var component = (IGlyphComponent)base.Resolve(type);
+            var component = (IGlyphComponent)base.Resolve(type, null, null);
             _context.Add(component);
 
             return component;
