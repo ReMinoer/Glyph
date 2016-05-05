@@ -31,8 +31,8 @@ namespace Glyph
 
         public void Replace(SpriteBatchContext context)
         {
-            Push(context);
             Pop();
+            Push(context);
         }
 
         public void Pop()
