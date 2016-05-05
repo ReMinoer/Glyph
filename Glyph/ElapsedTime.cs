@@ -6,7 +6,7 @@ namespace Glyph
     public class ElapsedTime
     {
         static private ElapsedTime _instance;
-
+        private float _scaleAtPause;
         public GameTime GameTime { get; private set; }
         public TimeSpan Total { get; set; }
         public float Delta { get; set; }
@@ -44,6 +44,17 @@ namespace Glyph
         public float GetDelta(ITimeUnscalable unscalable)
         {
             return unscalable.UseUnscaledTime ? UnscaledDelta : Delta;
+        }
+
+        public void Pause()
+        {
+            _scaleAtPause = Scale;
+            Scale = 0;
+        }
+
+        public void Resume()
+        {
+            Scale = _scaleAtPause;
         }
     }
 }
