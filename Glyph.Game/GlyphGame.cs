@@ -135,6 +135,7 @@ namespace Glyph.Game
             StatusDisplay.LoadContent(ContentLibrary);
 
             Scene.LoadContent(ContentLibrary);
+            _sceneChanged = false;
 
 #if WINDOWS
             EditorCursor.LoadContent(ContentLibrary);
