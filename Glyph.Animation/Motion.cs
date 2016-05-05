@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 namespace Glyph.Animation
 {
     // TODO : Splines
+    // TODO : Space unit length (pixel to meter)
     [SinglePerParent]
     public class Motion : GlyphContainer<ITrajectoryPlayer>, IEnableable, IUpdate, ITimeUnscalable
     {
@@ -18,14 +19,14 @@ namespace Glyph.Animation
         }
 
         private readonly SceneNode _sceneNode;
-        private Vector2 _direction;
-        private Vector2 _destination;
+        private Vector2 _direction = Vector2.Zero;
+        private Vector2 _destination = Vector2.Zero;
         private float _angularSpeed = float.MaxValue;
         public bool Enabled { get; set; }
         public float Speed { get; set; }
         public bool UseUnscaledTime { get; set; }
         public bool AffectsRotation { get; set; }
-        public MoveType Type { get; private set; }
+        public Motion.MoveType Type { get; private set; }
         public Referential Referential { get; private set; }
 
         public ITrajectoryPlayer TrajectoryPlayer
@@ -76,12 +77,13 @@ namespace Glyph.Animation
 
         public Motion(SceneNode sceneNode)
         {
-            _sceneNode = sceneNode;
+            Enabled = true;
 
-            Components.Add(null);
+            _sceneNode = sceneNode;
 
             Type = MoveType.Dynamic;
             Referential = Referential.Local;
+            Direction = Vector2.Zero;
         }
 
         public void Update(ElapsedTime elapsedTime)
@@ -129,7 +131,11 @@ namespace Glyph.Animation
                     if (remainingDistance == Vector2.Zero)
                         Stop();
 
-                    _direction = Direction.RotateToward(remainingDistance, AngularSpeed, elapsedTime.GetDelta(this));
+                    _direction = (Direction.Length().EqualsZero()
+                                    ? remainingDistance
+                                    : Direction.RotateToward(remainingDistance, AngularSpeed, elapsedTime.GetDelta(this))
+                                    ).Normalized();
+
                     moveDelta = Direction * Speed * elapsedTime.GetDelta(this);
 
                     switch (Referential)
