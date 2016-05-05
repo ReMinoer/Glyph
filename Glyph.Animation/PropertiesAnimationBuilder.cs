@@ -58,7 +58,7 @@ namespace Glyph.Animation
         public IAnimation<T> Create()
         {
             float loopDuration = GetLeastCommonMultiple(_loopedTransitions.Select(x => x.Duration).ToArray());
-            float linearDuration = _transitions.Max(x => x.End);
+            float linearDuration = _transitions.Any() ? _transitions.Max(x => x.End) : 0;
 
             float duration = loopDuration;
             while (duration < linearDuration)
