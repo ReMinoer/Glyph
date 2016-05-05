@@ -184,7 +184,7 @@ namespace Glyph.Game
                 Exit();
 
             if (InputManager[DeveloperInputs.CompositionLog])
-                CompositionLog.Write(Scene);
+                CompositionLog.Write(Scene, Scene.RootNode);
 
 #if WINDOWS
             if (InputManager[DeveloperInputs.Fullscreen])
