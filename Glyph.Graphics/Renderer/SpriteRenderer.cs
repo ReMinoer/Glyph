@@ -22,7 +22,7 @@ namespace Glyph.Graphics.Renderer
             else
             {
                 drawer.SpriteBatchStack.Current.Draw(Source.Texture, _sceneNode.Position, Source.Rectangle, Color.White,
-                    _sceneNode.Rotation, Source.GetDrawnRectangle().Center.ToVector2(), _sceneNode.Scale, SpriteEffects.None, _sceneNode.Depth);
+                    _sceneNode.Rotation, Source.GetDefaultOrigin(), _sceneNode.Scale, SpriteEffects.None, _sceneNode.Depth);
             }
         }
     }

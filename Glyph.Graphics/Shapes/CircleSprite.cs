@@ -14,7 +14,7 @@ namespace Glyph.Graphics.Shapes
             Radius = 50;
         }
 
-        public override void LoadContent(ContentLibrary contentLibrary)
+        public override void GenerateTexture()
         {
             int outerRadius = (Radius + 1) * 2;
 

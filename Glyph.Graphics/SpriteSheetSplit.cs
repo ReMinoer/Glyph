@@ -38,6 +38,8 @@ namespace Glyph.Graphics
             get { return CurrentTexture; }
         }
 
+        public event Action<ISpriteSource> Loaded;
+
         public void Add(string asset)
         {
             Add(new SpriteSheet { Asset = asset });
@@ -55,6 +57,9 @@ namespace Glyph.Graphics
 
             Refresh();
             _loadedContent = true;
+
+            if (Loaded != null)
+                Loaded.Invoke(this);
         }
 
         public Rectangle GetFrameRectangle(int frameIndex)
@@ -75,9 +80,9 @@ namespace Glyph.Graphics
                 spriteSheet.ApplyCarver(carver);
         }
 
-        Rectangle ISpriteSource.GetDrawnRectangle()
+        Vector2 ISpriteSource.GetDefaultOrigin()
         {
-            return Rectangle.GetValueOrDefault();
+            return (Rectangle?.Size.ToVector2() ?? CurrentTexture.Size()) / 2;
         }
 
         private FrameData GetFrameData(int frameIndex)

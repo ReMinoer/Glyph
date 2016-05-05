@@ -1,3 +1,4 @@
+using System;
 using Diese.Injection;
 using Glyph.Composition;
 using Glyph.Composition.Injection;
@@ -23,6 +24,10 @@ namespace Glyph.Graphics
             set
             {
                 _spriteSource = value;
+
+                if (_spriteSource != null)
+                    _spriteSource.Loaded += x => RefreshAnchor();
+
                 RefreshAnchor();
             }
         }

@@ -36,8 +36,8 @@ namespace Glyph.Graphics.Renderer
                             Transformation.Rotation, SpriteTransformer.Origin, Transformation.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, Depth);
                     else
                     {
-                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, Transformation.Translation, Source.Rectangle, Color.White,
-                            Transformation.Rotation, Source.GetDrawnRectangle().Center.ToVector2(), Transformation.Scale, SpriteEffects.None, Depth);
+                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position + Transformation.Translation, Source.Rectangle, Color.White,
+                            Transformation.Rotation, Source.GetDefaultOrigin(), Transformation.Scale, SpriteEffects.None, Depth);
                     }
                 }
         }

@@ -9,13 +9,22 @@ namespace Glyph.Graphics.Shapes
     {
         protected readonly Lazy<GraphicsDevice> LazyGraphicsDevice;
         public Color Color { get; set; }
+        public override event Action<ISpriteSource> Loaded;
 
         protected ShapedSpriteBase(Lazy<GraphicsDevice> lazyGraphicsDevice)
         {
             LazyGraphicsDevice = lazyGraphicsDevice;
         }
 
-        public abstract void LoadContent(ContentLibrary contentLibrary);
+        public void LoadContent(ContentLibrary contentLibrary)
+        {
+            GenerateTexture();
+
+            if (Loaded != null)
+                Loaded.Invoke(this);
+        }
+
+        public abstract void GenerateTexture();
 
         public override void Dispose()
         {

@@ -8,7 +8,7 @@ namespace Glyph.Graphics
     public abstract class SpriteSourceBase : GlyphComponent, ISpriteSource
     {
         private Texture2D _texture;
-        private Rectangle _rectangle;
+        private Rectangle? _rectangle;
         private Rectangle _defaultRectangle;
 
         public Texture2D Texture
@@ -35,18 +35,20 @@ namespace Glyph.Graphics
                         || value.Value.Left < 0 && value.Value.Right > Texture.Width)
                         throw new ArgumentOutOfRangeException();
 
-                _rectangle = value.GetValueOrDefault();
+                _rectangle = value;
             }
         }
+
+        public abstract event Action<ISpriteSource> Loaded;
 
         protected SpriteSourceBase()
         {
             _defaultRectangle = new Rectangle(0, 0, 0, 0);
         }
 
-        Rectangle ISpriteSource.GetDrawnRectangle()
+        Vector2 ISpriteSource.GetDefaultOrigin()
         {
-            return Rectangle ?? _defaultRectangle;
+            return (Rectangle?.Size.ToVector2() ?? Texture.Size()) / 2;
         }
     }
 }

@@ -26,17 +26,17 @@ namespace Glyph.Graphics
         {
             get
             {
-                Rectangle drawnRectangle = _spriteSource.GetDrawnRectangle();
+                Vector2 defaultOrigin = _spriteSource.GetDefaultOrigin();
 
                 var rectangle = new CenteredRectangle
                 {
                     Center = _sceneNode.Position,
-                    Width = drawnRectangle.Width,
-                    Height = drawnRectangle.Height
+                    Width = defaultOrigin.X,
+                    Height = defaultOrigin.Y
                 };
 
                 if (SpriteTransformer != null)
-                    rectangle.Center += SpriteTransformer.Origin - drawnRectangle.Center.ToVector2();
+                    rectangle.Center += SpriteTransformer.Origin - defaultOrigin / 2;
 
                 return rectangle;
             }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -41,6 +42,8 @@ namespace Glyph.Graphics
             get { return _spriteLoader.Texture; }
         }
 
+        public event Action<ISpriteSource> Loaded;
+
         public SpriteSheet()
         {
             _spriteLoader = new SpriteLoader();
@@ -58,6 +61,9 @@ namespace Glyph.Graphics
 
             Refresh();
             _loadedContent = true;
+
+            if (Loaded != null)
+                Loaded.Invoke(this);
         }
 
         public void ApplyCarver(ISpriteSheetCarver carver)
@@ -74,9 +80,9 @@ namespace Glyph.Graphics
             return Frames[frameIndex];
         }
 
-        Rectangle ISpriteSource.GetDrawnRectangle()
+        Vector2 ISpriteSource.GetDefaultOrigin()
         {
-            return Rectangle.GetValueOrDefault();
+            return (Rectangle?.Size.ToVector2() ?? _spriteLoader.Texture.Size()) / 2;
         }
 
         Texture2D ISpriteSheet.GetFrameTexture(int frameIndex)
