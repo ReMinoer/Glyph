@@ -14,6 +14,7 @@ namespace Glyph.Graphics.Shapes
         protected ShapedSpriteBase(Lazy<GraphicsDevice> lazyGraphicsDevice)
         {
             LazyGraphicsDevice = lazyGraphicsDevice;
+            Color = Color.White;
         }
 
         public void LoadContent(ContentLibrary contentLibrary)
