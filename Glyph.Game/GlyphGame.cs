@@ -217,12 +217,12 @@ namespace Glyph.Game
             Scene.PreDraw(drawer.SpriteBatchStack.Current);
             Scene.Draw(drawer);
 
-            SpriteBatch.Begin();
+            drawer.SpriteBatchStack.Push(new SpriteBatchContext());
             StatusDisplay.Draw(drawer.SpriteBatchStack.Current);
 #if WINDOWS
             EditorCursor.Draw(drawer.SpriteBatchStack.Current);
 #endif
-            SpriteBatch.End();
+            drawer.SpriteBatchStack.Pop();
 
             Scene.PostDraw();
         }
