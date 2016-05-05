@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Glyph.Physics.Colliders;
 
@@ -29,7 +30,7 @@ namespace Glyph.Physics
                 if (collider.IsColliding(other, out collision))
                     return true;
 
-            collision = new Collision();
+            collision = Collision.Empty;
             return false;
         }
     }

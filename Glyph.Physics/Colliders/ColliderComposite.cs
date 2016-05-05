@@ -8,6 +8,7 @@ namespace Glyph.Physics.Colliders
     public class ColliderComposite : GlyphComposite<ICollider>, ICollider
     {
         public bool Enabled { get; set; }
+        public Predicate<ICollider> IgnoredFilter { get; set; }
 
         public Vector2 Center
         {
@@ -23,6 +24,22 @@ namespace Glyph.Physics.Colliders
                 Vector2 center = Center;
                 foreach (ICollider collider in this)
                     collider.Center = collider.Center - center + value;
+            }
+        }
+        public Vector2 LocalCenter
+        {
+            get
+            {
+                Vector2 localCenter = Vector2.Zero;
+                foreach (ICollider collider in this)
+                    localCenter += collider.LocalCenter;
+                return localCenter / Components.Count;
+            }
+            set
+            {
+                Vector2 localCenter = LocalCenter;
+                foreach (ICollider collider in this)
+                    collider.LocalCenter = collider.LocalCenter - localCenter + value;
             }
         }
 
@@ -53,9 +70,18 @@ namespace Glyph.Physics.Colliders
             }
         }
 
-        public override bool IsStatic
+        public event Action<Collision> Colliding
         {
-            get { return Parent.IsStatic; }
+            add
+            {
+                foreach (ICollider collider in this)
+                    collider.Colliding += value;
+            }
+            remove
+            {
+                foreach (ICollider collider in this)
+                    collider.Colliding -= value;
+            }
         }
 
         public event Action<Collision> Collided
@@ -72,6 +98,12 @@ namespace Glyph.Physics.Colliders
             }
         }
 
+        public override void Initialize()
+        {
+            foreach (ICollider collider in this)
+                collider.Initialize();
+        }
+
         public void Update(ElapsedTime elapsedTime)
         {
             if (!Enabled)
@@ -83,38 +115,14 @@ namespace Glyph.Physics.Colliders
 
         public bool IsColliding(ICollider collider, out Collision collision)
         {
+            if (IgnoredFilter != null && IgnoredFilter(collider))
+            {
+                collision = Collision.Empty;
+                return false;
+            }
+
             foreach (ICollider component in this)
                 if (component.IsColliding(component, out collision))
-                    return true;
-
-            collision = new Collision();
-            return false;
-        }
-
-        public bool IsColliding(RectangleCollider collider, out Collision collision)
-        {
-            foreach (ICollider component in this)
-                if (component.IsColliding(collider, out collision))
-                    return true;
-
-            collision = new Collision();
-            return false;
-        }
-
-        public bool IsColliding(CircleCollider collider, out Collision collision)
-        {
-            foreach (ICollider component in this)
-                if (component.IsColliding(collider, out collision))
-                    return true;
-
-            collision = new Collision();
-            return false;
-        }
-
-        public bool IsColliding(IGridCollider collider, out Collision collision)
-        {
-            foreach (ICollider component in this)
-                if (component.IsColliding(collider, out collision))
                     return true;
 
             collision = new Collision();

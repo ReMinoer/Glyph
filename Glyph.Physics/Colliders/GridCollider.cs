@@ -22,22 +22,22 @@ namespace Glyph.Physics.Colliders
             get { return Grid.BoundingBox; }
         }
 
-        public GridCollider(Context context)
-            : base(context)
+        public GridCollider(ColliderManager colliderManager)
+            : base(colliderManager)
         {
         }
 
-        public override bool IsColliding(RectangleCollider collider, out Collision collision)
+        protected override bool IsColliding(RectangleCollider collider, out Collision collision)
         {
             return CollisionUtils.IsGridCollidingShape(IntersectionUtils.RectangleWithRectangle, this, collider, out collision);
         }
 
-        public override bool IsColliding(CircleCollider collider, out Collision collision)
+        protected override bool IsColliding(CircleCollider collider, out Collision collision)
         {
             return CollisionUtils.IsGridCollidingShape(IntersectionUtils.RectangleWithCircle, this, collider, out collision);
         }
 
-        public override bool IsColliding(IGridCollider collider, out Collision collision)
+        protected override bool IsColliding(IGridCollider collider, out Collision collision)
         {
             throw new NotImplementedException();
         }

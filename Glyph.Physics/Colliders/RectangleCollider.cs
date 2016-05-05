@@ -23,23 +23,23 @@ namespace Glyph.Physics.Colliders
             get { return new CenteredRectangle(Center, Width, Height); }
         }
 
-        public RectangleCollider(Context context)
-            : base(context)
+        public RectangleCollider(ColliderManager colliderManager)
+            : base(colliderManager)
         {
             Size = new Vector2(100, 100);
         }
 
-        public override bool IsColliding(RectangleCollider collider, out Collision collision)
+        protected override bool IsColliding(RectangleCollider collider, out Collision collision)
         {
             return CollisionUtils.IsColliding(IntersectionUtils.RectangleWithRectangle, this, collider, out collision);
         }
 
-        public override bool IsColliding(CircleCollider collider, out Collision collision)
+        protected override bool IsColliding(CircleCollider collider, out Collision collision)
         {
             return CollisionUtils.IsColliding(IntersectionUtils.RectangleWithCircle, this, collider, out collision);
         }
 
-        public override bool IsColliding(IGridCollider collider, out Collision collision)
+        protected override bool IsColliding(IGridCollider collider, out Collision collision)
         {
             return CollisionUtils.IsShapeCollidingGrid(IntersectionUtils.RectangleWithRectangle, this, collider, out collision);
         }

@@ -16,8 +16,7 @@ namespace Glyph.Physics.Colliders
                 {
                     Sender = shape,
                     OtherCollider = other,
-                    Correction = correction,
-                    NewPosition = shape.SceneNode.Position + correction
+                    Correction = correction
                 };
 
                 return true;
@@ -43,6 +42,25 @@ namespace Glyph.Physics.Colliders
 
                     IRectangle rectangle = new OriginRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
 
+                    bool colliding = false;
+                    for (int x = -1; x <= 1 && !colliding; x++)
+                        for (int y = -1; y <= 1 && !colliding; y++)
+                        {
+                            if ((x + y) % 2 == 0)
+                                continue;
+
+                            if (!gridCollider.IsCollidableCase(shape, i + y, j + x))
+                                continue;
+
+                            rectangle = new CenteredRectangle
+                            {
+                                Center = (gridCollider.Grid.ToWorldPoint(i, j) + gridCollider.Grid.ToWorldPoint(i + y, j + x) + gridCollider.Grid.Delta) * 0.5f,
+                                Size = gridCollider.Grid.Delta + gridCollider.Grid.Delta.Multiply(System.Math.Abs(x), System.Math.Abs(y))
+                            };
+
+                            colliding = true;
+                        }
+                    
                     Vector2 correction;
                     if (collisionDelegate(shape.Shape, rectangle, out correction))
                     {
@@ -50,8 +68,7 @@ namespace Glyph.Physics.Colliders
                         {
                             Sender = shape,
                             OtherCollider = gridCollider,
-                            Correction = correction,
-                            NewPosition = shape.SceneNode.Position + correction
+                            Correction = correction
                         };
 
                         return true;
@@ -83,8 +100,7 @@ namespace Glyph.Physics.Colliders
                         {
                             Sender = gridCollider,
                             OtherCollider = shape,
-                            Correction = correction,
-                            NewPosition = gridCollider.Center + correction
+                            Correction = correction
                         };
 
                         return true;

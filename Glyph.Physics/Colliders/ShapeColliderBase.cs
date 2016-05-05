@@ -15,8 +15,8 @@ namespace Glyph.Physics.Colliders
             get { return Shape.BoundingBox; }
         }
 
-        protected ShapeColliderBase(Context context)
-            : base(context)
+        protected ShapeColliderBase(ColliderManager colliderManager)
+            : base(colliderManager)
         {
         }
 
