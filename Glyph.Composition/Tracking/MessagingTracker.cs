@@ -7,10 +7,12 @@ using Glyph.Messaging;
 
 namespace Glyph.Composition.Tracking
 {
-    public class MessagingTracker<T> : GlyphContainer, IInterpreter<InstantiatingMessage<T>>, IInterpreter<DisposingMessage<T>>, IEnumerable<T>
+    public class MessagingTracker<T> : GlyphContainer, IInterpreter<InstantiatingMessage<T>>, IInterpreter<DisposingMessage<T>>
         where T : class
     {
         private readonly Tracker<T> _tracker;
+        private readonly Tracker<T> _newInstances;
+        public ReadOnlyTracker<T> NewInstances { get; private set; }
 
         public event Action<T> Registered;
         public event Action<T> Unregistered;
@@ -18,14 +20,22 @@ namespace Glyph.Composition.Tracking
         public MessagingTracker(IRouter<InstantiatingMessage<T>> instantiatingRouter, IRouter<DisposingMessage<T>> disposingRouter)
         {
             _tracker = new Tracker<T>();
+            _newInstances = new Tracker<T>();
+            NewInstances = new ReadOnlyTracker<T>(_newInstances);
 
             Components.Add(new Receiver<InstantiatingMessage<T>>(instantiatingRouter, this));
             Components.Add(new Receiver<DisposingMessage<T>>(disposingRouter, this));
         }
 
+        public void CleanNewInstances()
+        {
+            _newInstances.Clear();
+        }
+
         void IInterpreter<InstantiatingMessage<T>>.Interpret(InstantiatingMessage<T> message)
         {
             _tracker.Register(message.Instance);
+            _newInstances.Register(message.Instance);
 
             if (Registered != null)
                 Registered.Invoke(message.Instance);
@@ -34,14 +44,10 @@ namespace Glyph.Composition.Tracking
         void IInterpreter<DisposingMessage<T>>.Interpret(DisposingMessage<T> message)
         {
             _tracker.Unregister(message.Instance);
+            _newInstances.Unregister(message.Instance);
 
             if (Unregistered != null)
                 Unregistered.Invoke(message.Instance);
-        }
-
-        new public IEnumerator<T> GetEnumerator()
-        {
-            return _tracker.GetEnumerator();
         }
     }
 }
