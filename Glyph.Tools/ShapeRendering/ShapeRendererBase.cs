@@ -9,6 +9,7 @@ namespace Glyph.Tools.ShapeRendering
 {
     public abstract class ShapeRendererBase : GlyphContainer, ILoadContent, IUpdate, IDraw
     {
+        private readonly SceneNode _sceneNode;
         protected readonly SpriteTransformer SpriteTransformer;
         private readonly ShapedSpriteBase _shapedSprite;
         private readonly SpriteRenderer _spriteRenderer;
@@ -22,13 +23,22 @@ namespace Glyph.Tools.ShapeRendering
 
         protected ShapeRendererBase(ISceneNode parentNode, ShapedSpriteBase shapedSprite)
         {
-            var sceneNode = new SceneNode(parentNode);
-            Components.Add(sceneNode);
+            Visible = true;
+            
+            Components.Add(_sceneNode = new SceneNode(parentNode));
             Components.Add(_shapedSprite = shapedSprite);
+
             Components.Add(SpriteTransformer = new SpriteTransformer());
-            Components.Add(_spriteRenderer = new SpriteRenderer(_shapedSprite, sceneNode));
+            SpriteTransformer.SpriteSource = _shapedSprite;
+
+            Components.Add(_spriteRenderer = new SpriteRenderer(_shapedSprite, _sceneNode));
 
             _spriteRenderer.SpriteTransformer = SpriteTransformer;
+        }
+
+        public override void Initialize()
+        {
+            _sceneNode.Initialize();
         }
 
         public void LoadContent(ContentLibrary contentLibrary)
