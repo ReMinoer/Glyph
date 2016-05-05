@@ -8,6 +8,11 @@ namespace Glyph.Composition
     {
         private readonly ISceneNode _sceneNode;
 
+        public IGlyphParent Parent
+        {
+            get { return _sceneNode.Parent; }
+        }
+
         public ISceneNode ParentNode
         {
             get { return _sceneNode.ParentNode; }

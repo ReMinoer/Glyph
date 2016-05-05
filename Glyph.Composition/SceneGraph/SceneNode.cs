@@ -6,11 +6,10 @@ using Microsoft.Xna.Framework;
 namespace Glyph.Composition
 {
     [SinglePerParent]
-    public class SceneNode : GlyphComponent, ISceneNode
+    public class SceneNode : GlyphComponent, IWritableSceneNode
     {
         private readonly List<ISceneNode> _childrenNodes;
         private readonly IReadOnlyList<ISceneNode> _readOnlyChildrenNodes;
-        private ISceneNode _parentNode;
         private Transformation _transformation;
         private Vector2 _position;
         private float _rotation;
@@ -141,13 +140,23 @@ namespace Glyph.Composition
         public SceneNode(ISceneNode parentNode)
             : this()
         {
-            ParentNode = parentNode;
+            SetParent(parentNode, Referential.Local);
         }
 
         public override void Initialize()
         {
-            if (Parent != null && Parent.Parent != null)
-                ParentNode = Parent.Parent.GetComponent<SceneNode>();
+            if (ParentNode != null || Parent == null)
+                return;
+
+            for (IGlyphParent parent = Parent.Parent; parent != null; parent = parent.Parent)
+            {
+                var parentNode = parent.GetComponent<SceneNode>();
+                if (parentNode != null)
+                {
+                    SetParent(parentNode, Referential.Local);
+                    break;
+                }
+            }
         }
 
         public override void Dispose()
@@ -158,13 +167,13 @@ namespace Glyph.Composition
 
         public void SetParent(ISceneNode parent, Referential childStaticReferential = Referential.World)
         {
-            if (_parentNode != null)
-                _parentNode.UnlinkChild(this);
+            if (ParentNode != null)
+                ParentNode.UnlinkChild(this);
 
-            _parentNode = parent;
+            ParentNode = parent;
 
-            if (_parentNode != null)
-                _parentNode.LinkChild(this);
+            if (ParentNode != null)
+                ParentNode.LinkChild(this);
 
             Refresh(childStaticReferential);
         }
@@ -199,14 +208,14 @@ namespace Glyph.Composition
             {
                 if (childStaticReferential == Referential.Local)
                 {
-                    _position = ParentNode.Transformation.Matrix * LocalPosition;
+                    _position = ParentNode.Matrix * LocalPosition;
                     _rotation = ParentNode.Rotation + LocalRotation;
                     _scale = ParentNode.Scale * LocalScale;
                     _depth = ParentNode.Depth + LocalDepth;
                 }
                 else if (childStaticReferential == Referential.World)
                 {
-                    _transformation = new Transformation(ParentNode.Transformation.Matrix.Inverse * _position, _rotation - ParentNode.Rotation, _scale / ParentNode.Scale);
+                    _transformation = new Transformation(ParentNode.Matrix.Inverse * _position, _rotation - ParentNode.Rotation, _scale / ParentNode.Scale);
                     _localDepth = _depth - ParentNode.Depth;
                 }
                 Matrix = ParentNode.Matrix * LocalMatrix;

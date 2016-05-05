@@ -6,6 +6,7 @@ namespace Glyph.Composition
 {
     public interface ISceneNode
     {
+        IGlyphParent Parent { get; }
         ISceneNode ParentNode { get; }
         IEnumerable<ISceneNode> Children { get; }
         Vector2 Position { get; }
