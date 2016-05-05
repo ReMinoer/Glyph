@@ -62,6 +62,10 @@
     <Compile Include="StatusDisplay\StatusDisplayText.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Diese\Diese.Collections\Diese.Collections.csproj">
+      <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
+      <Name>Diese.Collections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
       <Project>{e8d6f663-89a6-497f-a02f-d0fc562d2d0e}</Project>
       <Name>Diese.Composition</Name>

@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="MathUtils.cs" />
     <Compile Include="IArea.cs" />
-    <Compile Include="IntegerSequencer.cs" />
     <Compile Include="Matrix3x3.cs" />
     <Compile Include="Rectangle.Extension.cs" />
     <Compile Include="Shapes\Circle.cs" />

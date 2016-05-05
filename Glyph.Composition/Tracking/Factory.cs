@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Diese.Collections;
+using Diese.Collections.Trackers;
 using Diese.Modelization;
 
 namespace Glyph.Composition.Tracking
