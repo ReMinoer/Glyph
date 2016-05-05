@@ -14,6 +14,11 @@ namespace Glyph
         public Effect Effect { get; set; }
         public Matrix? TransformMatrix { get; set; }
 
+        static public SpriteBatchContext Default
+        {
+            get { return new SpriteBatchContext(); }
+        }
+
         public SpriteBatchContext Clone()
         {
             return new SpriteBatchContext
