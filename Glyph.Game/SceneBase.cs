@@ -1,6 +1,5 @@
 ﻿using Diese.Injection;
 using Glyph.Composition;
-using Glyph.Composition.Delegates;
 using Glyph.Composition.Scheduler;
 using Glyph.Graphics;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,15 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Glyph.Game
 {
     public abstract class SceneBase<TSchedulerHandler> : GlyphSchedulableBase, IScene
-        where TSchedulerHandler : SceneSchedulerHandlerBase
+        where TSchedulerHandler : GlyphSchedulableBase.SchedulerHandlerBase
     {
-        private bool _initialized;
-        private bool _contentLoaded;
-        public bool Enabled { get; set; }
-        public bool Visible { get; set; }
         public abstract SceneNode RootNode { get; }
 
-        protected override sealed IGlyphSchedulerAssigner SchedulerAssigner
+        protected override sealed SchedulerHandlerBase SchedulerAssigner
         {
             get { return Schedulers; }
         }
@@ -27,53 +22,9 @@ namespace Glyph.Game
         protected SceneBase(IDependencyInjector injector)
             : base(injector)
         {
-            Enabled = true;
-            Visible = true;
         }
 
-        public override sealed void Add(IGlyphComponent item)
-        {
-            base.Add(item);
-
-            if (_initialized)
-                item.Initialize();
-
-            if (_contentLoaded)
-            {
-                var loadContent = item as ILoadContent;
-                if (loadContent != null)
-                    loadContent.LoadContent(Injector.Resolve<ContentLibrary>());
-            }
-        }
-
-        public override void Initialize()
-        {
-            foreach (InitializeDelegate initialize in Schedulers.Initialize.TopologicalOrder)
-                initialize();
-
-            _initialized = true;
-        }
-
-        public void LoadContent(ContentLibrary contentLibrary)
-        {
-            foreach (LoadContentDelegate loadContent in Schedulers.LoadContent.TopologicalOrder)
-                loadContent(contentLibrary);
-
-            _contentLoaded = true;
-        }
-
-        public void Update(ElapsedTime elapsedTime)
-        {
-            foreach (UpdateDelegate update in Schedulers.Update.TopologicalOrder)
-            {
-                if (!Enabled)
-                    return;
-
-                update(elapsedTime);
-            }
-        }
-
-        public void Draw(IDrawer drawer)
+        public override sealed void Draw(IDrawer drawer)
         {
             if (!Visible)
                 return;

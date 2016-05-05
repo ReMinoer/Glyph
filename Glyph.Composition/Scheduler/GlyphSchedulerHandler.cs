@@ -6,66 +6,66 @@ namespace Glyph.Composition.Scheduler
     public class GlyphSchedulerHandler : IGlyphSchedulerAssigner
     {
         private readonly IDependencyInjector _injector;
-        protected readonly ICollection<IGlyphSchedulerAssigner> _schedulers;
+        protected readonly ICollection<IGlyphSchedulerAssigner> Schedulers;
 
         public GlyphSchedulerHandler(IDependencyInjector injector)
         {
             _injector = injector;
-            _schedulers = new List<IGlyphSchedulerAssigner>();
+            Schedulers = new List<IGlyphSchedulerAssigner>();
         }
 
         public GlyphScheduler<TInterface, TDelegate> Add<TInterface, TDelegate>()
             where TInterface : class, IGlyphComponent
         {
             var scheduler = _injector.Resolve<GlyphScheduler<TInterface, TDelegate>>();
-            _schedulers.Add(scheduler);
+            Schedulers.Add(scheduler);
             return scheduler;
         }
 
         public void Add(IGlyphSchedulerAssigner schedulerAssigner)
         {
-            _schedulers.Add(schedulerAssigner);
+            Schedulers.Add(schedulerAssigner);
         }
 
         public void StartBatch()
         {
-            foreach (IGlyphSchedulerAssigner scheduler in _schedulers)
+            foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
                 scheduler.StartBatch();
         }
 
         public void EndBatch()
         {
-            foreach (IGlyphSchedulerAssigner scheduler in _schedulers)
+            foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
                 scheduler.EndBatch();
         }
 
         public void AssignComponent(IGlyphComponent item)
         {
-            foreach (IGlyphSchedulerAssigner scheduler in _schedulers)
+            foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
                 scheduler.AssignComponent(item);
         }
 
         public void AssignComponent(GlyphObject item)
         {
-            foreach (IGlyphSchedulerAssigner scheduler in _schedulers)
+            foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
                 scheduler.AssignComponent(item);
         }
 
         public void RemoveComponent(IGlyphComponent item)
         {
-            foreach (IGlyphSchedulerAssigner scheduler in _schedulers)
+            foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
                 scheduler.RemoveComponent(item);
         }
 
         public void RemoveComponent(GlyphObject item)
         {
-            foreach (IGlyphSchedulerAssigner scheduler in _schedulers)
+            foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
                 scheduler.RemoveComponent(item);
         }
 
         public void ClearComponents()
         {
-            foreach (IGlyphSchedulerAssigner scheduler in _schedulers)
+            foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
                 scheduler.ClearComponents();
         }
     }

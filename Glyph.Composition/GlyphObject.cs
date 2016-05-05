@@ -1,26 +1,15 @@
 ﻿using Diese.Injection;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Scheduler;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Composition
 {
     // TASK : get Injectable at runtime
-    public class GlyphObject : GlyphSchedulableBase, IEnableable, ILoadContent, IUpdate, IDraw
+    public class GlyphObject : GlyphSchedulableBase
     {
         protected readonly SchedulerHandler Schedulers;
-        private bool _initialized;
-        private bool _contentLoaded;
-        public bool Enabled { get; set; }
-        public bool Visible { get; set; }
 
-        new public bool IsStatic
-        {
-            get { return base.IsStatic; }
-            set { base.IsStatic = value; }
-        }
-
-        protected override sealed IGlyphSchedulerAssigner SchedulerAssigner
+        protected override sealed SchedulerHandlerBase SchedulerAssigner
         {
             get { return Schedulers; }
         }
@@ -28,55 +17,10 @@ namespace Glyph.Composition
         public GlyphObject(IDependencyInjector injector)
             : base(injector)
         {
-            Enabled = true;
-            Visible = true;
-
             Schedulers = new SchedulerHandler(injector);
         }
 
-        public override sealed void Add(IGlyphComponent item)
-        {
-            base.Add(item);
-
-            if (_initialized)
-                item.Initialize();
-
-            if (_contentLoaded)
-            {
-                var loadContent = item as ILoadContent;
-                if (loadContent != null)
-                    loadContent.LoadContent(Injector.Resolve<ContentLibrary>());
-            }
-        }
-
-        public override sealed void Initialize()
-        {
-            foreach (InitializeDelegate initialize in Schedulers.Initialize.TopologicalOrder)
-                initialize();
-
-            _initialized = true;
-        }
-
-        public void LoadContent(ContentLibrary contentLibrary)
-        {
-            foreach (LoadContentDelegate loadContent in Schedulers.LoadContent.TopologicalOrder)
-                loadContent(contentLibrary);
-
-            _contentLoaded = true;
-        }
-
-        public void Update(ElapsedTime elapsedTime)
-        {
-            foreach (UpdateDelegate update in Schedulers.Update.TopologicalOrder)
-            {
-                if (!Enabled)
-                    return;
-
-                update(elapsedTime);
-            }
-        }
-
-        public void Draw(IDrawer drawer)
+        public override sealed void Draw(IDrawer drawer)
         {
             if (!Visible)
                 return;
@@ -85,19 +29,13 @@ namespace Glyph.Composition
                 draw(drawer);
         }
 
-        protected class SchedulerHandler : GlyphSchedulerHandler
+        protected class SchedulerHandler : SchedulerHandlerBase
         {
-            public IGlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; private set; }
-            public IGlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; private set; }
-            public IGlyphScheduler<IUpdate, UpdateDelegate> Update { get; private set; }
             public IGlyphScheduler<IDraw, DrawDelegate> Draw { get; private set; }
 
             public SchedulerHandler(IDependencyInjector injector)
                 : base(injector)
             {
-                Initialize = Add<IGlyphComponent, InitializeDelegate>();
-                LoadContent = Add<ILoadContent, LoadContentDelegate>();
-                Update = Add<IUpdate, UpdateDelegate>();
                 Draw = Add<IDraw, DrawDelegate>();
             }
         }

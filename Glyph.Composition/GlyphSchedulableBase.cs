@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Diese.Injection;
+using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
 using Glyph.Composition.Injection;
 using Glyph.Composition.Messaging;
@@ -10,10 +12,16 @@ using Glyph.Messaging;
 
 namespace Glyph.Composition
 {
-    public abstract class GlyphSchedulableBase : GlyphComposite
+    public abstract class GlyphSchedulableBase : GlyphComposite, IEnableable, ILoadContent, IUpdate, IDraw
     {
+        private bool _initialized;
+        private bool _contentLoaded;
+        private bool _componentsLocked;
+        private List<IGlyphComponent> _newComponents;
         protected internal readonly GlyphCompositeInjector Injector;
-        protected abstract IGlyphSchedulerAssigner SchedulerAssigner { get; }
+        public bool Enabled { get; set; }
+        public bool Visible { get; set; }
+        protected abstract SchedulerHandlerBase SchedulerAssigner { get; }
 
         protected GlyphSchedulableBase(IDependencyInjector injector)
         {
@@ -23,9 +31,15 @@ namespace Glyph.Composition
 
             foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IInterpreter<>)))
                 Add(typeof(Receiver<>).MakeGenericType(type.GetGenericArguments()));
+
+            Enabled = true;
+            Visible = true;
+
+            _newComponents = new List<IGlyphComponent>();
         }
 
         public T Add<T>()
+            where T : IGlyphComponent
         {
             return Injector.Add<T>();
         }
@@ -35,8 +49,15 @@ namespace Glyph.Composition
             return Injector.Add(componentType) as IGlyphComponent;
         }
 
-        public override void Add(IGlyphComponent item)
+        // TODO : Handle injection on changing children & parents
+        public override sealed void Add(IGlyphComponent item)
         {
+            if (_componentsLocked)
+            {
+                _newComponents.Add(item);
+                return;
+            }
+
             if (Contains(item))
                 throw new ArgumentException("Component provided is already contained by this entity !");
 
@@ -61,6 +82,16 @@ namespace Glyph.Composition
             }
             else
                 SchedulerAssigner.AssignComponent(item);
+
+            if (_initialized)
+                item.Initialize();
+
+            if (_contentLoaded)
+            {
+                var loadContent = item as ILoadContent;
+                if (loadContent != null)
+                    loadContent.LoadContent(Injector.Resolve<ContentLibrary>());
+            }
         }
 
         public override sealed void Remove(IGlyphComponent item)
@@ -84,6 +115,62 @@ namespace Glyph.Composition
             SchedulerAssigner.ClearComponents();
         }
 
+        protected void LockComponents()
+        {
+            _componentsLocked = true;
+        }
+
+        protected void UnlockComponents()
+        {
+            _componentsLocked = false;
+
+            foreach (IGlyphComponent newComponent in _newComponents)
+                Add(newComponent);
+
+            _newComponents.Clear();
+        }
+
+        public override sealed void Initialize()
+        {
+            LockComponents();
+
+            foreach (InitializeDelegate initialize in SchedulerAssigner.Initialize.TopologicalOrder)
+                initialize();
+
+            _initialized = true;
+
+            UnlockComponents();
+        }
+
+        public void LoadContent(ContentLibrary contentLibrary)
+        {
+            LockComponents();
+
+            foreach (LoadContentDelegate loadContent in SchedulerAssigner.LoadContent.TopologicalOrder)
+                loadContent(contentLibrary);
+
+            _contentLoaded = true;
+
+            UnlockComponents();
+        }
+
+        public void Update(ElapsedTime elapsedTime)
+        {
+            LockComponents();
+
+            foreach (UpdateDelegate update in SchedulerAssigner.Update.TopologicalOrder)
+            {
+                if (!Enabled)
+                    return;
+
+                update(elapsedTime);
+            }
+
+            UnlockComponents();
+        }
+
+        public abstract void Draw(IDrawer drawer);
+
         public void SendMessage<TMessage>(TMessage message)
             where TMessage : Message
         {
@@ -91,7 +178,19 @@ namespace Glyph.Composition
             router.Send(message);
         }
 
+        public class SchedulerHandlerBase : GlyphSchedulerHandler
         {
+            public IGlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; private set; }
+            public IGlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; private set; }
+            public IGlyphScheduler<IUpdate, UpdateDelegate> Update { get; private set; }
+
+            public SchedulerHandlerBase(IDependencyInjector injector)
+                : base(injector)
+            {
+                Initialize = Add<IGlyphComponent, InitializeDelegate>();
+                LoadContent = Add<ILoadContent, LoadContentDelegate>();
+                Update = Add<IUpdate, UpdateDelegate>();
+            }
         }
     }
 }

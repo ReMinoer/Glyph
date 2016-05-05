@@ -45,7 +45,6 @@
     <Compile Include="GlyphGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SceneBase.cs" />
-    <Compile Include="SceneSchedulerHandlerBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
