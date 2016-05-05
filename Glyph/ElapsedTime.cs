@@ -38,7 +38,7 @@ namespace Glyph
                 elapsedTimeSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * Scale));
 
             Total = Total.Add(elapsedTimeSpan);
-            Delta += UnscaledDelta * Scale;
+            Delta = UnscaledDelta * Scale;
         }
 
         public float GetDelta(ITimeUnscalable unscalable)
