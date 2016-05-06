@@ -80,6 +80,11 @@ namespace Glyph.Graphics
                 spriteSheet.ApplyCarver(carver);
         }
 
+        public Rectangle GetDrawnRectagle()
+        {
+            return Rectangle ?? CurrentTexture.Bounds;
+        }
+
         Vector2 ISpriteSource.GetDefaultOrigin()
         {
             return (Rectangle?.Size.ToVector2() ?? CurrentTexture.Size()) / 2;

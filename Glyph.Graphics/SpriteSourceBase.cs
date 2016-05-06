@@ -46,6 +46,11 @@ namespace Glyph.Graphics
             _defaultRectangle = new Rectangle(0, 0, 0, 0);
         }
 
+        public Rectangle GetDrawnRectagle()
+        {
+            return Rectangle ?? Texture.Bounds;
+        }
+
         Vector2 ISpriteSource.GetDefaultOrigin()
         {
             return (Rectangle?.Size.ToVector2() ?? Texture.Size()) / 2;

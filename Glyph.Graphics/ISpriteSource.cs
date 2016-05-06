@@ -10,6 +10,7 @@ namespace Glyph.Graphics
         Texture2D Texture { get; }
         Rectangle? Rectangle { get; }
         Vector2 GetDefaultOrigin();
+        Rectangle GetDrawnRectagle();
         event Action<ISpriteSource> Loaded;
     }
 }

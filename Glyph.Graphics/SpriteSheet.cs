@@ -80,6 +80,11 @@ namespace Glyph.Graphics
             return Frames[frameIndex];
         }
 
+        public Rectangle GetDrawnRectagle()
+        {
+            return Rectangle ?? _spriteLoader.GetDrawnRectagle();
+        }
+
         Vector2 ISpriteSource.GetDefaultOrigin()
         {
             return (Rectangle?.Size.ToVector2() ?? _spriteLoader.Texture.Size()) / 2;
