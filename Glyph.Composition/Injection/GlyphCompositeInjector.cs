@@ -80,6 +80,9 @@ namespace Glyph.Composition.Injection
                         return true;
                     }
                 }
+
+                obj = null;
+                return false;
             }
 
             return _local.TryResolve(out obj, type, injectableAttribute, serviceKey)
