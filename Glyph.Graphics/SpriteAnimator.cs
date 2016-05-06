@@ -33,15 +33,20 @@ namespace Glyph.Graphics
             Enabled = true;
         }
 
-        public void ChangeAnimation(object key, SpriteAnimatorTransition transition = SpriteAnimatorTransition.Queued)
+        public void ChangeAnimation(object key, SpriteAnimatorTransition transition = SpriteAnimatorTransition.Instant)
         {
             if (!Animations.ContainsKey(key))
                 throw new KeyNotFoundException();
 
+            if (key.Equals(CurrentKey))
+                return;
+
             switch (transition)
             {
                 case SpriteAnimatorTransition.Instant:
+
                     ChangeAnimationInstant(key);
+
                     break;
                 case SpriteAnimatorTransition.Queued:
 
