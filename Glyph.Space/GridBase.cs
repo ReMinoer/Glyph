@@ -187,8 +187,8 @@ namespace Glyph.Space
 
         public void Fill(Func<T> valueFactory, Point minPoint, Point maxPoint)
         {
-            for (int i = minPoint.Y; i <= maxPoint.Y; i++)
-                for (int j = minPoint.X; j <= maxPoint.X; j++)
+            for (int i = minPoint.Y; i < maxPoint.Y; i++)
+                for (int j = minPoint.X; j < maxPoint.X; j++)
                     this[i, j] = valueFactory();
         }
 
