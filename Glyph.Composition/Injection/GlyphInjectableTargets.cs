@@ -7,7 +7,8 @@ namespace Glyph.Composition.Injection
     {
         Parent = 1 << 0,
         Fraternal = 1 << 1,
-        NewInstance = 1 << 2,
-        All = Parent | Fraternal | NewInstance
+        Local = 1 << 2,
+        Global = 1 << 3,
+        All = Parent | Fraternal | Local | Global
     }
 }

@@ -35,27 +35,36 @@ namespace Glyph.Composition.Injection
         {
             var glyphInjectableAttribute = injectableAttribute as GlyphInjectableAttribute;
             GlyphInjectableTargets targets = glyphInjectableAttribute != null ? glyphInjectableAttribute.Targets : GlyphInjectableTargets.All;
-            
-            if (targets != GlyphInjectableTargets.NewInstance && serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
-            {
-                if (targets.HasFlag(GlyphInjectableTargets.Parent) && type.IsInstanceOfType(_context))
-                    return _context;
 
-                if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
+            if (targets == 0)
+                throw new InvalidOperationException();
+
+            if (targets.HasFlag(GlyphInjectableTargets.Parent) || targets.HasFlag(GlyphInjectableTargets.Fraternal))
+                if (serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
                 {
-                    IGlyphComponent component = _context.GetComponent(type);
-                    if (component != null)
-                        return component;
+                    if (targets.HasFlag(GlyphInjectableTargets.Parent) && type.IsInstanceOfType(_context))
+                        return _context;
+
+                    if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
+                    {
+                        IGlyphComponent component = _context.GetComponent(type);
+                        if (component != null)
+                            return component;
+                    }
+                
+                    throw new ComponentNotFoundException(type);
                 }
 
-                throw new ComponentNotFoundException(type);
-            }
-
             object obj;
-            if (_local.TryResolve(out obj, type, injectableAttribute, serviceKey))
+            if (targets.HasFlag(GlyphInjectableTargets.Local) && _local.TryResolve(out obj, type, injectableAttribute, serviceKey))
                 return obj;
+            if (targets == GlyphInjectableTargets.Local)
+                throw new ComponentNotFoundException(type);
 
-            return base.Resolve(type, injectableAttribute, serviceKey);
+            if (targets.HasFlag(GlyphInjectableTargets.Global))
+                return base.Resolve(type, injectableAttribute, serviceKey);
+
+            throw new InvalidOperationException();
         }
 
         public override bool TryResolve(out object obj, Type type, InjectableAttribute injectableAttribute, object serviceKey = null)
@@ -63,30 +72,45 @@ namespace Glyph.Composition.Injection
             var glyphInjectableAttribute = injectableAttribute as GlyphInjectableAttribute;
             GlyphInjectableTargets targets = glyphInjectableAttribute != null ? glyphInjectableAttribute.Targets : GlyphInjectableTargets.All;
 
-            if (targets != GlyphInjectableTargets.NewInstance && serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
-            {
-                if (targets.HasFlag(GlyphInjectableTargets.Parent) && type.IsInstanceOfType(_context))
-                {
-                    obj = _context;
-                    return true;
-                }
+            if (targets == 0)
+                throw new InvalidOperationException();
 
-                if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
+            if (targets.HasFlag(GlyphInjectableTargets.Parent) || targets.HasFlag(GlyphInjectableTargets.Fraternal))
+                if (serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
                 {
-                    IGlyphComponent component = _context.GetComponent(type);
-                    if (component != null)
+                    if (targets.HasFlag(GlyphInjectableTargets.Parent) && type.IsInstanceOfType(_context))
                     {
-                        obj = component;
+                        obj = _context;
                         return true;
                     }
+
+                    if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
+                    {
+                        IGlyphComponent component = _context.GetComponent(type);
+                        if (component != null)
+                        {
+                            obj = component;
+                            return true;
+                        }
+                    }
+
+                    obj = null;
+                    return false;
                 }
 
+            if (targets.HasFlag(GlyphInjectableTargets.Local) && _local.TryResolve(out obj, type, injectableAttribute, serviceKey))
+                return true;
+            if (targets == GlyphInjectableTargets.Local)
+            {
                 obj = null;
                 return false;
             }
 
-            return _local.TryResolve(out obj, type, injectableAttribute, serviceKey)
-                || base.TryResolve(out obj, type, injectableAttribute, serviceKey);
+            if (targets.HasFlag(GlyphInjectableTargets.Global))
+                return base.TryResolve(out obj, type, injectableAttribute, serviceKey);
+
+            obj = null;
+            return false;
         }
 
         internal T Add<T>()
