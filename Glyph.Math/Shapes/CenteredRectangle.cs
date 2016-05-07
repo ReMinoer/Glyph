@@ -66,6 +66,11 @@ namespace Glyph.Math.Shapes
             return IntersectionUtils.RectangleWithRectangle(this, rectangle);
         }
 
+        public bool Intersects(IRectangle rectangle, out IRectangle intersection)
+        {
+            return IntersectionUtils.RectangleWithRectangle(this, rectangle, out intersection);
+        }
+
         public bool Intersects(ICircle circle)
         {
             return IntersectionUtils.RectangleWithCircle(this, circle);

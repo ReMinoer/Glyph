@@ -12,5 +12,6 @@ namespace Glyph.Math.Shapes
         float Width { get; }
         float Height { get; }
         Vector2 Size { get; }
+        bool Intersects(IRectangle rectangle, out IRectangle intersection);
     }
 }
