@@ -116,6 +116,7 @@ namespace Glyph.Application
 
             Register<FillingRectangle>();
             Register<FillingRenderer>();
+            Register<TexturingRenderer>();
 
             RegisterGeneric(typeof(MappingRenderer<>));
 
