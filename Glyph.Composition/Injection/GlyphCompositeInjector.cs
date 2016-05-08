@@ -113,6 +113,16 @@ namespace Glyph.Composition.Injection
             return false;
         }
 
+        public T ResolveLocal<T>(object serviceKey = null)
+        {
+            return Resolve<T>(new GlyphInjectableAttribute(GlyphInjectableTargets.Local), serviceKey);
+        }
+
+        public object ResolveLocal(Type type, object serviceKey = null)
+        {
+            return Resolve(type, new GlyphInjectableAttribute(GlyphInjectableTargets.Local), serviceKey);
+        }
+
         internal T Add<T>()
             where T : IGlyphComponent
         {
