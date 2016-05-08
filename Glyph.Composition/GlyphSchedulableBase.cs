@@ -70,7 +70,6 @@ namespace Glyph.Composition
             foreach (IGlyphComponent component in this)
                 foreach (InjectablePropertyInfo injectable in InstanceManager.GetInfo(component.GetType()).InjectableProperties)
                     if (injectable.InjectableTargets.HasFlag(GlyphInjectableTargets.Fraternal)
-                        && injectable.PropertyInfo.GetValue(component) == null
                         && item.GetType().IsInstanceOfType(injectable.PropertyInfo.PropertyType))
                         injectable.PropertyInfo.SetValue(component, item);
 
