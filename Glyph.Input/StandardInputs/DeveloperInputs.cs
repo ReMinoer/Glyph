@@ -11,6 +11,7 @@ namespace Glyph.Input.StandardInputs
         public const string Fullscreen = Prefix + "Fullscreen";
         public const string StatusDisplay = Prefix + "StatusDisplay";
         public const string Mute = Prefix + "Mute";
+        public const string UpdateSnapshot = Prefix + "UpdateSnapshot";
         public const string CompositionLog = Prefix + "CompositionLog";
         public const string ToogleSong = Prefix + "ToogleSong";
         public const string PreviousSong = Prefix + "PreviousSong";
@@ -30,6 +31,7 @@ namespace Glyph.Input.StandardInputs
                 new KeyHandler(StatusDisplay, Keys.F11),
                 new KeyHandler(Mute, Keys.F10),
                 new KeyHandler(CompositionLog, Keys.F9),
+                new KeyHandler(UpdateSnapshot, Keys.F8),
                 new KeyHandler(ToogleSong, Keys.F2),
                 new KeyHandler(PreviousSong, Keys.F3),
                 new KeyHandler(NextSong, Keys.F4)

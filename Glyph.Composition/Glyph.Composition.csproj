@@ -110,6 +110,10 @@
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Debug\Diese.Debug.csproj">
+      <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
+      <Name>Diese.Debug</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Graph\Diese.Graph.csproj">
       <Project>{BBC6C938-95A5-4CBF-AA6B-DA2A9A09C4F1}</Project>
       <Name>Diese.Graph</Name>

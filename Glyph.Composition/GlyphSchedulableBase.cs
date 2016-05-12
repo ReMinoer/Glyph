@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Diese.Debug;
 using Diese.Injection;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
@@ -14,6 +15,8 @@ namespace Glyph.Composition
 {
     public abstract class GlyphSchedulableBase : GlyphComposite, IEnableable, ILoadContent, IUpdate, IDraw
     {
+        static public readonly WatchTree UpdateWatchTree = new WatchTree();
+
         private bool _initialized;
         private bool _contentLoaded;
         private bool _componentsLocked;
@@ -162,7 +165,8 @@ namespace Glyph.Composition
                 if (!Enabled)
                     return;
 
-                update(elapsedTime);
+                using (UpdateWatchTree.Start($"{update.Target} - {update.Method.Name}"))
+                    update(elapsedTime);
             }
 
             UnlockComponents();

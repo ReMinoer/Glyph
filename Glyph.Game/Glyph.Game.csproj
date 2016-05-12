@@ -51,6 +51,10 @@
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Debug\Diese.Debug.csproj">
+      <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
+      <Name>Diese.Debug</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>

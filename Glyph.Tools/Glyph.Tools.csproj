@@ -44,7 +44,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chronometer.cs" />
     <Compile Include="ShapeRendering\CircleShapeRenderer.cs" />
     <Compile Include="ShapeRendering\ShapeRendererBase.cs" />
     <Compile Include="CompositionLog.cs" />
@@ -55,7 +54,6 @@
     <Compile Include="ShapeRendering\RectangleShapeRenderer.cs" />
     <Compile Include="SongPlayer.cs" />
     <Compile Include="StatusDisplay\StatusDisplay.cs" />
-    <Compile Include="StatusDisplay\Channels\ChronometerStatusDisplayChannel.cs" />
     <Compile Include="StatusDisplay\Channels\DefautStatusDisplayChannel.cs" />
     <Compile Include="StatusDisplay\Channels\MouseStatusDisplayChannel.cs" />
     <Compile Include="StatusDisplay\StatusDisplayChannel.cs" />
@@ -69,6 +67,10 @@
     <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
       <Project>{e8d6f663-89a6-497f-a02f-d0fc562d2d0e}</Project>
       <Name>Diese.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese.Debug\Diese.Debug.csproj">
+      <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
+      <Name>Diese.Debug</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
       <Project>{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}</Project>

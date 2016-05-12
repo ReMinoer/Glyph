@@ -103,7 +103,6 @@ namespace Glyph.Game
             StatusDisplay.Channels.Add(new DefautStatusDisplayChannel(PerformanceViewer));
 
             EditorCursor.Initialize();
-            Chronometer.Init();
 
             Registry.RegisterInstance<GlyphGame>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
@@ -155,25 +154,35 @@ namespace Glyph.Game
                 return;
 
             HandleInput();
-
-            do
+            using (GlyphSchedulableBase.UpdateWatchTree.Start("Root"))
             {
-                if (_sceneChanged)
+                do
                 {
-                    Scene.Initialize();
-                    Scene.LoadContent(ContentLibrary);
+                    if (_sceneChanged)
+                    {
+                        Scene.Initialize();
+                        Scene.LoadContent(ContentLibrary);
 
-                    _sceneChanged = false;
-                }
-                Scene.Update(ElapsedTime.Instance);
-            } while (_sceneChanged);
+                        _sceneChanged = false;
+                    }
+                    Scene.Update(ElapsedTime.Instance);
+                } while (_sceneChanged);
 
-            ScreenEffectManager.Instance.Update(gameTime);
-            AudioManager.Update(gameTime);
-            PerformanceViewer.Update(gameTime);
-            StatusDisplay.Update(gameTime);
+                ScreenEffectManager.Instance.Update(gameTime);
+                AudioManager.Update(gameTime);
+                PerformanceViewer.Update(gameTime);
+                StatusDisplay.Update(gameTime);
 
-            PerformanceViewer.UpdateEnd();
+                PerformanceViewer.UpdateEnd();
+            }
+
+            if (GlyphSchedulableBase.UpdateWatchTree.Enabled)
+            {
+                string filename = "watchtree_" + DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss");
+                GlyphSchedulableBase.UpdateWatchTree.Results.First().Value.SaveToCSV(filename);
+
+                GlyphSchedulableBase.UpdateWatchTree.Enabled = false;
+            }
         }
 
         protected virtual void HandleInput()
@@ -183,6 +192,9 @@ namespace Glyph.Game
 
             if (InputManager[DeveloperInputs.XboxQuit])
                 Exit();
+
+            if (InputManager[DeveloperInputs.UpdateSnapshot])
+                GlyphSchedulableBase.UpdateWatchTree.Enabled = true;
 
             if (InputManager[DeveloperInputs.CompositionLog])
                 CompositionLog.Write(Scene, Scene.RootNode);
