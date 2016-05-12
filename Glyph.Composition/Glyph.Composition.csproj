@@ -46,7 +46,7 @@
     <Compile Include="Injection\GlyphInjectableAttribute.cs" />
     <Compile Include="Injection\GlyphInjectableTargets.cs" />
     <Compile Include="InstanceManager.cs" />
-    <Compile Include="SceneGraph\ISceneNode.cs" />
+    <Compile Include="ISceneNode.cs" />
     <Compile Include="Injection\GlyphCompositeInjector.cs" />
     <Compile Include="GlyphSchedulableBase.cs" />
     <Compile Include="IDraw.cs" />
@@ -65,11 +65,11 @@
     <Compile Include="Messaging\DisposingMessage.cs" />
     <Compile Include="Messaging\InstantiatingMessage.cs" />
     <Compile Include="Messaging\Receiver.cs" />
-    <Compile Include="SceneGraph\IWritableSceneNode.cs" />
-    <Compile Include="SceneGraph\ReadOnlySceneNode.cs" />
+    <Compile Include="IWritableSceneNode.cs" />
+    <Compile Include="ReadOnlySceneNode.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
     <Compile Include="Tracking\MessagingTracker.cs" />
-    <Compile Include="SceneGraph\SceneNode.cs" />
+    <Compile Include="SceneNode.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
     <Compile Include="GlyphComponent.cs" />
