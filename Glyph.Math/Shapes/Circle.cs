@@ -33,5 +33,10 @@ namespace Glyph.Math.Shapes
         {
             return IntersectionUtils.CircleWithCircle(this, circle);
         }
+
+        public override string ToString()
+        {
+            return $"Center: {Center.X} {Center.Y} - Radius: {Radius}";
+        }
     }
 }

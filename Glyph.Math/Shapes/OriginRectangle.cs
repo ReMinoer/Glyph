@@ -87,5 +87,10 @@ namespace Glyph.Math.Shapes
         {
             return IntersectionUtils.RectangleWithCircle(this, circle);
         }
+
+        public override string ToString()
+        {
+            return $"Origin: {Center} - Size: {Size}";
+        }
     }
 }
