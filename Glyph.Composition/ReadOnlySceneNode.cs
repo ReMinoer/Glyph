@@ -93,9 +93,9 @@ namespace Glyph.Composition
             _sceneNode.LinkChild(child, childStaticReferential);
         }
 
-        public void UnlinkChild(ISceneNode child, Referential childStaticReferential = Referential.World)
+        public void UnlinkChild(ISceneNode child)
         {
-            _sceneNode.UnlinkChild(child, childStaticReferential);
+            _sceneNode.UnlinkChild(child);
         }
 
         public void Refresh()

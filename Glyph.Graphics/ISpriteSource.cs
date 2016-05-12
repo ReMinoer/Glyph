@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public interface ISpriteSource : IGlyphComponent, IDisposable
+    public interface ISpriteSource : IGlyphComponent
     {
         Texture2D Texture { get; }
         Rectangle? Rectangle { get; }

@@ -9,7 +9,7 @@ namespace Glyph.Audio
 {
     public class SongPlayer : GlyphComponent, ILoadContent, IUpdate
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private const float VolumeSpeed = 0.0005f;
         private readonly Period _waitTime = new Period(0);

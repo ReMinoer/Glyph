@@ -1,5 +1,4 @@
-﻿using Diese.Injection;
-using Glyph.Composition;
+﻿using Glyph.Composition;
 using Glyph.Composition.Injection;
 
 namespace Glyph.Graphics.Renderer

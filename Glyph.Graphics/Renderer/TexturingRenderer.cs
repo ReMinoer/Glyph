@@ -1,5 +1,4 @@
-﻿using Glyph.Composition;
-using Glyph.Math;
+﻿using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -43,7 +42,7 @@ namespace Glyph.Graphics.Renderer
                     float destinationRemainingWidth = visibleRectangle.Width - x;
                     float sourcePatchWidth = MathHelper.Min(sourceRemainingWidth, destinationRemainingWidth);
 
-                    var position = visibleRectangle.Origin + new Vector2(x, y);
+                    Vector2 position = visibleRectangle.Origin + new Vector2(x, y);
                     IRectangle sourcePatch = new OriginRectangle(sourcePatchOrigin, new Vector2(sourcePatchWidth, sourcePatchHeight));
 
                     if (SpriteTransformer != null)

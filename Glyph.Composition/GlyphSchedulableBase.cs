@@ -20,7 +20,7 @@ namespace Glyph.Composition
         private bool _initialized;
         private bool _contentLoaded;
         private bool _componentsLocked;
-        private List<IGlyphComponent> _newComponents;
+        private readonly List<IGlyphComponent> _newComponents;
         protected internal readonly GlyphCompositeInjector Injector;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }

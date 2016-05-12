@@ -189,7 +189,7 @@ namespace Glyph.Composition
                 _childrenNodes.Add(child);
         }
 
-        void ISceneNode.UnlinkChild(ISceneNode child, Referential childStaticReferential)
+        void ISceneNode.UnlinkChild(ISceneNode child)
         {
             _childrenNodes.Remove(child);
         }

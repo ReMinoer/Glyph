@@ -1,5 +1,4 @@
-﻿using Diese.Collections;
-using Diese.Collections.Trackers;
+﻿using Diese.Collections.Trackers;
 
 namespace Glyph.Messaging
 {

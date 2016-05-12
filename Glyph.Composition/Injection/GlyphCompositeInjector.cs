@@ -134,7 +134,7 @@ namespace Glyph.Composition.Injection
             if (!typeof(IGlyphComponent).IsAssignableFrom(type))
                 throw new InvalidCastException(string.Format("Type must implements {0} !", typeof(IGlyphComponent)));
 
-            var component = (IGlyphComponent)base.Resolve(type, null, null);
+            var component = (IGlyphComponent)base.Resolve(type, null);
             _context.Add(component);
 
             return component;

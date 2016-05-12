@@ -41,7 +41,7 @@ namespace Glyph.Composition
                 object router;
                 if (RouterInjector.TryResolve(out router, routerType))
                 {
-                    object message = messageType.GetConstructor(type.AsArray()).Invoke(instance.AsArray());
+                    object message = messageType.GetConstructor(type.AsArray())?.Invoke(instance.AsArray());
                     routerType.GetMethod("Send").Invoke(router, message.AsArray());
                 }
             }

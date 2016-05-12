@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Glyph;
 
 namespace Glyph.Math.Shapes
 {
@@ -20,10 +19,10 @@ namespace Glyph.Math.Shapes
 
         static public bool RectangleWithRectangle(IRectangle rectangleA, IRectangle rectangleB, out IRectangle intersection)
         {
-            float left = Microsoft.Xna.Framework.MathHelper.Max(rectangleA.Left, rectangleB.Left);
-            float right = Microsoft.Xna.Framework.MathHelper.Min(rectangleA.Right, rectangleB.Right);
-            float top = Microsoft.Xna.Framework.MathHelper.Max(rectangleA.Top, rectangleB.Top);
-            float bottom = Microsoft.Xna.Framework.MathHelper.Min(rectangleA.Bottom, rectangleB.Bottom);
+            float left = MathHelper.Max(rectangleA.Left, rectangleB.Left);
+            float right = MathHelper.Min(rectangleA.Right, rectangleB.Right);
+            float top = MathHelper.Max(rectangleA.Top, rectangleB.Top);
+            float bottom = MathHelper.Min(rectangleA.Bottom, rectangleB.Bottom);
 
             if (left >= right || top >= bottom)
             {
@@ -93,8 +92,8 @@ namespace Glyph.Math.Shapes
         static public bool RectangleWithCircle(IRectangle rectangle, ICircle circle, out Vector2 correction)
         {
             // Find the closest point to the circle within the rectangle
-            float closestX = Microsoft.Xna.Framework.MathHelper.Clamp(circle.Center.X, rectangle.Left, rectangle.Right);
-            float closestY = Microsoft.Xna.Framework.MathHelper.Clamp(circle.Center.Y, rectangle.Top, rectangle.Bottom);
+            float closestX = MathHelper.Clamp(circle.Center.X, rectangle.Left, rectangle.Right);
+            float closestY = MathHelper.Clamp(circle.Center.Y, rectangle.Top, rectangle.Bottom);
             var closest = new Vector2(closestX, closestY);
 
             // Calculate the distance between the circle's center and this closest point

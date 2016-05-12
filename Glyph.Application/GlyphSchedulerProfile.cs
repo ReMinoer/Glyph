@@ -3,7 +3,6 @@ using Glyph.Animation.Trajectories.Players;
 using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Layers;
-using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Graphics;
 using Glyph.Graphics.Renderer;

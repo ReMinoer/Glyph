@@ -1,5 +1,3 @@
-using System;
-using Diese.Injection;
 using Glyph.Composition;
 using Glyph.Composition.Injection;
 using Microsoft.Xna.Framework;

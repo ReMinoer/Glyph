@@ -35,7 +35,7 @@ namespace Glyph.Audio
             Model = new AudioEmitter();
         }
 
-        public void Play(string asset)
+        public void Play()
         {
             _soundEffectInstance.Play();
         }

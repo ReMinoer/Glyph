@@ -104,6 +104,7 @@ namespace Glyph.Input.StandardInputs
             Add(launch);
             Add(exit);
             Add(clic);
+            Add(releaseClic);
         }
     }
 }

@@ -90,7 +90,7 @@ namespace Glyph.Space
             return GetEnumerator();
         }
 
-        private class PointEnumerator : IEnumerator<Point>
+        private sealed class PointEnumerator : IEnumerator<Point>
         {
             private readonly IGrid _grid;
             private int _position = -1;
@@ -204,7 +204,7 @@ namespace Glyph.Space
             return GetEnumerator();
         }
 
-        private class ValueEnumerator : IEnumerator<T>
+        private sealed class ValueEnumerator : IEnumerator<T>
         {
             private readonly IGrid<T> _grid;
             private int _position = -1;

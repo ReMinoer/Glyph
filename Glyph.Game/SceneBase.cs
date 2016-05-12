@@ -1,6 +1,5 @@
 ﻿using Diese.Injection;
 using Glyph.Composition;
-using Glyph.Composition.Scheduler;
 using Glyph.Graphics;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -32,7 +31,7 @@ namespace Glyph.Game
             Renderer.RenderingProcess(drawer);
         }
 
-        public virtual void PreDraw(SpriteBatch spriteBatch)
+        public virtual void PreDraw()
         {
         }
 

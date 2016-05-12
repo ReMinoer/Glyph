@@ -7,13 +7,13 @@ namespace Glyph.Particles
 {
     public sealed class ParticleEmitter : GlyphContainer, IEnableable, IUpdate, IDraw, ITimeUnscalable
     {
-        private readonly SceneNode SceneNode;
+        private readonly SceneNode _sceneNode;
+        private readonly List<IParticle> _particles;
         private readonly Period _period;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
         public Func<IParticle> Factory { get; set; }
         public bool UseUnscaledTime { get; set; }
-        public List<IParticle> _particles;
 
         public float Interval
         {
@@ -23,13 +23,13 @@ namespace Glyph.Particles
 
         public Vector2 Center
         {
-            get { return SceneNode.LocalPosition; }
-            set { SceneNode.LocalPosition = value; }
+            get { return _sceneNode.LocalPosition; }
+            set { _sceneNode.LocalPosition = value; }
         }
 
         public ParticleEmitter(SceneNode parentNode)
         {
-            Components.Add(SceneNode = new SceneNode(parentNode));
+            Components.Add(_sceneNode = new SceneNode(parentNode));
             _period = new Period();
             _particles = new List<IParticle>();
         }
@@ -63,7 +63,7 @@ namespace Glyph.Particles
             foreach (float spawnTime in spawnTimes)
             {
                 IParticle particle = Factory();
-                particle.SceneNode.SetParent(SceneNode);
+                particle.SceneNode.SetParent(_sceneNode);
 
                 Components.Add(particle);
                 _particles.Add(particle);

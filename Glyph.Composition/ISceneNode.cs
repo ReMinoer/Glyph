@@ -22,7 +22,7 @@ namespace Glyph.Composition
         Transformation Transformation { get; }
         void SetParent(ISceneNode parent, Referential childStaticReferential = Referential.World);
         void LinkChild(ISceneNode child, Referential childStaticReferential = Referential.World);
-        void UnlinkChild(ISceneNode child, Referential childStaticReferential = Referential.World);
+        void UnlinkChild(ISceneNode child);
         void Refresh();
     }
 }

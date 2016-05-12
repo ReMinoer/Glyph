@@ -179,7 +179,7 @@ namespace Glyph.Game
             if (GlyphSchedulableBase.UpdateWatchTree.Enabled)
             {
                 string filename = "watchtree_" + DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss");
-                GlyphSchedulableBase.UpdateWatchTree.Results.First().Value.SaveToCSV(filename);
+                GlyphSchedulableBase.UpdateWatchTree.Results.First().Value.SaveToCsv(filename);
 
                 GlyphSchedulableBase.UpdateWatchTree.Enabled = false;
             }
@@ -225,8 +225,7 @@ namespace Glyph.Game
 
             ScreenEffectManager.Instance.Prepare(drawer.SpriteBatchStack.Current, GraphicsDevice);
             ScreenEffectManager.Instance.CleanFirstRender(GraphicsDevice);
-
-            Scene.PreDraw(drawer.SpriteBatchStack.Current);
+            
             Scene.Draw(drawer);
 
             drawer.SpriteBatchStack.Push(new SpriteBatchContext());
@@ -235,8 +234,6 @@ namespace Glyph.Game
             EditorCursor.Draw(drawer.SpriteBatchStack.Current);
 #endif
             drawer.SpriteBatchStack.Pop();
-
-            Scene.PostDraw();
         }
 
         protected override bool BeginDraw()

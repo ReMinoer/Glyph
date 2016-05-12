@@ -1,5 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
-
 namespace Glyph.Composition
 {
     public interface IDraw : IGlyphComponent

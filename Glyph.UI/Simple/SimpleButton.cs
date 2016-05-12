@@ -27,7 +27,7 @@ namespace Glyph.UI.Simple
             {
                 Released = Color.DarkGray,
                 Hover = Color.Gray,
-                Pressed = Color.LightGray,
+                Pressed = Color.LightGray
             };
 
             BorderColors = new StatesColor(Color.Black);

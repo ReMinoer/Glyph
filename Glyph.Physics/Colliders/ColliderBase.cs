@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using Glyph.Composition;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
-using NLog;
 
 namespace Glyph.Physics.Colliders
 {
     public abstract class ColliderBase : GlyphContainer, ICollider
     {
-        private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         protected readonly SceneNode SceneNode;
         private readonly ColliderManager _colliderManager;
         public bool Enabled { get; set; }

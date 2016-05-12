@@ -1,6 +1,4 @@
-﻿using Glyph.Composition;
-
-namespace Glyph.Graphics
+﻿namespace Glyph.Graphics
 {
     public interface ISceneRenderer
     {

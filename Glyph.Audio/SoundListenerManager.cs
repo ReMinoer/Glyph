@@ -6,7 +6,7 @@ namespace Glyph.Audio
     {
         private readonly List<SoundListener> _soundListeners;
 
-        public IReadOnlyList<SoundListener> SoundListeners
+        public IEnumerable<SoundListener> SoundListeners
         {
             get { return _soundListeners.AsReadOnly(); }
         }
