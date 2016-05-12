@@ -7,23 +7,8 @@ namespace Glyph.Graphics
 {
     public abstract class SpriteSourceBase : GlyphComponent, ISpriteSource
     {
-        private Texture2D _texture;
         private Rectangle? _rectangle;
-        private Rectangle _defaultRectangle;
-
-        public Texture2D Texture
-        {
-            get { return _texture; }
-            protected set
-            {
-                _texture = value;
-
-                Rectangle = null;
-                _defaultRectangle = _texture != null
-                    ? new Rectangle(0, 0, _texture.Width, _texture.Height)
-                    : new Rectangle(0, 0, 0, 0);
-            }
-        }
+        public Texture2D Texture { get; protected set; }
 
         public Rectangle? Rectangle
         {
@@ -41,19 +26,14 @@ namespace Glyph.Graphics
 
         public abstract event Action<ISpriteSource> Loaded;
 
-        protected SpriteSourceBase()
-        {
-            _defaultRectangle = new Rectangle(0, 0, 0, 0);
-        }
-
         public Rectangle GetDrawnRectagle()
         {
-            return Rectangle ?? Texture.Bounds;
+            return (Rectangle ?? Texture?.Bounds) ?? Microsoft.Xna.Framework.Rectangle.Empty;
         }
 
         Vector2 ISpriteSource.GetDefaultOrigin()
         {
-            return (Rectangle?.Size.ToVector2() ?? Texture.Size()) / 2;
+            return (Rectangle?.Size.ToVector2() / 2 ?? Texture?.Size() / 2) ?? Vector2.Zero;
         }
     }
 }
