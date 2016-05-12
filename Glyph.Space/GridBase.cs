@@ -182,7 +182,7 @@ namespace Glyph.Space
 
         public void Fill(Func<T> valueFactory)
         {
-            Fill(valueFactory, Point.Zero, new Point(Dimension.Columns - 1, Dimension.Rows - 1));
+            Fill(valueFactory, Point.Zero, new Point(Dimension.Columns, Dimension.Rows));
         }
 
         public void Fill(Func<T> valueFactory, Point minPoint, Point maxPoint)
