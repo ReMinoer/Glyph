@@ -25,7 +25,7 @@ namespace Glyph.Math.Shapes
             float top = Microsoft.Xna.Framework.MathHelper.Max(rectangleA.Top, rectangleB.Top);
             float bottom = Microsoft.Xna.Framework.MathHelper.Min(rectangleA.Bottom, rectangleB.Bottom);
 
-            if (left > right || top > bottom)
+            if (left >= right || top >= bottom)
             {
                 intersection = new CenteredRectangle(Vector2.Zero, 0, 0);
                 return false;
@@ -45,15 +45,15 @@ namespace Glyph.Math.Shapes
 
                 if (isWiderThanTall)
                 {
-                    correction = rectangle.Top <= other.Top
+                    correction = rectangle.Center.Y <= other.Center.Y
                         ? new Vector2(0, -intersection.Height)
                         : new Vector2(0, intersection.Height);
                 }
                 else
                 {
-                    correction = rectangle.Right >= other.Right
-                        ? new Vector2(intersection.Width, 0)
-                        : new Vector2(-intersection.Width, 0);
+                    correction = rectangle.Center.X <= other.Center.X
+                        ? new Vector2(-intersection.Width, 0)
+                        : new Vector2(intersection.Width, 0);
                 }
 
                 return true;
@@ -74,7 +74,7 @@ namespace Glyph.Math.Shapes
             Vector2 centersDistance = circleA.Center - circleB.Center;
 
             float radiusIntersection = circleA.Radius + circleB.Radius - centersDistance.Length();
-            if (radiusIntersection >= 0)
+            if (radiusIntersection > 0)
             {
                 correction = radiusIntersection * centersDistance.Normalized();
                 return true;
@@ -103,7 +103,7 @@ namespace Glyph.Math.Shapes
             // If the distance is less than the circle's radius, an intersection occurs
             float radiusIntersection = circle.Radius - distance.Length();
 
-            if (radiusIntersection >= 0)
+            if (radiusIntersection > 0)
             {
                 correction = radiusIntersection * (closest - rectangle.Center).Normalized();
                 return true;

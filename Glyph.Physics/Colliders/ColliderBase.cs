@@ -67,12 +67,8 @@ namespace Glyph.Physics.Colliders
 
             Collision collision;
             int count = 0;
-            var alreadyResolved = new List<ICollider>();
             while (count < 5 && _colliderManager.ResolveOneCollision(this, out collision))
             {
-                if (alreadyResolved.Contains(collision.OtherCollider))
-                    break;
-
                 if (Colliding != null)
                     Colliding.Invoke(collision);
 
@@ -80,7 +76,6 @@ namespace Glyph.Physics.Colliders
                     break;
 
                 ParentNode.Position += collision.Correction;
-                alreadyResolved.Add(collision.OtherCollider);
 
                 if (Collided != null)
                     Collided.Invoke(collision);
