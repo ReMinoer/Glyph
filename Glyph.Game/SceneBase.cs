@@ -1,7 +1,6 @@
 ﻿using Diese.Injection;
 using Glyph.Composition;
 using Glyph.Graphics;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Game
 {
@@ -29,14 +28,6 @@ namespace Glyph.Game
                 return;
 
             Renderer.RenderingProcess(drawer);
-        }
-
-        public virtual void PreDraw()
-        {
-        }
-
-        public virtual void PostDraw()
-        {
         }
     }
 }
