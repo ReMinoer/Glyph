@@ -20,15 +20,15 @@ namespace Glyph.Math
 
                 float invdet = 1 / determinant;
 
-                result.M11 = invdet * (M22 * M33 - M23 * M32);
-                result.M21 = -invdet * (M12 * M33 - M13 * M32);
-                result.M31 = invdet * (M12 * M23 - M13 * M22);
-                result.M12 = -invdet * (M21 * M33 - M23 * M31);
-                result.M22 = invdet * (M11 * M33 - M13 * M31);
-                result.M32 = -invdet * (M11 * M23 - M21 * M13);
-                result.M13 = invdet * (M21 * M32 - M31 * M22);
-                result.M23 = -invdet * (M11 * M32 - M31 * M12);
-                result.M33 = invdet * (M11 * M22 - M21 * M12);
+                result.M11 = invdet * (M22 * M33 - M32 * M23);
+                result.M21 = -invdet * (M21 * M33 - M31 * M23);
+                result.M31 = invdet * (M21 * M32 - M31 * M22);
+                result.M12 = -invdet * (M12 * M33 - M32 * M13);
+                result.M22 = invdet * (M11 * M33 - M31 * M13);
+                result.M32 = -invdet * (M11 * M32 - M12 * M31);
+                result.M13 = invdet * (M12 * M23 - M13 * M22);
+                result.M23 = -invdet * (M11 * M23 - M13 * M21);
+                result.M33 = invdet * (M11 * M22 - M12 * M21);
 
                 return result;
             }
