@@ -27,7 +27,7 @@ namespace Glyph.Animation
         public bool UseUnscaledTime { get; set; }
         public bool AffectsRotation { get; set; }
         public MoveType Type { get; private set; }
-        public Referential Referential { get; private set; }
+        public Referential Referential { get; set; }
 
         private ITrajectoryPlayer _trajectoryPlayer;
 
