@@ -25,9 +25,7 @@ namespace Glyph.Physics.Colliders
             collision = new Collision();
             return false;
         }
-
-
-        // TODO : Handle multi collisions with grid
+        
         static public bool IsShapeCollidingGrid<TShape>(CollisionDelegate<TShape, IRectangle> collisionDelegate, ICollider<TShape> shape, IGridCollider gridCollider, out Collision collision)
             where TShape : IShape
         {
@@ -50,6 +48,12 @@ namespace Glyph.Physics.Colliders
                                 continue;
 
                             if (!gridCollider.IsCollidableCase(shape, i + y, j + x))
+                                continue;
+
+                            IRectangle otherCase = new OriginRectangle(gridCollider.Grid.ToWorldPoint(i + y, j + x), gridCollider.Grid.Delta);
+
+                            Vector2 temp;
+                            if (!collisionDelegate(shape.Shape, otherCase, out temp))
                                 continue;
 
                             rectangle = new CenteredRectangle
