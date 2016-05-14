@@ -62,6 +62,10 @@
       <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
       <Name>Diese.Composition</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
+      <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
+      <Name>Diese</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>

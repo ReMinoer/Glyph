@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Diese;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 
@@ -88,7 +89,7 @@ namespace Glyph.Composition
             _sceneNode.SetParent(parent, childStaticReferential);
         }
 
-        public bool Equals(ISceneNode other)
+        public bool Represent(IRepresentative<ISceneNode> other)
         {
             return _sceneNode == other;
         }

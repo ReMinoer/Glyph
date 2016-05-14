@@ -74,6 +74,10 @@
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
       <Name>Diese.Serialization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
+      <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
+      <Name>Diese</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
       <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>
       <Name>Glyph.Animation</Name>

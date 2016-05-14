@@ -72,6 +72,10 @@
       <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
       <Name>Diese.Debug</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
+      <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
+      <Name>Diese</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
       <Project>{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}</Project>
       <Name>Glyph.Audio</Name>
