@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Composition
 {
-    public interface ISceneNode
+    public interface ISceneNode : IEquatable<ISceneNode>
     {
         IGlyphParent Parent { get; }
         ISceneNode ParentNode { get; }

@@ -173,25 +173,14 @@ namespace Glyph.Composition
             ParentNode = parent;
 
             if (ParentNode != null)
-                ParentNode.LinkChild(this);
+                ParentNode.LinkChild(this, childStaticReferential);
 
             Refresh(childStaticReferential);
         }
 
-        void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential)
+        public bool Equals(ISceneNode other)
         {
-            if (_childrenNodes.Contains(child))
-                throw new InvalidOperationException("Parent already have this SceneNode as a child !");
-
-            if (child.ParentNode != this)
-                child.SetParent(this, childStaticReferential);
-            else
-                _childrenNodes.Add(child);
-        }
-
-        void ISceneNode.UnlinkChild(ISceneNode child)
-        {
-            _childrenNodes.Remove(child);
+            return this == other;
         }
 
         private void Refresh(Referential childStaticReferential)
@@ -226,6 +215,22 @@ namespace Glyph.Composition
 
             if (Refreshed != null)
                 Refreshed.Invoke(this);
+        }
+
+        void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential)
+        {
+            if (_childrenNodes.Contains(child))
+                throw new InvalidOperationException("Parent already have this SceneNode as a child !");
+
+            if (!child.ParentNode.Equals(this))
+                child.SetParent(this, childStaticReferential);
+            else
+                _childrenNodes.Add(child);
+        }
+
+        void ISceneNode.UnlinkChild(ISceneNode child)
+        {
+            _childrenNodes.Remove(child);
         }
 
         void ISceneNode.Refresh()

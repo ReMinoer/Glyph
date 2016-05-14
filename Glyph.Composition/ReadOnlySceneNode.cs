@@ -88,17 +88,22 @@ namespace Glyph.Composition
             _sceneNode.SetParent(parent, childStaticReferential);
         }
 
-        public void LinkChild(ISceneNode child, Referential childStaticReferential = Referential.World)
+        public bool Equals(ISceneNode other)
+        {
+            return _sceneNode == other;
+        }
+
+        void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential = Referential.World)
         {
             _sceneNode.LinkChild(child, childStaticReferential);
         }
 
-        public void UnlinkChild(ISceneNode child)
+        void ISceneNode.UnlinkChild(ISceneNode child)
         {
             _sceneNode.UnlinkChild(child);
         }
 
-        public void Refresh()
+        void ISceneNode.Refresh()
         {
             _sceneNode.Refresh();
         }
