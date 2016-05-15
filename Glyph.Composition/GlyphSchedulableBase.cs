@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Diese.Composition.Utils;
 using Diese.Debug;
 using Diese.Injection;
 using Glyph.Composition.Delegates;
@@ -165,7 +166,7 @@ namespace Glyph.Composition
                 if (!Enabled)
                     return;
 
-                using (UpdateWatchTree.Start($"{update.Target} - {update.Method.Name}"))
+                using (UpdateWatchTree.Start($"{update.Target.GetType().GetDisplayName()} -- {update.Method.Name}"))
                     update(elapsedTime);
             }
 
