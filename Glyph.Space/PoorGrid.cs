@@ -9,8 +9,19 @@ namespace Glyph.Space
     public class PoorGrid<T> : GridBase<T>
     {
         private readonly Dictionary<Point, T> _items;
+        private Func<T> _defaultValueFactory;
+        private T _defaultValue;
         public override Func<T> OutOfBoundsValueFactory { get; set; }
-        public Func<T> DefaultValueFactory { get; set; }
+
+        public Func<T> DefaultValueFactory
+        {
+            get { return _defaultValueFactory; }
+            set
+            {
+                _defaultValueFactory = value;
+                _defaultValue = _defaultValueFactory();
+            }
+        }
 
         protected override bool HasLowEntropyProtected
         {
@@ -56,8 +67,26 @@ namespace Glyph.Space
                 if (i < 0 || i >= Dimension.Rows || j < 0 || j >= Dimension.Columns)
                     throw new IndexOutOfRangeException();
 
+                if (value.Equals(_defaultValue))
+                {
+                    var point = new Point(i, j);
+                    if (_items.ContainsKey(point))
+                        _items.Remove(point);
+                    return;
+                }
+
                 _items[new Point(j, i)] = value;
             }
+        }
+
+        public void RemoveSignificantCase(Point point)
+        {
+            _items.Remove(point);
+        }
+
+        public void ClearSignificantCases()
+        {
+            _items.Clear();
         }
 
         protected override T[][] ToArrayProtected()
