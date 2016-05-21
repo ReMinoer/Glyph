@@ -166,7 +166,7 @@ namespace Glyph.Composition
                 if (!Enabled)
                     return;
 
-                using (UpdateWatchTree.Start($"{update.Target.GetType().GetDisplayName()} -- {update.Method.Name}"))
+                using (UpdateWatchTree.Start($"{update.Target?.GetType().GetDisplayName()} -- {update.Method.Name}"))
                     update(elapsedTime);
             }
 
