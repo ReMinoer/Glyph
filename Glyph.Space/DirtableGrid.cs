@@ -81,6 +81,7 @@ namespace Glyph.Space
 
                 value.Dirtied += () => IsDirty = true;
                 _dirtiedCases.Add(new GridCase<T>(i, j, value));
+                IsDirty = true;
             }
         }
 
@@ -93,6 +94,7 @@ namespace Glyph.Space
 
                 value.Dirtied += () => IsDirty = true;
                 _dirtiedCases.Add(new GridCase<T>(gridPoint, value));
+                IsDirty = true;
             }
         }
 
@@ -105,6 +107,7 @@ namespace Glyph.Space
 
                 value.Dirtied += () => IsDirty = true;
                 _dirtiedCases.Add(new GridCase<T>(ToGridPoint(worldPoint), value));
+                IsDirty = true;
             }
         }
 
@@ -117,6 +120,7 @@ namespace Glyph.Space
 
                 value.Dirtied += () => IsDirty = true;
                 _dirtiedCases.Add(new GridCase<T>(gridPositionable.GridPosition, value));
+                IsDirty = true;
             }
         }
 
