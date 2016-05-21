@@ -79,7 +79,7 @@ namespace Glyph
         public bool Update(float elapsedMilliseconds, out float[] times)
         {
             int loop;
-            if (Update(elapsedMilliseconds, out loop))
+            if (!Update(elapsedMilliseconds, out loop))
             {
                 times = new float[0];
                 return false;
