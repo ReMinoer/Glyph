@@ -29,6 +29,8 @@ namespace Glyph.Particles
 
         public ParticleEmitter(SceneNode parentNode)
         {
+            Enabled = true;
+
             Components.Add(_sceneNode = new SceneNode(parentNode));
             _period = new Period();
             _particles = new List<IParticle>();
