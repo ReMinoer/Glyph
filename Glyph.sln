@@ -21,8 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.UI", "Glyph.UI\Glyph.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Pathfinder", "Glyph.Pathfinder\Glyph.Pathfinder.csproj", "{3B5924E0-88F2-4190-A74E-D3F324A8314E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Entities.Platform", "Glyph.Entities.Platform\Glyph.Entities.Platform.csproj", "{55586466-7244-4A07-BFCD-1B20E52DAB86}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Scripting", "Glyph.Scripting\Glyph.Scripting.csproj", "{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diese", "Diese", "{4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}"
@@ -116,10 +114,6 @@ Global
 		{3B5924E0-88F2-4190-A74E-D3F324A8314E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B5924E0-88F2-4190-A74E-D3F324A8314E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B5924E0-88F2-4190-A74E-D3F324A8314E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55586466-7244-4A07-BFCD-1B20E52DAB86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55586466-7244-4A07-BFCD-1B20E52DAB86}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55586466-7244-4A07-BFCD-1B20E52DAB86}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55586466-7244-4A07-BFCD-1B20E52DAB86}.Release|Any CPU.Build.0 = Release|Any CPU
 		{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}.Release|Any CPU.ActiveCfg = Release|Any CPU
