@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SchedulingBreakpointHelper.cs" />
+    <Compile Include="MapEditor.cs" />
     <Compile Include="ShapeRendering\CircleShapeRenderer.cs" />
     <Compile Include="ShapeRendering\ShapeRendererBase.cs" />
     <Compile Include="CompositionLog.cs" />
@@ -102,6 +103,10 @@
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
       <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>
       <Name>Glyph.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj">
+      <Project>{068202CC-E943-4718-9771-62D72E50623E}</Project>
+      <Name>Glyph.Space</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.UI\Glyph.UI.csproj">
       <Project>{47E66422-AEFC-4B28-92C3-356FFD2E783C}</Project>

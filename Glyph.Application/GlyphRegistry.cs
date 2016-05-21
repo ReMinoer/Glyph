@@ -18,10 +18,12 @@ using Glyph.Particles;
 using Glyph.Physics;
 using Glyph.Physics.Colliders;
 using Glyph.Scripting.Triggers;
+using Glyph.Tools;
 using Glyph.Tools.ShapeRendering;
 using Glyph.UI;
 using Glyph.UI.Menus;
 using Glyph.UI.Simple;
+using SongPlayer = Glyph.Audio.SongPlayer;
 
 namespace Glyph.Application
 {
@@ -155,6 +157,8 @@ namespace Glyph.Application
 
             Register<RectangleShapeRenderer>();
             Register<CircleShapeRenderer>();
+
+            RegisterGeneric(typeof(MapEditor<>));
 
             #endregion
 
