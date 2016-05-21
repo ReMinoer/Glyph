@@ -38,7 +38,7 @@ namespace Glyph.Tools
             if (level > 0)
                 result += "|-";
 
-            result += $"{root.Parent.Name} (Local: T=[{root.LocalPosition}], R={root.LocalRotation}, S={root.LocalScale}, D={root.LocalDepth} - Global: T=[{root.Position}], R={root.Rotation}, S={root.Scale}, D={root.Depth})\n";
+            result += $"{root.Parent?.Name} (Local: T=[{root.LocalPosition}], R={root.LocalRotation}, S={root.LocalScale}, D={root.LocalDepth} - Global: T=[{root.Position}], R={root.Rotation}, S={root.Scale}, D={root.Depth})\n";
 
             foreach (ISceneNode component in root.Children)
                 result += WriteSceneGraph(component, level + 1);
