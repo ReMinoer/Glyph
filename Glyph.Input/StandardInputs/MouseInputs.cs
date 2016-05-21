@@ -23,6 +23,45 @@ namespace Glyph.Input.StandardInputs
         public const string Wheel = Prefix + "Wheel";
         private const string Prefix = "Mouse-";
 
+        static public MouseButtonInputs LeftButtonInputs
+        {
+            get
+            {
+                return new MouseButtonInputs
+                {
+                    Triggered = Left,
+                    Pressed = LeftPressed,
+                    Released = LeftReleased
+                };
+            }
+        }
+
+        static public MouseButtonInputs RightButtonInputs
+        {
+            get
+            {
+                return new MouseButtonInputs
+                {
+                    Triggered = Right,
+                    Pressed = RightPressed,
+                    Released = RightReleased
+                };
+            }
+        }
+
+        static public MouseButtonInputs MiddleButtonInputs
+        {
+            get
+            {
+                return new MouseButtonInputs
+                {
+                    Triggered = Middle,
+                    Pressed = MiddlePressed,
+                    Released = MiddleReleased
+                };
+            }
+        }
+
         public MouseInputs()
         {
             AddRange(new List<IInputHandler>
