@@ -38,12 +38,12 @@ namespace Glyph.Graphics
             if (!Animations.ContainsKey(key))
                 throw new KeyNotFoundException();
 
-            if (key.Equals(CurrentKey))
-                return;
-
             switch (transition)
             {
                 case SpriteAnimatorTransition.Instant:
+
+                    if (key.Equals(CurrentKey))
+                        return;
 
                     ChangeAnimationInstant(key);
 
@@ -75,7 +75,10 @@ namespace Glyph.Graphics
             if (CurrentStep >= CurrentAnimation.StepsCount)
             {
                 if (_keysQueue.Any())
+                {
                     ChangeAnimationInstant(_keysQueue.Dequeue());
+                    return;
+                }
                 else if (CurrentAnimation.Loop)
                     CurrentStep = 0;
                 else
