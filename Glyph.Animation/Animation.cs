@@ -16,7 +16,7 @@ namespace Glyph.Animation
             _chronology.AddRange(animationSteps);
             _chronology.Sort();
 
-            Duration = this.Max(x => x.End);
+            Duration = this.Any() ? this.Max(x => x.End) : 0;
         }
 
         public IEnumerator<AnimationTransition<T>> GetEnumerator()

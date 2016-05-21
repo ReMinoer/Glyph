@@ -60,9 +60,15 @@ namespace Glyph.Animation
             float loopDuration = GetLeastCommonMultiple(_loopedTransitions.Select(x => x.Duration).ToArray());
             float linearDuration = _transitions.Any() ? _transitions.Max(x => x.End) : 0;
 
-            float duration = loopDuration;
-            while (duration < linearDuration)
-                duration += loopDuration;
+            float duration;
+            if (loopDuration.EqualsZero())
+                duration = linearDuration;
+            else
+            {
+                duration = 0;
+                while (duration < linearDuration)
+                    duration += loopDuration;
+            }
 
             foreach (LoopedAnimationTransition loopedAnimationTransition in _loopedTransitions)
             {
@@ -73,11 +79,14 @@ namespace Glyph.Animation
                         var transition = new AnimationTransition<T>
                         {
                             Begin = animationTransition.Begin + i,
-                            End = animationTransition.Begin + i,
+                            End = animationTransition.End + i,
                             Action = animationTransition.Action
                         };
                         _transitions.Add(transition);
                     }
+
+                    if (loopedAnimationTransition.Duration.EqualsZero())
+                        break;
                 }
             }
 
@@ -91,6 +100,9 @@ namespace Glyph.Animation
 
         private float GetLeastCommonMultiple(params float[] values)
         {
+            if (values.Length == 0)
+                return 0;
+
             float leastCommonMultiple = values[0];
             for (int i = 1; i < values.Length; i++)
                 leastCommonMultiple = GetLeastCommonMultiple(leastCommonMultiple, values[i]);

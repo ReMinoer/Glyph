@@ -23,8 +23,6 @@ namespace Glyph.Animation
             set
             {
                 Stop();
-                _stepsToRead.Clear();
-
                 if (value == null)
                     return;
 
@@ -60,8 +58,11 @@ namespace Glyph.Animation
 
             ElapsedTime += elapsedTime.GetDelta(this);
 
+            bool endLoop;
             do
             {
+                endLoop = false;
+
                 var stepsToRemove = new List<AnimationTransition<T>>();
                 foreach (AnimationTransition<T> step in _stepsToRead)
                 {
@@ -83,13 +84,13 @@ namespace Glyph.Animation
                 foreach (AnimationTransition<T> step in stepsToRemove)
                     _stepsToRead.Remove(step);
 
-                if (!_stepsToRead.Any())
+                if (IsLooping && !_stepsToRead.Any())
                 {
                     _stepsToRead.AddRange(Animation);
                     ElapsedTime -= Animation.Duration;
+                    endLoop = true;
                 }
-            } while (ElapsedTime > 0);
-            ElapsedTime -= Animation.Duration;
+            } while (endLoop && ElapsedTime > 0);
         }
 
         public void Play()
@@ -98,16 +99,24 @@ namespace Glyph.Animation
             ElapsedTime = 0;
         }
 
+        public void Stop()
+        {
+            _animation = null;
+            _stepsToRead.Clear();
+
+            ElapsedTime = 0;
+            Paused = true;
+            IsLooping = false;
+        }
+
         public void Pause()
         {
             Paused = true;
         }
 
-        public void Stop()
+        public void Resume()
         {
-            _animation = null;
-            ElapsedTime = 0;
-            Paused = true;
+            Paused = false;
         }
 
         public void SetTimeOffset(float offset)

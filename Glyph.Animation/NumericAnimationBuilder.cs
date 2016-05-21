@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Glyph.Animation
 {
@@ -36,6 +37,12 @@ namespace Glyph.Animation
             {
                 Loop = Loop
             };
+
+            if (!_list.Any())
+            {
+                builder[0, 0] = (ref T animatable, float advance) => animatable = StartValue;
+                return builder.Create();
+            }
 
             float currentTime = 0;
             T currentValue = StartValue;
