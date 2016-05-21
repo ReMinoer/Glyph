@@ -102,8 +102,6 @@ namespace Glyph.Game
             StatusDisplay = new StatusDisplay();
             StatusDisplay.Channels.Add(new DefautStatusDisplayChannel(PerformanceViewer));
 
-            EditorCursor.Initialize();
-
             Registry.RegisterInstance<GlyphGame>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
             Registry.RegisterInstance<InputManager>(InputManager);
@@ -135,10 +133,6 @@ namespace Glyph.Game
 
             Scene.LoadContent(ContentLibrary);
             _sceneChanged = false;
-
-#if WINDOWS
-            EditorCursor.LoadContent(ContentLibrary);
-#endif
         }
 
         protected override void Update(GameTime gameTime)
@@ -206,10 +200,6 @@ namespace Glyph.Game
 
             SongPlayer.HandleInput(InputManager);
             StatusDisplay.HandleInput(InputManager);
-
-#if WINDOWS
-            EditorCursor.HandleInput(InputManager);
-#endif
         }
 
         protected override sealed void Draw(GameTime gameTime)
@@ -230,9 +220,6 @@ namespace Glyph.Game
 
             drawer.SpriteBatchStack.Push(new SpriteBatchContext());
             StatusDisplay.Draw(drawer.SpriteBatchStack.Current);
-#if WINDOWS
-            EditorCursor.Draw(drawer.SpriteBatchStack.Current);
-#endif
             drawer.SpriteBatchStack.Pop();
         }
 
