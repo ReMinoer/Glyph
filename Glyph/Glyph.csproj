@@ -48,6 +48,7 @@
     <Compile Include="Angle.cs" />
     <Compile Include="Axis.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="Color.Extension.cs" />
     <Compile Include="Drawer.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="GlyphData.cs" />
