@@ -6,6 +6,7 @@ namespace Glyph.Graphics.Renderer
     [SinglePerParent]
     public abstract class RendererBase : GlyphComponent, IDraw
     {
+        protected abstract float DepthProtected { get; }
         public bool Visible { get; set; }
         public ISpriteSource Source { get; private set; }
 
@@ -23,7 +24,7 @@ namespace Glyph.Graphics.Renderer
 
         public void Draw(IDrawer drawer)
         {
-            if (!Visible || (DrawableParent != null && !DrawableParent.Visible) || Source.Texture == null)
+            if (!Visible || (DrawableParent != null && !DrawableParent.Visible) || !DepthManager.VisibilityPredicate(DepthProtected) || Source.Texture == null)
                 return;
 
             Render(drawer);

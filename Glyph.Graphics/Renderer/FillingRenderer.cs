@@ -10,6 +10,11 @@ namespace Glyph.Graphics.Renderer
         private readonly FillingRectangle _fillingRectangle;
         private readonly SceneNode _sceneNode;
 
+        protected override float DepthProtected
+        {
+            get { return _sceneNode.Depth; }
+        }
+
         public FillingRenderer(FillingRectangle fillingRectangle, ISpriteSource source, SceneNode sceneNode)
             : base(source)
         {

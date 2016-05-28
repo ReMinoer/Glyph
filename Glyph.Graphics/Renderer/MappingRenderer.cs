@@ -14,6 +14,11 @@ namespace Glyph.Graphics.Renderer
         public float Depth { get; set; }
         public Func<TData, MappingRenderer<TData>, bool> RenderingBehaviour { get; set; }
 
+        protected override float DepthProtected
+        {
+            get { return Depth; }
+        }
+
         public MappingRenderer(ISpriteSheet spriteSheet)
             : base(spriteSheet)
         {

@@ -10,6 +10,11 @@ namespace Glyph.Graphics.Renderer
         private readonly FillingRectangle _fillingRectangle;
         public float Depth { get; set; }
 
+        protected override float DepthProtected
+        {
+            get { return Depth; }
+        }
+
         public TexturingRenderer(FillingRectangle fillingRectangle, ISpriteSource source)
             : base(source)
         {

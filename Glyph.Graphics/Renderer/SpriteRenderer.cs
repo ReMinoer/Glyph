@@ -8,6 +8,11 @@ namespace Glyph.Graphics.Renderer
     {
         private readonly SceneNode _sceneNode;
 
+        protected override float DepthProtected
+        {
+            get { return _sceneNode.Depth; }
+        }
+
         public SpriteRenderer(ISpriteSource source, SceneNode sceneNode)
             : base(source)
         {

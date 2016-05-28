@@ -16,7 +16,12 @@
             return Index.CompareTo(other.Index);
         }
 
-        public abstract void Initialize();
-        public abstract void Update(ElapsedTime elapsedTime);
+        public virtual void Initialize()
+        {
+        }
+
+        public virtual void Update(ElapsedTime elapsedTime)
+        {
+        }
     }
 }

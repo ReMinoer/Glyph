@@ -38,6 +38,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DepthManager.cs" />
     <Compile Include="Renderer\FillingRectangle.cs" />
     <Compile Include="ISceneRenderer.cs" />
     <Compile Include="ISpriteSheet.cs" />
