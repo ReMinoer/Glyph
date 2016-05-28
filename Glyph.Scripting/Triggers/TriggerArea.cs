@@ -42,12 +42,12 @@ namespace Glyph.Scripting.Triggers
             get { return new OriginRectangle(_sceneNode.Position, Size); }
         }
 
-        ISceneNode IShapedObject.SceneNode
+        ISceneNode IShapedComponent.SceneNode
         {
             get { return new ReadOnlySceneNode(_sceneNode); }
         }
 
-        IShape IShapedObject.Shape
+        IShape IShapedComponent.Shape
         {
             get { return Shape; }
         }

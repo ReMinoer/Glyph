@@ -8,8 +8,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Tools.ShapeRendering
 {
-    public sealed class ShapeRendererManager<T> : GlyphComposite, IUpdate, IDraw
-        where T : class, IShapedObject
+    public sealed class ShapedComponentRendererManager<T> : GlyphComposite, IUpdate, IDraw
+        where T : class, IShapedComponent
     {
         public bool Visible { get; set; }
         public Color Color { get; set; }
@@ -18,9 +18,9 @@ namespace Glyph.Tools.ShapeRendering
         private readonly MessagingTracker<T> _tracker;
         private readonly Lazy<GraphicsDevice> _lazyGraphicsDevice;
         private readonly ContentLibrary _contentLibrary;
-        private readonly Dictionary<T, ShapeRendererBase> _colliderObjects;
+        private readonly Dictionary<T, ShapedComponentRendererBase> _colliderObjects;
 
-        public ShapeRendererManager(MessagingTracker<T> tracker, Lazy<GraphicsDevice> lazyGraphicsDevice, ContentLibrary contentLibrary)
+        public ShapedComponentRendererManager(MessagingTracker<T> tracker, Lazy<GraphicsDevice> lazyGraphicsDevice, ContentLibrary contentLibrary)
         {
             Visible = true;
 
@@ -28,7 +28,7 @@ namespace Glyph.Tools.ShapeRendering
             _tracker = tracker;
             _lazyGraphicsDevice = lazyGraphicsDevice;
             _contentLibrary = contentLibrary;
-            _colliderObjects = new Dictionary<T, ShapeRendererBase>();
+            _colliderObjects = new Dictionary<T, ShapedComponentRendererBase>();
 
             Color = Color.Pink * 0.5f;
             
@@ -46,7 +46,7 @@ namespace Glyph.Tools.ShapeRendering
                 AddShape(newInstance);
             _tracker.CleanNewInstances();
 
-            foreach (ShapeRendererBase colliderObject in _colliderObjects.Values)
+            foreach (ShapedComponentRendererBase colliderObject in _colliderObjects.Values)
                 colliderObject.Update(elapsedTime);
         }
 
@@ -55,36 +55,36 @@ namespace Glyph.Tools.ShapeRendering
             if (!Visible)
                 return;
 
-            foreach (ShapeRendererBase colliderObject in _colliderObjects.Values)
+            foreach (ShapedComponentRendererBase colliderObject in _colliderObjects.Values)
                 colliderObject.Draw(drawer);
         }
 
         private void AddShape(T shapedObject)
         {
-            var rectangle = shapedObject as IShapedObject<IRectangle>;
+            var rectangle = shapedObject as IShapedComponent<IRectangle>;
             if (rectangle != null)
             {
-                AddShape(shapedObject, new RectangleShapeRenderer(rectangle, _lazyGraphicsDevice));
+                AddShape(shapedObject, new RectangleComponentRenderer(rectangle, _lazyGraphicsDevice));
                 return;
             }
 
-            var circle = shapedObject as IShapedObject<ICircle>;
+            var circle = shapedObject as IShapedComponent<ICircle>;
             if (circle != null)
             {
-                AddShape(shapedObject, new CircleShapeRenderer(circle, _lazyGraphicsDevice));
+                AddShape(shapedObject, new CircleComponentRenderer(circle, _lazyGraphicsDevice));
                 return;
             }
 
             throw new NotSupportedException();
         }
 
-        private void AddShape(T shapedObject, ShapeRendererBase shapeRenderer)
+        private void AddShape(T shapedObject, ShapedComponentRendererBase shapedComponentRenderer)
         {
-            shapeRenderer.Color = Color;
-            Add(shapeRenderer);
-            shapeRenderer.Initialize();
-            shapeRenderer.LoadContent(_contentLibrary);
-            _colliderObjects.Add(shapedObject, shapeRenderer);
+            shapedComponentRenderer.Color = Color;
+            Add(shapedComponentRenderer);
+            shapedComponentRenderer.Initialize();
+            shapedComponentRenderer.LoadContent(_contentLibrary);
+            _colliderObjects.Add(shapedObject, shapedComponentRenderer);
         }
 
         private void TrackerOnUnregistered(T shapedObject)

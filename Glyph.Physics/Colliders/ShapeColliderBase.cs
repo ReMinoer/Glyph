@@ -35,12 +35,12 @@ namespace Glyph.Physics.Colliders
             return Shape.Intersects(circle);
         }
 
-        ISceneNode IShapedObject.SceneNode
+        ISceneNode IShapedComponent.SceneNode
         {
             get { return new ReadOnlySceneNode(SceneNode); }
         }
 
-        IShape IShapedObject.Shape
+        IShape IShapedComponent.Shape
         {
             get { return Shape; }
         }

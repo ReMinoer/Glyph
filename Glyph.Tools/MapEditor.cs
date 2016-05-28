@@ -20,7 +20,7 @@ namespace Glyph.Tools
     public class MapEditor<TCase> : GlyphContainer, ILoadContent, IUpdate, IDraw, IEnableable
     {
         private readonly Cursor _cursor;
-        private readonly RectangleShapeRenderer _cursorRenderer;
+        private readonly RectangleComponentRenderer _cursorRenderer;
         private readonly InputManager _inputManager;
         private IWriteableGrid<TCase> _grid;
         private PoorGrid<TCase> _lastStateGrid;
@@ -48,7 +48,7 @@ namespace Glyph.Tools
             Visible = true;
                
             Components.Add(_cursor = new Cursor());
-            Components.Add(_cursorRenderer = new RectangleShapeRenderer(_cursor, lazyGraphicsDevice));
+            Components.Add(_cursorRenderer = new RectangleComponentRenderer(_cursor, lazyGraphicsDevice));
 
             _cursorRenderer.Color = Color.White.SetOpacity(0.5f);
         }
@@ -143,23 +143,26 @@ namespace Glyph.Tools
             _cursorRenderer.Draw(drawer);
         }
 
-        private sealed class Cursor : GlyphContainer, IShapedObject<IRectangle>
+        private sealed class Cursor : GlyphContainer, IShapedComponent<IRectangle>
         {
+            public bool Enabled { get; set; }
             public SceneNode SceneNode { get; }
             public IRectangle Shape { get; internal set; }
 
-            ISceneNode IShapedObject.SceneNode
+            ISceneNode IShapedComponent.SceneNode
             {
                 get { return SceneNode; }
             }
 
-            IShape IShapedObject.Shape
+            IShape IShapedComponent.Shape
             {
                 get { return Shape; }
             }
 
             public Cursor()
             {
+                Enabled = true;
+
                 Components.Add(SceneNode = new SceneNode());
                 Shape = new OriginRectangle();
             }

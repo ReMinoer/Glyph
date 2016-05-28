@@ -153,10 +153,10 @@ namespace Glyph.Application
 
             #region Tools
 
-            RegisterGeneric(typeof(ShapeRendererManager<>));
+            RegisterGeneric(typeof(ShapedComponentRendererManager<>));
 
-            Register<RectangleShapeRenderer>();
-            Register<CircleShapeRenderer>();
+            Register<RectangleComponentRenderer>();
+            Register<CircleComponentRenderer>();
 
             RegisterGeneric(typeof(MapEditor<>));
 

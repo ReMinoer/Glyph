@@ -10,7 +10,7 @@ namespace Glyph.Scripting
         void UpdateStatus(IEnumerable<IActor> actors);
     }
 
-    public interface ITriggerArea<out T> : ITriggerArea, IShapedObject<T>
+    public interface ITriggerArea<out T> : ITriggerArea, IShapedComponent<T>
         where T : IShape
     {
     }

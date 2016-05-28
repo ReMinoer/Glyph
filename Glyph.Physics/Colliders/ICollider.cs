@@ -15,7 +15,7 @@ namespace Glyph.Physics.Colliders
         bool IsColliding(ICollider collider, out Collision collision);
     }
 
-    public interface ICollider<out TShape> : ICollider, IShapedObject<TShape>
+    public interface ICollider<out TShape> : ICollider, IShapedComponent<TShape>
         where TShape : IShape
     {
     }

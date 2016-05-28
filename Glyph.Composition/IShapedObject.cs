@@ -2,13 +2,13 @@
 
 namespace Glyph.Composition
 {
-    public interface IShapedObject
+    public interface IShapedComponent : IGlyphComponent
     {
         ISceneNode SceneNode { get; }
         IShape Shape { get; }
     }
 
-    public interface IShapedObject<out T> : IShapedObject
+    public interface IShapedComponent<out T> : IShapedComponent
         where T : IShape
     {
         new T Shape { get; }

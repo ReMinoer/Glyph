@@ -6,8 +6,9 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.ShapeRendering
 {
-    public abstract class ShapeRendererBase : GlyphContainer, ILoadContent, IUpdate, IDraw
+    public abstract class ShapedComponentRendererBase : GlyphContainer, ILoadContent, IUpdate, IDraw
     {
+        private readonly IShapedComponent _shapedComponent;
         private readonly SceneNode _sceneNode;
         protected readonly SpriteTransformer SpriteTransformer;
         private readonly ShapedSpriteBase _shapedSprite;
@@ -20,11 +21,12 @@ namespace Glyph.Tools.ShapeRendering
             set { SpriteTransformer.Color = value; }
         }
 
-        protected ShapeRendererBase(ISceneNode parentNode, ShapedSpriteBase shapedSprite)
+        protected ShapedComponentRendererBase(IShapedComponent shapedComponent, ShapedSpriteBase shapedSprite)
         {
             Visible = true;
-            
-            Components.Add(_sceneNode = new SceneNode(parentNode));
+            _shapedComponent = shapedComponent;
+
+            Components.Add(_sceneNode = new SceneNode(shapedComponent.SceneNode));
             Components.Add(_shapedSprite = shapedSprite);
 
             Components.Add(SpriteTransformer = new SpriteTransformer());
@@ -54,7 +56,7 @@ namespace Glyph.Tools.ShapeRendering
 
         public void Draw(IDrawer drawer)
         {
-            if (!Visible)
+            if (!Visible || _shapedComponent.GetComponentAmongParents(x => x is IEnableable && !((IEnableable)x).Enabled) != null)
                 return;
 
             _spriteRenderer.Draw(drawer);
