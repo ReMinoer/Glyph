@@ -41,22 +41,19 @@
     <Compile Include="Grid.cs" />
     <Compile Include="GridBase.cs" />
     <Compile Include="GridCase.cs" />
-    <Compile Include="GridSize.cs" />
+    <Compile Include="GridDimension.cs" />
     <Compile Include="IDirtableGrid.cs" />
     <Compile Include="IGrid.cs" />
     <Compile Include="IGridCase.cs" />
     <Compile Include="IGridPositionable.cs" />
+    <Compile Include="ISpace.cs" />
     <Compile Include="IWriteableGrid.cs" />
-    <Compile Include="Partitioning\IPartition.cs" />
-    <Compile Include="Partitioning\ISpacePartitioner.cs" />
-    <Compile Include="Partitioning\ISpacePartitionerParameters.cs" />
-    <Compile Include="Partitioning\Base\PartitionBase.cs" />
-    <Compile Include="Partitioning\Quadtree\QuadtreePartition.cs" />
+    <Compile Include="Partitioning\SpacePartitionBase.cs" />
+    <Compile Include="Partitioning\QuadtreeSpace.cs" />
     <Compile Include="PoorGrid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Partitioning\Quadtree\QuadtreeSpacePartitioner.cs" />
-    <Compile Include="Partitioning\Base\SpacePartitionerBase.cs" />
     <Compile Include="ReadOnlyGrid.cs" />
+    <Compile Include="Space.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Diese\Diese.Collections\Diese.Collections.csproj">

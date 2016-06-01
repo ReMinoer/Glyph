@@ -1,31 +1,43 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Glyph.Physics.Colliders;
+using Glyph.Space;
 
 namespace Glyph.Physics
 {
     public class ColliderManager
     {
-        private readonly List<ICollider> _colliders;
+        private ISpace<ICollider> _space;
+
+        public ISpace<ICollider> Space
+        {
+            get { return _space; }
+            set
+            {
+                foreach (ICollider collider in _space)
+                    value.Add(collider);
+                
+                _space = value;
+            }
+        }
 
         public ColliderManager()
         {
-            _colliders = new List<ICollider>();
+            _space = new Space<ICollider>(x => x.BoundingBox);
         }
 
         internal void Add(ICollider collider)
         {
-            _colliders.Add(collider);
+            Space.Add(collider);
         }
 
         internal void Remove(ICollider collider)
         {
-            _colliders.Remove(collider);
+            Space.Remove(collider);
         }
 
         internal bool ResolveOneCollision(ICollider collider, out Collision collision)
         {
-            foreach (ICollider other in _colliders.Where(other => other != collider && other.Enabled))
+            foreach (ICollider other in Space.GetAllItemsInRange(collider).Where(other => other != collider && other.Enabled))
                 if (collider.IsColliding(other, out collision))
                     return true;
 
