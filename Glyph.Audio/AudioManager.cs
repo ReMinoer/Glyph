@@ -79,7 +79,7 @@ namespace Glyph.Audio
                     break;
 
                 case AudioTransitionState.Fondu:
-                    if (Math.Abs(MediaPlayer.Volume) < float.Epsilon)
+                    if (System.Math.Abs(MediaPlayer.Volume) < float.Epsilon)
                     {
                         WaitTime.Init();
                         _transitionState = AudioTransitionState.Wait;

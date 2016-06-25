@@ -22,7 +22,7 @@ namespace Glyph.Graphics.Shapes
             for (int i = 0; i < data.Length; i++)
                 data[i] = Color;
 
-            Texture = new Texture2D(LazyGraphicsDevice.Value, Width, Height);
+            _texture = new Texture2D(LazyGraphicsDevice.Value, Width, Height);
             Texture.SetData(data);
         }
     }

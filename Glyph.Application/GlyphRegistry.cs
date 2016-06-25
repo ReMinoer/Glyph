@@ -9,6 +9,7 @@ using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Composition.Tracking;
+using Glyph.Core;
 using Glyph.Graphics;
 using Glyph.Graphics.Particles;
 using Glyph.Graphics.Renderer;
@@ -77,11 +78,15 @@ namespace Glyph.Application
 
             #endregion
 
-            #region Fundamental components
+            #region Core
 
             Register<SceneNode>();
+
             RegisterGeneric(typeof(LayerRoot<>));
             LinkGeneric(typeof(ILayerRoot<>), typeof(LayerRoot<>));
+
+            Register<Camera>();
+            Register<View>();
 
             #endregion
 

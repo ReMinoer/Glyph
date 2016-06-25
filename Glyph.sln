@@ -58,8 +58,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Application", "Glyph.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Physics", "Glyph.Physics\Glyph.Physics.csproj", "{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Math", "Glyph.Math\Glyph.Math.csproj", "{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Messaging", "Glyph.Messaging\Glyph.Messaging.csproj", "{26405F4B-4532-4F48-A96F-594A70C12B3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Space", "Glyph.Space\Glyph.Space.csproj", "{068202CC-E943-4718-9771-62D72E50623E}"
@@ -71,6 +69,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Graphics.Particles", "Glyph.Graphics.Particles\Glyph.Graphics.Particles.csproj", "{5292934A-D0E4-47FD-98FA-0A32B37657D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Linseq", "External\Diese\Diese.Linseq\Diese.Linseq.csproj", "{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Core", "Glyph.Core\Glyph.Core.csproj", "{BC40E833-0EAA-4BBC-97D8-1541276BBA54}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,10 +170,6 @@ Global
 		{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26405F4B-4532-4F48-A96F-594A70C12B3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26405F4B-4532-4F48-A96F-594A70C12B3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26405F4B-4532-4F48-A96F-594A70C12B3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -198,6 +194,10 @@ Global
 		{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC40E833-0EAA-4BBC-97D8-1541276BBA54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC40E833-0EAA-4BBC-97D8-1541276BBA54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC40E833-0EAA-4BBC-97D8-1541276BBA54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC40E833-0EAA-4BBC-97D8-1541276BBA54}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

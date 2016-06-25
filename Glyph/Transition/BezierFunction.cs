@@ -81,7 +81,7 @@ namespace Glyph.Transition
             for (int i = 0; i < 5; i++)
             {
                 float z = BezierX(x) - t;
-                if (Math.Abs(z) < 1e-3)
+                if (System.Math.Abs(z) < 1e-3)
                     break;
 
                 x = x - z / BezierXDerivative(x);

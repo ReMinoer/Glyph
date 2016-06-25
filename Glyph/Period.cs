@@ -50,7 +50,7 @@ namespace Glyph
             if (!(ElapsedTime > Interval))
                 return false;
 
-            while (ElapsedTime > Interval && Math.Abs(Interval) > float.Epsilon)
+            while (ElapsedTime > Interval && System.Math.Abs(Interval) > float.Epsilon)
                 ElapsedTime -= Interval;
 
             IsEnd = true;
@@ -66,7 +66,7 @@ namespace Glyph
             if (!(ElapsedTime > Interval))
                 return false;
 
-            while (ElapsedTime > Interval && Math.Abs(Interval) > float.Epsilon)
+            while (ElapsedTime > Interval && System.Math.Abs(Interval) > float.Epsilon)
             {
                 ElapsedTime -= Interval;
                 loop++;

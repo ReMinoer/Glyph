@@ -1,5 +1,6 @@
 ﻿using Diese.Injection;
 using Glyph.Composition;
+using Glyph.Core;
 using Glyph.Graphics;
 
 namespace Glyph.Game

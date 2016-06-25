@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Glyph.Composition;
 using Glyph.Composition.Tracking;
+using Glyph.Core;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

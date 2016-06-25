@@ -35,7 +35,7 @@ namespace Glyph.Graphics.Shapes
                 data[y * outerRadius + x + 1] = Color;
             }
 
-            Texture = new Texture2D(LazyGraphicsDevice.Value, outerRadius, outerRadius);
+            _texture = new Texture2D(LazyGraphicsDevice.Value, outerRadius, outerRadius);
             Texture.SetData(data);
         }
     }

@@ -39,13 +39,13 @@ namespace Glyph.Effects
                 component.Update(gameTime);
         }
 
-        public void Prepare(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public void Prepare(IDrawer drawer)
         {
             foreach (TComponent component in this)
-                component.Prepare(spriteBatch, graphicsDevice);
+                component.Prepare(drawer);
         }
 
-        public void Apply(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public void Apply(IDrawer drawer)
         {
             throw new InvalidOperationException();
         }

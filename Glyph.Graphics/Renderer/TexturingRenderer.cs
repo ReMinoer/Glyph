@@ -1,4 +1,4 @@
-﻿using Glyph.Math;
+﻿using Glyph.Core;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,24 +7,29 @@ namespace Glyph.Graphics.Renderer
 {
     public class TexturingRenderer : RendererBase
     {
+        private readonly SceneNode _sceneNode;
         private readonly FillingRectangle _fillingRectangle;
-        public float Depth { get; set; }
 
         protected override float DepthProtected
         {
-            get { return Depth; }
+            get { return _sceneNode.Depth; }
         }
 
-        public TexturingRenderer(FillingRectangle fillingRectangle, ISpriteSource source)
+        public TexturingRenderer(SceneNode sceneNode, FillingRectangle fillingRectangle, ISpriteSource source)
             : base(source)
         {
+            _sceneNode = sceneNode;
             _fillingRectangle = fillingRectangle;
         }
 
         protected override void Render(IDrawer drawer)
         {
-            IRectangle drawnRectangle = _fillingRectangle.Rectangle;
-            IRectangle cameraRectangle = Camera.DisplayRectangle.ToCenteredRectangle();
+            IRectangle cameraRectangle = drawer.DisplayedRectangle;
+            IRectangle drawnRectangle = new CenteredRectangle
+            {
+                Center = _sceneNode.Position + _fillingRectangle.Rectangle.Center,
+                Size = _fillingRectangle.Rectangle.Size
+            };
 
             IRectangle visibleRectangle;
             if (!drawnRectangle.Intersects(cameraRectangle, out visibleRectangle))
@@ -52,10 +57,10 @@ namespace Glyph.Graphics.Renderer
 
                     if (SpriteTransformer != null)
                         drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToStruct(), SpriteTransformer.Color, 0,
-                            Vector2.Zero, SpriteTransformer.Scale, SpriteTransformer.Effects, Depth);
+                            Vector2.Zero, SpriteTransformer.Scale, SpriteTransformer.Effects, _sceneNode.Depth);
                     else
                         drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToStruct(), Color.White, 0,
-                            Vector2.Zero, 1f, SpriteEffects.None, Depth);
+                            Vector2.Zero, 1f, SpriteEffects.None, _sceneNode.Depth);
 
                     x += sourcePatchWidth;
                     sourcePatchOrigin.X = sourceRectangle.Origin.X;

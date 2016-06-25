@@ -2,6 +2,7 @@
 using Diese.Injection;
 using Glyph.Animation;
 using Glyph.Composition;
+using Glyph.Core;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
 using Microsoft.Xna.Framework;

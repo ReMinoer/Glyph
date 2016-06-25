@@ -7,9 +7,15 @@ namespace Glyph.Graphics.Shapes
 {
     public abstract class ShapedSpriteBase : SpriteSourceBase, ILoadContent
     {
+        protected Texture2D _texture;
         protected readonly Lazy<GraphicsDevice> LazyGraphicsDevice;
         public Color Color { get; set; }
         public override event Action<ISpriteSource> Loaded;
+
+        public override sealed Texture2D Texture
+        {
+            get { return _texture; }
+        }
 
         protected ShapedSpriteBase(Lazy<GraphicsDevice> lazyGraphicsDevice)
         {
@@ -32,7 +38,7 @@ namespace Glyph.Graphics.Shapes
             if (Texture != null)
                 Texture.Dispose();
 
-            Texture = null;
+            _texture = null;
 
             base.Dispose();
         }

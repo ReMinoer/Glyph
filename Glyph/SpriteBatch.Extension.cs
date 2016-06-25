@@ -23,8 +23,8 @@ namespace Glyph
         {
             Rectangle source = sourceRectangle ?? new Rectangle(0, 0, texture.Width, texture.Height);
 
-            bool reverse = (Math.Abs(rotation.Value - Angle.Rotation.RotateLeft.Value) < float.Epsilon
-                            || Math.Abs(rotation.Value - Angle.Rotation.RotateRight.Value) < float.Epsilon);
+            bool reverse = (System.Math.Abs(rotation.Value - Angle.Rotation.RotateLeft.Value) < float.Epsilon
+                            || System.Math.Abs(rotation.Value - Angle.Rotation.RotateRight.Value) < float.Epsilon);
 
             int rotateWidth = reverse ? source.Height : source.Width;
             int rotateHeight = reverse ? source.Width : source.Height;
@@ -43,13 +43,13 @@ namespace Glyph
                     var drawSource = new Rectangle(source.X, source.Y, reverse ? h : w, reverse ? w : h);
 
                     Vector2 position = Vector2.Zero;
-                    if (Math.Abs(rotation.Value - Angle.Rotation.None.Value) < float.Epsilon)
+                    if (System.Math.Abs(rotation.Value - Angle.Rotation.None.Value) < float.Epsilon)
                         position = destinationRectangle.Origin().ToVector2().Add(x, y);
-                    else if (Math.Abs(rotation.Value - Angle.Rotation.RotateLeft.Value) < float.Epsilon)
+                    else if (System.Math.Abs(rotation.Value - Angle.Rotation.RotateLeft.Value) < float.Epsilon)
                         position = destinationRectangle.P1().ToVector2().Add(-x, y);
-                    else if (Math.Abs(rotation.Value - Angle.Rotation.RotateRight.Value) < float.Epsilon)
+                    else if (System.Math.Abs(rotation.Value - Angle.Rotation.RotateRight.Value) < float.Epsilon)
                         position = destinationRectangle.Origin().ToVector2().Add(x, y + source.Width);
-                    else if (Math.Abs(rotation.Value - Angle.Rotation.RotateOpposite.Value) < float.Epsilon)
+                    else if (System.Math.Abs(rotation.Value - Angle.Rotation.RotateOpposite.Value) < float.Epsilon)
                         position = destinationRectangle.P2().ToVector2().Add(x + source.Width, -h);
 
                     spriteBatch.Draw(texture, position, drawSource, color, rotation, Vector2.Zero, 1f,

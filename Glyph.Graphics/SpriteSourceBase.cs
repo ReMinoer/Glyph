@@ -8,7 +8,7 @@ namespace Glyph.Graphics
     public abstract class SpriteSourceBase : GlyphComponent, ISpriteSource
     {
         private Rectangle? _rectangle;
-        public Texture2D Texture { get; protected set; }
+        public abstract Texture2D Texture { get; }
 
         public Rectangle? Rectangle
         {

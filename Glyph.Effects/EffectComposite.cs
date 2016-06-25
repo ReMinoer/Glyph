@@ -12,7 +12,7 @@ namespace Glyph.Effects
         where TComponent : class, IEffectComponent
     {
         public bool Enabled { get; set; }
-        public abstract void Apply(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
+        public abstract void Apply(IDrawer drawer);
 
         public virtual void Initialize()
         {
@@ -32,10 +32,10 @@ namespace Glyph.Effects
                 effect.Update(gameTime);
         }
 
-        public virtual void Prepare(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public virtual void Prepare(IDrawer drawer)
         {
             foreach (TComponent effect in this)
-                effect.Prepare(spriteBatch, graphicsDevice);
+                effect.Prepare(drawer);
         }
 
         public virtual void Dispose()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Glyph.Composition;
+using Glyph.Core;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
 using Glyph.Math;

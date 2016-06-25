@@ -1,4 +1,5 @@
 ﻿using Glyph.Composition;
+using Glyph.Core;
 using NLog;
 
 namespace Glyph.Tools

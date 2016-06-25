@@ -12,7 +12,7 @@ namespace Glyph
 
         static public float DistanceTo(this Point value, Point other)
         {
-            return (float)Math.Sqrt(Math.Pow(value.X - other.X, 2) + Math.Pow(value.Y - other.Y, 2));
+            return (float)System.Math.Sqrt(System.Math.Pow(value.X - other.X, 2) + System.Math.Pow(value.Y - other.Y, 2));
         }
     }
 }

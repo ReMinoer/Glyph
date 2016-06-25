@@ -1,4 +1,5 @@
 ﻿using Glyph.Composition;
+using Glyph.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

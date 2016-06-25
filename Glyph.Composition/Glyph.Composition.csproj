@@ -46,7 +46,6 @@
     <Compile Include="Injection\GlyphInjectableAttribute.cs" />
     <Compile Include="Injection\GlyphInjectableTargets.cs" />
     <Compile Include="InstanceManager.cs" />
-    <Compile Include="ISceneNode.cs" />
     <Compile Include="Injection\GlyphCompositeInjector.cs" />
     <Compile Include="GlyphSchedulableBase.cs" />
     <Compile Include="IDraw.cs" />
@@ -54,7 +53,6 @@
     <Compile Include="ILoadContent.cs" />
     <Compile Include="Injection\InjectionScope.cs" />
     <Compile Include="Injection\LocalDependencyInjector.cs" />
-    <Compile Include="IShapedObject.cs" />
     <Compile Include="IUpdate.cs" />
     <Compile Include="Layers\ILayer.cs" />
     <Compile Include="Layers\ILayerManager.cs" />
@@ -65,11 +63,8 @@
     <Compile Include="Messaging\DisposingMessage.cs" />
     <Compile Include="Messaging\InstantiatingMessage.cs" />
     <Compile Include="Messaging\Receiver.cs" />
-    <Compile Include="IWritableSceneNode.cs" />
-    <Compile Include="ReadOnlySceneNode.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
     <Compile Include="Tracking\MessagingTracker.cs" />
-    <Compile Include="SceneNode.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
     <Compile Include="GlyphComponent.cs" />
@@ -129,10 +124,6 @@
     <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
       <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
       <Name>Diese</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
-      <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
-      <Name>Glyph.Math</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
       <Project>{26405f4b-4532-4f48-a96f-594a70c12b3e}</Project>

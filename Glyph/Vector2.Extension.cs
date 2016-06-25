@@ -26,9 +26,9 @@ namespace Glyph
             Vector2 norm = Vector2.Normalize(value);
 
             if (norm.Y >= 0)
-                result = -(float)Math.Asin(norm.X) + MathHelper.Pi;
+                result = -(float)System.Math.Asin(norm.X) + MathHelper.Pi;
             else
-                result = (float)Math.Asin(norm.X);
+                result = (float)System.Math.Asin(norm.X);
 
             result += MathHelper.TwoPi;
             result %= MathHelper.TwoPi;
@@ -98,7 +98,7 @@ namespace Glyph
 
             float newAngle = angle.Transition(angleGoal, angularSpeed, deltaTime);
 
-            return new Vector2((float)Math.Cos(newAngle), (float)Math.Sin(newAngle));
+            return new Vector2((float)System.Math.Cos(newAngle), (float)System.Math.Sin(newAngle));
         }
 
         static public Point Discretize(this Vector2 value, Vector2 localPoint)

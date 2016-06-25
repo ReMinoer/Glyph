@@ -6,7 +6,7 @@ namespace Glyph
     {
         static public bool EqualsZero(this float value)
         {
-            return Math.Abs(value) < float.Epsilon;
+            return System.Math.Abs(value) < float.Epsilon;
         }
     }
 }

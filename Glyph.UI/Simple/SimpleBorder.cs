@@ -1,6 +1,7 @@
 ﻿using System;
 using Glyph.Animation;
 using Glyph.Composition;
+using Glyph.Core;
 using Glyph.Graphics.Shapes;
 using Glyph.Math;
 using Glyph.Math.Shapes;

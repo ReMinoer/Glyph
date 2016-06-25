@@ -10,8 +10,8 @@ namespace Glyph.Effects
         public abstract void Initialize();
         public abstract void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice);
         public abstract void Update(GameTime gameTime);
-        public abstract void Prepare(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
-        public abstract void Apply(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
+        public abstract void Prepare(IDrawer drawer);
+        public abstract void Apply(IDrawer drawer);
         public abstract void Dispose();
     }
 }

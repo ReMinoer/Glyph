@@ -1,6 +1,7 @@
-﻿using Glyph.Math;
+﻿using Glyph.Composition;
+using Glyph.Math;
 
-namespace Glyph.Composition
+namespace Glyph.Core
 {
     public interface IShapedComponent : IGlyphComponent
     {

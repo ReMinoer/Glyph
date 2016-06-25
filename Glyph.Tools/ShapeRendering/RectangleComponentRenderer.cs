@@ -1,5 +1,5 @@
 using System;
-using Glyph.Composition;
+using Glyph.Core;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework.Graphics;

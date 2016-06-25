@@ -81,9 +81,9 @@
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
-      <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
-      <Name>Glyph.Math</Name>
+    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
+      <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
+      <Name>Glyph.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Glyph.Composition;
 using Glyph.Composition.Layers;
+using Glyph.Core;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Messaging;

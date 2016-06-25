@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glyph.Composition;
+using Glyph.Core;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Particles

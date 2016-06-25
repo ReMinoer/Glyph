@@ -14,11 +14,11 @@ namespace Glyph.Entities
         [XmlIgnore]
         public virtual Vector2 Destination { get; set; }
 
-        [XmlIgnore]
-        public override Vector2 PositionScreen
-        {
-            get { return Position.Substract(Camera.PositionByDefault.X * Depth, 0); }
-        }
+        //[XmlIgnore]
+        //public override Vector2 PositionScreen
+        //{
+        //    get { return Position.Substract(Camera.PositionByDefault.X * Depth, 0); }
+        //}
 
         public GameObject()
         {

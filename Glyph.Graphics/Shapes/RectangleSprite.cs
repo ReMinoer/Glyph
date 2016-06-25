@@ -33,7 +33,7 @@ namespace Glyph.Graphics.Shapes
                 data[i * Width + (Width - 1)] = Color;
             }
 
-            Texture = new Texture2D(LazyGraphicsDevice.Value, Width, Height);
+            _texture = new Texture2D(LazyGraphicsDevice.Value, Width, Height);
             Texture.SetData(data);
         }
     }

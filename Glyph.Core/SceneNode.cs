@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Diese;
+using Glyph.Composition;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Composition
+namespace Glyph.Core
 {
     [SinglePerParent]
     public class SceneNode : GlyphComponent, IWritableSceneNode

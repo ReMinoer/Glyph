@@ -1,5 +1,6 @@
 ﻿using Glyph.Animation;
 using Glyph.Composition;
+using Glyph.Core;
 
 namespace Glyph.Particles
 {

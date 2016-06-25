@@ -7,7 +7,8 @@ namespace Glyph.Physics.Colliders
     static public class CollisionUtils
     {
         static public bool IsColliding<TShape, TOther>(CollisionDelegate<TShape, TOther> collisionDelegate, ICollider<TShape> shape, ICollider<TOther> other, out Collision collision)
-            where TOther : IShape where TShape : IShape
+            where TOther : IShape
+            where TShape : IShape
         {
             Vector2 correction;
             if (collisionDelegate(shape.Shape, other.Shape, out correction))

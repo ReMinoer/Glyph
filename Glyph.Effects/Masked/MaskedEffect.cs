@@ -33,23 +33,22 @@ namespace Glyph.Effects.Masked
         {
         }
 
-        public override void Prepare(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public override void Prepare(IDrawer drawer)
         {
             if (!Enabled)
                 return;
 
-            graphicsDevice.SetRenderTarget(MaskRender);
-            graphicsDevice.Clear(Color.Black);
+            drawer.GraphicsDevice.SetRenderTarget(MaskRender);
+            drawer.GraphicsDevice.Clear(Color.Black);
 
             Vector2 virtualSize = Resolution.Instance.VirtualSize;
             var virtualRectangle = new Rectangle(0, 0, (int)virtualSize.X, (int)virtualSize.Y);
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            spriteBatch.Draw(_square, virtualRectangle, Color.White * (1 - Opacity));
-            spriteBatch.End();
+            drawer.SpriteBatchStack.Current.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            drawer.SpriteBatchStack.Current.Draw(_square, virtualRectangle, Color.White * (1 - Opacity));
+            drawer.SpriteBatchStack.Current.End();
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null,
-                Camera.MatrixPosition * Camera.MatrixZoom);
+            drawer.SpriteBatchStack.Current.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, drawer.ViewMatrix);
 
             foreach (MaskPatch patch in Patches)
             {
@@ -58,20 +57,20 @@ namespace Glyph.Effects.Masked
                 float scale = patch.Size / patchSprite.Width;
                 Vector2 position = patch.Center - patchSprite.Size() / 2f * scale;
 
-                spriteBatch.Draw(patchSprite, position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                drawer.SpriteBatchStack.Current.Draw(patchSprite, position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
             }
 
-            spriteBatch.End();
+            drawer.SpriteBatchStack.Current.End();
 
-            graphicsDevice.SetRenderTarget(null);
+            drawer.GraphicsDevice.SetRenderTarget(null);
         }
 
-        public override void Apply(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
+        public override void Apply(IDrawer drawer)
         {
             if (!Enabled)
                 return;
 
-            ApplyEffect(spriteBatch, graphicsDevice);
+            ApplyEffect(drawer.SpriteBatchStack.Current, drawer.GraphicsDevice);
         }
 
         public override void Dispose()

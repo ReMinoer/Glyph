@@ -73,6 +73,10 @@
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
+      <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
+      <Name>Glyph.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Graphics.Particles\Glyph.Graphics.Particles.csproj">
       <Project>{5292934A-D0E4-47FD-98FA-0A32B37657D3}</Project>
       <Name>Glyph.Graphics.Particles</Name>
@@ -80,10 +84,6 @@
     <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
       <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
       <Name>Glyph.Graphics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Math\Glyph.Math.csproj">
-      <Project>{43692EE3-467A-41C9-8C18-9E7FCF7CC9DC}</Project>
-      <Name>Glyph.Math</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
       <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>

@@ -67,7 +67,7 @@ namespace Glyph.Audio
                     break;
 
                 case AudioTransitionState.Fading:
-                    if (Math.Abs(MediaPlayer.Volume) < float.Epsilon)
+                    if (System.Math.Abs(MediaPlayer.Volume) < float.Epsilon)
                     {
                         _waitTime.Init();
                         _transitionState = AudioTransitionState.Wait;

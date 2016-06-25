@@ -11,7 +11,7 @@ namespace Glyph.Effects
         void Initialize();
         void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice);
         void Update(GameTime gameTime);
-        void Prepare(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
-        void Apply(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
+        void Prepare(IDrawer drawer);
+        void Apply(IDrawer drawer);
     }
 }

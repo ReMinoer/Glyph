@@ -21,7 +21,7 @@ namespace Glyph.Transition
         public float GetValue(float t)
         {
             float a = t / Interval;
-            return IsStartInclude ? (float)Math.Floor(a) * Interval : (float)Math.Ceiling(a) * Interval;
+            return IsStartInclude ? (float)System.Math.Floor(a) * Interval : (float)System.Math.Ceiling(a) * Interval;
         }
     }
 }

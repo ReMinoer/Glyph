@@ -18,11 +18,11 @@ namespace Glyph
         static public float Transition(this float value, float goal, float speed, float deltaTime)
         {
             float ecart = goal - value;
-            if (!(Math.Abs(ecart) > float.Epsilon))
+            if (!(System.Math.Abs(ecart) > float.Epsilon))
                 return value;
 
-            float modif = Math.Sign(ecart) * speed * deltaTime;
-            if (Math.Abs(modif) < Math.Abs(ecart))
+            float modif = System.Math.Sign(ecart) * speed * deltaTime;
+            if (System.Math.Abs(modif) < System.Math.Abs(ecart))
                 return value + modif;
 
             return goal;

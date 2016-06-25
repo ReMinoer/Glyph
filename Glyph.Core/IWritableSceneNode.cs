@@ -1,7 +1,7 @@
 ﻿using Glyph.Math;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Composition
+namespace Glyph.Core
 {
     public interface IWritableSceneNode : ISceneNode
     {

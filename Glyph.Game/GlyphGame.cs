@@ -4,7 +4,9 @@ using System.Linq;
 using Diese.Injection;
 using Glyph.Audio;
 using Glyph.Composition;
+using Glyph.Core;
 using Glyph.Effects;
+using Glyph.Graphics;
 using Glyph.Input;
 using Glyph.Input.StandardInputs;
 using Glyph.Scripting;
@@ -27,6 +29,7 @@ namespace Glyph.Game
         protected int DefaultWindowHeight;
         protected int DefaultWindowWidth;
         private IScene _scene;
+        private Drawer _drawer;
         private bool _sceneChanged;
         private CultureInfo _culture;
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
@@ -65,8 +68,6 @@ namespace Glyph.Game
         {
             get { return IsActive; }
         }
-
-        private IDrawer _drawer;
 
         protected GlyphGame(string[] args, IDependencyRegistry dependencyRegistry)
         {
@@ -112,8 +113,6 @@ namespace Glyph.Game
 
         protected override void Initialize()
         {
-            ScreenEffectManager.Instance.Initialize();
-
             Scene.Initialize();
 
             base.Initialize();
@@ -123,11 +122,11 @@ namespace Glyph.Game
         {
             base.LoadContent();
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+
             _drawer = new Drawer(SpriteBatch, GraphicsDeviceManager);
 
             ContentLibrary.LoadContent(Content);
-
-            ScreenEffectManager.Instance.LoadContent(ContentLibrary, GraphicsDevice);
+            
             AudioManager.LoadContent(ContentLibrary);
             StatusDisplay.LoadContent(ContentLibrary);
 
@@ -137,7 +136,9 @@ namespace Glyph.Game
 
         protected override void Update(GameTime gameTime)
         {
-            ElapsedTime.Instance.Refresh(gameTime);
+            ElapsedTime elapsedTime = ElapsedTime.Instance;
+            elapsedTime.Refresh(gameTime);
+
             PerformanceViewer.UpdateCall();
 
             base.Update(gameTime);
@@ -159,10 +160,10 @@ namespace Glyph.Game
 
                         _sceneChanged = false;
                     }
-                    Scene.Update(ElapsedTime.Instance);
+                    Scene.Update(elapsedTime);
                 } while (_sceneChanged);
 
-                ScreenEffectManager.Instance.Update(gameTime);
+                ViewManager.Main.Update(elapsedTime);
                 AudioManager.Update(gameTime);
                 PerformanceViewer.Update(gameTime);
                 StatusDisplay.Update(gameTime);
@@ -213,12 +214,14 @@ namespace Glyph.Game
             if (!IsFocus)
                 return;
 
-            ScreenEffectManager.Instance.Prepare(drawer.SpriteBatchStack.Current, GraphicsDevice);
-            ScreenEffectManager.Instance.CleanFirstRender(GraphicsDevice);
+            foreach (IView view in ViewManager.Main.Views)
+            {
+                _drawer.CurrentView = view;
+                view.PrepareDraw(_drawer);
+                Scene.Draw(drawer);
+            }
             
-            Scene.Draw(drawer);
-
-            drawer.SpriteBatchStack.Push(new SpriteBatchContext());
+            drawer.SpriteBatchStack.Push(SpriteBatchContext.Default);
             StatusDisplay.Draw(drawer.SpriteBatchStack.Current);
             drawer.SpriteBatchStack.Pop();
         }

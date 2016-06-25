@@ -1,0 +1,123 @@
+﻿using System;
+using Glyph.Composition;
+using Glyph.Core;
+using Glyph.Graphics.Renderer;
+using Glyph.Math.Shapes;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Glyph.Graphics
+{
+    public class View : GlyphContainer, IView
+    {
+        private readonly SceneNode _sceneNode;
+        private readonly FillingRectangle _fillingRectangle;
+        private readonly FillingRenderer _fillingRenderer;
+        public bool Visible { get; set; }
+        public Camera Camera { get; set; }
+        public ViewEffectManager EffectManager { get; private set; }
+
+        public IRectangle BoundingBox
+        {
+            get { return _fillingRectangle.Rectangle; }
+            set
+            {
+                EffectManager.Size = value.Size;
+                _fillingRectangle.Rectangle = value;
+            }
+        }
+
+        public CenteredRectangle DisplayedRectangle
+        {
+            get
+            {
+                return new CenteredRectangle
+                {
+                    Center = Camera.Position,
+                    Size = BoundingBox.Size / Camera.Zoom
+                };
+            }
+        }
+
+        public Texture2D Output
+        {
+            get { return EffectManager.Texture; }
+        }
+
+        public ISceneNode SceneNode
+        {
+            get { return new ReadOnlySceneNode(_sceneNode); }
+        }
+
+        ICamera IView.Camera
+        {
+            get { return Camera; }
+        }
+
+        public Matrix Matrix
+        {
+            get
+            {
+                return Matrix.CreateTranslation((-Camera.Position + (BoundingBox.Size / 2) / Camera.Zoom).ToVector3())
+                    * Matrix.CreateRotationZ(-Camera.Rotation)
+                    * Matrix.CreateScale(Camera.Zoom);
+            }
+        }
+
+        public View(Lazy<GraphicsDevice> lazyGraphicsDevice)
+        {
+            Components.Add(_sceneNode = new SceneNode());
+            Components.Add(EffectManager = new ViewEffectManager(this, lazyGraphicsDevice));
+            Components.Add(_fillingRectangle = new FillingRectangle());
+            Components.Add(_fillingRenderer = new FillingRenderer(_fillingRectangle, EffectManager, _sceneNode));
+        }
+
+        public override void Initialize()
+        {
+            _sceneNode.Initialize();
+            EffectManager.Initialize();
+        }
+
+        public void LoadContent(ContentLibrary contentLibrary)
+        {
+            EffectManager.LoadContent(contentLibrary);
+        }
+
+        public void Update(ElapsedTime elapsedTime)
+        {
+            EffectManager.Update(elapsedTime);
+        }
+
+        public void PrepareDraw(IDrawer drawer)
+        {
+            EffectManager.Prepare(drawer);
+            EffectManager.CleanFirstRender(drawer.GraphicsDevice);
+            EffectManager.Apply(drawer);
+        }
+
+        public void ApplyEffects(IDrawer drawer)
+        {
+            EffectManager.Apply(drawer);
+        }
+
+        public void Draw(IDrawer drawer)
+        {
+            _fillingRenderer.Draw(drawer);
+        }
+
+        public bool IsVisibleOnView(Vector2 position)
+        {
+            return DisplayedRectangle.ContainsPoint(position);
+        }
+
+        public Vector2 GetPositionOnView(Vector2 position)
+        {
+            return (position - Camera.Position) * (Resolution.Instance.ScaleRatio * Camera.Zoom);
+        }
+
+        public bool ContainsPoint(Vector2 point)
+        {
+            return BoundingBox.ContainsPoint(point);
+        }
+    }
+}

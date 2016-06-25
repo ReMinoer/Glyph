@@ -159,7 +159,7 @@ namespace Glyph.Pathfinder
 
                 // Le déplacement est possible. Calcul du noeud et ajout à l'openlist.
                 var newNoeud = new Node(parent);
-                float actionCost = (Math.Abs(move.X) + Math.Abs(move.Y) - 1);
+                float actionCost = (System.Math.Abs(move.X) + System.Math.Abs(move.Y) - 1);
 
                 newNoeud.ParentCost = Closedlist[parent].ParentCost + DistanceTo(parent, newPoint);
                 newNoeud.PersonalCost = DistanceTo(newPoint, Finish) + actionCost;
@@ -172,8 +172,8 @@ namespace Glyph.Pathfinder
             var list = new List<Point>();
 
             for (int i = -max; i <= max; i++)
-                for (int j = Math.Abs(i) - max; j <= -Math.Abs(i) + max; j++)
-                    if (Math.Abs(i) + Math.Abs(j) >= min)
+                for (int j = System.Math.Abs(i) - max; j <= -System.Math.Abs(i) + max; j++)
+                    if (System.Math.Abs(i) + System.Math.Abs(j) >= min)
                         list.Add(new Point(i, j));
 
             return list;
@@ -240,7 +240,7 @@ namespace Glyph.Pathfinder
 
         static private float DistanceTo(Point value, Point other)
         {
-            return (float)Math.Sqrt(Math.Pow(value.X - other.X, 2) + Math.Pow(value.Y - other.Y, 2));
+            return (float)System.Math.Sqrt(System.Math.Pow(value.X - other.X, 2) + System.Math.Pow(value.Y - other.Y, 2));
         }
     }
 }

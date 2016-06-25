@@ -1,5 +1,5 @@
-﻿using Glyph.Composition;
-using Glyph.Math;
+﻿using Glyph.Core;
+using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -24,11 +24,17 @@ namespace Glyph.Graphics.Renderer
 
         protected override void Render(IDrawer drawer)
         {
+            IRectangle drawnRectangle = new CenteredRectangle
+            {
+                Center = _sceneNode.Position + _fillingRectangle.Rectangle.Center,
+                Size = _fillingRectangle.Rectangle.Size
+            };
+
             if (SpriteTransformer != null)
-                drawer.SpriteBatchStack.Current.Draw(Source.Texture, _fillingRectangle.Rectangle.ToStruct(), Source.Rectangle,
+                drawer.SpriteBatchStack.Current.Draw(Source.Texture, drawnRectangle.ToStruct(), Source.Rectangle,
                     SpriteTransformer.Color, _sceneNode.Rotation, SpriteTransformer.Origin, SpriteTransformer.Effects, _sceneNode.Depth);
             else
-                drawer.SpriteBatchStack.Current.Draw(Source.Texture, _fillingRectangle.Rectangle.ToStruct(), Source.Rectangle,
+                drawer.SpriteBatchStack.Current.Draw(Source.Texture, drawnRectangle.ToStruct(), Source.Rectangle,
                     Color.White, _sceneNode.Rotation, Vector2.Zero, SpriteEffects.None, _sceneNode.Depth);
         }
     }

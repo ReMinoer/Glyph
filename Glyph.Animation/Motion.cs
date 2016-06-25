@@ -2,6 +2,7 @@
 using Glyph.Animation.Trajectories;
 using Glyph.Animation.Trajectories.Players;
 using Glyph.Composition;
+using Glyph.Core;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Animation
@@ -144,9 +145,11 @@ namespace Glyph.Animation
                     {
                         case Referential.World:
                             _sceneNode.Position += moveDelta;
+                            position = _sceneNode.Position;
                             break;
                         case Referential.Local:
                             _sceneNode.LocalPosition += moveDelta;
+                            position = _sceneNode.LocalPosition;
                             break;
                     }
 

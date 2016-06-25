@@ -1,6 +1,7 @@
 ﻿using System;
 using Diese.Injection;
 using Glyph.Composition;
+using Glyph.Core;
 using Glyph.Graphics;
 using Glyph.Graphics.Carvers;
 using Glyph.Graphics.Renderer;
