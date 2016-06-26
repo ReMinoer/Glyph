@@ -65,7 +65,7 @@ namespace Glyph.Animation
                 duration = linearDuration;
             else
             {
-                duration = 0;
+                duration = loopDuration;
                 while (duration < linearDuration)
                     duration += loopDuration;
             }
