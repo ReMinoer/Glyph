@@ -133,42 +133,43 @@ namespace Glyph.Animation
                     Vector2 remainingDistance = Destination - position;
                     if (remainingDistance == Vector2.Zero)
                         Stop();
-
-                    _direction = (Direction.Length().EqualsZero()
-                                    ? remainingDistance
-                                    : Direction.RotateToward(remainingDistance, AngularSpeed, elapsedTime.GetDelta(this))
-                                    ).Normalized();
-
-                    moveDelta = Direction * Speed * elapsedTime.GetDelta(this);
-
-                    switch (Referential)
+                    else
                     {
-                        case Referential.World:
-                            _sceneNode.Position += moveDelta;
-                            position = _sceneNode.Position;
-                            break;
-                        case Referential.Local:
-                            _sceneNode.LocalPosition += moveDelta;
-                            position = _sceneNode.LocalPosition;
-                            break;
-                    }
+                        _direction = (Direction.Length().EqualsZero()
+                                        ? remainingDistance
+                                        : Direction.RotateToward(remainingDistance, AngularSpeed, elapsedTime.GetDelta(this))
+                                        ).Normalized();
 
-                    remainingDistance = Destination - position;
-                    if (Vector2.Dot(remainingDistance, moveDelta) <= 0)
-                    {
+                        moveDelta = Direction * Speed * elapsedTime.GetDelta(this);
+
                         switch (Referential)
                         {
                             case Referential.World:
-                                _sceneNode.Position = Destination;
+                                _sceneNode.Position += moveDelta;
+                                position = _sceneNode.Position;
                                 break;
                             case Referential.Local:
-                                _sceneNode.LocalPosition = Destination;
+                                _sceneNode.LocalPosition += moveDelta;
+                                position = _sceneNode.LocalPosition;
                                 break;
-                            default:
-                                throw new NotSupportedException();
                         }
 
-                        Stop();
+                        remainingDistance = Destination - position;
+                        if (Vector2.Dot(remainingDistance, moveDelta) <= 0)
+                        {
+                            switch (Referential)
+                            {
+                                case Referential.World:
+                                    _sceneNode.Position = Destination;
+                                    break;
+                                case Referential.Local:
+                                    _sceneNode.LocalPosition = Destination;
+                                    break;
+                                default:
+                                    throw new NotSupportedException();
+                            }
+                            Stop();
+                        }
                     }
 
                     break;
