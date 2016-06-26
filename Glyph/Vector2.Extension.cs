@@ -22,18 +22,13 @@ namespace Glyph
 
         static public float ToRotation(this Vector2 value)
         {
-            float result;
             Vector2 norm = Vector2.Normalize(value);
-
-            if (norm.Y >= 0)
-                result = -(float)System.Math.Asin(norm.X) + MathHelper.Pi;
-            else
-                result = (float)System.Math.Asin(norm.X);
+            double result = System.Math.Atan2(norm.Y, norm.X);
 
             result += MathHelper.TwoPi;
             result %= MathHelper.TwoPi;
 
-            return result;
+            return (float)result;
         }
 
         static public Vector2 SetX(this Vector2 value, float x)
