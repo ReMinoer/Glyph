@@ -27,6 +27,7 @@ namespace Glyph.Graphics.Particles
 
             particle.LifeTime = LifeTime ?? animation.Duration;
             particle.AnimationPlayer.Animation = animation;
+            particle.AnimationPlayer.Play();
 
             return particle;
         }
