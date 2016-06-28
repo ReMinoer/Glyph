@@ -48,6 +48,7 @@
     <Compile Include="Renderer\MappingRenderer.cs" />
     <Compile Include="Renderer\RendererBase.cs" />
     <Compile Include="Renderer\TexturingRenderer.cs" />
+    <Compile Include="Shapes\FilledCircleSprite.cs" />
     <Compile Include="View.cs" />
     <Compile Include="ScreenEffectManager.cs" />
     <Compile Include="SpriteAnimation.cs" />

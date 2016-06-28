@@ -120,6 +120,7 @@ namespace Glyph.Application
             Register<RectangleSprite>();
             Register<FilledRectangleSprite>();
             Register<CircleSprite>();
+            Register<FilledCircleSprite>();
 
             Register<FillingRectangle>();
             Register<FillingRenderer>();
