@@ -31,7 +31,7 @@ namespace Glyph.Graphics.Shapes
                 Loaded.Invoke(this);
         }
 
-        public abstract void GenerateTexture();
+        protected abstract void GenerateTexture();
 
         public override void Dispose()
         {

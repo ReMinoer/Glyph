@@ -14,11 +14,11 @@ namespace Glyph.Graphics.Shapes
             Radius = 50;
         }
 
-        public override void GenerateTexture()
+        protected override void GenerateTexture()
         {
-            int outerRadius = (Radius + 1) * 2;
+            int outerDiameter = (Radius + 1) * 2;
 
-            var data = new Color[outerRadius * outerRadius];
+            var data = new Color[outerDiameter * outerDiameter];
 
             for (int i = 0; i < data.Length; i++)
                 data[i] = Color.Transparent;
@@ -32,10 +32,10 @@ namespace Glyph.Graphics.Shapes
                 int x = (int)System.Math.Round(Radius + Radius * System.Math.Cos(angle));
                 int y = (int)System.Math.Round(Radius + Radius * System.Math.Sin(angle));
 
-                data[y * outerRadius + x + 1] = Color;
+                data[y * outerDiameter + x + 1] = Color;
             }
 
-            _texture = new Texture2D(LazyGraphicsDevice.Value, outerRadius, outerRadius);
+            _texture = new Texture2D(LazyGraphicsDevice.Value, outerDiameter, outerDiameter);
             Texture.SetData(data);
         }
     }

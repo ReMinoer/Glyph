@@ -16,7 +16,7 @@ namespace Glyph.Graphics.Shapes
             Height = 100;
         }
 
-        public override void GenerateTexture()
+        protected override void GenerateTexture()
         {
             var data = new Color[Width * Height];
             for (int i = 0; i < data.Length; i++)
