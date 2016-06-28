@@ -28,10 +28,10 @@ namespace Glyph.Input.Handlers.Vectors
         protected override Vector2 GetState(InputStates inputStates)
         {
             Point windowPoint = inputStates.MouseState.Position;
-            IView view = ViewManager.Main.GetViewAtWindowPoint(windowPoint) ?? ViewManager.Main.Views.First();
 
-            return (windowPoint.ToVector2() - MouseManager.Instance.DefaultPosition.ToVector2())
-                   / (VirtualRadius * (Resolution.Instance.ScaleRatio * view.Camera.Zoom));
+            Vector2 positionOnView;
+            IView view = ViewManager.GetView(Resolution.Instance.WindowToVirtualScreen(windowPoint), out positionOnView);
+            return view.ViewToScene(positionOnView);
         }
     }
 }

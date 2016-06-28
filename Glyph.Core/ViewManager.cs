@@ -53,11 +53,6 @@ namespace Glyph.Core
             _views.Remove(view);
         }
 
-        public IView GetViewAtWindowPoint(Point windowPoint)
-        {
-            return Views.Reverse().FirstOrDefault(view => view.BoundingBox.ContainsPoint(windowPoint.ToVector2()));
-        }
-
         static public bool IsVisibleOnWindow(Vector2 position)
         {
             return Main.Views.Any(view => view.IsVisibleOnView(position));
@@ -78,21 +73,31 @@ namespace Glyph.Core
             return false;
         }
 
-        static public Vector2 GetPositionOnWindow(Vector2 position, IView view)
+        static public IView GetView(Point windowPoint)
         {
-            return view.GetPositionOnView(position) + view.BoundingBox.Origin + Resolution.Instance.WindowMargin;
+            return GetView(Resolution.Instance.WindowToVirtualScreen(windowPoint));
         }
 
-        static public IEnumerable<KeyValuePair<IView, Vector2>> GetAllPositionsOnWindow(Vector2 position)
+        static public IView GetView(Point windowPoint, out Vector2 positionOnView)
         {
-            return Main.Views.Select(view =>
-            {
-                if (!view.IsVisibleOnView(position))
-                    return default(KeyValuePair<IView, Vector2>);
+            return GetView(Resolution.Instance.WindowToVirtualScreen(windowPoint), out positionOnView);
+        }
 
-                Vector2 windowPosition = view.GetPositionOnView(position) + view.BoundingBox.Origin + Resolution.Instance.WindowMargin;
-                return new KeyValuePair<IView, Vector2>(view, windowPosition);
-            }).Where(result => result.Key != null);
+        static public IView GetView(Vector2 virtualScreenPosition)
+        {
+            return Main.Views.Reverse().FirstOrDefault(view => view.BoundingBox.ContainsPoint(virtualScreenPosition));
+        }
+
+        static public IView GetView(Vector2 virtualScreenPosition, out Vector2 positionOnView)
+        {
+            IView view = GetView(virtualScreenPosition) ?? Main.Views.First();
+            positionOnView = virtualScreenPosition - view.BoundingBox.Origin;
+            return view;
+        }
+
+        static public Vector2 GetPositionOnVirtualScreen(Vector2 viewPosition, IView view)
+        {
+            return viewPosition + view.BoundingBox.Origin;
         }
     }
 }

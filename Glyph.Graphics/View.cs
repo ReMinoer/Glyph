@@ -110,9 +110,14 @@ namespace Glyph.Graphics
             return DisplayedRectangle.ContainsPoint(position);
         }
 
-        public Vector2 GetPositionOnView(Vector2 position)
+        public Vector2 ViewToScene(Vector2 viewPoint)
         {
-            return (position - Camera.Position) * (Resolution.Instance.ScaleRatio * Camera.Zoom);
+            return (viewPoint - BoundingBox.Size / 2) / Camera.Zoom + Camera.Position;
+        }
+
+        public Vector2 SceneToView(Vector2 scenePosition)
+        {
+            return (scenePosition - Camera.Position) * Camera.Zoom + BoundingBox.Size / 2;
         }
 
         public bool ContainsPoint(Vector2 point)

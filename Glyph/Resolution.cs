@@ -119,6 +119,26 @@ namespace Glyph
             }
         }
 
+        public Vector2 WindowToScreen(Point windowPoint)
+        {
+            return windowPoint.ToVector2() - WindowMargin;
+        }
+
+        public Vector2 WindowToVirtualScreen(Point windowPoint)
+        {
+            return (windowPoint.ToVector2() - WindowMargin) / ScaleRatio;
+        }
+
+        public Point ScreenToWindow(Vector2 screenPosition)
+        {
+            return (screenPosition + WindowMargin).ToPoint();
+        }
+
+        public Point VirtualScreenToWindow(Vector2 virtualScreenPosition)
+        {
+            return (virtualScreenPosition * ScaleRatio + WindowMargin).ToPoint();
+        }
+
         public Matrix GetTransformationMatrix()
         {
             if (_dirtyMatrix)

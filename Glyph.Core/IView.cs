@@ -13,7 +13,8 @@ namespace Glyph.Core
         Texture2D Output { get; }
         Matrix Matrix { get; }
         bool IsVisibleOnView(Vector2 position);
-        Vector2 GetPositionOnView(Vector2 position);
+        Vector2 ViewToScene(Vector2 viewPoint);
+        Vector2 SceneToView(Vector2 scenePosition);
         void PrepareDraw(IDrawer drawer);
         void ApplyEffects(IDrawer drawer);
     }

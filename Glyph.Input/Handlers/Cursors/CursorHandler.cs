@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Glyph.Core;
 using Microsoft.Xna.Framework;
 
@@ -30,17 +29,15 @@ namespace Glyph.Input.Handlers.Cursors
                     position = state;
                     break;
                 case CursorSpace.Screen:
-                    position = state - Resolution.Instance.WindowMargin;
+                    position = Resolution.Instance.WindowToScreen(state.ToPoint());
                     break;
                 case CursorSpace.VirtualScreen:
-                    position = (state - Resolution.Instance.WindowMargin) / Resolution.Instance.ScaleRatio;
+                    position = Resolution.Instance.WindowToVirtualScreen(state.ToPoint());
                     break;
                 case CursorSpace.Scene:
-                    IView view = ViewManager.Main.GetViewAtWindowPoint(state.ToPoint()) ?? ViewManager.Main.Views.First();
-
-                    position = (state - Resolution.Instance.WindowMargin) /
-                               (Resolution.Instance.ScaleRatio * view.Camera.Zoom)
-                               + view.Camera.Position;
+                    Vector2 viewPosition;
+                    IView view = ViewManager.GetView(state.ToPoint(), out viewPosition);
+                    position = view.ViewToScene(viewPosition);
                     break;
                 default:
                     throw new InvalidOperationException();
