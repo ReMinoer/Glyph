@@ -50,7 +50,7 @@
     <Compile Include="Renderer\TexturingRenderer.cs" />
     <Compile Include="Shapes\FilledCircleSprite.cs" />
     <Compile Include="View.cs" />
-    <Compile Include="ScreenEffectManager.cs" />
+    <Compile Include="ViewEffectManager.cs" />
     <Compile Include="SpriteAnimation.cs" />
     <Compile Include="SpriteAnimatorTransition.cs" />
     <Compile Include="Shapes\CircleSprite.cs" />
