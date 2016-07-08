@@ -47,10 +47,6 @@
     <Compile Include="SceneBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
-      <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
-      <Name>Diese.Composition</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Debug\Diese.Debug.csproj">
       <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
       <Name>Diese.Debug</Name>
@@ -62,6 +58,10 @@
     <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
       <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
       <Name>Diese</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Stave\Stave.csproj">
+      <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
+      <Name>Stave</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
       <Project>{46aa8a4b-5a43-45f3-99e4-b7bad0d47fea}</Project>

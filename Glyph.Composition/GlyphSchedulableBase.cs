@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Diese.Composition.Utils;
 using Diese.Debug;
 using Diese.Injection;
 using Glyph.Composition.Delegates;
@@ -11,6 +10,7 @@ using Glyph.Composition.Injection;
 using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler;
 using Glyph.Messaging;
+using Stave.Utils;
 
 namespace Glyph.Composition
 {

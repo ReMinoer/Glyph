@@ -39,10 +39,6 @@
     <Compile Include="StandardParticle.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
-      <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
-      <Name>Diese.Composition</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>
@@ -54,6 +50,10 @@
     <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
       <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
       <Name>Diese</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Stave\Stave.csproj">
+      <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
+      <Name>Stave</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
       <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>

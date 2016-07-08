@@ -86,13 +86,13 @@
     <Compile Include="StandardInputs\MouseInputs.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
-      <Project>{e8d6f663-89a6-497f-a02f-d0fc562d2d0e}</Project>
-      <Name>Diese.Composition</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Serialization\Diese.Serialization.csproj">
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
       <Name>Diese.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Stave\Stave.csproj">
+      <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
+      <Name>Stave</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>

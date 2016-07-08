@@ -58,10 +58,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Composition\Diese.Composition.csproj">
-      <Project>{E8D6F663-89A6-497F-A02F-D0FC562D2D0E}</Project>
-      <Name>Diese.Composition</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6add41dc-f168-43c4-ad4e-f6b8218d8f7c}</Project>
       <Name>Diese.Injection</Name>
@@ -69,6 +65,10 @@
     <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
       <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
       <Name>Diese</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Stave\Stave.csproj">
+      <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
+      <Name>Stave</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>

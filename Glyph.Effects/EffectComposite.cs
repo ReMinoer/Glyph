@@ -1,6 +1,6 @@
-﻿using Diese.Composition;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Stave;
 
 namespace Glyph.Effects
 {
