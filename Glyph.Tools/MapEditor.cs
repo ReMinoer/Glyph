@@ -93,8 +93,11 @@ namespace Glyph.Tools
                 HandleMouseButton(mouseControls.Right, RightBrush, ref _activeRectangle);
             }
 
-            _cursor.SceneNode.Position = _activeRectangle.Center;
-            _cursor.Shape = new OriginRectangle(Vector2.Zero, _activeRectangle.Size);
+            if (_activeRectangle != null)
+            {
+                _cursor.SceneNode.Position = _activeRectangle.Center;
+                _cursor.Shape = new OriginRectangle(Vector2.Zero, _activeRectangle.Size);
+            }
 
             _cursorRenderer.Update(elapsedTime);
         }

@@ -18,14 +18,14 @@ namespace Glyph.Input.StandardControls
 
         public MouseControls()
         {
-            WindowPosition = new ReferentialCursorControl("WindowPosition", new MouseCursorInput(), CursorSpace.Window);
-            ScreenPosition = new ReferentialCursorControl("ScreenPosition", new MouseCursorInput(), CursorSpace.Screen);
-            VirtualScreenPosition = new ReferentialCursorControl("VirtualScreenPosition", new MouseCursorInput(), CursorSpace.VirtualScreen);
-            ScenePosition = new ReferentialCursorControl("ScenePosition", new MouseCursorInput(), CursorSpace.Scene);
-            Left = new ActivityControl("Left", new MouseButtonInput(MouseButton.Left));
-            Right = new ActivityControl("Right", new MouseButtonInput(MouseButton.Right));
-            Middle = new ActivityControl("Middle", new MouseButtonInput(MouseButton.Middle));
-            Wheel = new Control<float>("Wheel", new MouseWheelInput());
+            Add(WindowPosition = new ReferentialCursorControl("WindowPosition", new MouseCursorInput(), CursorSpace.Window));
+            Add(ScreenPosition = new ReferentialCursorControl("ScreenPosition", new MouseCursorInput(), CursorSpace.Screen));
+            Add(VirtualScreenPosition = new ReferentialCursorControl("VirtualScreenPosition", new MouseCursorInput(), CursorSpace.VirtualScreen));
+            Add(ScenePosition = new ReferentialCursorControl("ScenePosition", new MouseCursorInput(), CursorSpace.Scene));
+            Add(Left = new ActivityControl("Left", new MouseButtonInput(MouseButton.Left)));
+            Add(Right = new ActivityControl("Right", new MouseButtonInput(MouseButton.Right)));
+            Add(Middle = new ActivityControl("Middle", new MouseButtonInput(MouseButton.Middle)));
+            Add(Wheel = new Control<float>("Wheel", new MouseWheelInput()));
         }
     }
 }
