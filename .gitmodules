@@ -4,3 +4,6 @@
 [submodule "External/Stave"]
 	path = External/Stave
 	url = https://github.com/ReMinoer/Stave
+[submodule "External/Fingear"]
+	path = External/Fingear
+	url = https://github.com/ReMinoer/Fingear

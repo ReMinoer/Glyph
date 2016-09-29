@@ -46,13 +46,13 @@ namespace Glyph
 
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(path, "*.xnb", SearchOption.AllDirectories));
-
-            Parallel.ForEach(files, file =>
+            
+            foreach (string filename in files)
             {
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                file = file.Replace("Content\\", "");
+                string file = filename.Replace("Content\\", "");
 
                 if (file.Contains("Font"))
                     AddFont(file, content);
@@ -69,7 +69,7 @@ namespace Glyph
                 lock (Logger)
                     Logger.Info("Loaded {0} ({1}s)", file, stopwatch.Elapsed.ToString(@"s\.fff"));
                 stopwatch.Reset();
-            });
+            }
         }
 
         public void AddTexture(string path, ContentManager content)

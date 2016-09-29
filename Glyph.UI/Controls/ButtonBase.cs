@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Linq;
 using Diese.Injection;
+using Fingear;
+using Fingear.MonoGame;
 using Glyph.Animation;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Input;
-using Glyph.Input.StandardInputs;
+using Glyph.Input.StandardControls;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.UI.Controls
 {
     public abstract class ButtonBase : GlyphObject, IButton
     {
-        private readonly InputManager _inputManager;
+        private readonly ControlManager _controlManager;
         private bool _hover;
         public SceneNode SceneNode { get; private set; }
         public Motion Motion { get; private set; }
@@ -41,10 +44,10 @@ namespace Glyph.UI.Controls
         public event EventHandler Entered;
         public event EventHandler Leaved;
 
-        protected ButtonBase(InputManager inputManager, IDependencyInjector injector)
+        protected ButtonBase(ControlManager controlManager, IDependencyInjector injector)
             : base(injector)
         {
-            _inputManager = inputManager;
+            _controlManager = controlManager;
 
             SceneNode = Add<SceneNode>();
             Motion = Add<Motion>();
@@ -56,25 +59,41 @@ namespace Glyph.UI.Controls
         private void HandleInput(ElapsedTime elapsedTime)
         {
             bool hover = Hover;
-            if (_inputManager.IsMouseUsed)
+
+            bool isMouseUsed = _controlManager.InputSources.OfType<MouseSource>().Any();
+
+            if (isMouseUsed)
             {
-                var mouseInScreen = _inputManager.GetValue<Vector2>(MouseInputs.VirtualScreenPosition);
-                hover = Frame.Bounds.ContainsPoint(mouseInScreen);
+                MouseControls mouseControls;
+                if (_controlManager.TryGetLayer(out mouseControls))
+                {
+                    Fingear.Vector2 mousePosition;
+                    if (mouseControls.VirtualScreenPosition.IsActive(out mousePosition))
+                        hover = Frame.Bounds.ContainsPoint(mousePosition.AsMonoGameVector());
+                }
             }
 
             if (Hover)
             {
-                if (_inputManager.IsMouseUsed)
+                MenuControls menuControls;
+                if (_controlManager.TryGetLayer(out menuControls))
                 {
-                    if (_inputManager[MenuInputs.Clic])
+                    if (isMouseUsed)
+                    {
+                        InputActivity inputActivity;
+                        if (menuControls.Clic.IsActive(out inputActivity))
+                        {
+                            if (inputActivity.IsTriggered())
+                                Trigger();
+                            else if (Pressed && inputActivity.IsReleased())
+                                Release();
+                        }
+                    }
+                    else if (menuControls.Confirm.IsActive())
+                    {
                         Trigger();
-                    else if (Pressed && _inputManager[MenuInputs.ReleaseClic])
                         Release();
-                }
-                else if (_inputManager[MenuInputs.Confirm])
-                {
-                    Trigger();
-                    Release();
+                    }
                 }
             }
             else if (Pressed)

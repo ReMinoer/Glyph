@@ -23,12 +23,17 @@ namespace Glyph.Animation
             set
             {
                 Stop();
-                if (value == null)
-                    return;
 
                 _animation = value;
-                IsLooping = _animation.Loop;
-                _stepsToRead.AddRange(_animation);
+                _stepsToRead.Clear();
+
+                if (_animation != null)
+                {
+                    IsLooping = _animation.Loop;
+                    _stepsToRead.AddRange(_animation);
+                }
+                else
+                    IsLooping = false;
             }
         }
 
@@ -101,12 +106,8 @@ namespace Glyph.Animation
 
         public void Stop()
         {
-            _animation = null;
-            _stepsToRead.Clear();
-
-            ElapsedTime = 0;
             Paused = true;
-            IsLooping = false;
+            ElapsedTime = 0;
         }
 
         public void Pause()

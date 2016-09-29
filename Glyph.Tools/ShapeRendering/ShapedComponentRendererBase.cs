@@ -1,9 +1,11 @@
+using System.Linq;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics;
 using Glyph.Graphics.Renderer;
 using Glyph.Graphics.Shapes;
 using Microsoft.Xna.Framework;
+using Stave;
 
 namespace Glyph.Tools.ShapeRendering
 {
@@ -57,7 +59,7 @@ namespace Glyph.Tools.ShapeRendering
 
         public void Draw(IDrawer drawer)
         {
-            if (!Visible || _shapedComponent.GetComponentAmongParents(x => x is IEnableable && !((IEnableable)x).Enabled) != null)
+            if (!Visible || _shapedComponent.ParentQueue().OfType<IEnableable>().Any(x => !x.Enabled))
                 return;
 
             _spriteRenderer.Draw(drawer);

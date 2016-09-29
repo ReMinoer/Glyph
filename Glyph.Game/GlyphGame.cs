@@ -5,11 +5,9 @@ using Diese.Injection;
 using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Core;
-using Glyph.Effects;
 using Glyph.Graphics;
 using Glyph.Input;
-using Glyph.Input.StandardInputs;
-using Glyph.Scripting;
+using Glyph.Input.StandardControls;
 using Glyph.Tools;
 using Glyph.Tools.StatusDisplay;
 using Glyph.Tools.StatusDisplay.Channels;
@@ -17,7 +15,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using NLog;
-using SongPlayer = Glyph.Tools.SongPlayer;
 
 namespace Glyph.Game
 {
@@ -35,8 +32,7 @@ namespace Glyph.Game
         public GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
         public ContentLibrary ContentLibrary { get; private set; }
-        public InputManager InputManager { get; private set; }
-        public ScriptManager ScriptManager { get; private set; }
+        public ControlManager ControlManager { get; private set; }
         public PerformanceViewer PerformanceViewer { get; private set; }
         public StatusDisplay StatusDisplay { get; private set; }
 
@@ -95,8 +91,8 @@ namespace Glyph.Game
             Content.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
 
-            InputManager = new InputManager();
-            ScriptManager = new ScriptManager();
+            ControlManager = new ControlManager();
+
             Culture = CultureInfo.CurrentCulture;
 
             PerformanceViewer = new PerformanceViewer();
@@ -105,8 +101,7 @@ namespace Glyph.Game
 
             Registry.RegisterInstance<GlyphGame>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
-            Registry.RegisterInstance<InputManager>(InputManager);
-            Registry.RegisterInstance<ScriptManager>(ScriptManager);
+            Registry.RegisterInstance<ControlManager>(ControlManager);
             Registry.RegisterLazy(() => SpriteBatch);
             Registry.RegisterLazy(() => GraphicsDevice);
         }
@@ -143,7 +138,7 @@ namespace Glyph.Game
 
             base.Update(gameTime);
 
-            InputManager.Update(IsFocus);
+            ControlManager.Update(elapsedTime, IsFocus);
 
             if (!IsFocus)
                 return;
@@ -182,25 +177,46 @@ namespace Glyph.Game
 
         protected virtual void HandleInput()
         {
-            if (InputManager[DeveloperInputs.Mute])
-                MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
+            DeveloperControls developerControls;
+            if (ControlManager.TryGetLayer(out developerControls))
+            {
+                if (developerControls.Mute.IsActive())
+                    MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
 
-            if (InputManager[DeveloperInputs.XboxQuit])
-                Exit();
+                if (developerControls.XboxQuit.IsActive())
+                    Exit();
 
-            if (InputManager[DeveloperInputs.UpdateSnapshot])
-                GlyphSchedulableBase.UpdateWatchTree.Enabled = true;
+                if (developerControls.UpdateSnapshot.IsActive())
+                    GlyphSchedulableBase.UpdateWatchTree.Enabled = true;
 
-            if (InputManager[DeveloperInputs.CompositionLog])
-                CompositionLog.Write(Scene, Scene.RootNode);
+                if (developerControls.CompositionLog.IsActive())
+                    CompositionLog.Write(Scene, Scene.RootNode);
 
 #if WINDOWS
-            if (InputManager[DeveloperInputs.Fullscreen])
-                Resolution.Instance.ToogleFullscreen();
+                if (developerControls.Fullscreen.IsActive())
+                    Resolution.Instance.ToogleFullscreen();
 #endif
+                
+                if (developerControls.ToogleSong.IsActive())
+                    switch (MediaPlayer.State)
+                    {
+                        case MediaState.Playing:
+                            MediaPlayer.Pause();
+                            break;
+                        case MediaState.Paused:
+                            MediaPlayer.Resume();
+                            break;
+                    }
 
-            SongPlayer.HandleInput(InputManager);
-            StatusDisplay.HandleInput(InputManager);
+                if (developerControls.PreviousSong.IsActive())
+                    AudioManager.Previous();
+
+                if (developerControls.NextSong.IsActive())
+                    AudioManager.Next();
+
+                if (developerControls.StatusDisplay.IsActive())
+                    StatusDisplay.Visible = !StatusDisplay.Visible;
+            }
         }
 
         protected override sealed void Draw(GameTime gameTime)

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Diese;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Stave;
 
@@ -12,7 +13,12 @@ namespace Glyph.Effects
         where TComponent : class, IEffectComponent
     {
         public bool Enabled { get; set; }
-        public abstract void Apply(IDrawer drawer);
+        public string Name { get; set; }
+
+        protected EffectComposite()
+        {
+            Name = GetType().GetDisplayName();
+        }
 
         public virtual void Initialize()
         {
@@ -37,6 +43,8 @@ namespace Glyph.Effects
             foreach (TComponent effect in this)
                 effect.Prepare(drawer);
         }
+
+        public abstract void Apply(IDrawer drawer);
 
         public virtual void Dispose()
         {

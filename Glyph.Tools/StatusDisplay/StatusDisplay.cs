@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Glyph.Input;
-using Glyph.Input.StandardInputs;
+using Glyph.Input.StandardControls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -41,12 +41,6 @@ namespace Glyph.Tools.StatusDisplay
 
             foreach (StatusDisplayChannel c in Channels)
                 c.Draw(spriteBatch);
-        }
-
-        public void HandleInput(InputManager input)
-        {
-            if (input[DeveloperInputs.StatusDisplay])
-                Visible = !Visible;
         }
     }
 }

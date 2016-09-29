@@ -1,4 +1,6 @@
 ﻿using Diese.Injection;
+using Fingear;
+using Fingear.MonoGame;
 using Glyph.Animation;
 using Glyph.Audio;
 using Glyph.Composition;
@@ -157,6 +159,13 @@ namespace Glyph.Application
 
             #endregion
 
+            #region Input
+
+            Register<MonoGameInputSytem>(Subsistence.Singleton);
+            Link<InputSystem, MonoGameInputSytem>();
+
+            #endregion
+
             #region Tools
 
             RegisterGeneric(typeof(ShapedComponentRendererManager<>));
@@ -165,6 +174,9 @@ namespace Glyph.Application
             Register<CircleComponentRenderer>();
 
             RegisterGeneric(typeof(MapEditor<>));
+
+            Register<InputLogger>();
+            Register<ControlLogger>();
 
             #endregion
 

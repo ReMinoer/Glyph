@@ -59,6 +59,10 @@
       <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
       <Name>Diese</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
+      <Project>{7EE0B116-6B49-4073-99D8-827DD68B8AE0}</Project>
+      <Name>Fingear</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Stave\Stave.csproj">
       <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
       <Name>Stave</Name>

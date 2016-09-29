@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Diese.Collections;
 using Diese.Injection;
 using Glyph.Composition.Exceptions;
 
@@ -40,20 +42,22 @@ namespace Glyph.Composition.Injection
                 throw new InvalidOperationException();
 
             if (targets.HasFlag(GlyphInjectableTargets.Parent) || targets.HasFlag(GlyphInjectableTargets.Fraternal))
+            {
+                if (targets.HasFlag(GlyphInjectableTargets.Parent) && type.IsInstanceOfType(_context))
+                    return _context;
+
                 if (serviceKey == null && typeof(IGlyphComponent).IsAssignableFrom(type))
                 {
-                    if (targets.HasFlag(GlyphInjectableTargets.Parent) && type.IsInstanceOfType(_context))
-                        return _context;
-
                     if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
                     {
-                        IGlyphComponent component = _context.GetComponent(type);
-                        if (component != null)
+                        IGlyphComponent component;
+                        if (_context.OfType(type).Any(out component))
                             return component;
                     }
-                
+
                     throw new ComponentNotFoundException(type);
                 }
+            }
 
             object obj;
             if (targets.HasFlag(GlyphInjectableTargets.Local) && _local.TryResolve(out obj, type, injectableAttribute, serviceKey))
@@ -86,8 +90,8 @@ namespace Glyph.Composition.Injection
 
                     if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
                     {
-                        IGlyphComponent component = _context.GetComponent(type);
-                        if (component != null)
+                        IGlyphComponent component;
+                        if (_context.OfType(type).Any(out component))
                         {
                             obj = component;
                             return true;

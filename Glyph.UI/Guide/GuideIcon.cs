@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Linq;
 using Diese.Injection;
+using Fingear.MonoGame;
+using Fingear.MonoGame.Inputs;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics;
 using Glyph.Graphics.Carvers;
 using Glyph.Graphics.Renderer;
 using Glyph.Input;
-using Glyph.Input.Handlers.Buttons;
-using Glyph.Input.StandardInputs;
+using Glyph.Input.StandardControls;
 using Glyph.Transition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -16,7 +18,7 @@ namespace Glyph.UI.Guide
 {
     public class GuideIcon : GlyphObject
     {
-        private readonly InputManager _inputManager;
+        private readonly ControlManager _controlManager;
         protected readonly TransitionFloat TransitionOpacity = new TransitionFloat {Start = 0, End = 1, Duration = 500};
         protected bool IsGamePadUsed;
         protected SpriteSheetSplit SpriteSheetSplit;
@@ -26,7 +28,7 @@ namespace Glyph.UI.Guide
         protected SpriteTransformer SpriteTransformer;
         protected Text Text;
         private readonly Vector2 _keyPadding = new Vector2(20, 50);
-        private IInputHandler _inputHandler;
+        private Fingear.IControl _control;
         public SceneNode SceneNode { get; private set; }
         public bool Clickable { get; protected set; }
         public bool KeyNameVisible { get; set; }
@@ -43,28 +45,28 @@ namespace Glyph.UI.Guide
             set { GamePadIcon.Asset = value; }
         }
 
-        public IInputHandler InputHandler
+        public Fingear.IControl Control
         {
-            get { return _inputHandler; }
+            get { return _control; }
             set
             {
-                _inputHandler = value;
+                _control = value;
 
-                KeyHandler keyHandler = _inputHandler as KeyHandler ?? _inputHandler.GetComponentInChildren<KeyHandler>();
-                if (keyHandler == null)
+                KeyInput keyInput = _control.Inputs.OfType<KeyInput>().FirstOrDefault();
+                if (keyInput == null)
                     return;
 
-                Text.Content = Enum.GetName(typeof(Keys), keyHandler.Key);
+                Text.Content = Enum.GetName(typeof(Keys), keyInput.DisplayName);
             }
         }
 
         public event EventHandler Clicked;
         public event EventHandler IconChanged;
 
-        public GuideIcon(InputManager inputManager, IDependencyInjector injector)
+        public GuideIcon(ControlManager controlManager, IDependencyInjector injector)
             : base(injector)
         {
-            _inputManager = inputManager;
+            _controlManager = controlManager;
 
             SceneNode = Add<SceneNode>();
             SpriteTransformer = Add<SpriteTransformer>();
@@ -113,9 +115,11 @@ namespace Glyph.UI.Guide
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
-            if (IsGamePadUsed != _inputManager.IsGamePadUsed)
+            bool isGamePadUsed = _controlManager.InputSources.OfType<GamePadSource>().Any();
+
+            if (IsGamePadUsed != isGamePadUsed)
             {
-                IsGamePadUsed = _inputManager.IsGamePadUsed;
+                IsGamePadUsed = isGamePadUsed;
 
                 SpriteSheetSplit.CurrentFrame = IsGamePadUsed ? 1 : 0;
                 TransitionOpacity.Reset();
@@ -126,11 +130,20 @@ namespace Glyph.UI.Guide
 
             if (Clickable)
             {
-                var mouseInScreen = _inputManager.GetValue<Vector2>(MouseInputs.VirtualScreenPosition);
-                bool hover = SpriteArea.ContainsPoint(mouseInScreen);
-                if (hover && _inputManager[MenuInputs.Clic])
-                    if (Clicked != null)
-                        Clicked(this, EventArgs.Empty);
+                MouseControls mouseControls;
+                if (_controlManager.TryGetLayer(out mouseControls))
+                {
+                    Fingear.Vector2 mouseInScreen;
+                    if (mouseControls.VirtualScreenPosition.IsActive(out mouseInScreen))
+                    {
+                        bool hover = SpriteArea.ContainsPoint(mouseInScreen.AsMonoGameVector());
+
+                        MenuControls menuControls;
+                        if (hover && _controlManager.TryGetLayer(out menuControls) && menuControls.Clic.IsActive())
+                            if (Clicked != null)
+                                Clicked(this, EventArgs.Empty);
+                    }
+                }
             }
         }
 

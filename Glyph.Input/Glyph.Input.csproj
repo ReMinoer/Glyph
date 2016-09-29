@@ -39,56 +39,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\ButtonsToAxis.cs" />
-    <Compile Include="Converters\InputConverter.cs" />
-    <Compile Include="Decorators\InputCache.cs" />
-    <Compile Include="Decorators\InputDoser.cs" />
-    <Compile Include="Decorators\InputDelay.cs" />
-    <Compile Include="GameControls.cs" />
-    <Compile Include="Handlers\Axis\AxisHandler.cs" />
-    <Compile Include="Handlers\Axis\AxisSign.cs" />
-    <Compile Include="Handlers\Axis\MouseWheelHandler.cs" />
-    <Compile Include="Handlers\Axis\PadTriggerHandler.cs" />
-    <Compile Include="Handlers\Axis\ThumbStickAxisHandler.cs" />
-    <Compile Include="Handlers\ButtonHandler.cs" />
-    <Compile Include="Handlers\Vectors\RadialMouseHandler.cs" />
-    <Compile Include="Handlers\Vectors\ThumbStickVectorHandler.cs" />
-    <Compile Include="IInputConverter.cs" />
-    <Compile Include="IInputParent.cs" />
+    <Compile Include="ControlLayerBase.cs" />
+    <Compile Include="StandardControls\EditorControls.cs" />
+    <Compile Include="IControlLayer.cs" />
     <Compile Include="MouseManager.cs" />
-    <Compile Include="StandardInputs\MouseButtonInputs.cs" />
-    <Compile Include="ThumbStick.cs" />
-    <Compile Include="Trigger.cs" />
-    <Compile Include="Handlers\Cursors\CursorHandler.cs" />
-    <Compile Include="Handlers\Cursors\CursorSpace.cs" />
-    <Compile Include="Handlers\Cursors\MouseCursorHandler.cs" />
-    <Compile Include="Handlers\Vectors\VectorHandler.cs" />
-    <Compile Include="InputActivity.cs" />
-    <Compile Include="Handlers\Buttons\KeyHandler.cs" />
-    <Compile Include="Handlers\Buttons\MouseButtonHandler.cs" />
-    <Compile Include="MouseButton.cs" />
-    <Compile Include="Handlers\Buttons\PadButtonHandler.cs" />
-    <Compile Include="IInputComposite.cs" />
-    <Compile Include="Composites\InputSimultaneous.cs" />
-    <Compile Include="IInputDecorator.cs" />
-    <Compile Include="Decorators\InputDecorator.cs" />
-    <Compile Include="Handlers\SensitiveHandler.cs" />
-    <Compile Include="Composites\InputComposite.cs" />
-    <Compile Include="InputStates.cs" />
-    <Compile Include="InputSource.cs" />
-    <Compile Include="Composites\InputSet.cs" />
-    <Compile Include="IInputHandler.cs" />
-    <Compile Include="Behaviours\ButtonBehaviour.cs" />
-    <Compile Include="StandardInputs\DeveloperInputs.cs" />
-    <Compile Include="InputManager.cs" />
-    <Compile Include="StandardInputs\MenuInputs.cs" />
+    <Compile Include="StandardControls\MenuControls.cs" />
+    <Compile Include="Controls\ReferentialCursorControl.cs" />
+    <Compile Include="StandardControls\DeveloperControls.cs" />
+    <Compile Include="ControlManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StandardInputs\MouseInputs.cs" />
+    <Compile Include="StandardControls\MouseControls.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Diese\Diese.Collections\Diese.Collections.csproj">
+      <Project>{8e354191-e8e5-498b-9c24-a6765da86417}</Project>
+      <Name>Diese.Collections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Serialization\Diese.Serialization.csproj">
       <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
       <Name>Diese.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj">
+      <Project>{9eef1863-44be-423e-a29d-088c23aac45e}</Project>
+      <Name>Fingear.MonoGame</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
+      <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
+      <Name>Fingear</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Stave\Stave.csproj">
       <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>

@@ -9,15 +9,15 @@ namespace Glyph.Composition
     {
         protected readonly SchedulerHandler Schedulers;
 
-        protected override sealed SchedulerHandlerBase SchedulerAssigner
+        public GlyphObject(IDependencyInjector injector)
+            : this(injector, new SchedulerHandler(injector))
         {
-            get { return Schedulers; }
         }
 
-        public GlyphObject(IDependencyInjector injector)
-            : base(injector)
+        private GlyphObject(IDependencyInjector injector, SchedulerHandler schedulerHandler)
+            : base(injector, schedulerHandler)
         {
-            Schedulers = new SchedulerHandler(injector);
+            Schedulers = schedulerHandler;
         }
 
         public override sealed void Draw(IDrawer drawer)

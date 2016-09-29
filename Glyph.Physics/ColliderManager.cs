@@ -15,7 +15,8 @@ namespace Glyph.Physics
             {
                 foreach (ICollider collider in _space)
                     value.Add(collider);
-                
+
+                _space.Clear();
                 _space = value;
             }
         }

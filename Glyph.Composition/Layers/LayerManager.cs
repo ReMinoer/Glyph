@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stave;
 
 namespace Glyph.Composition.Layers
 {
@@ -35,7 +36,7 @@ namespace Glyph.Composition.Layers
         public ILayerRoot<TLayer> GetLayerRoot(IGlyphComponent component)
         {
             foreach (ILayerRoot<TLayer> layerRoot in _layers.Keys)
-                if (layerRoot.Parent.ContainsInChildren(component))
+                if (layerRoot.Parent.ChildrenQueue().Contains(component))
                     return layerRoot;
 
             return null;

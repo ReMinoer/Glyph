@@ -5,6 +5,7 @@ using Glyph.Composition;
 using Glyph.Effects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Stave;
 
 namespace Glyph.Graphics
 {
@@ -77,7 +78,7 @@ namespace Glyph.Graphics
         public void Apply(IDrawer drawer)
         {
             _renderStep = 0;
-            foreach (IEffectComponent effect in Effects.SelectMany(x => x.GetAllComponentsInChildren<IEffectComponent>()))
+            foreach (IEffectComponent effect in Effects.SelectMany(x => x.ChildrenQueue()))
             {
                 if (!effect.Enabled)
                     continue;

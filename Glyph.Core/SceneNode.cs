@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Diese;
+using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
+using Stave;
 
 namespace Glyph.Core
 {
@@ -150,14 +153,14 @@ namespace Glyph.Core
             if (ParentNode != null || Parent == null)
                 return;
 
-            for (IGlyphParent parent = Parent.Parent; parent != null; parent = parent.Parent)
+            foreach (IGlyphParent parent in Parent.ParentQueue())
             {
-                var parentNode = parent.GetComponent<SceneNode>();
-                if (parentNode != null)
-                {
-                    SetParent(parentNode, Referential.Local);
-                    break;
-                }
+                SceneNode parentNode;
+                if (!parent.Components.OfType<SceneNode>().Any(out parentNode))
+                    continue;
+
+                SetParent(parentNode, Referential.Local);
+                break;
             }
         }
 

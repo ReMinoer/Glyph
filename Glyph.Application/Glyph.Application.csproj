@@ -57,6 +57,14 @@
       <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
       <Name>Diese</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj">
+      <Project>{9eef1863-44be-423e-a29d-088c23aac45e}</Project>
+      <Name>Fingear.MonoGame</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
+      <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
+      <Name>Fingear</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Stave\Stave.csproj">
       <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
       <Name>Stave</Name>

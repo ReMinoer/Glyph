@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Diese;
+using Diese.Collections;
 using Diese.Debug;
 using Diese.Injection;
 using Glyph.Composition.Delegates;
@@ -10,7 +12,6 @@ using Glyph.Composition.Injection;
 using Glyph.Composition.Messaging;
 using Glyph.Composition.Scheduler;
 using Glyph.Messaging;
-using Stave.Utils;
 
 namespace Glyph.Composition
 {
@@ -25,21 +26,24 @@ namespace Glyph.Composition
         protected internal readonly GlyphCompositeInjector Injector;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
-        protected abstract SchedulerHandlerBase SchedulerAssigner { get; }
+        protected SchedulerHandlerBase SchedulerAssigner { get; }
 
-        protected GlyphSchedulableBase(IDependencyInjector injector)
+        protected GlyphSchedulableBase(IDependencyInjector injector, SchedulerHandlerBase schedulerAssigner)
         {
-            var compositeInjector = new GlyphCompositeInjector(this, injector.Resolve<IDependencyRegistry>(), injector.Resolve<IDependencyRegistry>(InjectionScope.Local));
-
-            Injector = compositeInjector;
-
-            foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IInterpreter<>)))
-                Add(typeof(Receiver<>).MakeGenericType(type.GetGenericArguments()));
-
             Enabled = true;
             Visible = true;
 
+            var compositeInjector = new GlyphCompositeInjector(this, injector.Resolve<IDependencyRegistry>(), injector.Resolve<IDependencyRegistry>(InjectionScope.Local));
+            Injector = compositeInjector;
+
+            SchedulerAssigner = schedulerAssigner;
             _newComponents = new List<IGlyphComponent>();
+
+            foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ILocalInterpreter<>)))
+                Injector.LocalRegistry.Register(typeof(IRouter<>).MakeGenericType(type.GetGenericArguments()), typeof(LocalRouter<>).MakeGenericType(type.GetGenericArguments()), Subsistence.Singleton);
+
+            foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IInterpreter<>)))
+                Add(typeof(Receiver<>).MakeGenericType(type.GetGenericArguments()));
         }
 
         public T Add<T>()
@@ -66,7 +70,7 @@ namespace Glyph.Composition
                 throw new ArgumentException("Component provided is already contained by this entity !");
 
             Type type = item.GetType();
-            if (GetComponent(type) != null && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
+            if (Components.OfType(type).Any() && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
                 throw new SingleComponentException(type);
 
             base.Add(item);
@@ -97,18 +101,18 @@ namespace Glyph.Composition
             }
         }
 
-        public override sealed void Remove(IGlyphComponent item)
+        public override sealed bool Remove(IGlyphComponent item)
         {
-            if (!Contains(item))
-                throw new ArgumentException("Component provided is not contained by this entity !");
-
-            base.Remove(item);
+            if (!Contains(item) || !base.Remove(item))
+                return false;
 
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)
                 SchedulerAssigner.RemoveComponent(glyphObject);
             else
                 SchedulerAssigner.RemoveComponent(item);
+
+            return true;
         }
 
         public override sealed void Clear()

@@ -24,7 +24,7 @@ namespace Glyph.Tools
 
             result += root.Name + "\n";
 
-            foreach (IGlyphComponent component in root.GetAllComponents<IGlyphComponent>())
+            foreach (IGlyphComponent component in root.Components)
                 result += WriteComposition(component, level + 1);
 
             return result;

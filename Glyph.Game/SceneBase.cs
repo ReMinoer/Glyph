@@ -8,19 +8,14 @@ namespace Glyph.Game
     public abstract class SceneBase<TSchedulerHandler> : GlyphSchedulableBase, IScene
         where TSchedulerHandler : GlyphSchedulableBase.SchedulerHandlerBase
     {
+        protected TSchedulerHandler Schedulers { get; }
+        protected abstract ISceneRenderer Renderer { get; }
         public abstract SceneNode RootNode { get; }
 
-        protected override sealed SchedulerHandlerBase SchedulerAssigner
+        protected SceneBase(IDependencyInjector injector, TSchedulerHandler schedulerHandler)
+            : base(injector, schedulerHandler)
         {
-            get { return Schedulers; }
-        }
-
-        protected abstract TSchedulerHandler Schedulers { get; }
-        protected abstract ISceneRenderer Renderer { get; }
-
-        protected SceneBase(IDependencyInjector injector)
-            : base(injector)
-        {
+            Schedulers = schedulerHandler;
         }
 
         public override sealed void Draw(IDrawer drawer)

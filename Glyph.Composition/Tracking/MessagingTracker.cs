@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using Diese.Collections.Trackers;
 using Glyph.Composition.Messaging;
 using Glyph.Messaging;
 
 namespace Glyph.Composition.Tracking
 {
-    public class MessagingTracker<T> : GlyphContainer, IInterpreter<InstantiatingMessage<T>>, IInterpreter<DisposingMessage<T>>
+    public class MessagingTracker<T> : GlyphContainer, IInterpreter<InstantiatingMessage<T>>, IInterpreter<DisposingMessage<T>>, IEnumerable<T>
         where T : class
     {
         private readonly Tracker<T> _tracker;
@@ -46,6 +47,11 @@ namespace Glyph.Composition.Tracking
 
             if (Unregistered != null)
                 Unregistered.Invoke(message.Instance);
+        }
+
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        {
+            return _tracker.GetEnumerator();
         }
     }
 }
