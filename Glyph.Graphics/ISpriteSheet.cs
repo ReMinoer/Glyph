@@ -5,7 +5,7 @@ namespace Glyph.Graphics
 {
     public interface ISpriteSheet : ISpriteSource
     {
-        int Count { get; }
+        int FramesCount { get; }
         ISpriteSheetCarver Carver { get; }
         int CurrentFrame { get; set; }
         Rectangle GetFrameRectangle(int frameIndex);

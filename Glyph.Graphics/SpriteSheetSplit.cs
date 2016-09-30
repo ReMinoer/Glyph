@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,6 +11,7 @@ namespace Glyph.Graphics
         private bool _loadedContent;
         private int _currentFrame;
         private FrameData _frameData;
+        public int FramesCount => ReadOnlyComponents.Sum(x => x.FramesCount);
         public ISpriteSheetCarver Carver { get; private set; }
 
         public int CurrentFrame
@@ -95,12 +97,12 @@ namespace Glyph.Graphics
             int sum = 0;
             foreach (SpriteSheet spriteSheet in this)
             {
-                sum += spriteSheet.Count;
+                sum += spriteSheet.FramesCount;
 
                 if (frameIndex >= sum)
                     continue;
 
-                int localFrame = frameIndex - (sum - spriteSheet.Count);
+                int localFrame = frameIndex - (sum - spriteSheet.FramesCount);
 
                 return new FrameData
                 {

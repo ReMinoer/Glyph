@@ -1,4 +1,5 @@
 ﻿using Glyph.Math.Shapes;
+using Glyph.Physics.Colliders.Base;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Physics.Colliders

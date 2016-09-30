@@ -4,7 +4,7 @@ using Glyph.Core;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Physics.Colliders
+namespace Glyph.Physics.Colliders.Base
 {
     public abstract class ColliderBase : GlyphContainer, ICollider
     {

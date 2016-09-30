@@ -13,6 +13,7 @@ using Glyph.Input.StandardControls;
 using Glyph.Transition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Diese.Collections;
 
 namespace Glyph.UI.Guide
 {
@@ -52,8 +53,8 @@ namespace Glyph.UI.Guide
             {
                 _control = value;
 
-                KeyInput keyInput = _control.Inputs.OfType<KeyInput>().FirstOrDefault();
-                if (keyInput == null)
+                KeyInput keyInput;
+                if (_control.Inputs.Any(out keyInput))
                     return;
 
                 Text.Content = Enum.GetName(typeof(Keys), keyInput.DisplayName);
@@ -115,7 +116,7 @@ namespace Glyph.UI.Guide
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
-            bool isGamePadUsed = _controlManager.InputSources.OfType<GamePadSource>().Any();
+            bool isGamePadUsed = _controlManager.InputSources.Any<GamePadSource>();
 
             if (IsGamePadUsed != isGamePadUsed)
             {

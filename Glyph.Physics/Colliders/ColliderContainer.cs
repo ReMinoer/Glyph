@@ -6,11 +6,11 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Physics.Colliders
 {
-    public class ColliderComposite : GlyphComposite<ICollider>, ICollider
+    public class ColliderContainer : GlyphContainer<ICollider>, ICollider
     {
         private readonly ColliderParentImplementation _colliderParentImplementation;
 
-        public ColliderComposite()
+        public ColliderContainer()
         {
             _colliderParentImplementation = new ColliderParentImplementation(this);
         }

@@ -55,7 +55,7 @@ namespace Glyph.Animation
 
         public void Update(ElapsedTime elapsedTime)
         {
-            if (Count == 0)
+            if (ReadOnlyComponents.Count == 0)
                 return;
 
             var playersToRemove = new List<IAnimationPlayer>();

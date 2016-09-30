@@ -11,6 +11,7 @@ namespace Glyph.Graphics
         private readonly SpriteLoader _spriteLoader;
         private int _currentFrame;
         private bool _loadedContent;
+        public int FramesCount => Frames.Count;
         public ISpriteSheetCarver Carver { get; private set; }
         public List<Rectangle> Frames { get; private set; }
         public Rectangle? Rectangle { get; private set; }
@@ -24,11 +25,6 @@ namespace Glyph.Graphics
                 if (_loadedContent)
                     Refresh();
             }
-        }
-
-        public int Count
-        {
-            get { return Frames.Count; }
         }
 
         public string Asset

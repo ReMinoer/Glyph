@@ -1,6 +1,8 @@
-﻿namespace Glyph.Composition.Scheduler
+﻿using Diese;
+
+namespace Glyph.Composition.Scheduler
 {
-    public interface IGlyphSchedulerAssigner : IBatchable
+    public interface IGlyphSchedulerAssigner : IBatchTree
     {
         void AssignComponent(IGlyphComponent component);
         void AssignComponent(GlyphObject glyphObject);

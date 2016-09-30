@@ -9,6 +9,7 @@ using Glyph.Core;
 using Glyph.Input;
 using Glyph.Input.StandardControls;
 using Microsoft.Xna.Framework;
+using Diese.Collections;
 
 namespace Glyph.UI.Controls
 {
@@ -59,8 +60,7 @@ namespace Glyph.UI.Controls
         private void HandleInput(ElapsedTime elapsedTime)
         {
             bool hover = Hover;
-
-            bool isMouseUsed = _controlManager.InputSources.OfType<MouseSource>().Any();
+            bool isMouseUsed = _controlManager.InputSources.Any<MouseSource>();
 
             if (isMouseUsed)
             {

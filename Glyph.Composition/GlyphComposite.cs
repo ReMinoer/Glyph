@@ -25,7 +25,7 @@ namespace Glyph.Composition
 
         public virtual void Dispose()
         {
-            foreach (TComponent component in Components)
+            foreach (TComponent component in ReadOnlyComponents)
                 component.Dispose();
 
             Clear();

@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Diese;
 
 namespace Glyph.Composition.Scheduler.Base
 {
-    public class Scheduler<T> : IScheduler<T>
+    public class Scheduler<T> : BatchTree, IScheduler<T>
     {
         protected readonly IDictionary<T, SchedulerGraph<T>.Vertex> ItemsVertex;
 
         private readonly SchedulerGraph<T> _schedulerGraph;
         private readonly TopologicalOrderVisitor<T> _topologicalOrderVisitor;
-        private bool _batchMode;
 
         public IEnumerable<T> TopologicalOrder
         {
             get
             {
-                if (_batchMode)
+                if (IsBatching)
                     throw new InvalidOperationException(
                         "Dependency graph is currently in batch mode ! Call BatchEnd() to finish.");
 
@@ -30,17 +30,6 @@ namespace Glyph.Composition.Scheduler.Base
 
             _schedulerGraph = new SchedulerGraph<T>();
             _topologicalOrderVisitor = new TopologicalOrderVisitor<T>();
-        }
-
-        public void StartBatch()
-        {
-            _batchMode = true;
-        }
-
-        public void EndBatch()
-        {
-            _batchMode = false;
-            Refresh();
         }
 
         public virtual ISchedulerController<T> Plan(T item)
@@ -80,6 +69,11 @@ namespace Glyph.Composition.Scheduler.Base
                 previous = vertex;
             }
 
+            Refresh();
+        }
+
+        protected override void OnBatchEnded()
+        {
             Refresh();
         }
 
@@ -126,7 +120,7 @@ namespace Glyph.Composition.Scheduler.Base
 
         private void Refresh()
         {
-            if (_batchMode)
+            if (IsBatching)
                 return;
 
             _topologicalOrderVisitor.Process(_schedulerGraph);

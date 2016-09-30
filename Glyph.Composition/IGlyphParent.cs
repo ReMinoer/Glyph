@@ -6,4 +6,9 @@ namespace Glyph.Composition
     {
         bool IsFreeze { get; set; }
     }
+
+    public interface IGlyphParent<TComponent> : IGlyphParent, IParent<IGlyphComponent, IGlyphParent, TComponent>
+        where TComponent : class, IGlyphComponent
+    {
+    }
 }

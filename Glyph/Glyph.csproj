@@ -50,7 +50,6 @@
     <Compile Include="Color.Extension.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="GlyphData.cs" />
-    <Compile Include="IBatchable.cs" />
     <Compile Include="ICamera.cs" />
     <Compile Include="IDirtable.cs" />
     <Compile Include="IDrawer.cs" />
@@ -99,17 +98,17 @@
     <Compile Include="Transition\TransitionVector4.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
       <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
       <Name>Diese.Modelization</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

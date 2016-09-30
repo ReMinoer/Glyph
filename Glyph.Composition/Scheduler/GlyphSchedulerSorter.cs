@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Diese;
 using Diese.Injection;
 
 namespace Glyph.Composition.Scheduler
@@ -9,6 +12,8 @@ namespace Glyph.Composition.Scheduler
         private readonly IDependencyInjector _injector;
         private readonly IDictionary<object, IGlyphSchedulerAssigner> _schedulers;
         public object DefaultKey { get; set; }
+        public bool IsBatching => _schedulers.Values.Any(x => x.IsBatching);
+        int IBatchTree.CurrentDepth => _schedulers.Values.Max(x => x.CurrentDepth);
 
         public GlyphSchedulerSorter(IDependencyInjector injector)
         {
@@ -32,16 +37,15 @@ namespace Glyph.Composition.Scheduler
             return scheduler;
         }
 
-        public void StartBatch()
+        public IDisposable BeginBatch()
         {
-            foreach (IGlyphSchedulerAssigner assigner in _schedulers.Values)
-                assigner.StartBatch();
+            return new DisposableCollection(_schedulers.Values.Select(x => x.BeginBatch()));
         }
 
         public void EndBatch()
         {
-            foreach (IGlyphSchedulerAssigner assigner in _schedulers.Values)
-                assigner.EndBatch();
+            foreach (IGlyphSchedulerAssigner scheduler in _schedulers.Values)
+                scheduler.EndBatch();
         }
 
         public void ReassignComponent(IGlyphComponent component, object assignerKey)

@@ -156,7 +156,7 @@ namespace Glyph.Core
             foreach (IGlyphParent parent in Parent.ParentQueue())
             {
                 SceneNode parentNode;
-                if (!parent.Components.OfType<SceneNode>().Any(out parentNode))
+                if (!parent.Components.Any(out parentNode))
                     continue;
 
                 SetParent(parentNode, Referential.Local);

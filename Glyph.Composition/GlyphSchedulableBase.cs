@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Diese;
 using Diese.Collections;
 using Diese.Debug;
@@ -21,8 +22,7 @@ namespace Glyph.Composition
 
         private bool _initialized;
         private bool _contentLoaded;
-        private bool _componentsLocked;
-        private readonly List<IGlyphComponent> _newComponents;
+        private readonly NewComponentBatchTree _newComponents;
         protected internal readonly GlyphCompositeInjector Injector;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
@@ -37,7 +37,7 @@ namespace Glyph.Composition
             Injector = compositeInjector;
 
             SchedulerAssigner = schedulerAssigner;
-            _newComponents = new List<IGlyphComponent>();
+            _newComponents = new NewComponentBatchTree(this);
 
             foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ILocalInterpreter<>)))
                 Injector.LocalRegistry.Register(typeof(IRouter<>).MakeGenericType(type.GetGenericArguments()), typeof(LocalRouter<>).MakeGenericType(type.GetGenericArguments()), Subsistence.Singleton);
@@ -60,17 +60,14 @@ namespace Glyph.Composition
         // TODO : Handle injection on changing children & parents
         public override sealed void Add(IGlyphComponent item)
         {
-            if (_componentsLocked)
-            {
-                _newComponents.Add(item);
+            if (_newComponents.Batch(item))
                 return;
-            }
 
             if (Contains(item))
                 throw new ArgumentException("Component provided is already contained by this entity !");
 
             Type type = item.GetType();
-            if (Components.OfType(type).Any() && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
+            if (ReadOnlyComponents.OfType(type).Any() && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
                 throw new SingleComponentException(type);
 
             base.Add(item);
@@ -122,59 +119,41 @@ namespace Glyph.Composition
             SchedulerAssigner.ClearComponents();
         }
 
-        protected void LockComponents()
-        {
-            _componentsLocked = true;
-        }
-
-        protected void UnlockComponents()
-        {
-            _componentsLocked = false;
-
-            foreach (IGlyphComponent newComponent in _newComponents)
-                Add(newComponent);
-
-            _newComponents.Clear();
-        }
-
         public override sealed void Initialize()
         {
-            LockComponents();
+            using (_newComponents.BeginBatch())
+            {
+                foreach (InitializeDelegate initialize in SchedulerAssigner.Initialize.TopologicalOrder)
+                    initialize();
 
-            foreach (InitializeDelegate initialize in SchedulerAssigner.Initialize.TopologicalOrder)
-                initialize();
-
-            _initialized = true;
-
-            UnlockComponents();
+                _initialized = true;
+            }
         }
 
         public void LoadContent(ContentLibrary contentLibrary)
         {
-            LockComponents();
-
-            foreach (LoadContentDelegate loadContent in SchedulerAssigner.LoadContent.TopologicalOrder)
+            using (_newComponents.BeginBatch())
+            {
+                foreach (LoadContentDelegate loadContent in SchedulerAssigner.LoadContent.TopologicalOrder)
                 loadContent(contentLibrary);
 
-            _contentLoaded = true;
-
-            UnlockComponents();
+                _contentLoaded = true;
+            }
         }
 
         public void Update(ElapsedTime elapsedTime)
         {
-            LockComponents();
-
-            foreach (UpdateDelegate update in SchedulerAssigner.Update.TopologicalOrder)
+            using (_newComponents.BeginBatch())
             {
-                if (!Enabled)
-                    return;
+                foreach (UpdateDelegate update in SchedulerAssigner.Update.TopologicalOrder)
+                {
+                    if (!Enabled)
+                        return;
 
-                using (UpdateWatchTree.Start($"{update.Target?.GetType().GetDisplayName()} -- {update.Method.Name}"))
-                    update(elapsedTime);
+                    using (UpdateWatchTree.Start($"{update.Target?.GetType().GetDisplayName()} -- {update.Method.Name}"))
+                        update(elapsedTime);
+                }
             }
-
-            UnlockComponents();
         }
 
         public abstract void Draw(IDrawer drawer);
@@ -184,6 +163,22 @@ namespace Glyph.Composition
         {
             var router = Injector.Resolve<IRouter<TMessage>>();
             router.Send(message);
+        }
+
+        private sealed class NewComponentBatchTree : BatchTree<IGlyphComponent>
+        {
+            private readonly GlyphSchedulableBase _owner;
+
+            public NewComponentBatchTree(GlyphSchedulableBase owner)
+            {
+                _owner = owner;
+            }
+
+            protected override void OnNodeEnded(Queue<IGlyphComponent> queue, int depth)
+            {
+                while (queue.Count != 0)
+                    _owner.Add(queue.Dequeue());
+            }
         }
 
         public class SchedulerHandlerBase : GlyphSchedulerHandler

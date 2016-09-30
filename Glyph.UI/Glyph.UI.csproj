@@ -59,17 +59,21 @@
     <Compile Include="Misc\TextSprite.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Injection\Diese.Injection.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
+      <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
+      <Name>Diese.Collections</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Diese\Diese.Serialization\Diese.Serialization.csproj">
-      <Project>{4AE2D764-4161-453D-8B2D-BD66607EC27A}</Project>
-      <Name>Diese.Serialization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese\Diese.csproj">
       <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
       <Name>Diese</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave.csproj">
+      <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
+      <Name>Stave</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj">
       <Project>{9eef1863-44be-423e-a29d-088c23aac45e}</Project>
@@ -78,10 +82,6 @@
     <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
       <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
       <Name>Fingear</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Stave\Stave.csproj">
-      <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
-      <Name>Stave</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
       <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>

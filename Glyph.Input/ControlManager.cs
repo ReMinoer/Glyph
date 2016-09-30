@@ -70,8 +70,7 @@ namespace Glyph.Input
         public bool TryGetLayer<T>(out T layer)
             where T : class, IControlLayer
         {
-            layer = _layers.Values.OfType<T>().FirstOrDefault();
-            return layer != null;
+            return _layers.Values.Any(out layer);
         }
 
         public bool TryGetLayer<T>(object key, out T layer)

@@ -66,20 +66,20 @@
     <Compile Include="Triggers\TriggerArea.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese.Collections\Diese.Collections.csproj">
-      <Project>{8e354191-e8e5-498b-9c24-a6765da86417}</Project>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
+      <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
       <Name>Diese.Collections</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Diese\Diese.Lua\Diese.Lua.csproj">
       <Project>{e2707575-12c2-4ce6-b8e4-e7efd8d4e301}</Project>
       <Name>Diese.Lua</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese\Diese.csproj">
       <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
       <Name>Diese</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Stave\Stave.csproj">
-      <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave.csproj">
+      <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
       <Name>Stave</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">

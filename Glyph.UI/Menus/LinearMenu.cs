@@ -7,6 +7,7 @@ using Glyph.Composition;
 using Glyph.Input;
 using Glyph.Input.StandardControls;
 using Glyph.UI.Controls;
+using Diese.Collections;
 
 namespace Glyph.UI.Menus
 {
@@ -23,7 +24,7 @@ namespace Glyph.UI.Menus
         {
             get
             {
-                return SelectedIndex >= 0 && SelectedIndex < Count
+                return SelectedIndex >= 0 && SelectedIndex < _buttons.Count
                     ? _buttons[SelectedIndex]
                     : null;
             }
@@ -68,7 +69,7 @@ namespace Glyph.UI.Menus
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
-            bool isMouseUsed = _controlManager.InputSources.OfType<MouseSource>().Any();
+            bool isMouseUsed = _controlManager.InputSources.Any<MouseSource>();
 
             MenuControls menuControls;
             if (!isMouseUsed)

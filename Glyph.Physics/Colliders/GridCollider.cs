@@ -1,6 +1,7 @@
 ﻿using System;
 using Glyph.Math;
 using Glyph.Math.Shapes;
+using Glyph.Physics.Colliders.Base;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
 

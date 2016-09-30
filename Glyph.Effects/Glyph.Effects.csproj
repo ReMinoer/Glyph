@@ -50,12 +50,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Diese\Diese\Diese.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese\Diese.csproj">
       <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
       <Name>Diese</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Stave\Stave.csproj">
-      <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave.csproj">
+      <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
       <Name>Stave</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
