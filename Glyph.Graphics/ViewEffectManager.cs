@@ -35,7 +35,7 @@ namespace Glyph.Graphics
             }
         }
 
-        public ViewEffectManager(View view, Lazy<GraphicsDevice> lazyGraphicsDevice)
+        public ViewEffectManager(Lazy<GraphicsDevice> lazyGraphicsDevice)
         {
             _lazyGraphicsDevice = lazyGraphicsDevice;
 

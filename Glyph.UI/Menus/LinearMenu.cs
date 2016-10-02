@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Diese.Injection;
 using Fingear.MonoGame;
 using Glyph.Composition;
@@ -15,10 +14,16 @@ namespace Glyph.UI.Menus
     {
         private readonly ControlManager _controlManager;
         private readonly List<IButton> _buttons;
+        private readonly IReadOnlyCollection<IButton> _buttonsReadOnly;
         public int SelectedIndex { get; private set; }
         public int DefaultSelection { get; set; }
         public Axis NavigationAxis { get; set; }
         public bool NavigationLoop { get; set; }
+
+        public IEnumerable<IButton> Buttons
+        {
+            get { return _buttonsReadOnly; }
+        }
 
         public IButton SelectedControl
         {
@@ -38,6 +43,7 @@ namespace Glyph.UI.Menus
         {
             _controlManager = controlManager;
             _buttons = new List<IButton>();
+            _buttonsReadOnly = new ReadOnlyCollection<IButton>(_buttons);
 
             NavigationAxis = Axis.Vertical;
             SelectedIndex = -1;
@@ -137,11 +143,6 @@ namespace Glyph.UI.Menus
         {
             if (SelectionTriggered != null)
                 SelectionTriggered(this, new SelectionEventArgs(selection));
-        }
-
-        IEnumerator<IButton> IEnumerable<IButton>.GetEnumerator()
-        {
-            return _buttons.GetEnumerator();
         }
     }
 }

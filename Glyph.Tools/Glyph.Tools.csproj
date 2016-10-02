@@ -73,7 +73,7 @@
       <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
       <Name>Diese</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
       <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
       <Name>Stave</Name>
     </ProjectReference>
@@ -84,10 +84,6 @@
     <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
       <Project>{7EE0B116-6B49-4073-99D8-827DD68B8AE0}</Project>
       <Name>Fingear</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
-      <Project>{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}</Project>
-      <Name>Glyph.Audio</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>

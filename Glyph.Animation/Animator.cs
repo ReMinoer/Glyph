@@ -15,7 +15,7 @@ namespace Glyph.Animation
             set
             {
                 _useUnscaledTime = value;
-                foreach (IAnimationPlayer player in this)
+                foreach (IAnimationPlayer player in Components)
                     player.UseUnscaledTime = value;
             }
         }
@@ -55,12 +55,12 @@ namespace Glyph.Animation
 
         public void Update(ElapsedTime elapsedTime)
         {
-            if (ReadOnlyComponents.Count == 0)
+            if (Components.Count == 0)
                 return;
 
             var playersToRemove = new List<IAnimationPlayer>();
 
-            foreach (IAnimationPlayer player in this)
+            foreach (IAnimationPlayer player in Components)
             {
                 player.Update(elapsedTime);
 

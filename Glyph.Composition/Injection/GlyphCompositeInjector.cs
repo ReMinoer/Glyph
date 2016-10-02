@@ -51,7 +51,7 @@ namespace Glyph.Composition.Injection
                     if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
                     {
                         IGlyphComponent component;
-                        if (_context.OfType(type).Any(out component))
+                        if (_context.Components.OfType(type).Any(out component))
                             return component;
                     }
 
@@ -91,7 +91,7 @@ namespace Glyph.Composition.Injection
                     if (targets.HasFlag(GlyphInjectableTargets.Fraternal))
                     {
                         IGlyphComponent component;
-                        if (_context.OfType(type).Any(out component))
+                        if (_context.Components.OfType(type).Any(out component))
                         {
                             obj = component;
                             return true;

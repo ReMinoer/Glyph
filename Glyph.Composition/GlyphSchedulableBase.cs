@@ -23,10 +23,10 @@ namespace Glyph.Composition
         private bool _initialized;
         private bool _contentLoaded;
         private readonly NewComponentBatchTree _newComponents;
+        private readonly SchedulerHandlerBase _schedulerAssigner;
         protected internal readonly GlyphCompositeInjector Injector;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
-        protected SchedulerHandlerBase SchedulerAssigner { get; }
 
         protected GlyphSchedulableBase(IDependencyInjector injector, SchedulerHandlerBase schedulerAssigner)
         {
@@ -36,7 +36,7 @@ namespace Glyph.Composition
             var compositeInjector = new GlyphCompositeInjector(this, injector.Resolve<IDependencyRegistry>(), injector.Resolve<IDependencyRegistry>(InjectionScope.Local));
             Injector = compositeInjector;
 
-            SchedulerAssigner = schedulerAssigner;
+            _schedulerAssigner = schedulerAssigner;
             _newComponents = new NewComponentBatchTree(this);
 
             foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ILocalInterpreter<>)))
@@ -67,12 +67,12 @@ namespace Glyph.Composition
                 throw new ArgumentException("Component provided is already contained by this entity !");
 
             Type type = item.GetType();
-            if (ReadOnlyComponents.OfType(type).Any() && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
+            if (Components.Any(type) && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
                 throw new SingleComponentException(type);
 
             base.Add(item);
 
-            foreach (IGlyphComponent component in this)
+            foreach (IGlyphComponent component in Components)
                 foreach (InjectablePropertyInfo injectable in InstanceManager.GetInfo(component.GetType()).InjectableProperties)
                     if (injectable.InjectableTargets.HasFlag(GlyphInjectableTargets.Fraternal)
                         && item.GetType().IsInstanceOfType(injectable.PropertyInfo.PropertyType))
@@ -81,11 +81,11 @@ namespace Glyph.Composition
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)
             {
-                SchedulerAssigner.AssignComponent(glyphObject);
+                _schedulerAssigner.AssignComponent(glyphObject);
                 glyphObject.Injector.Parent = this;
             }
             else
-                SchedulerAssigner.AssignComponent(item);
+                _schedulerAssigner.AssignComponent(item);
 
             if (_initialized)
                 item.Initialize();
@@ -105,9 +105,9 @@ namespace Glyph.Composition
 
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)
-                SchedulerAssigner.RemoveComponent(glyphObject);
+                _schedulerAssigner.RemoveComponent(glyphObject);
             else
-                SchedulerAssigner.RemoveComponent(item);
+                _schedulerAssigner.RemoveComponent(item);
 
             return true;
         }
@@ -116,14 +116,14 @@ namespace Glyph.Composition
         {
             base.Clear();
 
-            SchedulerAssigner.ClearComponents();
+            _schedulerAssigner.ClearComponents();
         }
 
         public override sealed void Initialize()
         {
             using (_newComponents.BeginBatch())
             {
-                foreach (InitializeDelegate initialize in SchedulerAssigner.Initialize.TopologicalOrder)
+                foreach (InitializeDelegate initialize in _schedulerAssigner.Initialize.TopologicalOrder)
                     initialize();
 
                 _initialized = true;
@@ -134,7 +134,7 @@ namespace Glyph.Composition
         {
             using (_newComponents.BeginBatch())
             {
-                foreach (LoadContentDelegate loadContent in SchedulerAssigner.LoadContent.TopologicalOrder)
+                foreach (LoadContentDelegate loadContent in _schedulerAssigner.LoadContent.TopologicalOrder)
                 loadContent(contentLibrary);
 
                 _contentLoaded = true;
@@ -145,7 +145,7 @@ namespace Glyph.Composition
         {
             using (_newComponents.BeginBatch())
             {
-                foreach (UpdateDelegate update in SchedulerAssigner.Update.TopologicalOrder)
+                foreach (UpdateDelegate update in _schedulerAssigner.Update.TopologicalOrder)
                 {
                     if (!Enabled)
                         return;
@@ -158,7 +158,7 @@ namespace Glyph.Composition
 
         public abstract void Draw(IDrawer drawer);
 
-        public void SendMessage<TMessage>(TMessage message)
+        protected void SendMessage<TMessage>(TMessage message)
             where TMessage : Message
         {
             var router = Injector.Resolve<IRouter<TMessage>>();

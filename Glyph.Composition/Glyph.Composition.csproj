@@ -63,6 +63,7 @@
     <Compile Include="Messaging\DisposingMessage.cs" />
     <Compile Include="Messaging\InstantiatingMessage.cs" />
     <Compile Include="Messaging\Receiver.cs" />
+    <Compile Include="Modelization\CompositeData.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
     <Compile Include="Tracking\MessagingTracker.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
@@ -98,7 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
-      <Project>{8e354191-e8e5-498b-9c24-a6765da86417}</Project>
+      <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
       <Name>Diese.Collections</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Debug\Diese.Debug.csproj">
@@ -121,7 +122,7 @@
       <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
       <Name>Diese</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
       <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
       <Name>Stave</Name>
     </ProjectReference>
@@ -134,6 +135,7 @@
       <Name>Glyph</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

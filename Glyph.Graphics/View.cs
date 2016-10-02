@@ -67,7 +67,7 @@ namespace Glyph.Graphics
         public View(Lazy<GraphicsDevice> lazyGraphicsDevice)
         {
             Components.Add(_sceneNode = new SceneNode());
-            Components.Add(EffectManager = new ViewEffectManager(this, lazyGraphicsDevice));
+            Components.Add(EffectManager = new ViewEffectManager(lazyGraphicsDevice));
             Components.Add(_fillingRectangle = new FillingRectangle());
             Components.Add(_fillingRenderer = new FillingRenderer(_fillingRectangle, EffectManager, _sceneNode));
         }

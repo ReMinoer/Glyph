@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Diese.Collections.Trackers;
 using Glyph.Composition.Messaging;
@@ -49,9 +50,14 @@ namespace Glyph.Composition.Tracking
                 Unregistered.Invoke(message.Instance);
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return _tracker.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

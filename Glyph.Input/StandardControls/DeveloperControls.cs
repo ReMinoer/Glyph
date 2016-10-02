@@ -20,11 +20,10 @@ namespace Glyph.Input.StandardControls
 
         public DeveloperControls()
         {
-            Add(XboxQuit = new ControlSimultaneous<IControl>("XboxQuit")
-            {
-                new Control(new GamePadButtonInput(GamePadButton.Start)),
-                new Control(new GamePadButtonInput(GamePadButton.Back))
-            });
+            var xboxQuit = new ControlSimultaneous<IControl>("XboxQuit");
+            xboxQuit.Add(new Control(new GamePadButtonInput(GamePadButton.Start)));
+            xboxQuit.Add(new Control(new GamePadButtonInput(GamePadButton.Back)));
+            Add(XboxQuit = xboxQuit);
 
             Add(Fullscreen = new Control("Fullscreen", new KeyInput(Keys.F12)));
             Add(StatusDisplay = new Control("StatusDisplay", new KeyInput(Keys.F11)));

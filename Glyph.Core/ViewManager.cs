@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Core
 {
-    public class ViewManager : GlyphContainer
+    public class ViewManager : GlyphContainer, ILoadContent, IUpdate
     {
         static private ViewManager _main;
         static public ViewManager Main
@@ -32,15 +32,24 @@ namespace Glyph.Core
         public override void Initialize()
         {
             _sceneNode.Initialize();
+
+            foreach (IView view in Views)
+                view.Initialize();
+        }
+
+        public void LoadContent(ContentLibrary contentLibrary)
+        {
+            foreach (IView view in Views)
+                view.LoadContent(contentLibrary);
         }
 
         public void Update(ElapsedTime elapsedTime)
         {
-            foreach (IView screen in Views)
-                screen.Update(elapsedTime);
+            foreach (IView view in Views)
+                view.Update(elapsedTime);
         }
 
-        public void RegisterScreen(IView view)
+        public void RegisterView(IView view)
         {
             Components.Add(view);
             _views.Add(view);
@@ -48,7 +57,7 @@ namespace Glyph.Core
             view.Initialize();
         }
 
-        public void UnregisterScreen(IView view)
+        public void UnregisterView(IView view)
         {
             _views.Remove(view);
         }

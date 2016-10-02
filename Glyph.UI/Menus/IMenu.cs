@@ -5,8 +5,9 @@ using Glyph.UI.Controls;
 
 namespace Glyph.UI.Menus
 {
-    public interface IMenu : IGlyphComponent, IEnumerable<IButton>
+    public interface IMenu : IGlyphComponent
     {
+        IEnumerable<IButton> Buttons { get; }
         int SelectedIndex { get; }
         IButton SelectedControl { get; }
         int DefaultSelection { get; set; }

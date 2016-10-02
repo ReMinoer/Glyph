@@ -22,25 +22,25 @@ namespace Glyph.Effects
 
         public virtual void Initialize()
         {
-            foreach (TComponent effect in this)
+            foreach (TComponent effect in Components)
                 effect.Initialize();
         }
 
         public virtual void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice)
         {
-            foreach (TComponent effect in this)
+            foreach (TComponent effect in Components)
                 effect.LoadContent(contentLibrary, graphicsDevice);
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            foreach (TComponent effect in this)
+            foreach (TComponent effect in Components)
                 effect.Update(gameTime);
         }
 
         public virtual void Prepare(IDrawer drawer)
         {
-            foreach (TComponent effect in this)
+            foreach (TComponent effect in Components)
                 effect.Prepare(drawer);
         }
 
@@ -48,7 +48,7 @@ namespace Glyph.Effects
 
         public virtual void Dispose()
         {
-            foreach (TComponent effect in this)
+            foreach (TComponent effect in Components)
                 effect.Dispose();
         }
     }

@@ -54,13 +54,9 @@
       <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
       <Name>Diese</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
       <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
       <Name>Stave</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
-      <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
-      <Name>Glyph.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

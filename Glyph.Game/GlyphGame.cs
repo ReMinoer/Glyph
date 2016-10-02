@@ -108,6 +108,7 @@ namespace Glyph.Game
 
         protected override void Initialize()
         {
+            ViewManager.Main.Initialize();
             Scene.Initialize();
 
             base.Initialize();
@@ -121,7 +122,8 @@ namespace Glyph.Game
             _drawer = new Drawer(SpriteBatch, GraphicsDeviceManager);
 
             ContentLibrary.LoadContent(Content);
-            
+
+            ViewManager.Main.LoadContent(ContentLibrary);
             AudioManager.LoadContent(ContentLibrary);
             StatusDisplay.LoadContent(ContentLibrary);
 

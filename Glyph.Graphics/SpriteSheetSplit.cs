@@ -11,7 +11,7 @@ namespace Glyph.Graphics
         private bool _loadedContent;
         private int _currentFrame;
         private FrameData _frameData;
-        public int FramesCount => ReadOnlyComponents.Sum(x => x.FramesCount);
+        public int FramesCount => Components.Sum(x => x.FramesCount);
         public ISpriteSheetCarver Carver { get; private set; }
 
         public int CurrentFrame
@@ -49,7 +49,7 @@ namespace Glyph.Graphics
 
         public void LoadContent(ContentLibrary contentLibrary)
         {
-            foreach (SpriteSheet spriteSheet in this)
+            foreach (SpriteSheet spriteSheet in Components)
             {
                 spriteSheet.LoadContent(contentLibrary);
 
@@ -78,7 +78,7 @@ namespace Glyph.Graphics
         {
             Carver = carver;
 
-            foreach (SpriteSheet spriteSheet in this)
+            foreach (SpriteSheet spriteSheet in Components)
                 spriteSheet.ApplyCarver(carver);
         }
 
@@ -95,7 +95,7 @@ namespace Glyph.Graphics
         private FrameData GetFrameData(int frameIndex)
         {
             int sum = 0;
-            foreach (SpriteSheet spriteSheet in this)
+            foreach (SpriteSheet spriteSheet in Components)
             {
                 sum += spriteSheet.FramesCount;
 
