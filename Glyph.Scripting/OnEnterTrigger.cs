@@ -1,16 +1,10 @@
-﻿using Glyph.Messaging;
-
-namespace Glyph.Scripting
+﻿namespace Glyph.Scripting
 {
-    public class OnEnterTrigger : Message
+    public class OnEnterTrigger : TriggerMessageBase
     {
-        public ITriggerArea TriggerArea { get; private set; }
-        public IActor Actor { get; private set; }
-
-        public OnEnterTrigger(ITriggerArea triggerArea, IActor actor)
+        public OnEnterTrigger(Trigger trigger, Actor actor)
+            : base(trigger, actor)
         {
-            TriggerArea = triggerArea;
-            Actor = actor;
         }
     }
 }

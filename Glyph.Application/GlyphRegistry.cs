@@ -20,7 +20,7 @@ using Glyph.Messaging;
 using Glyph.Particles;
 using Glyph.Physics;
 using Glyph.Physics.Colliders;
-using Glyph.Scripting.Triggers;
+using Glyph.Scripting;
 using Glyph.Tools;
 using Glyph.Tools.ShapeRendering;
 using Glyph.UI;
@@ -155,7 +155,9 @@ namespace Glyph.Application
 
             #region Scripting
 
-            Register<TriggerArea>();
+            Register<TriggerManager>(Subsistence.Singleton);
+            Register<Trigger>();
+            Register<Actor>();
 
             #endregion
 

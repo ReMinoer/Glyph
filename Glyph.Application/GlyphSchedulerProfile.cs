@@ -10,7 +10,7 @@ using Glyph.Graphics.Renderer;
 using Glyph.Graphics.Shapes;
 using Glyph.Particles;
 using Glyph.Physics.Colliders;
-using Glyph.Scripting.Triggers;
+using Glyph.Scripting;
 
 namespace Glyph.Application
 {
@@ -34,11 +34,13 @@ namespace Glyph.Application
                 Add<SoundListener>();
                 Add<SoundEmitter>();
 
+                Add<ParticleEmitter>();
+
                 Add<ICollider>();
-                Add<TriggerArea>();
                 Add<SpriteArea>();
 
-                Add<ParticleEmitter>();
+                Add<Trigger>();
+                Add<Actor>();
             }
         }
 
@@ -67,6 +69,8 @@ namespace Glyph.Application
                 Add<ICollider>();
 
                 Add<ParticleEmitter>();
+
+                Add<Actor>();
             }
         }
 

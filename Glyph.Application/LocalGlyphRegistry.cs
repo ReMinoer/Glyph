@@ -8,8 +8,8 @@ namespace Glyph.Application
     {
         public LocalGlyphRegistry()
         {
-            Register<LocalRouter<OnEnterTrigger>>(Subsistence.Singleton);
-            Link<IRouter<OnEnterTrigger>, LocalRouter<OnEnterTrigger>>();
+            //Register<LocalRouter<OnEnterTrigger>>(Subsistence.Singleton);
+            //Link<IRouter<OnEnterTrigger>, LocalRouter<OnEnterTrigger>>();
         }
     }
 }

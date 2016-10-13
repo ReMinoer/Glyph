@@ -40,9 +40,6 @@
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.3.2.0.0\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\NLua.1.3.2.1\lib\net45\NLua.dll</HintPath>
       <Private>True</Private>
@@ -51,34 +48,24 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actors\DelegateActor.cs" />
-    <Compile Include="Actors\DynamicActor.cs" />
-    <Compile Include="Actors\StaticActor.cs" />
-    <Compile Include="IActor.cs" />
-    <Compile Include="IScriptPlayer.cs" />
-    <Compile Include="ITrigger.cs" />
-    <Compile Include="ITriggerArea.cs" />
+    <Compile Include="Actor.cs" />
+    <Compile Include="OnLeaveTrigger.cs" />
     <Compile Include="OnEnterTrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LuaScriptPlayer.cs" />
-    <Compile Include="ScriptManager.cs" />
-    <Compile Include="Triggers\TriggerVar.cs" />
-    <Compile Include="Triggers\TriggerArea.cs" />
+    <Compile Include="Trigger.cs" />
+    <Compile Include="TriggerManager.cs" />
+    <Compile Include="TriggerMessageBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
       <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
       <Name>Diese.Collections</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Diese\Diese.Lua\Diese.Lua.csproj">
-      <Project>{e2707575-12c2-4ce6-b8e4-e7efd8d4e301}</Project>
-      <Name>Diese.Lua</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese\Diese.csproj">
       <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
       <Name>Diese</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
       <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
       <Name>Stave</Name>
     </ProjectReference>
@@ -97,6 +84,10 @@
     <ProjectReference Include="..\Glyph.Physics\Glyph.Physics.csproj">
       <Project>{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}</Project>
       <Name>Glyph.Physics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj">
+      <Project>{068202CC-E943-4718-9771-62D72E50623E}</Project>
+      <Name>Glyph.Space</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

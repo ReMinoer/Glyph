@@ -29,6 +29,35 @@ namespace Glyph.Math
             return new OriginRectangle(left, top, right - left, bottom - top);
         }
 
+        static public IRectangle GetBoundingBox(params IRectangle[] rectangles)
+        {
+            return GetBoundingBox(rectangles.AsEnumerable());
+        }
+
+        static public IRectangle GetBoundingBox(IEnumerable<IRectangle> rectangles)
+        {
+            IEnumerable<IRectangle> enumerable = rectangles as IRectangle[] ?? rectangles.ToArray();
+            if (!enumerable.Any())
+                return null;
+
+            float left = enumerable.Min(x => x.Left);
+            float right = enumerable.Max(x => x.Right);
+            float top = enumerable.Min(x => x.Top);
+            float bottom = enumerable.Max(x => x.Bottom);
+
+            return new OriginRectangle(left, top, right - left, bottom - top);
+        }
+
+        static public IRectangle GetBoundingBox(params IArea[] areas)
+        {
+            return GetBoundingBox(areas.Select(x => x.BoundingBox));
+        }
+
+        static public IRectangle GetBoundingBox(IEnumerable<IArea> areas)
+        {
+            return GetBoundingBox(areas.Select(x => x.BoundingBox));
+        }
+
         static public Vector2 ClampToRectangle(Vector2 point, IRectangle rectangle)
         {
             if (point.X < rectangle.Left)

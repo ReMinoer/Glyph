@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="GlobalRouter.cs" />
     <Compile Include="IInterpreter.cs" />
+    <Compile Include="ILocalInterpreter.cs" />
     <Compile Include="IRouter.cs" />
     <Compile Include="LocalRouter.cs" />
     <Compile Include="Message.cs" />
