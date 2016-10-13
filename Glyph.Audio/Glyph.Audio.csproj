@@ -46,14 +46,13 @@
   <ItemGroup>
     <Compile Include="SoundListener.cs" />
     <Compile Include="SoundListenerManager.cs" />
-    <Compile Include="AudioManager.cs" />
     <Compile Include="SongPlayer.cs" />
     <Compile Include="SoundEmitter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SoundCollection.cs" />
+    <Compile Include="SoundLoader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave.csproj">
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
       <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
       <Name>Stave</Name>
     </ProjectReference>

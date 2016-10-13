@@ -5,12 +5,11 @@ namespace Glyph.Audio
 {
     public class SoundListener : GlyphComponent
     {
-        public AudioListener Model { get; private set; }
+        internal AudioListener AudioListener { get; private set; }
 
         public SoundListener(SoundListenerManager soundListenerManager)
         {
-            Model = new AudioListener();
-
+            AudioListener = new AudioListener();
             soundListenerManager.Add(this);
         }
     }

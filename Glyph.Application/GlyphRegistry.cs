@@ -133,10 +133,11 @@ namespace Glyph.Application
             #endregion
 
             #region Audio
-
-            Register<SongPlayer>();
-            Register<SoundListener>();
+            
+            Register<SoundLoader>();
             Register<SoundEmitter>();
+            Register<SoundListener>();
+            Register<SoundListenerManager>();
 
             #endregion
 

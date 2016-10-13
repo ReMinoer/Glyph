@@ -124,7 +124,7 @@ namespace Glyph.Game
             ContentLibrary.LoadContent(Content);
 
             ViewManager.Main.LoadContent(ContentLibrary);
-            AudioManager.LoadContent(ContentLibrary);
+            SongPlayer.Instance.LoadContent(ContentLibrary);
             StatusDisplay.LoadContent(ContentLibrary);
 
             Scene.LoadContent(ContentLibrary);
@@ -161,7 +161,7 @@ namespace Glyph.Game
                 } while (_sceneChanged);
 
                 ViewManager.Main.Update(elapsedTime);
-                AudioManager.Update(gameTime);
+                SongPlayer.Instance.Update(elapsedTime);
                 PerformanceViewer.Update(gameTime);
                 StatusDisplay.Update(gameTime);
 
@@ -211,10 +211,10 @@ namespace Glyph.Game
                     }
 
                 if (developerControls.PreviousSong.IsActive())
-                    AudioManager.Previous();
+                    SongPlayer.Instance.Previous();
 
                 if (developerControls.NextSong.IsActive())
-                    AudioManager.Next();
+                    SongPlayer.Instance.Next();
 
                 if (developerControls.StatusDisplay.IsActive())
                     StatusDisplay.Visible = !StatusDisplay.Visible;

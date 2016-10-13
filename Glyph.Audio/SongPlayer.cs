@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Glyph.Composition;
 using Microsoft.Xna.Framework.Media;
@@ -10,6 +9,9 @@ namespace Glyph.Audio
     public class SongPlayer : GlyphComponent, ILoadContent, IUpdate
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        static private SongPlayer _instance;
+        static public SongPlayer Instance => _instance ?? (_instance = new SongPlayer());
 
         private const float VolumeSpeed = 0.0005f;
         private readonly Period _waitTime = new Period(0);
@@ -40,6 +42,11 @@ namespace Glyph.Audio
                         id = i;
                 return id;
             }
+        }
+
+        private SongPlayer()
+        {
+            
         }
 
         public void LoadContent(ContentLibrary contentLibrary)

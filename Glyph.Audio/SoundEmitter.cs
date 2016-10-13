@@ -4,40 +4,32 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace Glyph.Audio
 {
-    // TASK : Add AudioSource component
-    // TODO : Spatialisation du son
     public class SoundEmitter : GlyphComponent
     {
+        private readonly SoundLoader _soundLoader;
         private readonly SoundListenerManager _soundListenerManager;
-        private SoundEffect _soundEffect;
-        private SoundEffectInstance _soundEffectInstance;
-        public AudioEmitter Model { get; private set; }
+        private readonly AudioEmitter _audioEmitter;
         public bool Spatialized { get; set; }
 
-        public SoundEffect SoundEffect
+        public SoundEmitter(SoundLoader soundLoader, SoundListenerManager soundListenerManager)
         {
-            get { return _soundEffect; }
-            set
-            {
-                _soundEffect = value;
-                _soundEffectInstance = _soundEffect.CreateInstance();
-
-                _soundEffectInstance.Apply3D(
-                    _soundListenerManager.SoundListeners.Select(x => x.Model).ToArray(),
-                    Model);
-            }
-        }
-
-        public SoundEmitter(SoundListenerManager soundListenerManager)
-        {
+            _soundLoader = soundLoader;
             _soundListenerManager = soundListenerManager;
-
-            Model = new AudioEmitter();
+            _audioEmitter = new AudioEmitter();
         }
 
-        public void Play()
+        public void Play(object key, float volume = 1f, float pan = 0f, float pitch = 0f)
         {
-            _soundEffectInstance.Play();
+            SoundEffectInstance soundEffectInstance = _soundLoader[key].CreateInstance();
+
+            soundEffectInstance.Volume = volume;
+            soundEffectInstance.Pan = pan;
+            soundEffectInstance.Pitch = pitch;
+
+            if (Spatialized)
+                soundEffectInstance.Apply3D(_soundListenerManager.SoundListeners.Select(x => x.AudioListener).ToArray(), _audioEmitter);
+
+            soundEffectInstance.Play();
         }
     }
 }
