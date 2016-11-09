@@ -1,18 +1,19 @@
-﻿using System;
-using Glyph.Math;
+﻿using Glyph.Math;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Renderer
 {
+    public delegate bool RenderingBehaviour<TData>(TData caseData, MappingRenderer<TData> mappingRenderer);
+
     public class MappingRenderer<TData> : RendererBase
     {
         public ISpriteSheet SpriteSheet { get; }
         public IGrid<TData> Grid { get; set; }
         public Transformation Transformation { get; set; }
         public float Depth { get; set; }
-        public Func<TData, MappingRenderer<TData>, bool> RenderingBehaviour { get; set; }
+        public RenderingBehaviour<TData> RenderingBehaviour { get; set; }
 
         protected override float DepthProtected
         {
