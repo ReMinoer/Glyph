@@ -36,7 +36,8 @@ namespace Glyph.Graphics.Renderer
                 return;
 
             IRectangle sourceRectangle = Source.GetDrawnRectagle().ToCenteredRectangle();
-            Vector2 sourcePatchOrigin = visibleRectangle.Origin - sourceRectangle.Size.Integrate(sourceRectangle.Size.Discretize(visibleRectangle.Origin - drawnRectangle.Origin)) + sourceRectangle.Origin;
+            Vector2 sourcePatchInit = visibleRectangle.Origin - sourceRectangle.Size.Integrate(sourceRectangle.Size.Discretize(visibleRectangle.Origin - drawnRectangle.Origin)) + sourceRectangle.Origin;
+            Vector2 sourcePatchOrigin = sourcePatchInit;
 
             float y = 0;
             while (y < visibleRectangle.Height)
@@ -44,6 +45,8 @@ namespace Glyph.Graphics.Renderer
                 float sourceRemainingHeight = sourceRectangle.Height - sourcePatchOrigin.Y;
                 float destinationRemainingHeight = visibleRectangle.Height - y;
                 float sourcePatchHeight = MathHelper.Min(sourceRemainingHeight, destinationRemainingHeight);
+
+                sourcePatchOrigin.X = sourcePatchInit.X;
 
                 float x = 0;
                 while (x < visibleRectangle.Width)
