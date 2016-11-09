@@ -1,184 +1,69 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Diese;
+using Glyph.Composition.Scheduler.Base.Controllers;
 
 namespace Glyph.Composition.Scheduler.Base
 {
-    public class Scheduler<T> : BatchTree, IScheduler<T>
+    public class Scheduler<T> : SchedulerBase<Scheduler<T>.Controller, T>
     {
-        protected readonly IDictionary<T, SchedulerGraph<T>.Vertex> ItemsVertex;
-
-        private readonly SchedulerGraph<T> _schedulerGraph;
-        private readonly TopologicalOrderVisitor<T> _topologicalOrderVisitor;
-
-        public IEnumerable<T> TopologicalOrder
+        protected override Controller CreateController(SchedulerGraph<T>.Vertex vertex)
         {
-            get
-            {
-                if (IsBatching)
-                    throw new InvalidOperationException(
-                        "Dependency graph is currently in batch mode ! Call BatchEnd() to finish.");
-
-                return _topologicalOrderVisitor.Result;
-            }
+            return new Controller(this, vertex);
         }
 
-        public Scheduler()
+        public class Controller : IRelativeController<Controller, T>, IPriorityController<Controller>
         {
-            ItemsVertex = new Dictionary<T, SchedulerGraph<T>.Vertex>();
+            protected readonly PriorityController<Controller, T> PriorityController;
+            protected readonly RelativeController<Controller, T> RelativeController;
 
-            _schedulerGraph = new SchedulerGraph<T>();
-            _topologicalOrderVisitor = new TopologicalOrderVisitor<T>();
-        }
-
-        public virtual ISchedulerController<T> Plan(T item)
-        {
-            SchedulerGraph<T>.Vertex vertex;
-            ItemsVertex.TryGetValue(item, out vertex);
-
-            if (vertex == null)
+            public Controller(SchedulerBase<Controller, T> scheduler, SchedulerGraph<T>.Vertex vertex)
             {
-                AddItemVertex(item);
-                Refresh();
+                PriorityController = new PriorityController<Controller,T>(scheduler, vertex);
+                RelativeController = new RelativeController<Controller, T>(scheduler, vertex);
             }
 
-            return new SchedulerController(this, vertex);
-        }
-
-        public virtual void Unplan(T item)
-        {
-            _schedulerGraph.ClearEdges(ItemsVertex[item]);
-            Refresh();
-        }
-
-        public void ApplyProfile(ISchedulerProfile schedulerProfile)
-        {
-            SchedulerGraph<T>.Vertex previous = null;
-            foreach (Predicate<object> predicate in schedulerProfile)
+            public Controller After(T item)
             {
-                var vertex = new SchedulerGraph<T>.Vertex(predicate);
-                _schedulerGraph.AddVertex(vertex);
-
-                if (previous != null)
-                {
-                    var edge = new SchedulerGraph<T>.Edge();
-                    _schedulerGraph.AddEdge(vertex, previous, edge);
-                }
-
-                previous = vertex;
+                RelativeController.After(item);
+                return this;
             }
 
-            Refresh();
-        }
-
-        protected override void OnBatchEnded()
-        {
-            Refresh();
-        }
-
-        internal void Add(T item)
-        {
-            if (ItemsVertex.ContainsKey(item))
-                return;
-
-            SchedulerGraph<T>.Vertex vertex = _schedulerGraph.Vertices.FirstOrDefault(x => x.Predicate(item));
-            if (vertex != null)
-                vertex.Items.Add(item);
-            else
-                AddItemVertex(item);
-
-            Refresh();
-        }
-
-        internal void Remove(T item)
-        {
-            SchedulerGraph<T>.Vertex vertex;
-            ItemsVertex.TryGetValue(item, out vertex);
-
-            if (vertex != null)
+            public Controller Before(T item)
             {
-                _schedulerGraph.RemoveVertex(vertex);
-                Refresh();
-            }
-        }
-
-        internal void Clear()
-        {
-            _schedulerGraph.ClearVertices();
-            Refresh();
-        }
-
-        private SchedulerGraph<T>.Vertex AddItemVertex(T item)
-        {
-            var vertex = new SchedulerGraph<T>.Vertex(item);
-            _schedulerGraph.AddVertex(vertex);
-            ItemsVertex.Add(item, vertex);
-
-            return vertex;
-        }
-
-        private void Refresh()
-        {
-            if (IsBatching)
-                return;
-
-            _topologicalOrderVisitor.Process(_schedulerGraph);
-        }
-
-        // BUG : SchedulerController.AtStart() don't works
-        protected class SchedulerController : ISchedulerController<T>
-        {
-            protected readonly SchedulerGraph<T> SchedulerGraph;
-            private readonly Scheduler<T> _scheduler;
-            private readonly SchedulerGraph<T>.Vertex _vertex;
-
-            public SchedulerController(Scheduler<T> scheduler, SchedulerGraph<T>.Vertex vertex)
-            {
-                _scheduler = scheduler;
-                _vertex = vertex;
-
-                SchedulerGraph = _scheduler._schedulerGraph;
+                RelativeController.Before(item);
+                return this;
             }
 
-            public void AtStart()
+            public Controller AtEnd()
             {
-                _vertex.Priority = Priority.High;
-                _scheduler.Refresh();
+                PriorityController.AtEnd();
+                return this;
             }
 
-            public void AtEnd()
+            public Controller AtStart()
             {
-                _vertex.Priority = Priority.Low;
-                _scheduler.Refresh();
+                PriorityController.AtStart();
+                return this;
             }
 
-            public void Before(T dependent)
+            void IRelativeController<T>.Before(T item)
             {
-                SchedulerGraph<T>.Vertex otherVertex;
-                _scheduler.ItemsVertex.TryGetValue(dependent, out otherVertex);
-
-                if (otherVertex == null)
-                    otherVertex = _scheduler.AddItemVertex(dependent);
-
-                var edge = new SchedulerGraph<T>.Edge();
-                SchedulerGraph.AddEdge(otherVertex, _vertex, edge);
-
-                _scheduler.Refresh();
+                RelativeController.Before(item);
             }
 
-            public void After(T dependency)
+            void IRelativeController<T>.After(T item)
             {
-                SchedulerGraph<T>.Vertex otherVertex;
-                _scheduler.ItemsVertex.TryGetValue(dependency, out otherVertex);
+                RelativeController.After(item);
+            }
 
-                if (otherVertex == null)
-                    otherVertex = _scheduler.AddItemVertex(dependency);
+            void IPriorityController.AtStart()
+            {
+                PriorityController.AtStart();
+            }
 
-                var edge = new SchedulerGraph<T>.Edge();
-                SchedulerGraph.AddEdge(_vertex, otherVertex, edge);
-
-                _scheduler.Refresh();
+            void IPriorityController.AtEnd()
+            {
+                PriorityController.AtEnd();
             }
         }
     }

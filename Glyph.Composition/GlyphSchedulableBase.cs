@@ -123,7 +123,7 @@ namespace Glyph.Composition
         {
             using (_newComponents.BeginBatch())
             {
-                foreach (InitializeDelegate initialize in _schedulerAssigner.Initialize.TopologicalOrder)
+                foreach (InitializeDelegate initialize in _schedulerAssigner.Initialize.Planning)
                     initialize();
 
                 _initialized = true;
@@ -134,7 +134,7 @@ namespace Glyph.Composition
         {
             using (_newComponents.BeginBatch())
             {
-                foreach (LoadContentDelegate loadContent in _schedulerAssigner.LoadContent.TopologicalOrder)
+                foreach (LoadContentDelegate loadContent in _schedulerAssigner.LoadContent.Planning)
                 loadContent(contentLibrary);
 
                 _contentLoaded = true;
@@ -145,7 +145,7 @@ namespace Glyph.Composition
         {
             using (_newComponents.BeginBatch())
             {
-                foreach (UpdateDelegate update in _schedulerAssigner.Update.TopologicalOrder)
+                foreach (UpdateDelegate update in _schedulerAssigner.Update.Planning)
                 {
                     if (!Enabled)
                         return;
@@ -183,16 +183,16 @@ namespace Glyph.Composition
 
         public class SchedulerHandlerBase : GlyphSchedulerHandler
         {
-            public IGlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; private set; }
-            public IGlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; private set; }
-            public IGlyphScheduler<IUpdate, UpdateDelegate> Update { get; private set; }
+            public GlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; private set; }
+            public GlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; private set; }
+            public GlyphScheduler<IUpdate, UpdateDelegate> Update { get; private set; }
 
             public SchedulerHandlerBase(IDependencyInjector injector)
                 : base(injector)
             {
-                Initialize = Add<IGlyphComponent, InitializeDelegate>();
-                LoadContent = Add<ILoadContent, LoadContentDelegate>();
-                Update = Add<IUpdate, UpdateDelegate>();
+                Initialize = AddScheduler<IGlyphComponent, InitializeDelegate>();
+                LoadContent = AddScheduler<ILoadContent, LoadContentDelegate>();
+                Update = AddScheduler<IUpdate, UpdateDelegate>();
             }
         }
     }

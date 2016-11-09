@@ -1,15 +1,15 @@
 using System;
-using Glyph.Composition.Scheduler.Base;
+using Glyph.Composition.Scheduler.Base.Controllers;
 
 namespace Glyph.Composition.Scheduler
 {
-    public interface IGlyphSchedulerController<in TInterface, in TDelegate> : ISchedulerController<TDelegate>
+    public interface IGlyphSchedulerController<out TController, in TInterface, in TDelegate> : IRelativeController<TController, TDelegate>, IPriorityController<TController>
     {
-        void Before(TInterface item);
-        void After(TInterface item);
-        void Before<T>() where T : TInterface;
-        void After<T>() where T : TInterface;
-        void Before(Type type);
-        void After(Type type);
+        TController Before(TInterface item);
+        TController After(TInterface item);
+        TController Before<T>() where T : TInterface;
+        TController After<T>() where T : TInterface;
+        TController Before(Type type);
+        TController After(Type type);
     }
 }

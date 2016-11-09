@@ -19,7 +19,7 @@ namespace Glyph.Composition.Scheduler
             Schedulers = new List<IGlyphSchedulerAssigner>();
         }
 
-        public GlyphScheduler<TInterface, TDelegate> Add<TInterface, TDelegate>()
+        public GlyphScheduler<TInterface, TDelegate> AddScheduler<TInterface, TDelegate>()
             where TInterface : class, IGlyphComponent
         {
             var scheduler = _injector.Resolve<GlyphScheduler<TInterface, TDelegate>>();
@@ -27,7 +27,7 @@ namespace Glyph.Composition.Scheduler
             return scheduler;
         }
 
-        public void Add(IGlyphSchedulerAssigner schedulerAssigner)
+        public void AddScheduler(IGlyphSchedulerAssigner schedulerAssigner)
         {
             Schedulers.Add(schedulerAssigner);
         }
@@ -72,5 +72,44 @@ namespace Glyph.Composition.Scheduler
             foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
                 scheduler.ClearComponents();
         }
+
+        //public IState<TValue> GetState<TValue>()
+        //{
+        //    return _statableModel.GetState<TValue>();
+        //}
+
+        //public void SetState<TValue>(IState<TValue> state)
+        //{
+        //    _statableModel.SetState(state);
+
+        //    foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
+        //        scheduler.SetState(state);
+        //}
+
+        //public IState<TValue> AddState<TValue>()
+        //{
+        //    IState<TValue> state = _statableModel.AddState<TValue>();
+
+        //    foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
+        //        scheduler.AddState(state);
+
+        //    return state;
+        //}
+
+        //public void AddState<TValue>(IState<TValue> state)
+        //{
+        //    _statableModel.AddState(state);
+
+        //    foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
+        //        scheduler.AddState(state);
+        //}
+
+        //public bool RemoveState<TValue>()
+        //{
+        //    foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
+        //        scheduler.RemoveState<TValue>();
+
+        //    return _statableModel.RemoveState<TValue>();
+        //}
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Diese;
 using Diese.Graph;
 
 namespace Glyph.Composition.Scheduler.Base
@@ -8,13 +9,13 @@ namespace Glyph.Composition.Scheduler.Base
     {
         public class Vertex : Vertex<Vertex, Edge>, IVisitable<TopologicalOrderVisitor<T>, Vertex, Vertex, Edge>
         {
-            public Predicate<object> Predicate { get; set; } 
+            public Predicate<object> Predicate { get; set; }
             public IList<T> Items { get; private set; }
             public Priority Priority { get; set; }
 
-            public Vertex(Predicate<object> predicate)
+            public Vertex(Predicate<object> insertPredicate)
             {
-                Predicate = predicate;
+                Predicate = insertPredicate;
 
                 Items = new List<T>();
                 Priority = Priority.Normal;

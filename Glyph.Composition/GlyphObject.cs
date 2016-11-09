@@ -25,18 +25,18 @@ namespace Glyph.Composition
             if (!Visible)
                 return;
 
-            foreach (DrawDelegate draw in Schedulers.Draw.TopologicalOrder)
+            foreach (DrawDelegate draw in Schedulers.Draw.Planning)
                 draw(drawer);
         }
 
         protected class SchedulerHandler : SchedulerHandlerBase
         {
-            public IGlyphScheduler<IDraw, DrawDelegate> Draw { get; private set; }
+            public GlyphScheduler<IDraw, DrawDelegate> Draw { get; private set; }
 
             public SchedulerHandler(IDependencyInjector injector)
                 : base(injector)
             {
-                Draw = Add<IDraw, DrawDelegate>();
+                Draw = AddScheduler<IDraw, DrawDelegate>();
             }
         }
     }

@@ -64,6 +64,10 @@
     <Compile Include="Messaging\InstantiatingMessage.cs" />
     <Compile Include="Messaging\Receiver.cs" />
     <Compile Include="Modelization\CompositeData.cs" />
+    <Compile Include="Scheduler\Base\Controllers\IPriorityController.cs" />
+    <Compile Include="Scheduler\Base\Controllers\PriorityController.cs" />
+    <Compile Include="Scheduler\Base\Controllers\RelativeController.cs" />
+    <Compile Include="Scheduler\Base\SchedulerBase.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
     <Compile Include="Tracking\MessagingTracker.cs" />
     <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
@@ -87,7 +91,7 @@
     <Compile Include="Scheduler\Base\TopologicalOrderVisitor.cs" />
     <Compile Include="Scheduler\GlyphScheduler.cs" />
     <Compile Include="Scheduler\Base\IScheduler.cs" />
-    <Compile Include="Scheduler\Base\ISchedulerController.cs" />
+    <Compile Include="Scheduler\Base\Controllers\IRelativeController.cs" />
     <Compile Include="Scheduler\GlyphSchedulerHandler.cs" />
     <Compile Include="Scheduler\GlyphSchedulerSorter.cs" />
     <Compile Include="Scheduler\IGlyphScheduler.cs" />
