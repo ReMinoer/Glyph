@@ -21,6 +21,11 @@ namespace Glyph.Graphics.Particles
             get { return AnimationPlayer.ElapsedTime >= LifeTime; }
         }
 
+        public float TimeOffset
+        {
+            set { AnimationPlayer.TimeOffset = value; }
+        }
+
         public StandardParticle(IDependencyInjector injector)
             : base(injector)
         {
@@ -31,11 +36,6 @@ namespace Glyph.Graphics.Particles
             AnimationPlayer = Add<AnimationPlayer<StandardParticle>>();
 
             Add<SpriteRenderer>();
-        }
-
-        public void SetTimeOffset(float offset)
-        {
-            AnimationPlayer.SetTimeOffset(offset);
         }
     }
 }

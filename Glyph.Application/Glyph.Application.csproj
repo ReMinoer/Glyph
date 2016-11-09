@@ -49,6 +49,10 @@
       <Project>{8e354191-e8e5-498b-9c24-a6765da86417}</Project>
       <Name>Diese.Collections</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Graph\Diese.Graph.csproj">
+      <Project>{bbc6c938-95a5-4cbf-aa6b-da2a9a09c4f1}</Project>
+      <Name>Diese.Graph</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>

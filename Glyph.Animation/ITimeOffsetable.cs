@@ -2,6 +2,6 @@
 {
     public interface ITimeOffsetable
     {
-        void SetTimeOffset(float offset);
+        float TimeOffset { set; }
     }
 }

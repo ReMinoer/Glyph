@@ -13,8 +13,9 @@ namespace Glyph.Animation
         private float _linearDuration;
         public bool Loop { get; set; }
 
-        public PropertiesAnimationBuilder()
+        public PropertiesAnimationBuilder(bool loop = false)
         {
+            Loop = loop;
             _transitions = new List<AnimationTransition<T>>();
             _loopedTransitions = new List<LoopedAnimationTransition>();
         }
@@ -31,7 +32,7 @@ namespace Glyph.Animation
                     Action = (ref T animatable, float advance) =>
                     {
                         TProperty property = default(TProperty);
-                        propertyTransition.Action(ref property, advance);
+                        propertyTransition.Action?.Invoke(ref property, advance);
                         setter(animatable, property);
                     }
                 };
@@ -117,7 +118,7 @@ namespace Glyph.Animation
 
             while (!MathUtils.FloatEquals(x,y))
             {
-                if (a < b)
+                if (x < y)
                     x += a;
                 else
                     y += b;

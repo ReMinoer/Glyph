@@ -17,6 +17,11 @@ namespace Glyph.Animation
         public bool Paused { get; private set; }
         public bool IsLooping { get; set; }
 
+        public float TimeOffset
+        {
+            set { ElapsedTime = value; }
+        }
+
         public IAnimation<T> Animation
         {
             get { return _animation; }
@@ -118,11 +123,6 @@ namespace Glyph.Animation
         public void Resume()
         {
             Paused = false;
-        }
-
-        public void SetTimeOffset(float offset)
-        {
-            ElapsedTime = offset;
         }
     }
 }

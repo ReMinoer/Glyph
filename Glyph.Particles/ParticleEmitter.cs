@@ -72,7 +72,7 @@ namespace Glyph.Particles
                 _particles.Add(particle);
 
                 float startTime = spawnTime * elapsedTime.Scale - elapsedTime.GetDelta(this);
-                particle.SetTimeOffset(startTime);
+                particle.TimeOffset = startTime;
                 particle.Update(elapsedTime);
             }
         }

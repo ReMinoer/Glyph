@@ -26,7 +26,6 @@ using Glyph.Tools.ShapeRendering;
 using Glyph.UI;
 using Glyph.UI.Menus;
 using Glyph.UI.Simple;
-using SongPlayer = Glyph.Audio.SongPlayer;
 
 namespace Glyph.Application
 {
@@ -95,7 +94,7 @@ namespace Glyph.Application
             #region Animation
 
             Register<Motion>();
-            RegisterGeneric(typeof(Animator<>));
+            RegisterGeneric(typeof(AnimationGraph<,>));
             RegisterGeneric(typeof(AnimationPlayer<>));
 
             #endregion

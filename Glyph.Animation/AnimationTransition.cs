@@ -12,7 +12,7 @@ namespace Glyph.Animation
 
         public void Apply(ref T animatable, float advance)
         {
-            Action(ref animatable, advance);
+            Action?.Invoke(ref animatable, advance);
         }
 
         public int CompareTo(AnimationTransition<T> other)
