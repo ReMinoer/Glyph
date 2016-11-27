@@ -43,19 +43,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColliderManager.cs" />
-    <Compile Include="Colliders\Base\ColliderParentHelper.cs" />
-    <Compile Include="Colliders\CircleCollider.cs" />
-    <Compile Include="Colliders\Base\ColliderBase.cs" />
-    <Compile Include="Colliders\ColliderContainer.cs" />
-    <Compile Include="Colliders\ColliderComposite.cs" />
-    <Compile Include="Colliders\CollisionUtils.cs" />
-    <Compile Include="Colliders\GridCollider.cs" />
-    <Compile Include="Colliders\IGridCollider.cs" />
-    <Compile Include="Colliders\Base\ShapeColliderBase.cs" />
-    <Compile Include="Colliders\ICollider.cs" />
-    <Compile Include="Colliders\RectangleCollider.cs" />
-    <Compile Include="Collision.cs" />
     <Compile Include="PhysicsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

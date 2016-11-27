@@ -1,8 +1,8 @@
-﻿using Glyph.Math.Shapes;
-using Glyph.Physics.Colliders.Base;
+﻿using Glyph.Core.Colliders.Base;
+using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Physics.Colliders
+namespace Glyph.Core.Colliders
 {
     public class RectangleCollider : ShapeColliderBase<IRectangle>
     {

@@ -1,9 +1,8 @@
-﻿using Glyph.Core;
-using Glyph.Math;
+﻿using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Physics.Colliders.Base
+namespace Glyph.Core.Colliders.Base
 {
     public abstract class ShapeColliderBase<TShape> : ColliderBase, ICollider<TShape>
         where TShape : IShape

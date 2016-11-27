@@ -1,11 +1,11 @@
 ﻿using System;
+using Glyph.Core.Colliders.Base;
 using Glyph.Math;
 using Glyph.Math.Shapes;
-using Glyph.Physics.Colliders.Base;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Physics.Colliders
+namespace Glyph.Core.Colliders
 {
     public class GridCollider<TData> : ColliderBase, IGridCollider
     {

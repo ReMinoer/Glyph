@@ -1,10 +1,9 @@
 ﻿using System;
 using Glyph.Composition;
-using Glyph.Core;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Physics.Colliders
+namespace Glyph.Core.Colliders
 {
     public interface ICollider : IShape, IEnableable, IUpdate
     {

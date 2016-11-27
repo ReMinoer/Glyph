@@ -5,9 +5,9 @@ using Glyph.Composition;
 using Glyph.Composition.Injection;
 using Glyph.Composition.Tracking;
 using Glyph.Core;
+using Glyph.Core.Colliders;
 using Glyph.Math;
 using Glyph.Math.Shapes;
-using Glyph.Physics.Colliders;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Scripting

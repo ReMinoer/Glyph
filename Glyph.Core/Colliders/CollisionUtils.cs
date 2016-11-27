@@ -2,7 +2,7 @@
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Physics.Colliders
+namespace Glyph.Core.Colliders
 {
     static public class CollisionUtils
     {

@@ -6,6 +6,7 @@ using Glyph.Math;
 
 namespace Glyph.Animation
 {
+    // TODO : Generate setter dictionaries
     public class PropertiesAnimationBuilder<T> : IAnimationBuilder<T>, IEnumerable
     {
         private readonly List<AnimationTransition<T>> _transitions;

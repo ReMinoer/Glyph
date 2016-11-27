@@ -1,7 +1,7 @@
-﻿using Glyph.Math.Shapes;
-using Glyph.Physics.Colliders.Base;
+﻿using Glyph.Core.Colliders.Base;
+using Glyph.Math.Shapes;
 
-namespace Glyph.Physics.Colliders
+namespace Glyph.Core.Colliders
 {
     public class CircleCollider : ShapeColliderBase<ICircle>
     {

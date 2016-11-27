@@ -1,10 +1,9 @@
 ﻿using System;
 using Glyph.Composition;
-using Glyph.Core;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Physics.Colliders.Base
+namespace Glyph.Core.Colliders.Base
 {
     public abstract class ColliderBase : GlyphContainer, ICollider
     {

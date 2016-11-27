@@ -5,11 +5,11 @@ using Glyph.Composition;
 using Glyph.Composition.Layers;
 using Glyph.Composition.Scheduler.Base;
 using Glyph.Core;
+using Glyph.Core.Colliders;
 using Glyph.Graphics;
 using Glyph.Graphics.Renderer;
 using Glyph.Graphics.Shapes;
 using Glyph.Particles;
-using Glyph.Physics.Colliders;
 using Glyph.Scripting;
 
 namespace Glyph.Application

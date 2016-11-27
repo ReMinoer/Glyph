@@ -1,7 +1,7 @@
-﻿using Glyph.Physics.Colliders;
+﻿using Glyph.Core.Colliders;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Physics
+namespace Glyph.Core
 {
     public struct Collision : IHandlable
     {

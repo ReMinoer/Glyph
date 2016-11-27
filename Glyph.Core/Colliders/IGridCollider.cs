@@ -1,6 +1,6 @@
 ﻿using Glyph.Space;
 
-namespace Glyph.Physics.Colliders
+namespace Glyph.Core.Colliders
 {
     public interface IGridCollider : ICollider
     {

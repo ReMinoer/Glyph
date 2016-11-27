@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using Glyph.Physics.Colliders;
+using Glyph.Core.Colliders;
 using Glyph.Space;
 
-namespace Glyph.Physics
+namespace Glyph.Core
 {
     public class ColliderManager
     {
