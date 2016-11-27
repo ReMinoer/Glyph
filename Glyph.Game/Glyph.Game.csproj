@@ -79,10 +79,6 @@
       <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
       <Name>Glyph.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Glyph.Effects\Glyph.Effects.csproj">
-      <Project>{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}</Project>
-      <Name>Glyph.Effects</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
       <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
       <Name>Glyph.Graphics</Name>
@@ -90,10 +86,6 @@
     <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
       <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
       <Name>Glyph.Input</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Scripting\Glyph.Scripting.csproj">
-      <Project>{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}</Project>
-      <Name>Glyph.Scripting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Tools\Glyph.Tools.csproj">
       <Project>{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}</Project>
