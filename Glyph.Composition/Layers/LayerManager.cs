@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Glyph.Composition.Injection;
 using Stave;
 
 namespace Glyph.Composition.Layers
@@ -9,6 +10,8 @@ namespace Glyph.Composition.Layers
         where TLayer : class, ILayer<TLayer>
     {
         protected readonly Dictionary<ILayerRoot<TLayer>, TLayer> _layers;
+
+        [GlyphInjectable]
         public Func<ILayerRoot<TLayer>, TLayer> LayerFactory { get; set; }
 
         public IReadOnlyCollection<TLayer> Layers

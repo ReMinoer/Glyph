@@ -7,44 +7,20 @@ namespace Glyph.Graphics
 {
     public class Drawer : IDrawer
     {
-        private readonly GraphicsDeviceManager _graphicsDeviceManager;
-        public SpriteBatchStack SpriteBatchStack { get; private set; }
+        public GraphicsDeviceManager GraphicsDeviceManager { get; }
+        public SpriteBatchStack SpriteBatchStack { get; }
         public IView CurrentView { get; set; }
+        public GraphicsDevice GraphicsDevice => GraphicsDeviceManager.GraphicsDevice;
+        public ICamera Camera => CurrentView.Camera;
+        public Texture2D Output => CurrentView.Output;
+        public IRectangle DisplayedRectangle => CurrentView.DisplayedRectangle;
+        public Matrix ViewMatrix => CurrentView.Matrix;
+        public IRectangle ScreenBounds => CurrentView.BoundingBox;
 
-        public GraphicsDevice GraphicsDevice
+        public Drawer(GraphicsDeviceManager graphicsDeviceManager)
         {
-            get { return _graphicsDeviceManager.GraphicsDevice; }
-        }
-
-        public ICamera Camera
-        {
-            get { return CurrentView.Camera; }
-        }
-
-        public Texture2D Output
-        {
-            get { return CurrentView.Output; }
-        }
-
-        public IRectangle DisplayedRectangle
-        {
-            get { return CurrentView.DisplayedRectangle; }
-        }
-
-        public Matrix ViewMatrix
-        {
-            get { return CurrentView.Matrix; }
-        }
-
-        public IRectangle ScreenBounds
-        {
-            get { return CurrentView.BoundingBox; }
-        }
-
-        public Drawer(SpriteBatch spriteBatch, GraphicsDeviceManager graphicsDeviceManager)
-        {
-            _graphicsDeviceManager = graphicsDeviceManager;
-            SpriteBatchStack = new SpriteBatchStack(spriteBatch);
+            GraphicsDeviceManager = graphicsDeviceManager;
+            SpriteBatchStack = new SpriteBatchStack(new SpriteBatch(graphicsDeviceManager.GraphicsDevice));
         }
 
         public void ApplyEffects(IDrawer drawer)
