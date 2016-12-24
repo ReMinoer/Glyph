@@ -53,10 +53,10 @@ namespace Glyph.Input.StandardControls
                 down.Add(new ActivityControl(new GamePadThumbstickInput(GamePadThumbstick.Left, playerIndex).Boolean(DeadZone.Minus(Fingear.Converters.Axis.Y, -JoystickDeadZone))));
 
                 left.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.Left, playerIndex)));
-                left.Add(new ActivityControl(new GamePadThumbstickInput(GamePadThumbstick.Left, playerIndex).Boolean(DeadZone.Plus(Fingear.Converters.Axis.X, JoystickDeadZone))));
+                left.Add(new ActivityControl(new GamePadThumbstickInput(GamePadThumbstick.Left, playerIndex).Boolean(DeadZone.Plus(Fingear.Converters.Axis.X, -JoystickDeadZone))));
 
                 right.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.Right, playerIndex)));
-                right.Add(new ActivityControl(new GamePadThumbstickInput(GamePadThumbstick.Left, playerIndex).Boolean(DeadZone.Minus(Fingear.Converters.Axis.X, -JoystickDeadZone))));
+                right.Add(new ActivityControl(new GamePadThumbstickInput(GamePadThumbstick.Left, playerIndex).Boolean(DeadZone.Minus(Fingear.Converters.Axis.X, JoystickDeadZone))));
 
                 confirm.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.A, playerIndex)));
 

@@ -8,8 +8,8 @@ namespace Glyph.Graphics.Shapes
     {
         public int Radius { get; set; }
 
-        public CircleSprite(Lazy<GraphicsDevice> lazyGraphicsDevice)
-            : base(lazyGraphicsDevice)
+        public CircleSprite(Func<GraphicsDevice> graphicsDeviceFunc)
+            : base(graphicsDeviceFunc)
         {
             Radius = 50;
         }
@@ -35,7 +35,7 @@ namespace Glyph.Graphics.Shapes
                 data[y * outerDiameter + x + 1] = Color;
             }
 
-            _texture = new Texture2D(LazyGraphicsDevice.Value, outerDiameter, outerDiameter);
+            _texture = new Texture2D(GraphicsDeviceFunc(), outerDiameter, outerDiameter);
             Texture.SetData(data);
         }
     }

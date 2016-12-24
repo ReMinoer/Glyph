@@ -82,16 +82,6 @@ namespace Glyph.Core
             return false;
         }
 
-        static public IView GetView(Point windowPoint)
-        {
-            return GetView(Resolution.Instance.WindowToVirtualScreen(windowPoint));
-        }
-
-        static public IView GetView(Point windowPoint, out Vector2 positionOnView)
-        {
-            return GetView(Resolution.Instance.WindowToVirtualScreen(windowPoint), out positionOnView);
-        }
-
         static public IView GetView(Vector2 virtualScreenPosition)
         {
             return Main.Views.Reverse().FirstOrDefault(view => view.BoundingBox.ContainsPoint(virtualScreenPosition));

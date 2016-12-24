@@ -10,10 +10,9 @@ using Glyph.Graphics;
 using Glyph.Input;
 using Glyph.Input.StandardControls;
 using Glyph.Tools;
-using Glyph.Tools.StatusDisplay;
-using Glyph.Tools.StatusDisplay.Channels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using NLog;
 
@@ -25,6 +24,7 @@ namespace Glyph.Game
         private readonly ContentManager _contentManager;
         private IScene _scene;
         private bool _sceneChanged;
+        private IGlyphClient _focusedClient;
         public bool IsStarted { get; private set; }
         public bool IsPaused { get; private set; }
         public IDependencyRegistry Registry { get; }
@@ -32,11 +32,25 @@ namespace Glyph.Game
         public ContentLibrary ContentLibrary { get; }
         public ControlManager ControlManager { get; }
         public PerformanceViewer PerformanceViewer { get; }
-        public StatusDisplay StatusDisplay { get; }
+
+        public IGlyphClient FocusedClient
+        {
+            get { return _focusedClient; }
+            set
+            {
+                if (_focusedClient == value)
+                    return;
+
+                _focusedClient = value;
+                ControlManager.InputClient = value;
+                FocusChanged?.Invoke(_focusedClient);
+            }
+        }
 
         public event Action Started;
         public event Action Stopped;
         public event Action Paused;
+        public event Action<IGlyphClient> FocusChanged;
 
         public IScene Scene
         {
@@ -52,14 +66,14 @@ namespace Glyph.Game
             }
         }
 
-        public GlyphEngine(ContentManager contentManager, GraphicsDeviceManager mainGraphicsDevice, IConfigurator<IDependencyRegistry> dependencyConfigurator = null, params string[] args)
+        public GlyphEngine(ContentManager contentManager, Action<IDependencyRegistry> dependencyConfigurator = null, params string[] args)
         {
             Logger.Info("Engine arguments : " + string.Join(" ", args));
 
             _contentManager = contentManager;
             
             IDependencyRegistry dependencyRegistry = new GlyphRegistry();
-            dependencyConfigurator?.Configure(dependencyRegistry);
+            dependencyConfigurator?.Invoke(dependencyRegistry);
 
             Registry = dependencyRegistry;
             Injector = new RegistryInjector(Registry);
@@ -67,17 +81,13 @@ namespace Glyph.Game
 
             _contentManager.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
-
             ControlManager = new ControlManager();
-
             PerformanceViewer = new PerformanceViewer();
-            StatusDisplay = new StatusDisplay();
-            StatusDisplay.Channels.Add(new DefautStatusDisplayChannel(PerformanceViewer));
 
             Registry.RegisterInstance<GlyphEngine>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
             Registry.RegisterInstance<ControlManager>(ControlManager);
-            Registry.RegisterLazy(() => mainGraphicsDevice.GraphicsDevice);
+            Registry.RegisterFunc(() => FocusedClient?.GraphicsDevice);
         }
 
         public void Initialize()
@@ -92,7 +102,6 @@ namespace Glyph.Game
 
             ViewManager.Main.LoadContent(ContentLibrary);
             SongPlayer.Instance.LoadContent(ContentLibrary);
-            StatusDisplay.LoadContent(ContentLibrary);
 
             Scene.LoadContent(ContentLibrary);
             _sceneChanged = false;
@@ -104,9 +113,9 @@ namespace Glyph.Game
             PerformanceViewer.UpdateCall();
         }
 
-        public void HandleInput(bool isFocus)
+        public void HandleInput()
         {
-            ControlManager.Update(ElapsedTime.Instance, isFocus);
+            ControlManager.Update(ElapsedTime.Instance, FocusedClient != null);
         }
 
         public void Update()
@@ -128,11 +137,6 @@ namespace Glyph.Game
                 if (developerControls.CompositionLog.IsActive())
                     CompositionLog.Write(Scene, Scene.RootNode);
 
-#if WINDOWS
-                if (developerControls.Fullscreen.IsActive())
-                    Resolution.Instance.ToogleFullscreen();
-#endif
-
                 if (developerControls.ToogleSong.IsActive())
                     switch (MediaPlayer.State)
                     {
@@ -149,9 +153,6 @@ namespace Glyph.Game
 
                 if (developerControls.NextSong.IsActive())
                     SongPlayer.Instance.Next();
-
-                if (developerControls.StatusDisplay.IsActive())
-                    StatusDisplay.Visible = !StatusDisplay.Visible;
             }
 
             using (GlyphSchedulableBase.UpdateWatchTree.Start("Root"))
@@ -171,7 +172,6 @@ namespace Glyph.Game
                 ViewManager.Main.Update(elapsedTime);
                 SongPlayer.Instance.Update(elapsedTime);
                 PerformanceViewer.Update(elapsedTime.GameTime);
-                StatusDisplay.Update(elapsedTime.GameTime);
 
                 PerformanceViewer.UpdateEnd();
             }
@@ -188,12 +188,11 @@ namespace Glyph.Game
             PerformanceViewer.DrawCall();
         }
 
-        public void Draw(GraphicsDeviceManager graphicsDeviceManager)
+        public void Draw(GraphicsDevice graphicsDevice, Resolution resolution, RenderTarget2D defaultRenderTarget = null)
         {
-            var drawer = new Drawer(graphicsDeviceManager);
-
-            Resolution.Instance.BeginDraw();
-            graphicsDeviceManager.GraphicsDevice.Clear(Color.Black);
+            var drawer = new Drawer(graphicsDevice, resolution, defaultRenderTarget);
+            graphicsDevice.Clear(Color.Black);
+            //graphicsDevice.Clear(Color.Aqua);
 
             foreach (IView view in ViewManager.Main.Views)
             {
@@ -201,10 +200,6 @@ namespace Glyph.Game
                 view.PrepareDraw(drawer);
                 Scene.Draw(drawer);
             }
-
-            drawer.SpriteBatchStack.Push(SpriteBatchContext.Default);
-            StatusDisplay.Draw(drawer.SpriteBatchStack.Current);
-            drawer.SpriteBatchStack.Pop();
         }
 
         public void EndDraw()

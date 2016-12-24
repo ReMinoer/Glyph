@@ -43,7 +43,7 @@ namespace Glyph.Tools
             }
         }
 
-        public MapEditor(ControlManager controlManager, Lazy<GraphicsDevice> lazyGraphicsDevice)
+        public MapEditor(ControlManager controlManager, Func<GraphicsDevice> lazyGraphicsDevice)
         {
             _controlManager = controlManager;
 

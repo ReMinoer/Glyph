@@ -11,7 +11,7 @@ namespace Glyph.Graphics
 {
     public class ViewEffectManager : SpriteSourceBase, ILoadContent, IUpdate
     {
-        private readonly Lazy<GraphicsDevice> _lazyGraphicsDevice;
+        private readonly Func<GraphicsDevice> _lazyGraphicsDevice;
         private readonly SpriteTarget _spriteTargetA;
         private readonly SpriteTarget _spriteTargetB;
         private int _renderStep;
@@ -35,7 +35,7 @@ namespace Glyph.Graphics
             }
         }
 
-        public ViewEffectManager(Lazy<GraphicsDevice> lazyGraphicsDevice)
+        public ViewEffectManager(Func<GraphicsDevice> lazyGraphicsDevice)
         {
             _lazyGraphicsDevice = lazyGraphicsDevice;
 
@@ -48,7 +48,7 @@ namespace Glyph.Graphics
         public void LoadContent(ContentLibrary contentLibrary)
         {
             foreach (IEffectComponent effectComponent in Effects)
-                effectComponent.LoadContent(contentLibrary, _lazyGraphicsDevice.Value);
+                effectComponent.LoadContent(contentLibrary, _lazyGraphicsDevice());
 
             _spriteTargetA.LoadContent(contentLibrary);
             _spriteTargetB.LoadContent(contentLibrary);
@@ -83,8 +83,18 @@ namespace Glyph.Graphics
                 if (!effect.Enabled)
                     continue;
 
-                RenderTarget2D input = _renderStep % 2 == 0 ? _spriteTargetA.RenderTarget : _spriteTargetB.RenderTarget;
-                RenderTarget2D output = _renderStep % 2 == 0 ? _spriteTargetB.RenderTarget : _spriteTargetA.RenderTarget;
+                RenderTarget2D input, output;
+                if (_renderStep % 2 == 0)
+                {
+                    input = _spriteTargetA.RenderTarget;
+                    output = _spriteTargetB.RenderTarget;
+                }
+                else
+                {
+                    input = _spriteTargetB.RenderTarget;
+                    output = _spriteTargetA.RenderTarget;
+                }
+
                 drawer.GraphicsDevice.SetRenderTarget(output);
                 drawer.GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.Stencil, Color.Pink, 0, 0);
 
@@ -99,7 +109,7 @@ namespace Glyph.Graphics
                 }
                 drawer.SpriteBatchStack.Current.Draw(input, Vector2.Zero, Color.White);
                 drawer.SpriteBatchStack.Current.End();
-                
+
                 _renderStep++;
             }
         }

@@ -16,12 +16,12 @@ namespace Glyph.Input.StandardControls
         public IControl<InputActivity> Middle { get; }
         public IControl<float> Wheel { get; }
 
-        public MouseControls()
+        public MouseControls(ControlManager controlManager)
         {
-            Add(WindowPosition = new ReferentialCursorControl("WindowPosition", new MouseCursorInput(), CursorSpace.Window));
-            Add(ScreenPosition = new ReferentialCursorControl("ScreenPosition", new MouseCursorInput(), CursorSpace.Screen));
-            Add(VirtualScreenPosition = new ReferentialCursorControl("VirtualScreenPosition", new MouseCursorInput(), CursorSpace.VirtualScreen));
-            Add(ScenePosition = new ReferentialCursorControl("ScenePosition", new MouseCursorInput(), CursorSpace.Scene));
+            Add(WindowPosition = new ReferentialCursorControl(controlManager, "WindowPosition", new MouseCursorInput(), CursorSpace.Window));
+            Add(ScreenPosition = new ReferentialCursorControl(controlManager, "ScreenPosition", new MouseCursorInput(), CursorSpace.Screen));
+            Add(VirtualScreenPosition = new ReferentialCursorControl(controlManager, "VirtualScreenPosition", new MouseCursorInput(), CursorSpace.VirtualScreen));
+            Add(ScenePosition = new ReferentialCursorControl(controlManager, "ScenePosition", new MouseCursorInput(), CursorSpace.Scene));
             Add(Left = new ActivityControl("Left", new MouseButtonInput(MouseButton.Left)));
             Add(Right = new ActivityControl("Right", new MouseButtonInput(MouseButton.Right)));
             Add(Middle = new ActivityControl("Middle", new MouseButtonInput(MouseButton.Middle)));

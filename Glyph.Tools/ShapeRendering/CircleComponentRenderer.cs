@@ -12,8 +12,8 @@ namespace Glyph.Tools.ShapeRendering
     {
         private readonly IShapedComponent<ICircle> _shapedComponent;
 
-        public CircleComponentRenderer(IShapedComponent<ICircle> shapedComponent, Lazy<GraphicsDevice> lazyGraphicsDevice)
-            : base(shapedComponent, new CircleSprite(lazyGraphicsDevice))
+        public CircleComponentRenderer(IShapedComponent<ICircle> shapedComponent, Func<GraphicsDevice> graphicsDeviceFunc)
+            : base(shapedComponent, new CircleSprite(graphicsDeviceFunc))
         {
             _shapedComponent = shapedComponent;
         }

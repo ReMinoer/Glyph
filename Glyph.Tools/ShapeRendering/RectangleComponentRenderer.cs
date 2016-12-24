@@ -10,8 +10,8 @@ namespace Glyph.Tools.ShapeRendering
     {
         private readonly IShapedComponent<IRectangle> _shapedComponent;
 
-        public RectangleComponentRenderer(IShapedComponent<IRectangle> shapedComponent, Lazy<GraphicsDevice> lazyGraphicsDevice)
-            : base(shapedComponent, new FilledRectangleSprite(lazyGraphicsDevice))
+        public RectangleComponentRenderer(IShapedComponent<IRectangle> shapedComponent, Func<GraphicsDevice> graphicsDeviceFunc)
+            : base(shapedComponent, new FilledRectangleSprite(graphicsDeviceFunc))
         {
             _shapedComponent = shapedComponent;
         }

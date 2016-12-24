@@ -9,8 +9,8 @@ namespace Glyph.Graphics.Shapes
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public RectangleSprite(Lazy<GraphicsDevice> lazyGraphicsDevice)
-            : base(lazyGraphicsDevice)
+        public RectangleSprite(Func<GraphicsDevice> graphicsDeviceFunc)
+            : base(graphicsDeviceFunc)
         {
             Width = 100;
             Height = 100;
@@ -33,7 +33,7 @@ namespace Glyph.Graphics.Shapes
                 data[i * Width + (Width - 1)] = Color;
             }
 
-            _texture = new Texture2D(LazyGraphicsDevice.Value, Width, Height);
+            _texture = new Texture2D(GraphicsDeviceFunc(), Width, Height);
             Texture.SetData(data);
         }
     }

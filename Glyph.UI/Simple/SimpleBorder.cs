@@ -26,14 +26,14 @@ namespace Glyph.UI.Simple
             get { return new OriginRectangle(SceneNode.Position, Size); }
         }
 
-        public SimpleBorder(Lazy<GraphicsDevice> lazyGraphicsDevice)
+        public SimpleBorder(Func<GraphicsDevice> graphicsDeviceFunc)
         {
             Enabled = true;
             Visible = true;
 
             SceneNode = new SceneNode();
             Motion = new Motion(SceneNode);
-            _rectangleSprite = new RectangleSprite(lazyGraphicsDevice);
+            _rectangleSprite = new RectangleSprite(graphicsDeviceFunc);
 
             Color = Color.Black;
             Thickness = 1;

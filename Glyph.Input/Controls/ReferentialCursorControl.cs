@@ -19,6 +19,7 @@ namespace Glyph.Input.Controls
 
     public class ReferentialCursorControl : ControlBase<Fingear.Vector2>
     {
+        private readonly ControlManager _controlManager;
         public ICursorInput Input { get; set; }
         public CursorSpace CursorSpace { get; set; }
         public override IEnumerable<IInputSource> Sources => Input?.Source.ToEnumerable();
@@ -28,18 +29,20 @@ namespace Glyph.Input.Controls
             get { yield return Input; }
         }
 
-        public ReferentialCursorControl()
+        public ReferentialCursorControl(ControlManager controlManager)
         {
+            _controlManager = controlManager;
         }
 
-        public ReferentialCursorControl(ICursorInput input, CursorSpace cursorSpace)
+        public ReferentialCursorControl(ControlManager controlManager, ICursorInput input, CursorSpace cursorSpace)
+            : this(controlManager)
         {
             Input = input;
             CursorSpace = cursorSpace;
         }
 
-        public ReferentialCursorControl(string name, ICursorInput input, CursorSpace cursorSpace)
-            : this(input, cursorSpace)
+        public ReferentialCursorControl(ControlManager controlManager, string name, ICursorInput input, CursorSpace cursorSpace)
+            : this(controlManager, input, cursorSpace)
         {
             Name = name;
         }
@@ -59,14 +62,15 @@ namespace Glyph.Input.Controls
                     value = state;
                     break;
                 case CursorSpace.Screen:
-                    value = Resolution.Instance.WindowToScreen(state.AsMonoGamePoint()).AsFingearVector();
+                    value = _controlManager.InputClient.Resolution.WindowToScreen(state.AsMonoGamePoint()).AsFingearVector();
                     break;
                 case CursorSpace.VirtualScreen:
-                    value = Resolution.Instance.WindowToVirtualScreen(state.AsMonoGamePoint()).AsFingearVector();
+                    value = _controlManager.InputClient.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint()).AsFingearVector();
                     break;
                 case CursorSpace.Scene:
+                    Vector2 virtualPosition = _controlManager.InputClient.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint());
                     Vector2 viewPosition;
-                    IView view = ViewManager.GetView(state.AsMonoGamePoint(), out viewPosition);
+                    IView view = ViewManager.GetView(virtualPosition, out viewPosition);
                     value = view.ViewToScene(viewPosition).AsFingearVector();
                     break;
                 default:

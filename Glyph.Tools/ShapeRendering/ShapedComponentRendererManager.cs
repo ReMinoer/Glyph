@@ -17,17 +17,17 @@ namespace Glyph.Tools.ShapeRendering
 
         private readonly SceneNode _sceneNode;
         private readonly MessagingTracker<T> _tracker;
-        private readonly Lazy<GraphicsDevice> _lazyGraphicsDevice;
+        private readonly Func<GraphicsDevice> _graphicsDeviceFunc;
         private readonly ContentLibrary _contentLibrary;
         private readonly Dictionary<T, ShapedComponentRendererBase> _colliderObjects;
 
-        public ShapedComponentRendererManager(MessagingTracker<T> tracker, Lazy<GraphicsDevice> lazyGraphicsDevice, ContentLibrary contentLibrary)
+        public ShapedComponentRendererManager(MessagingTracker<T> tracker, Func<GraphicsDevice> graphicsDeviceFunc, ContentLibrary contentLibrary)
         {
             Visible = true;
 
             Add(_sceneNode = new SceneNode());
             _tracker = tracker;
-            _lazyGraphicsDevice = lazyGraphicsDevice;
+            _graphicsDeviceFunc = graphicsDeviceFunc;
             _contentLibrary = contentLibrary;
             _colliderObjects = new Dictionary<T, ShapedComponentRendererBase>();
 
@@ -65,14 +65,14 @@ namespace Glyph.Tools.ShapeRendering
             var rectangle = shapedObject as IShapedComponent<IRectangle>;
             if (rectangle != null)
             {
-                AddShape(shapedObject, new RectangleComponentRenderer(rectangle, _lazyGraphicsDevice));
+                AddShape(shapedObject, new RectangleComponentRenderer(rectangle, _graphicsDeviceFunc));
                 return;
             }
 
             var circle = shapedObject as IShapedComponent<ICircle>;
             if (circle != null)
             {
-                AddShape(shapedObject, new CircleComponentRenderer(circle, _lazyGraphicsDevice));
+                AddShape(shapedObject, new CircleComponentRenderer(circle, _graphicsDeviceFunc));
                 return;
             }
 

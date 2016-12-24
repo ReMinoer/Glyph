@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using Diese;
 using Diese.Collections;
 using Diese.Debug;
@@ -16,7 +15,7 @@ using Glyph.Messaging;
 
 namespace Glyph.Composition
 {
-    public abstract class GlyphSchedulableBase : GlyphComposite, IEnableable, ILoadContent, IUpdate, IDraw
+    public abstract class GlyphSchedulableBase : GlyphComposite, IGlyphCompositeResolver, IEnableable, ILoadContent, IUpdate, IDraw
     {
         static public readonly WatchTree UpdateWatchTree = new WatchTree();
 

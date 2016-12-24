@@ -8,7 +8,7 @@ namespace Glyph.Graphics.Shapes
     public abstract class ShapedSpriteBase : SpriteSourceBase, ILoadContent
     {
         protected Texture2D _texture;
-        protected readonly Lazy<GraphicsDevice> LazyGraphicsDevice;
+        protected readonly Func<GraphicsDevice> GraphicsDeviceFunc;
         public Color Color { get; set; }
         public override event Action<ISpriteSource> Loaded;
 
@@ -17,9 +17,9 @@ namespace Glyph.Graphics.Shapes
             get { return _texture; }
         }
 
-        protected ShapedSpriteBase(Lazy<GraphicsDevice> lazyGraphicsDevice)
+        protected ShapedSpriteBase(Func<GraphicsDevice> graphicsDeviceFunc)
         {
-            LazyGraphicsDevice = lazyGraphicsDevice;
+            GraphicsDeviceFunc = graphicsDeviceFunc;
             Color = Color.White;
         }
 

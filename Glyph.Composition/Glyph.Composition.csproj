@@ -42,6 +42,7 @@
     <Compile Include="Delegates\DrawDelegate.cs" />
     <Compile Include="Exceptions\ComponentNotFoundException.cs" />
     <Compile Include="GlyphTypeInfo.cs" />
+    <Compile Include="IGlyphCompositeResolver.cs" />
     <Compile Include="InjectablePropertyInfo.cs" />
     <Compile Include="Injection\GlyphInjectableAttribute.cs" />
     <Compile Include="Injection\GlyphInjectableTargets.cs" />

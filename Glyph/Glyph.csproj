@@ -96,6 +96,7 @@
     <Compile Include="Transition\TransitionVector2.cs" />
     <Compile Include="Transition\TransitionVector3.cs" />
     <Compile Include="Transition\TransitionVector4.cs" />
+    <Compile Include="VirtualResolution.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

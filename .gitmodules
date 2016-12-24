@@ -1,3 +1,6 @@
 [submodule "External/Fingear"]
 	path = External/Fingear
 	url = https://github.com/ReMinoer/Fingear
+[submodule "External/MonoGame.Framework.WpfInterop"]
+	path = External/MonoGame.Framework.WpfInterop
+	url = https://github.com/ReMinoer/MonoGame.Framework.WpfInterop.git

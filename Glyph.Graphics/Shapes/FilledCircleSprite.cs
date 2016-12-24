@@ -8,8 +8,8 @@ namespace Glyph.Graphics.Shapes
     {
         public int Radius { get; set; }
 
-        public FilledCircleSprite(Lazy<GraphicsDevice> lazyGraphicsDevice)
-            : base(lazyGraphicsDevice)
+        public FilledCircleSprite(Func<GraphicsDevice> graphicsDeviceFunc)
+            : base(graphicsDeviceFunc)
         {
             Radius = 50;
         }
@@ -27,7 +27,7 @@ namespace Glyph.Graphics.Shapes
                     data[i * outerDiameter + j] = position.Length() <= Radius ? Color : Color.Transparent;
                 }
 
-            _texture = new Texture2D(LazyGraphicsDevice.Value, outerDiameter, outerDiameter);
+            _texture = new Texture2D(GraphicsDeviceFunc(), outerDiameter, outerDiameter);
             Texture.SetData(data);
         }
     }

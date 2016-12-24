@@ -8,8 +8,10 @@ namespace Glyph
     {
         SpriteBatchStack SpriteBatchStack { get; }
         GraphicsDevice GraphicsDevice { get; }
+        Resolution Resolution { get; }
         IRectangle ScreenBounds { get; }
         ICamera Camera { get; }
+        RenderTarget2D DefaultRenderTarget { get; }
         Texture2D Output { get; }
         IRectangle DisplayedRectangle { get; }
         Matrix ViewMatrix { get; }

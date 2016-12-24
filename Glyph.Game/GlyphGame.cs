@@ -1,33 +1,46 @@
 using System;
 using System.Windows.Forms;
 using Diese.Injection;
-using Diese.Modelization;
+using Fingear.MonoGame;
+using Glyph.Input;
+using Glyph.Input.StandardControls;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Game
 {
-    public class GlyphGame : Microsoft.Xna.Framework.Game
+    public class GlyphGame : Microsoft.Xna.Framework.Game, IGlyphClient
     {
+        private readonly GraphicsDeviceManager _graphicsDeviceManager;
+        private readonly GameInputStates _gameInputStates;
+        private Vector2 _lastWindowSize;
+        private bool _resizing;
         public GlyphEngine Engine { get; }
-        public GraphicsDeviceManager GraphicsDeviceManager { get; }
         public Resolution Resolution { get; }
         public virtual bool IsFocus => IsActive && Form.ActiveForm?.Handle == Window.Handle;
+        IInputStates IInputClient.States => _gameInputStates;
+        GraphicsDevice IGlyphClient.GraphicsDevice => GraphicsDevice;
 
-        public GlyphGame(IConfigurator<IDependencyRegistry> dependencyConfigurator = null)
+        public GlyphGame(Action<IDependencyRegistry> dependencyConfigurator = null)
         {
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnClientSizeChanged;
             IsMouseVisible = false;
 
-            GraphicsDeviceManager = new GraphicsDeviceManager(this);
-            Resolution = Resolution.Instance;
-            Resolution.Init(GraphicsDeviceManager, Window);
+            _graphicsDeviceManager = new GraphicsDeviceManager(this)
+            {
+                PreferMultiSampling = true
+            };
+            _graphicsDeviceManager.ApplyChanges();
 
-            GraphicsDeviceManager.PreferMultiSampling = true;
-            GraphicsDeviceManager.ApplyChanges();
+            _gameInputStates = new GameInputStates();
 
-            Engine = new GlyphEngine(Content, GraphicsDeviceManager, dependencyConfigurator);
+            Resolution = new Resolution();
+            _lastWindowSize = Resolution.WindowSize;
+
+            Engine = new GlyphEngine(Content, dependencyConfigurator);
             Engine.Stopped += OnEngineStopped;
+            Engine.FocusedClient = this;
         }
 
         protected override void Initialize()
@@ -48,12 +61,58 @@ namespace Glyph.Game
 
             base.Update(gameTime);
 
-            Engine.HandleInput(IsFocus);
+            Engine.HandleInput();
 
             if (!IsActive)
                 return;
 
+            DeveloperControls developerControls;
+            if (Engine.ControlManager.TryGetLayer(out developerControls) && developerControls.Fullscreen.IsActive())
+                ToggleFullscreen();
+
             Engine.Update();
+        }
+
+        public void ToggleFullscreen()
+        {
+            if (_resizing)
+                return;
+
+            _resizing = true;
+
+            if (_graphicsDeviceManager.IsFullScreen)
+            {
+                _graphicsDeviceManager.IsFullScreen = false;
+                Window.IsBorderless = false;
+                _graphicsDeviceManager.PreferredBackBufferWidth = (int)_lastWindowSize.X;
+                _graphicsDeviceManager.PreferredBackBufferHeight = (int)_lastWindowSize.Y;
+                _graphicsDeviceManager.ApplyChanges();
+                Resolution.WindowSize = _lastWindowSize;
+            }
+            else
+            {
+                _lastWindowSize = Resolution.WindowSize;
+
+                int maxWidth = 0;
+                int maxHeight = 0;
+                foreach (DisplayMode dm in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
+                    if (dm.Width >= maxWidth && dm.Height >= maxHeight
+                        && dm.Width <= VirtualResolution.Size.X && dm.Height <= VirtualResolution.Size.Y)
+                    {
+                        maxWidth = dm.Width;
+                        maxHeight = dm.Height;
+                    }
+
+                _graphicsDeviceManager.IsFullScreen = true;
+                Window.IsBorderless = true;
+                Window.Position = new Point(0, 0);
+                _graphicsDeviceManager.PreferredBackBufferWidth = maxWidth;
+                _graphicsDeviceManager.PreferredBackBufferHeight = maxHeight;
+                _graphicsDeviceManager.ApplyChanges();
+                Resolution.WindowSize = new Vector2(maxWidth, maxHeight);
+            }
+
+            _resizing = false;
         }
 
         protected override bool BeginDraw()
@@ -65,7 +124,7 @@ namespace Glyph.Game
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            Engine.Draw(GraphicsDeviceManager);
+            Engine.Draw(GraphicsDevice, Resolution);
         }
 
         protected override void EndDraw()
@@ -93,7 +152,17 @@ namespace Glyph.Game
 
         private void OnClientSizeChanged(object sender, EventArgs args)
         {
-            Resolution.SetWindow(Window.ClientBounds.Width, Window.ClientBounds.Height, Resolution.Instance.FullScreen);
+            if (_resizing)
+                return;
+
+            _resizing = true;
+
+            _graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Size.X;
+            _graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Size.Y;
+            _graphicsDeviceManager.ApplyChanges();
+            Resolution.WindowSize = Window.ClientBounds.Size.ToVector2();
+
+            _resizing = false;
         }
     }
 }

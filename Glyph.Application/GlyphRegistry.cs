@@ -162,9 +162,8 @@ namespace Glyph.Application
             #endregion
 
             #region Input
-
-            Register<MonoGameInputSytem>(Subsistence.Singleton);
-            Link<InputSystem, MonoGameInputSytem>();
+            
+            RegisterInstance<InputSystem>(MonoGameInputSytem.Instance);
 
             #endregion
 

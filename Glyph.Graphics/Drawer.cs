@@ -7,20 +7,23 @@ namespace Glyph.Graphics
 {
     public class Drawer : IDrawer
     {
-        public GraphicsDeviceManager GraphicsDeviceManager { get; }
+        public GraphicsDevice GraphicsDevice { get; }
         public SpriteBatchStack SpriteBatchStack { get; }
+        public Resolution Resolution { get; }
         public IView CurrentView { get; set; }
-        public GraphicsDevice GraphicsDevice => GraphicsDeviceManager.GraphicsDevice;
         public ICamera Camera => CurrentView.Camera;
+        public RenderTarget2D DefaultRenderTarget { get; }
         public Texture2D Output => CurrentView.Output;
         public IRectangle DisplayedRectangle => CurrentView.DisplayedRectangle;
         public Matrix ViewMatrix => CurrentView.Matrix;
         public IRectangle ScreenBounds => CurrentView.BoundingBox;
 
-        public Drawer(GraphicsDeviceManager graphicsDeviceManager)
+        public Drawer(GraphicsDevice graphicsDevice, Resolution resolution, RenderTarget2D defaultRenderTarget = null)
         {
-            GraphicsDeviceManager = graphicsDeviceManager;
-            SpriteBatchStack = new SpriteBatchStack(new SpriteBatch(graphicsDeviceManager.GraphicsDevice));
+            GraphicsDevice = graphicsDevice;
+            Resolution = resolution;
+            DefaultRenderTarget = defaultRenderTarget;
+            SpriteBatchStack = new SpriteBatchStack(new SpriteBatch(graphicsDevice));
         }
 
         public void ApplyEffects(IDrawer drawer)

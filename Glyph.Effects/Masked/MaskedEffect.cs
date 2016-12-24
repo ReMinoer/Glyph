@@ -23,7 +23,7 @@ namespace Glyph.Effects.Masked
 
         public override void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice)
         {
-            Vector2 virtualSize = Resolution.Instance.VirtualSize;
+            Vector2 virtualSize = VirtualResolution.Size;
             MaskRender = new RenderTarget2D(graphicsDevice, (int)virtualSize.X, (int)virtualSize.Y);
 
             _square = contentLibrary.GetTexture("square");
@@ -41,7 +41,7 @@ namespace Glyph.Effects.Masked
             drawer.GraphicsDevice.SetRenderTarget(MaskRender);
             drawer.GraphicsDevice.Clear(Color.Black);
 
-            Vector2 virtualSize = Resolution.Instance.VirtualSize;
+            Vector2 virtualSize = VirtualResolution.Size;
             var virtualRectangle = new Rectangle(0, 0, (int)virtualSize.X, (int)virtualSize.Y);
 
             drawer.SpriteBatchStack.Current.Begin(SpriteSortMode.Immediate, BlendState.Additive);
@@ -62,7 +62,7 @@ namespace Glyph.Effects.Masked
 
             drawer.SpriteBatchStack.Current.End();
 
-            drawer.GraphicsDevice.SetRenderTarget(null);
+            drawer.GraphicsDevice.SetRenderTarget(drawer.DefaultRenderTarget);
         }
 
         public override void Apply(IDrawer drawer)
@@ -70,7 +70,7 @@ namespace Glyph.Effects.Masked
             if (!Enabled)
                 return;
 
-            ApplyEffect(drawer.SpriteBatchStack.Current, drawer.GraphicsDevice);
+            ApplyEffect(drawer);
         }
 
         public override void Dispose()
@@ -78,6 +78,6 @@ namespace Glyph.Effects.Masked
             MaskRender.Dispose();
         }
 
-        protected abstract void ApplyEffect(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice);
+        protected abstract void ApplyEffect(IDrawer drawer);
     }
 }

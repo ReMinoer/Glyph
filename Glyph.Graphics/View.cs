@@ -64,7 +64,7 @@ namespace Glyph.Graphics
             }
         }
 
-        public View(Lazy<GraphicsDevice> lazyGraphicsDevice)
+        public View(Func<GraphicsDevice> lazyGraphicsDevice)
         {
             Components.Add(_sceneNode = new SceneNode());
             Components.Add(EffectManager = new ViewEffectManager(lazyGraphicsDevice));
