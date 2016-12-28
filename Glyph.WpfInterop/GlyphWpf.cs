@@ -22,6 +22,12 @@ namespace Glyph.WpfInterop
             {
                 _engine = value;
 
+                if (IsInitialized)
+                {
+                    Engine?.Initialize();
+                    Engine?.LoadContent();
+                }
+
                 if (IsLoaded)
                     _engine.Start();
             }
