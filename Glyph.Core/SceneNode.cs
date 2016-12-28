@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.ObjectModel;
 using Diese;
 using Diese.Collections;
 using Glyph.Composition;
@@ -13,7 +13,7 @@ namespace Glyph.Core
     [SinglePerParent]
     public class SceneNode : GlyphComponent, IWritableSceneNode
     {
-        private readonly List<ISceneNode> _childrenNodes;
+        private readonly ObservableCollection<ISceneNode> _childrenNodes;
         private readonly IReadOnlyList<ISceneNode> _readOnlyChildrenNodes;
         private Transformation _transformation;
         private Vector2 _position;
@@ -136,8 +136,8 @@ namespace Glyph.Core
 
         public SceneNode()
         {
-            _childrenNodes = new List<ISceneNode>();
-            _readOnlyChildrenNodes = _childrenNodes.AsReadOnly();
+            _childrenNodes = new ObservableCollection<ISceneNode>();
+            _readOnlyChildrenNodes = new ReadOnlyObservableCollection<ISceneNode>(_childrenNodes);
 
             Transformation = Transformation.Identity;
         }

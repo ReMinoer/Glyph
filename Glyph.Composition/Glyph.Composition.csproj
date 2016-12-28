@@ -65,6 +65,7 @@
     <Compile Include="Messaging\InstantiatingMessage.cs" />
     <Compile Include="Messaging\Receiver.cs" />
     <Compile Include="Modelization\CompositeData.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Scheduler\Base\Controllers\IPriorityController.cs" />
     <Compile Include="Scheduler\Base\Controllers\PriorityController.cs" />
     <Compile Include="Scheduler\Base\Controllers\RelativeController.cs" />

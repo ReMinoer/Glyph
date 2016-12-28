@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Diese.Injection;
-using Diese.Modelization;
 using Glyph.Application;
 using Glyph.Audio;
 using Glyph.Composition;
+using Glyph.Composition.Annotations;
 using Glyph.Core;
 using Glyph.Graphics;
 using Glyph.Input;
@@ -18,7 +20,7 @@ using NLog;
 
 namespace Glyph.Game
 {
-    public class GlyphEngine
+    public class GlyphEngine : INotifyPropertyChanged
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ContentManager _contentManager;
@@ -47,11 +49,6 @@ namespace Glyph.Game
             }
         }
 
-        public event Action Started;
-        public event Action Stopped;
-        public event Action Paused;
-        public event Action<IGlyphClient> FocusChanged;
-
         public IScene Scene
         {
             get { return _scene; }
@@ -63,8 +60,15 @@ namespace Glyph.Game
                 _scene = value;
                 _sceneChanged = true;
                 Logger.Info("Change scene : " + _scene.Name);
+                OnPropertyChanged();
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public event Action Started;
+        public event Action Stopped;
+        public event Action Paused;
+        public event Action<IGlyphClient> FocusChanged;
 
         public GlyphEngine(ContentManager contentManager, Action<IDependencyRegistry> dependencyConfigurator = null, params string[] args)
         {
@@ -192,7 +196,6 @@ namespace Glyph.Game
         {
             var drawer = new Drawer(graphicsDevice, resolution, defaultRenderTarget);
             graphicsDevice.Clear(Color.Black);
-            //graphicsDevice.Clear(Color.Aqua);
 
             foreach (IView view in ViewManager.Main.Views)
             {
@@ -230,6 +233,12 @@ namespace Glyph.Game
             Logger.Info("Pause engine");
 
             Paused?.Invoke();
+        }
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
