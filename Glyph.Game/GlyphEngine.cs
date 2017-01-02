@@ -24,9 +24,12 @@ namespace Glyph.Game
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ContentManager _contentManager;
+        private ElapsedTime _elapsedTime = new ElapsedTime();
         private IScene _scene;
         private bool _sceneChanged;
         private IGlyphClient _focusedClient;
+        public bool IsInitialized { get; private set; }
+        public bool IsLoaded { get; private set; }
         public bool IsStarted { get; private set; }
         public bool IsPaused { get; private set; }
         public IDependencyRegistry Registry { get; }
@@ -91,13 +94,15 @@ namespace Glyph.Game
             Registry.RegisterInstance<GlyphEngine>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
             Registry.RegisterInstance<ControlManager>(ControlManager);
-            Registry.RegisterFunc(() => FocusedClient?.GraphicsDevice);
+            Registry.RegisterFunc(() => FocusedClient != null ? FocusedClient.GraphicsDevice : ((IGraphicsDeviceService)contentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice);
         }
 
         public void Initialize()
         {
             ViewManager.Main.Initialize();
             Scene.Initialize();
+
+            IsInitialized = true;
         }
 
         public void LoadContent()
@@ -109,23 +114,23 @@ namespace Glyph.Game
 
             Scene.LoadContent(ContentLibrary);
             _sceneChanged = false;
+
+            IsLoaded = true;
         }
 
         public void BeginUpdate(GameTime gameTime)
         {
-            ElapsedTime.Instance.Refresh(gameTime);
+            _elapsedTime.Update(gameTime);
             PerformanceViewer.UpdateCall();
         }
 
         public void HandleInput()
         {
-            ControlManager.Update(ElapsedTime.Instance, FocusedClient != null);
+            ControlManager.Update(_elapsedTime, FocusedClient != null);
         }
 
         public void Update()
         {
-            ElapsedTime elapsedTime = ElapsedTime.Instance;
-
             DeveloperControls developerControls;
             if (ControlManager.TryGetLayer(out developerControls))
             {
@@ -170,12 +175,12 @@ namespace Glyph.Game
 
                         _sceneChanged = false;
                     }
-                    Scene.Update(elapsedTime);
+                    Scene.Update(_elapsedTime);
                 } while (_sceneChanged);
 
-                ViewManager.Main.Update(elapsedTime);
-                SongPlayer.Instance.Update(elapsedTime);
-                PerformanceViewer.Update(elapsedTime.GameTime);
+                ViewManager.Main.Update(_elapsedTime);
+                SongPlayer.Instance.Update(_elapsedTime);
+                PerformanceViewer.Update(_elapsedTime.GameTime);
 
                 PerformanceViewer.UpdateEnd();
             }
@@ -214,6 +219,7 @@ namespace Glyph.Game
         {
             IsStarted = true;
             IsPaused = false;
+            _elapsedTime.Resume();
             Logger.Info("Start engine");
 
             Started?.Invoke();
@@ -222,6 +228,7 @@ namespace Glyph.Game
         public void Stop()
         {
             IsStarted = false;
+            IsPaused = false;
             Logger.Info("Stop engine");
 
             Stopped?.Invoke();
@@ -230,6 +237,7 @@ namespace Glyph.Game
         public void Pause()
         {
             IsPaused = true;
+            _elapsedTime.Pause();
             Logger.Info("Pause engine");
 
             Paused?.Invoke();

@@ -5,40 +5,46 @@ namespace Glyph
 {
     public class ElapsedTime
     {
-        static private ElapsedTime _instance;
-        private float _scaleAtPause;
         public GameTime GameTime { get; private set; }
-        public TimeSpan Total { get; set; }
-        public float Delta { get; set; }
+        public bool IsPaused { get; private set; }
+        public TimeSpan Total { get; private set; }
+        public float Delta { get; private set; }
         public float Scale { get; set; }
-        public TimeSpan UnscaledTotal { get; set; }
-        public float UnscaledDelta { get; set; }
+        public TimeSpan UnscaledTotal { get; private set; }
+        public float UnscaledDelta { get; private set; }
 
-        static public ElapsedTime Instance
-        {
-            get { return _instance ?? (_instance = new ElapsedTime()); }
-        }
-
-        protected ElapsedTime()
+        public ElapsedTime()
         {
             Scale = 1f;
         }
 
-        public void Refresh(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
-            GameTime = gameTime;
+            if (IsPaused)
+            {
+                Delta = 0;
+                UnscaledDelta = 0;
+                return;
+            }
 
-            UnscaledTotal = gameTime.TotalGameTime;
+            if (GameTime == null)
+                GameTime = gameTime;
+
+            GameTime = new GameTime(GameTime.TotalGameTime + gameTime.ElapsedGameTime, gameTime.ElapsedGameTime);
+
+            UnscaledTotal += gameTime.ElapsedGameTime;
             UnscaledDelta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            TimeSpan elapsedTimeSpan;
-            if (Scale > 1 - float.Epsilon && Scale < 1 + float.Epsilon)
-                elapsedTimeSpan = gameTime.ElapsedGameTime;
+            if (Scale >= 1 + float.Epsilon && Scale <= 1 - float.Epsilon)
+            {
+                Total += gameTime.ElapsedGameTime;
+                Delta = UnscaledDelta;
+            }
             else
-                elapsedTimeSpan = new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * Scale));
-
-            Total = Total.Add(elapsedTimeSpan);
-            Delta = UnscaledDelta * Scale;
+            {
+                Total += new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * Scale));
+                Delta = UnscaledDelta * Scale;
+            }
         }
 
         public float GetDelta(ITimeUnscalable unscalable)
@@ -48,13 +54,18 @@ namespace Glyph
 
         public void Pause()
         {
-            _scaleAtPause = Scale;
-            Scale = 0;
+            if (IsPaused)
+                return;
+            
+            IsPaused = true;
         }
 
         public void Resume()
         {
-            Scale = _scaleAtPause;
+            if (!IsPaused)
+                return;
+
+            IsPaused = false;
         }
     }
 }
