@@ -94,7 +94,15 @@ namespace Glyph.Game
             Registry.RegisterInstance<GlyphEngine>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
             Registry.RegisterInstance<ControlManager>(ControlManager);
-            Registry.RegisterFunc(() => FocusedClient != null ? FocusedClient.GraphicsDevice : ((IGraphicsDeviceService)contentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice);
+            Registry.RegisterFunc(() =>
+            {
+                if (FocusedClient != null)
+                {
+                    return FocusedClient.GraphicsDevice;
+                }
+                
+                return ((IGraphicsDeviceService)contentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
+            });
         }
 
         public void Initialize()

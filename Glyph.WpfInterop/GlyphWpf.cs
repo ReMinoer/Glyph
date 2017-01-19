@@ -28,7 +28,7 @@ namespace Glyph.WpfInterop
                     Engine?.LoadContent();
                 }
 
-                if (IsLoaded)
+                if (IsLoaded && Engine != null && !Engine.IsStarted)
                     _engine.Start();
             }
         }
