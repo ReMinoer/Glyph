@@ -31,8 +31,11 @@ namespace Glyph
 
         public void Replace(SpriteBatchContext context)
         {
-            Pop();
-            Push(context);
+            Current.End();
+            _contextStack.Pop();
+            
+            _contextStack.Push(context);
+            ApplyPeek();
         }
 
         public void Pop()
