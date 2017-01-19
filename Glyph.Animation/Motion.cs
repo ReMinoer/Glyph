@@ -141,21 +141,7 @@ namespace Glyph.Animation
                                         ).Normalized();
 
                         moveDelta = Direction * Speed * elapsedTime.GetDelta(this);
-
-                        switch (Referential)
-                        {
-                            case Referential.World:
-                                _sceneNode.Position += moveDelta;
-                                position = _sceneNode.Position;
-                                break;
-                            case Referential.Local:
-                                _sceneNode.LocalPosition += moveDelta;
-                                position = _sceneNode.LocalPosition;
-                                break;
-                        }
-
-                        remainingDistance = Destination - position;
-                        if (Vector2.Dot(remainingDistance, moveDelta) <= 0)
+                        if (float.IsPositiveInfinity(moveDelta.X) || float.IsPositiveInfinity(moveDelta.Y))
                         {
                             switch (Referential)
                             {
@@ -170,6 +156,38 @@ namespace Glyph.Animation
                             }
                             Stop();
                         }
+                        else
+                        {
+                            switch (Referential)
+                            {
+                                case Referential.World:
+                                    _sceneNode.Position += moveDelta;
+                                    position = _sceneNode.Position;
+                                    break;
+                                case Referential.Local:
+                                    _sceneNode.LocalPosition += moveDelta;
+                                    position = _sceneNode.LocalPosition;
+                                    break;
+                            }
+
+                            remainingDistance = Destination - position;
+                            if (Vector2.Dot(remainingDistance, moveDelta) <= 0)
+                            {
+                                switch (Referential)
+                                {
+                                    case Referential.World:
+                                        _sceneNode.Position = Destination;
+                                        break;
+                                    case Referential.Local:
+                                        _sceneNode.LocalPosition = Destination;
+                                        break;
+                                    default:
+                                        throw new NotSupportedException();
+                                }
+                                Stop();
+                            }
+                        }
+
                     }
 
                     break;
