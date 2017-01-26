@@ -76,8 +76,8 @@ namespace Glyph.Input.Controls
                 default:
                     throw new InvalidOperationException();
             }
-
-            return true;
+            
+            return !Input.Activity.IsIdle();
         }
     }
 }

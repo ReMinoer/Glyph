@@ -12,6 +12,7 @@ namespace Glyph.Input
 
         protected ControlLayerBase()
         {
+            Enabled = true;
             DisplayName = GetType().Name;
         }
 

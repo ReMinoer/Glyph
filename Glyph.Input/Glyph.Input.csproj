@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="ControlLayerBase.cs" />
     <Compile Include="IInputClient.cs" />
-    <Compile Include="StandardControls\EditorControls.cs" />
     <Compile Include="IControlLayer.cs" />
     <Compile Include="StandardControls\MenuControls.cs" />
     <Compile Include="Controls\ReferentialCursorControl.cs" />

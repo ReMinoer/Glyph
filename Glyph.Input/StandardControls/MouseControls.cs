@@ -1,5 +1,6 @@
 ﻿using Fingear;
 using Fingear.Controls;
+using Fingear.Converters;
 using Fingear.MonoGame.Inputs;
 using Glyph.Input.Controls;
 
@@ -25,7 +26,7 @@ namespace Glyph.Input.StandardControls
             Add(Left = new ActivityControl("Left", new MouseButtonInput(MouseButton.Left)));
             Add(Right = new ActivityControl("Right", new MouseButtonInput(MouseButton.Right)));
             Add(Middle = new ActivityControl("Middle", new MouseButtonInput(MouseButton.Middle)));
-            Add(Wheel = new Control<float>("Wheel", new MouseWheelInput()));
+            Add(Wheel = new Control<float>("Wheel", new MouseWheelInput().Punctual()));
         }
     }
 }

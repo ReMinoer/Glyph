@@ -48,7 +48,6 @@
     <Compile Include="ControlLogger.cs" />
     <Compile Include="InputLogger.cs" />
     <Compile Include="SchedulingBreakpointHelper.cs" />
-    <Compile Include="MapEditor.cs" />
     <Compile Include="ShapeRendering\CircleComponentRenderer.cs" />
     <Compile Include="ShapeRendering\ShapedComponentRendererBase.cs" />
     <Compile Include="CompositionLog.cs" />

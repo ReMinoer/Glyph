@@ -64,7 +64,7 @@ namespace Glyph.Core
 
         static public bool IsVisibleOnWindow(Vector2 position)
         {
-            return Main.Views.Any(view => view.IsVisibleOnView(position));
+            return Main.Views.Any(view => view.Visible && view.IsVisibleOnView(position));
         }
 
         static public bool IsVisibleOnWindow(Vector2 position, out IView view)
@@ -84,7 +84,7 @@ namespace Glyph.Core
 
         static public IView GetView(Vector2 virtualScreenPosition)
         {
-            return Main.Views.Reverse().FirstOrDefault(view => view.BoundingBox.ContainsPoint(virtualScreenPosition));
+            return Main.Views.Reverse().FirstOrDefault(view => view.Visible && view.BoundingBox.ContainsPoint(virtualScreenPosition));
         }
 
         static public IView GetView(Vector2 virtualScreenPosition, out Vector2 positionOnView)

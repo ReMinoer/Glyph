@@ -124,7 +124,7 @@ namespace Glyph.Game
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            Engine.Draw(GraphicsDevice, Resolution);
+            Engine.Draw(new GlyphEngine.DrawContext(GraphicsDevice, Resolution));
         }
 
         protected override void EndDraw()

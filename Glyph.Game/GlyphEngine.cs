@@ -205,12 +205,12 @@ namespace Glyph.Game
             PerformanceViewer.DrawCall();
         }
 
-        public void Draw(GraphicsDevice graphicsDevice, Resolution resolution, RenderTarget2D defaultRenderTarget = null)
+        public void Draw(DrawContext drawContext)
         {
-            var drawer = new Drawer(graphicsDevice, resolution, defaultRenderTarget);
-            graphicsDevice.Clear(Color.Black);
+            var drawer = new Drawer(drawContext.GraphicsDevice, drawContext.Resolution, drawContext.DefaultRenderTarget);
+            drawContext.GraphicsDevice.Clear(Color.Black);
 
-            foreach (IView view in ViewManager.Main.Views)
+            foreach (IView view in ViewManager.Main.Views.Where(x => x.Visible && (drawContext.IsViewVisiblePredicate == null || drawContext.IsViewVisiblePredicate(x))))
             {
                 drawer.CurrentView = view;
                 view.PrepareDraw(drawer);
@@ -255,6 +255,20 @@ namespace Glyph.Game
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public class DrawContext
+        {
+            public GraphicsDevice GraphicsDevice { get; private set; }
+            public Resolution Resolution { get; private set; }
+            public RenderTarget2D DefaultRenderTarget { get; set; }
+            public Predicate<IView> IsViewVisiblePredicate { get; set; }
+
+            public DrawContext(GraphicsDevice graphicsDevice, Resolution resolution)
+            {
+                GraphicsDevice = graphicsDevice;
+                Resolution = resolution;
+            }
         }
     }
 }

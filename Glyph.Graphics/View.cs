@@ -66,6 +66,8 @@ namespace Glyph.Graphics
 
         public View(Func<GraphicsDevice> lazyGraphicsDevice)
         {
+            Visible = true;
+
             Components.Add(_sceneNode = new SceneNode());
             Components.Add(EffectManager = new ViewEffectManager(lazyGraphicsDevice));
             Components.Add(_fillingRectangle = new FillingRectangle());
@@ -90,6 +92,9 @@ namespace Glyph.Graphics
 
         public void PrepareDraw(IDrawer drawer)
         {
+            if (!Visible)
+                return;
+
             EffectManager.Prepare(drawer);
             EffectManager.CleanFirstRender(drawer.GraphicsDevice);
             EffectManager.Apply(drawer);
@@ -97,17 +102,23 @@ namespace Glyph.Graphics
 
         public void ApplyEffects(IDrawer drawer)
         {
+            if (!Visible)
+                return;
+
             EffectManager.Apply(drawer);
         }
 
         public void Draw(IDrawer drawer)
         {
+            if (!Visible)
+                return;
+
             _fillingRenderer.Draw(drawer);
         }
 
         public bool IsVisibleOnView(Vector2 position)
         {
-            return DisplayedRectangle.ContainsPoint(position);
+            return Visible && DisplayedRectangle.ContainsPoint(position);
         }
 
         public Vector2 ViewToScene(Vector2 viewPoint)

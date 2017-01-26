@@ -101,14 +101,14 @@ namespace Glyph.Input
         public bool TryGetLayer<T>(out T layer)
             where T : class, IControlLayer
         {
-            return _layers.Values.Any(out layer);
+            return _layers.Values.Where(x => x.Enabled).Any(out layer);
         }
 
         public bool TryGetLayer<T>(object key, out T layer)
             where T : class, IControlLayer
         {
             layer = _layers[key] as T;
-            return layer != null;
+            return layer != null && layer.Enabled;
         }
 
         public void ResetMouse()

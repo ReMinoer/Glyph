@@ -43,6 +43,8 @@ namespace Glyph.Core
 
         public Camera()
         {
+            Zoom = 1f;
+
             Components.Add(_sceneNode = new SceneNode());
             _readOnlySceneNode = new ReadOnlySceneNode(_sceneNode);
         }
