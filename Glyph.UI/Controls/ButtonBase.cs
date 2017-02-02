@@ -67,7 +67,7 @@ namespace Glyph.UI.Controls
                 MouseControls mouseControls;
                 if (_controlManager.TryGetLayer(out mouseControls))
                 {
-                    Fingear.Vector2 mousePosition;
+                    System.Numerics.Vector2 mousePosition;
                     if (mouseControls.VirtualScreenPosition.IsActive(out mousePosition))
                         hover = Frame.Bounds.ContainsPoint(mousePosition.AsMonoGameVector());
                 }

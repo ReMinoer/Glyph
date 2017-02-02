@@ -134,7 +134,7 @@ namespace Glyph.UI.Guide
                 MouseControls mouseControls;
                 if (_controlManager.TryGetLayer(out mouseControls))
                 {
-                    Fingear.Vector2 mouseInScreen;
+                    System.Numerics.Vector2 mouseInScreen;
                     if (mouseControls.VirtualScreenPosition.IsActive(out mouseInScreen))
                     {
                         bool hover = SpriteArea.ContainsPoint(mouseInScreen.AsMonoGameVector());

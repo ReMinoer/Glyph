@@ -17,7 +17,7 @@ namespace Glyph.Input.Controls
         Scene
     }
 
-    public class ReferentialCursorControl : ControlBase<Fingear.Vector2>
+    public class ReferentialCursorControl : ControlBase<System.Numerics.Vector2>
     {
         private readonly ControlManager _controlManager;
         public ICursorInput Input { get; set; }
@@ -47,31 +47,31 @@ namespace Glyph.Input.Controls
             Name = name;
         }
 
-        protected override bool UpdateControl(float elapsedTime, out Fingear.Vector2 value)
+        protected override bool UpdateControl(float elapsedTime, out System.Numerics.Vector2 value)
         {
             if (Input == null)
             {
-                value = default(Fingear.Vector2);
+                value = default(System.Numerics.Vector2);
                 return false;
             }
 
-            Fingear.Vector2 state = Input.Value;
+            System.Numerics.Vector2 state = Input.Value;
             switch (CursorSpace)
             {
                 case CursorSpace.Window:
                     value = state;
                     break;
                 case CursorSpace.Screen:
-                    value = _controlManager.InputClient.Resolution.WindowToScreen(state.AsMonoGamePoint()).AsFingearVector();
+                    value = _controlManager.InputClient.Resolution.WindowToScreen(state.AsMonoGamePoint()).AsSystemVector();
                     break;
                 case CursorSpace.VirtualScreen:
-                    value = _controlManager.InputClient.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint()).AsFingearVector();
+                    value = _controlManager.InputClient.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint()).AsSystemVector();
                     break;
                 case CursorSpace.Scene:
                     Vector2 virtualPosition = _controlManager.InputClient.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint());
                     Vector2 viewPosition;
                     IView view = ViewManager.GetView(virtualPosition, out viewPosition);
-                    value = view.ViewToScene(viewPosition).AsFingearVector();
+                    value = view.ViewToScene(viewPosition).AsSystemVector();
                     break;
                 default:
                     throw new InvalidOperationException();
