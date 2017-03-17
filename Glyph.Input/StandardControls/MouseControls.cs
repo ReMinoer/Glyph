@@ -27,7 +27,7 @@ namespace Glyph.Input.StandardControls
             Add(Left = new ActivityControl("Left", new MouseButtonInput(MouseButton.Left)));
             Add(Right = new ActivityControl("Right", new MouseButtonInput(MouseButton.Right)));
             Add(Middle = new ActivityControl("Middle", new MouseButtonInput(MouseButton.Middle)));
-            Add(Wheel = new Control<float>("Wheel", new MouseWheelInput().Punctual()));
+            Add(Wheel = new Control<float>("Wheel", new MouseWheelInput().Force()));
         }
     }
 }
