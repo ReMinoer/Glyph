@@ -13,6 +13,7 @@ namespace Glyph.WpfInterop
         private readonly Stopwatch _timer = new Stopwatch();
         private TimeSpan _lastRenderingTime;
         private TimeSpan _timeSinceStart = TimeSpan.Zero;
+        static private readonly TimeSpan MaxElapsedTime = TimeSpan.FromMilliseconds(500);
 
         public GlyphEngine Engine
         {
@@ -61,6 +62,13 @@ namespace Glyph.WpfInterop
 
                 TimeSpan elapsed = _timer.Elapsed;
                 TimeSpan diff = elapsed - _timeSinceStart;
+
+                if (diff > MaxElapsedTime)
+                {
+                    elapsed -= diff - MaxElapsedTime;
+                    diff = MaxElapsedTime;
+                }
+
                 _timeSinceStart = elapsed;
 
                 var gameTime = new GameTime(_timer.Elapsed, diff);
