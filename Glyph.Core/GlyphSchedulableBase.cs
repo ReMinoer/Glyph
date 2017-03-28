@@ -9,10 +9,10 @@ using Diese.Injection;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
-using Glyph.Composition.Injection;
 using Glyph.Composition.Messaging;
 using Glyph.Core.Injection;
 using Glyph.Core.Scheduler;
+using Glyph.Injection;
 using Glyph.Messaging;
 
 namespace Glyph.Core

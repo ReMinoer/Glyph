@@ -3,7 +3,7 @@ using Diese.Collections;
 using Diese.Injection;
 using Glyph.Composition;
 using Glyph.Composition.Exceptions;
-using Glyph.Composition.Injection;
+using Glyph.Injection;
 
 namespace Glyph.Core.Injection
 {

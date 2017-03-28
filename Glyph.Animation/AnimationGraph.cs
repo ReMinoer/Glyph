@@ -6,8 +6,8 @@ using Diese;
 using Diese.Collections;
 using Diese.Graph;
 using Glyph.Composition;
-using Glyph.Composition.Injection;
 using Glyph.Core.Injection;
+using Glyph.Injection;
 using NLog;
 
 namespace Glyph.Animation

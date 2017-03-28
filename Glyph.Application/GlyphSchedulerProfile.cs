@@ -2,9 +2,9 @@
 using Glyph.Animation.Trajectories.Players;
 using Glyph.Audio;
 using Glyph.Composition;
-using Glyph.Composition.Layers;
 using Glyph.Core;
 using Glyph.Core.Colliders;
+using Glyph.Core.Layers;
 using Glyph.Core.Scheduler.Base;
 using Glyph.Graphics;
 using Glyph.Graphics.Renderer;

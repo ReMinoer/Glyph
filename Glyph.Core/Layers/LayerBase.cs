@@ -1,4 +1,4 @@
-﻿namespace Glyph.Composition.Layers
+﻿namespace Glyph.Core.Layers
 {
     public abstract class LayerBase<TLayer> : ILayer<TLayer>
         where TLayer : class, ILayer<TLayer>

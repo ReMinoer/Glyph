@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Glyph.Composition.Injection;
+using Glyph.Composition;
+using Glyph.Injection;
 using Stave;
 
-namespace Glyph.Composition.Layers
+namespace Glyph.Core.Layers
 {
     public class LayerManager<TLayer> : GlyphComponent, ILayerManager
         where TLayer : class, ILayer<TLayer>

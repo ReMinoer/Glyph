@@ -1,6 +1,7 @@
 ﻿using Diese.Injection;
+using Glyph.Composition;
 
-namespace Glyph.Composition.Layers
+namespace Glyph.Core.Layers
 {
     public class LayerRoot<TLayer> : GlyphComponent, ILayerRoot<TLayer>
         where TLayer : class, ILayer<TLayer>

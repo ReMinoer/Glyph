@@ -55,6 +55,8 @@
     <Compile Include="IDirtable.cs" />
     <Compile Include="IDrawer.cs" />
     <Compile Include="IHandlable.cs" />
+    <Compile Include="Injection\GlyphInjectableAttribute.cs" />
+    <Compile Include="Injection\GlyphInjectableTargets.cs" />
     <Compile Include="ITimeUnscalable.cs" />
     <Compile Include="Math\IArea.cs" />
     <Compile Include="Math\IShape.cs" />

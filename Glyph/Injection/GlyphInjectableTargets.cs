@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Glyph.Composition.Injection
+namespace Glyph.Injection
 {
     [Flags]
     public enum GlyphInjectableTargets

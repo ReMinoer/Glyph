@@ -1,5 +1,5 @@
 using System.Reflection;
-using Glyph.Composition.Injection;
+using Glyph.Injection;
 
 namespace Glyph.Composition
 {

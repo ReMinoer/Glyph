@@ -1,4 +1,6 @@
-﻿namespace Glyph.Composition.Layers
+﻿using Glyph.Composition;
+
+namespace Glyph.Core.Layers
 {
     public interface ILayerManager : IUpdate
     {

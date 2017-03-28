@@ -1,6 +1,6 @@
 using Glyph.Composition;
-using Glyph.Composition.Injection;
 using Glyph.Core.Injection;
+using Glyph.Injection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

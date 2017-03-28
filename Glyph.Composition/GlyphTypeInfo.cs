@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Diese.Injection;
-using Glyph.Composition.Injection;
+using Glyph.Injection;
 
 namespace Glyph.Composition
 {

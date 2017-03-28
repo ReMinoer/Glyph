@@ -1,6 +1,6 @@
 ﻿using Glyph.Composition;
-using Glyph.Composition.Injection;
 using Glyph.Core;
+using Glyph.Injection;
 using Glyph.Math;
 
 namespace Glyph.Graphics.Renderer

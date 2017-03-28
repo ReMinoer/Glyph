@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Glyph.Composition.Layers
+namespace Glyph.Core.Layers
 {
     public interface ILayer : IComparable<ILayer>
     {

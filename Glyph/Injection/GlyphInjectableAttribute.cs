@@ -1,6 +1,6 @@
 ﻿using Diese.Injection;
 
-namespace Glyph.Composition.Injection
+namespace Glyph.Injection
 {
     public class GlyphInjectableAttribute : InjectableAttribute
     {
