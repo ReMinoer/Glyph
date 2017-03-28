@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glyph.Composition;
-using Glyph.Composition.Tracking;
 using Glyph.Core;
+using Glyph.Core.Tracking;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Glyph.Tools.ShapeRendering
 {
     public sealed class ShapedComponentRendererManager<T> : GlyphComposite, IUpdate, IDraw
-        where T : class, IShapedComponent
+        where T : class, IBoxedComponent
     {
         public bool Visible { get; set; }
         public Color Color { get; set; }
@@ -62,13 +62,6 @@ namespace Glyph.Tools.ShapeRendering
 
         private void AddShape(T shapedObject)
         {
-            var rectangle = shapedObject as IShapedComponent<IRectangle>;
-            if (rectangle != null)
-            {
-                AddShape(shapedObject, new RectangleComponentRenderer(rectangle, _graphicsDeviceFunc));
-                return;
-            }
-
             var circle = shapedObject as IShapedComponent<ICircle>;
             if (circle != null)
             {
@@ -76,7 +69,14 @@ namespace Glyph.Tools.ShapeRendering
                 return;
             }
 
-            throw new NotSupportedException();
+            var rectangle = shapedObject as IShapedComponent<IRectangle>;
+            if (rectangle != null)
+            {
+                AddShape(shapedObject, new RectangleComponentRenderer(rectangle, _graphicsDeviceFunc));
+                return;
+            }
+
+            AddShape(shapedObject, new AreaComponentRenderer(shapedObject, _graphicsDeviceFunc));
         }
 
         private void AddShape(T shapedObject, ShapedComponentRendererBase shapedComponentRenderer)

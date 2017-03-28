@@ -1,17 +1,36 @@
 ﻿using Glyph.Composition;
 using Glyph.Core;
+using Glyph.Math;
+using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Renderer
 {
-    public class SpriteRenderer : RendererBase
+    public class SpriteRenderer : RendererBase, IBoxedComponent
     {
         private readonly SceneNode _sceneNode;
 
         protected override float DepthProtected
         {
             get { return _sceneNode.Depth; }
+        }
+
+        public IArea Area
+        {
+            get
+            {
+                Rectangle rectangle = Source.Rectangle ?? Source.Texture.Bounds;
+                Vector2 origin = SpriteTransformer?.Origin ?? Source.GetDefaultOrigin();
+                Vector2 scale = _sceneNode.Scale * (SpriteTransformer?.Scale ?? Vector2.One);
+
+                return new OriginRectangle(rectangle.Location.ToVector2() - origin * scale, rectangle.Size.ToVector2() * scale);
+            }
+        }
+
+        ISceneNode IBoxedComponent.SceneNode
+        {
+            get { return _sceneNode; }
         }
 
         public SpriteRenderer(ISpriteSource source, SceneNode sceneNode)

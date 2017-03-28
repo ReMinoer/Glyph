@@ -19,12 +19,22 @@ namespace Glyph.Math
 
         static public IRectangle GetBoundingBox(IEnumerable<Vector2> points)
         {
-            IEnumerable<Vector2> enumerable = points as Vector2[] ?? points.ToArray();
+            float left = float.MaxValue;
+            float right = float.MinValue;
+            float top = float.MaxValue;
+            float bottom = float.MinValue;
 
-            float left = enumerable.Min(x => x.X);
-            float right = enumerable.Max(x => x.X);
-            float top = enumerable.Min(x => x.Y);
-            float bottom = enumerable.Max(x => x.Y);
+            foreach (Vector2 point in points)
+            {
+                if (point.X < left)
+                    left = point.X;
+                if (point.X > right)
+                    right = point.X;
+                if (point.Y < top)
+                    top = point.Y;
+                if (point.Y > bottom)
+                    bottom = point.Y;
+            }
 
             return new OriginRectangle(left, top, right - left, bottom - top);
         }
@@ -36,14 +46,22 @@ namespace Glyph.Math
 
         static public IRectangle GetBoundingBox(IEnumerable<IRectangle> rectangles)
         {
-            IEnumerable<IRectangle> enumerable = rectangles as IRectangle[] ?? rectangles.ToArray();
-            if (!enumerable.Any())
-                return null;
+            float left = float.MaxValue;
+            float right = float.MinValue;
+            float top = float.MaxValue;
+            float bottom = float.MinValue;
 
-            float left = enumerable.Min(x => x.Left);
-            float right = enumerable.Max(x => x.Right);
-            float top = enumerable.Min(x => x.Top);
-            float bottom = enumerable.Max(x => x.Bottom);
+            foreach (IRectangle rectangle in rectangles)
+            {
+                if (rectangle.Left < left)
+                    left = rectangle.Left;
+                if (rectangle.Right > right)
+                    right = rectangle.Right;
+                if (rectangle.Top < top)
+                    top = rectangle.Top;
+                if (rectangle.Bottom > bottom)
+                    bottom = rectangle.Bottom;
+            }
 
             return new OriginRectangle(left, top, right - left, bottom - top);
         }

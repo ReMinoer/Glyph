@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Diese;
 using Diese.Injection;
 using Glyph.Composition.Messaging;
 using Glyph.Messaging;
@@ -18,12 +20,22 @@ namespace Glyph.Composition
             if (!Dictionary.ContainsKey(type))
                 Dictionary.Add(type, new GlyphTypeInfo(type));
 
-            SendInstanceMessage(typeof(InstantiatingMessage<>), instance, type);
+            if (instance is IGlyphComponent)
+                SendInstanceMessage(typeof(InstantiatingMessage<>), instance, type);
+
+            foreach (Type inheritedType in instance.GetType().GetInheritedTypes<IGlyphComponent>())
+                SendInstanceMessage(typeof(InstantiatingMessage<>), instance, inheritedType);
         }
 
         static public void DisposeProcess(object instance)
         {
-            SendInstanceMessage(typeof(DisposingMessage<>), instance, instance.GetType());
+            Type type = instance.GetType();
+
+            if (instance is IGlyphComponent)
+                SendInstanceMessage(typeof(DisposingMessage<>), instance, type);
+
+            foreach (Type inheritedType in instance.GetType().GetInheritedTypes<IGlyphComponent>())
+                SendInstanceMessage(typeof(DisposingMessage<>), instance, inheritedType);
         }
 
         static public GlyphTypeInfo GetInfo(Type type)
@@ -41,18 +53,10 @@ namespace Glyph.Composition
                 object router;
                 if (RouterInjector.TryResolve(out router, routerType))
                 {
-                    object message = messageType.GetConstructor(type.AsArray())?.Invoke(instance.AsArray());
-                    routerType.GetMethod("Send").Invoke(router, message.AsArray());
+                    object message = messageType.GetConstructor(new [] { type })?.Invoke(new[] { instance });
+                    routerType.GetMethod("Send").Invoke(router, new[] { message });
                 }
             }
-        }
-
-        static private T[] AsArray<T>(this T obj)
-        {
-            return new []
-            {
-                obj
-            };
         }
     }
 }

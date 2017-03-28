@@ -1,11 +1,9 @@
-﻿using Glyph.Composition;
-using Glyph.Math;
+﻿using Glyph.Math;
 
 namespace Glyph.Core
 {
-    public interface IShapedComponent : IGlyphComponent
+    public interface IShapedComponent : IBoxedComponent
     {
-        ISceneNode SceneNode { get; }
         IShape Shape { get; }
     }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Diese;
 using Diese.Collections;
 using Glyph.Composition;
@@ -153,15 +154,9 @@ namespace Glyph.Core
             if (ParentNode != null || Parent == null)
                 return;
 
-            foreach (IGlyphParent parent in Parent.ParentQueue())
-            {
-                SceneNode parentNode;
-                if (!parent.Components.Any(out parentNode))
-                    continue;
-
+            SceneNode parentNode;
+            if (Parent.ParentQueue().SelectMany(x => x.Components).Any(out parentNode))
                 SetParent(parentNode, Referential.Local);
-                break;
-            }
         }
 
         public override void Dispose()

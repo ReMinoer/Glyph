@@ -27,7 +27,7 @@ namespace Glyph.Scripting
             get { return new CenteredRectangle(_sceneNode.Position, Size); }
         }
 
-        ISceneNode IShapedComponent.SceneNode
+        ISceneNode IBoxedComponent.SceneNode
         {
             get { return new ReadOnlySceneNode(_sceneNode); }
         }
@@ -38,6 +38,11 @@ namespace Glyph.Scripting
         }
 
         IRectangle IArea.BoundingBox
+        {
+            get { return Shape; }
+        }
+
+        IArea IBoxedComponent.Area
         {
             get { return Shape; }
         }

@@ -2,10 +2,9 @@
 using System.Linq;
 using Diese.Collections;
 using Glyph.Composition;
-using Glyph.Composition.Injection;
-using Glyph.Composition.Tracking;
 using Glyph.Core;
 using Glyph.Core.Colliders;
+using Glyph.Core.Tracking;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;

@@ -49,6 +49,7 @@
     <Compile Include="InputLogger.cs" />
     <Compile Include="SchedulingBreakpointHelper.cs" />
     <Compile Include="ShapeRendering\CircleComponentRenderer.cs" />
+    <Compile Include="ShapeRendering\AreaComponentRenderer.cs" />
     <Compile Include="ShapeRendering\ShapedComponentRendererBase.cs" />
     <Compile Include="CompositionLog.cs" />
     <Compile Include="PerformanceViewer.cs" />

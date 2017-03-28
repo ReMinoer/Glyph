@@ -1,5 +1,6 @@
 ﻿using System;
 using Glyph.Composition;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
@@ -12,7 +13,6 @@ namespace Glyph.Core.Colliders.Base
         public bool Enabled { get; set; }
         public Predicate<ICollider> IgnoredFilter { get; set; }
         protected SceneNode ParentNode { get; private set; }
-
         public abstract IRectangle BoundingBox { get; }
 
         public Vector2 LocalCenter

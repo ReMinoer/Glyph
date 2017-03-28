@@ -59,6 +59,12 @@
     <Compile Include="Colliders\IGridCollider.cs" />
     <Compile Include="Colliders\RectangleCollider.cs" />
     <Compile Include="Collision.cs" />
+    <Compile Include="GlyphObject.cs" />
+    <Compile Include="GlyphSchedulableBase.cs" />
+    <Compile Include="IBoxedComponent.cs" />
+    <Compile Include="Injection\GlyphCompositeInjector.cs" />
+    <Compile Include="Injection\InjectionScope.cs" />
+    <Compile Include="Injection\LocalDependencyInjector.cs" />
     <Compile Include="ISceneNode.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="IShapedComponent.cs" />
@@ -66,12 +72,50 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlySceneNode.cs" />
     <Compile Include="SceneNode.cs" />
+    <Compile Include="Scheduler\Base\Controllers\IPriorityController.cs" />
+    <Compile Include="Scheduler\Base\Controllers\IRelativeController.cs" />
+    <Compile Include="Scheduler\Base\Controllers\PriorityController.cs" />
+    <Compile Include="Scheduler\Base\Controllers\RelativeController.cs" />
+    <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
+    <Compile Include="Scheduler\Base\IScheduler.cs" />
+    <Compile Include="Scheduler\Base\ISchedulerProfile.cs" />
+    <Compile Include="Scheduler\Base\Priority.cs" />
+    <Compile Include="Scheduler\Base\Scheduler.cs" />
+    <Compile Include="Scheduler\Base\SchedulerBase.cs" />
+    <Compile Include="Scheduler\Base\SchedulerGraph.cs" />
+    <Compile Include="Scheduler\Base\SchedulerProfile.cs" />
+    <Compile Include="Scheduler\Base\TopologicalOrderVisitor.cs" />
+    <Compile Include="Scheduler\GlyphScheduler.cs" />
+    <Compile Include="Scheduler\GlyphSchedulerHandler.cs" />
+    <Compile Include="Scheduler\GlyphSchedulerSorter.cs" />
+    <Compile Include="Scheduler\IGlyphScheduler.cs" />
+    <Compile Include="Scheduler\IGlyphSchedulerAssigner.cs" />
+    <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
+    <Compile Include="Tracking\Factory.cs" />
+    <Compile Include="Tracking\FactoryData.cs" />
+    <Compile Include="Tracking\MessagingTracker.cs" />
     <Compile Include="ViewManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
       <Project>{8e354191-e8e5-498b-9c24-a6765da86417}</Project>
       <Name>Diese.Collections</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Debug\Diese.Debug.csproj">
+      <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
+      <Name>Diese.Debug</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Graph\Diese.Graph.csproj">
+      <Project>{BBC6C938-95A5-4CBF-AA6B-DA2A9A09C4F1}</Project>
+      <Name>Diese.Graph</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Injection\Diese.Injection.csproj">
+      <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
+      <Name>Diese.Injection</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
+      <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
+      <Name>Diese.Modelization</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese\Diese.csproj">
       <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
@@ -84,6 +128,10 @@
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
+      <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>
+      <Name>Glyph.Messaging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj">
       <Project>{068202CC-E943-4718-9771-62D72E50623E}</Project>

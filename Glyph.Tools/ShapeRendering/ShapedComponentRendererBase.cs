@@ -11,7 +11,7 @@ namespace Glyph.Tools.ShapeRendering
 {
     public abstract class ShapedComponentRendererBase : GlyphContainer, ILoadContent, IUpdate, IDraw
     {
-        private readonly IShapedComponent _shapedComponent;
+        private readonly IBoxedComponent _boxedComponent;
         private readonly SceneNode _sceneNode;
         protected readonly SpriteTransformer SpriteTransformer;
         private readonly ShapedSpriteBase _shapedSprite;
@@ -24,12 +24,12 @@ namespace Glyph.Tools.ShapeRendering
             set { SpriteTransformer.Color = value; }
         }
 
-        protected ShapedComponentRendererBase(IShapedComponent shapedComponent, ShapedSpriteBase shapedSprite)
+        protected ShapedComponentRendererBase(IBoxedComponent boxedComponent, ShapedSpriteBase shapedSprite)
         {
             Visible = true;
-            _shapedComponent = shapedComponent;
+            _boxedComponent = boxedComponent;
 
-            Components.Add(_sceneNode = new SceneNode(shapedComponent.SceneNode));
+            Components.Add(_sceneNode = new SceneNode(boxedComponent.SceneNode));
             Components.Add(_shapedSprite = shapedSprite);
 
             Components.Add(SpriteTransformer = new SpriteTransformer());
@@ -59,7 +59,7 @@ namespace Glyph.Tools.ShapeRendering
 
         public void Draw(IDrawer drawer)
         {
-            if (!Visible || _shapedComponent.ParentQueue().OfType<IEnableable>().Any(x => !x.Enabled))
+            if (!Visible || _boxedComponent.ParentQueue().OfType<IEnableable>().Any(x => !x.Enabled))
                 return;
 
             _spriteRenderer.Draw(drawer);
