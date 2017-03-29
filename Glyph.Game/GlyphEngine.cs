@@ -108,7 +108,7 @@ namespace Glyph.Game
         public void Initialize()
         {
             ViewManager.Main.Initialize();
-            Scene.Initialize();
+            Scene?.Initialize();
 
             IsInitialized = true;
         }
@@ -120,7 +120,7 @@ namespace Glyph.Game
             ViewManager.Main.LoadContent(ContentLibrary);
             SongPlayer.Instance.LoadContent(ContentLibrary);
 
-            Scene.LoadContent(ContentLibrary);
+            Scene?.LoadContent(ContentLibrary);
             _sceneChanged = false;
 
             IsLoaded = true;
@@ -178,12 +178,12 @@ namespace Glyph.Game
                 {
                     if (_sceneChanged)
                     {
-                        Scene.Initialize();
-                        Scene.LoadContent(ContentLibrary);
+                        Scene?.Initialize();
+                        Scene?.LoadContent(ContentLibrary);
 
                         _sceneChanged = false;
                     }
-                    Scene.Update(_elapsedTime);
+                    Scene?.Update(_elapsedTime);
                 } while (_sceneChanged);
 
                 ViewManager.Main.Update(_elapsedTime);
@@ -214,7 +214,7 @@ namespace Glyph.Game
             {
                 drawer.CurrentView = view;
                 view.PrepareDraw(drawer);
-                Scene.Draw(drawer);
+                Scene?.Draw(drawer);
             }
         }
 

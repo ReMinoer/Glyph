@@ -71,6 +71,11 @@ namespace Glyph.Input.Controls
                     Vector2 virtualPosition = _controlManager.InputClient.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint());
                     Vector2 viewPosition;
                     IView view = ViewManager.GetView(virtualPosition, out viewPosition);
+                    if (view == null)
+                    {
+                        value = default(System.Numerics.Vector2);
+                        return false;
+                    }
                     value = view.ViewToScene(viewPosition).AsSystemVector();
                     break;
                 default:
