@@ -18,7 +18,7 @@ namespace Glyph.Core.Colliders
             get { return Grid; }
         }
 
-        public override IRectangle BoundingBox
+        public override TopLeftRectangle BoundingBox
         {
             get { return Grid.BoundingBox; }
         }
@@ -30,7 +30,7 @@ namespace Glyph.Core.Colliders
 
         protected override bool IsColliding(RectangleCollider collider, out Collision collision)
         {
-            return CollisionUtils.IsGridCollidingShape(IntersectionUtils.RectangleWithRectangle, this, collider, out collision);
+            return CollisionUtils.IsGridCollidingShape<TopLeftRectangle>(IntersectionUtils.RectangleWithRectangle, this, collider, out collision);
         }
 
         protected override bool IsColliding(CircleCollider collider, out Collision collision)
@@ -43,17 +43,17 @@ namespace Glyph.Core.Colliders
             throw new NotImplementedException();
         }
 
-        public override bool Intersects(IRectangle rectangle)
+        public override bool Intersects(TopLeftRectangle rectangle)
         {
             return Intersects(IntersectionUtils.RectangleWithRectangle, rectangle);
         }
 
-        public override bool Intersects(ICircle circle)
+        public override bool Intersects(Circle circle)
         {
             return Intersects(IntersectionUtils.RectangleWithCircle, circle);
         }
 
-        private bool Intersects<TOther>(IntersectionDelegate<IRectangle, TOther> intersectionDelegate, TOther other)
+        private bool Intersects<TOther>(IntersectionDelegate<TopLeftRectangle, TOther> intersectionDelegate, TOther other)
             where TOther : IShape
         {
             Point topleft = Grid.ToGridPoint(other.Center - other.BoundingBox.Size / 2);
@@ -65,7 +65,7 @@ namespace Glyph.Core.Colliders
                     if (!IsCollidableCase(null, i, j))
                         continue;
 
-                    IRectangle rectangle = new OriginRectangle(Grid.ToWorldPoint(i, j), Grid.Delta);
+                    TopLeftRectangle rectangle = new TopLeftRectangle(Grid.ToWorldPoint(i, j), Grid.Delta);
 
                     if (intersectionDelegate(rectangle, other))
                         return true;

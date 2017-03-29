@@ -38,7 +38,7 @@ namespace Glyph.Space
             get { return SignificantCasesProtected; }
         }
 
-        public PoorGrid(IRectangle rectangle, int columns, int rows)
+        public PoorGrid(TopLeftRectangle rectangle, int columns, int rows)
             : base(rectangle, columns, rows)
         {
             _items = new Dictionary<Point, T>();

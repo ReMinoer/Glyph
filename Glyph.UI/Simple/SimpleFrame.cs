@@ -31,9 +31,9 @@ namespace Glyph.UI.Simple
             }
         }
 
-        public OriginRectangle Bounds
+        public TopLeftRectangle Bounds
         {
-            get { return new OriginRectangle(SceneNode.Position, Size); }
+            get { return new TopLeftRectangle(SceneNode.Position, Size); }
         }
 
         public Color Color

@@ -2,15 +2,12 @@
 
 namespace Glyph.Math.Shapes
 {
-    public struct Circle : ICircle
+    public struct Circle : IShape
     {
         public Vector2 Center { get; set; }
         public float Radius { get; set; }
 
-        public IRectangle BoundingBox
-        {
-            get { return new CenteredRectangle(Center, Radius * 2, Radius * 2); }
-        }
+        public TopLeftRectangle BoundingBox => new TopLeftRectangle(Center.X - Radius, Center.Y - Radius, Radius * 2, Radius * 2);
 
         public Circle(Vector2 center, float radius)
             : this()
@@ -24,12 +21,12 @@ namespace Glyph.Math.Shapes
             return (point - Center).Length() <= Radius;
         }
 
-        public bool Intersects(IRectangle rectangle)
+        public bool Intersects(TopLeftRectangle rectangle)
         {
             return IntersectionUtils.RectangleWithCircle(rectangle, this);
         }
 
-        public bool Intersects(ICircle circle)
+        public bool Intersects(Circle circle)
         {
             return IntersectionUtils.CircleWithCircle(this, circle);
         }

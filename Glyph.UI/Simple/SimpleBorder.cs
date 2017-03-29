@@ -21,9 +21,9 @@ namespace Glyph.UI.Simple
         public Color Color { get; set; }
         public int Thickness { get; set; }
 
-        public OriginRectangle Bounds
+        public TopLeftRectangle Bounds
         {
-            get { return new OriginRectangle(SceneNode.Position, Size); }
+            get { return new TopLeftRectangle(SceneNode.Position, Size); }
         }
 
         public SimpleBorder(Func<GraphicsDevice> graphicsDeviceFunc)
@@ -49,7 +49,7 @@ namespace Glyph.UI.Simple
             if (!Visible)
                 return;
 
-            drawer.SpriteBatchStack.Current.Draw(_rectangleSprite.Texture, Bounds.ToStruct(), Color);
+            drawer.SpriteBatchStack.Current.Draw(_rectangleSprite.Texture, Bounds.ToIntegers(), Color);
         }
     }
 }

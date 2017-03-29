@@ -8,33 +8,33 @@ namespace Glyph.Space.Partitioning
 {
     public class QuadtreeSpace<T> : SpacePartitionBase<T>
     {
-        private readonly IRectangle _bounds;
+        private readonly TopLeftRectangle _bounds;
 
-        public QuadtreeSpace(IRectangle bounds, int capacity, Func<T, Vector2> getPoint)
+        public QuadtreeSpace(TopLeftRectangle bounds, int capacity, Func<T, Vector2> getPoint)
             : base(null, getPoint, capacity)
         {
             _bounds = bounds;
         }
 
-        public QuadtreeSpace(IRectangle bounds, int capacity, Func<T, IRectangle> getBox)
+        public QuadtreeSpace(TopLeftRectangle bounds, int capacity, Func<T, TopLeftRectangle> getBox)
             : base(null, getBox, capacity)
         {
             _bounds = bounds;
         }
 
-        public QuadtreeSpace(IRectangle bounds, int capacity, Func<T, Vector2> getPoint, Func<T, IRectangle> getBox)
+        public QuadtreeSpace(TopLeftRectangle bounds, int capacity, Func<T, Vector2> getPoint, Func<T, TopLeftRectangle> getBox)
             : base(null, getPoint, getBox, capacity)
         {
             _bounds = bounds;
         }
 
-        private QuadtreeSpace(ISpace<T> parent, IRectangle bounds, int capacity, Func<T, Vector2> getPoint, Func<T, IRectangle> getBox)
+        private QuadtreeSpace(ISpace<T> parent, TopLeftRectangle bounds, int capacity, Func<T, Vector2> getPoint, Func<T, TopLeftRectangle> getBox)
             : base(parent, getPoint, getBox, capacity)
         {
             _bounds = bounds;
         }
 
-        public override IRectangle BoundingBox
+        public override TopLeftRectangle BoundingBox
         {
             get { return _bounds; }
         }
@@ -54,9 +54,9 @@ namespace Glyph.Space.Partitioning
             for (int i = 0; i < 2; i++)
                 for (int j = 0; j < 2; j++)
                 {
-                    IRectangle rectangle = new OriginRectangle
+                    TopLeftRectangle rectangle = new TopLeftRectangle
                     {
-                        Origin = _bounds.Origin + new Vector2(j, i) * _bounds.Size / 2,
+                        Position = _bounds.Position + new Vector2(j, i) * _bounds.Size / 2,
                         Size = _bounds.Size / 2
                     };
 

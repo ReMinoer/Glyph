@@ -11,7 +11,7 @@ namespace Glyph.Space.Partitioning
     public abstract class SpacePartitionBase<T> : ISpace<T>
     {
         protected readonly Func<T, Vector2> GetPoint;
-        protected readonly Func<T, IRectangle> GetBox;
+        protected readonly Func<T, TopLeftRectangle> GetBox;
         private readonly List<T> _items;
         private readonly IReadOnlyCollection<ISpace<T>> _readOnlyPartitions;
         private List<ISpace<T>> _partitions;
@@ -28,7 +28,7 @@ namespace Glyph.Space.Partitioning
             get { return _items.Select(GetPoint); }
         }
 
-        public IEnumerable<IRectangle> Boxes
+        public IEnumerable<TopLeftRectangle> Boxes
         {
             get { return _items.Select(GetBox); }
         }
@@ -48,19 +48,19 @@ namespace Glyph.Space.Partitioning
             get { return false; }
         }
         
-        public abstract IRectangle BoundingBox { get; }
+        public abstract TopLeftRectangle BoundingBox { get; }
 
         protected SpacePartitionBase(ISpace<T> parent, Func<T, Vector2> getPoint, int capacity)
             : this(parent, getPoint, x => new CenteredRectangle(getPoint(x), 0, 0), capacity)
         {
         }
 
-        protected SpacePartitionBase(ISpace<T> parent, Func<T, IRectangle> getBox, int capacity)
+        protected SpacePartitionBase(ISpace<T> parent, Func<T, TopLeftRectangle> getBox, int capacity)
             : this(parent, x => getBox(x).Center, getBox, capacity)
         {
         }
 
-        protected SpacePartitionBase(ISpace<T> parent, Func<T, Vector2> getPoint, Func<T, IRectangle> getBox, int capacity)
+        protected SpacePartitionBase(ISpace<T> parent, Func<T, Vector2> getPoint, Func<T, TopLeftRectangle> getBox, int capacity)
         {
             Parent = parent;
             GetPoint = getPoint;
@@ -137,7 +137,7 @@ namespace Glyph.Space.Partitioning
             return null;
         }
 
-        public IEnumerable<ISpace<T>> GetAllPartitionsInRange(IRectangle range)
+        public IEnumerable<ISpace<T>> GetAllPartitionsInRange(TopLeftRectangle range)
         {
             if (!Intersects(range))
                 yield break;
@@ -158,7 +158,7 @@ namespace Glyph.Space.Partitioning
             return GetAllItemsInRange(range).Select(GetPoint);
         }
 
-        public IEnumerable<IRectangle> GetAllBoxesInRange(IShape range)
+        public IEnumerable<TopLeftRectangle> GetAllBoxesInRange(IShape range)
         {
             return GetAllItemsInRange(range).Select(GetBox);
         }
@@ -194,7 +194,7 @@ namespace Glyph.Space.Partitioning
             return GetBestPartition(position);
         }
 
-        IEnumerable<ISpace> ISpace.GetAllPartitionsInRange(IRectangle range)
+        IEnumerable<ISpace> ISpace.GetAllPartitionsInRange(TopLeftRectangle range)
         {
             return GetAllPartitionsInRange(range);
         }

@@ -17,7 +17,7 @@ namespace Glyph.Graphics
         public Camera Camera { get; set; }
         public ViewEffectManager EffectManager { get; private set; }
 
-        public IRectangle BoundingBox
+        public TopLeftRectangle BoundingBox
         {
             get { return _fillingRectangle.Rectangle; }
             set

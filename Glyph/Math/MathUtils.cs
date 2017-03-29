@@ -12,12 +12,12 @@ namespace Glyph.Math
             return System.Math.Abs(a - b) < float.Epsilon;
         }
 
-        static public IRectangle GetBoundingBox(params Vector2[] points)
+        static public TopLeftRectangle GetBoundingBox(params Vector2[] points)
         {
             return GetBoundingBox(points.AsEnumerable());
         }
 
-        static public IRectangle GetBoundingBox(IEnumerable<Vector2> points)
+        static public TopLeftRectangle GetBoundingBox(IEnumerable<Vector2> points)
         {
             float left = float.MaxValue;
             float right = float.MinValue;
@@ -36,22 +36,22 @@ namespace Glyph.Math
                     bottom = point.Y;
             }
 
-            return new OriginRectangle(left, top, right - left, bottom - top);
+            return new TopLeftRectangle(left, top, right - left, bottom - top);
         }
 
-        static public IRectangle GetBoundingBox(params IRectangle[] rectangles)
+        static public TopLeftRectangle GetBoundingBox(params TopLeftRectangle[] rectangles)
         {
             return GetBoundingBox(rectangles.AsEnumerable());
         }
 
-        static public IRectangle GetBoundingBox(IEnumerable<IRectangle> rectangles)
+        static public TopLeftRectangle GetBoundingBox(IEnumerable<TopLeftRectangle> rectangles)
         {
             float left = float.MaxValue;
             float right = float.MinValue;
             float top = float.MaxValue;
             float bottom = float.MinValue;
 
-            foreach (IRectangle rectangle in rectangles)
+            foreach (TopLeftRectangle rectangle in rectangles)
             {
                 if (rectangle.Left < left)
                     left = rectangle.Left;
@@ -63,20 +63,20 @@ namespace Glyph.Math
                     bottom = rectangle.Bottom;
             }
 
-            return new OriginRectangle(left, top, right - left, bottom - top);
+            return new TopLeftRectangle(left, top, right - left, bottom - top);
         }
 
-        static public IRectangle GetBoundingBox(params IArea[] areas)
+        static public TopLeftRectangle GetBoundingBox(params IArea[] areas)
         {
             return GetBoundingBox(areas.Select(x => x.BoundingBox));
         }
 
-        static public IRectangle GetBoundingBox(IEnumerable<IArea> areas)
+        static public TopLeftRectangle GetBoundingBox(IEnumerable<IArea> areas)
         {
             return GetBoundingBox(areas.Select(x => x.BoundingBox));
         }
 
-        static public Vector2 ClampToRectangle(Vector2 point, IRectangle rectangle)
+        static public Vector2 ClampToRectangle(Vector2 point, TopLeftRectangle rectangle)
         {
             if (point.X < rectangle.Left)
                 point.X = rectangle.Left;
@@ -90,7 +90,7 @@ namespace Glyph.Math
             return point;
         }
 
-        static public IRectangle ClampToRectangle(IRectangle inner, IRectangle outer)
+        static public TopLeftRectangle ClampToRectangle(TopLeftRectangle inner, TopLeftRectangle outer)
         {
             return new CenteredRectangle(ClampToRectangle(inner.Center, new CenteredRectangle(outer.Center, outer.Size - inner.Size)), inner.Size);
         }

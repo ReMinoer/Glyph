@@ -27,7 +27,7 @@ namespace Glyph.Core.Colliders
             return false;
         }
         
-        static public bool IsShapeCollidingGrid<TShape>(CollisionDelegate<TShape, IRectangle> collisionDelegate, ICollider<TShape> shape, IGridCollider gridCollider, out Collision collision)
+        static public bool IsShapeCollidingGrid<TShape>(CollisionDelegate<TShape, TopLeftRectangle> collisionDelegate, ICollider<TShape> shape, IGridCollider gridCollider, out Collision collision)
             where TShape : IShape
         {
             Point topleft = gridCollider.Grid.ToGridPoint(shape.Center - shape.BoundingBox.Size / 2);
@@ -39,7 +39,7 @@ namespace Glyph.Core.Colliders
                     if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;
 
-                    IRectangle rectangle = new OriginRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
+                    TopLeftRectangle rectangle = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
 
                     bool colliding = false;
                     for (int x = -1; x <= 1 && !colliding; x++)
@@ -51,15 +51,15 @@ namespace Glyph.Core.Colliders
                             if (!gridCollider.IsCollidableCase(shape, i + y, j + x))
                                 continue;
 
-                            IRectangle otherCase = new OriginRectangle(gridCollider.Grid.ToWorldPoint(i + y, j + x), gridCollider.Grid.Delta);
+                            TopLeftRectangle otherCase = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i + y, j + x), gridCollider.Grid.Delta);
 
                             Vector2 temp;
                             if (!collisionDelegate(shape.Shape, otherCase, out temp))
                                 continue;
 
-                            rectangle = new CenteredRectangle
+                            rectangle = new TopLeftRectangle
                             {
-                                Center = (gridCollider.Grid.ToWorldPoint(i, j) + gridCollider.Grid.ToWorldPoint(i + y, j + x) + gridCollider.Grid.Delta) * 0.5f,
+                                Position = (gridCollider.Grid.ToWorldPoint(i, j) + gridCollider.Grid.ToWorldPoint(i + y, j + x)) * 0.5f,
                                 Size = gridCollider.Grid.Delta + gridCollider.Grid.Delta.Multiply(System.Math.Abs(x), System.Math.Abs(y))
                             };
 
@@ -84,7 +84,7 @@ namespace Glyph.Core.Colliders
             return false;
         }
 
-        static public bool IsGridCollidingShape<TShape>(CollisionDelegate<IRectangle, TShape> collisionDelegate, IGridCollider gridCollider, ICollider<TShape> shape, out Collision collision)
+        static public bool IsGridCollidingShape<TShape>(CollisionDelegate<TopLeftRectangle, TShape> collisionDelegate, IGridCollider gridCollider, ICollider<TShape> shape, out Collision collision)
             where TShape : IShape
         {
             Point topleft = gridCollider.Grid.ToGridPoint(shape.Center - shape.BoundingBox.Size / 2);
@@ -96,7 +96,7 @@ namespace Glyph.Core.Colliders
                     if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;
 
-                    IRectangle rectangle = new OriginRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
+                    TopLeftRectangle rectangle = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
 
                     Vector2 correction;
                     if (collisionDelegate(rectangle, shape.Shape, out correction))

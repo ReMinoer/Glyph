@@ -2,14 +2,14 @@
 
 namespace Glyph.Math.Shapes
 {
-    public struct OriginRectangle : IRectangle
+    public struct TopLeftRectangle : IRectangle
     {
         public float Left { get; set; }
         public float Top { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
 
-        public Vector2 Origin
+        public Vector2 Position
         {
             get { return new Vector2(Left, Top); }
             set
@@ -19,10 +19,18 @@ namespace Glyph.Math.Shapes
             }
         }
 
+        public Vector2 P1 => new Vector2(Right, Top);
+        public Vector2 P2 => new Vector2(Right, Bottom);
+        public Vector2 P3 => new Vector2(Left, Bottom);
+
         public Vector2 Center
         {
-            get { return Origin + Size / 2; }
-            set { Origin = value - Size / 2; }
+            get { return Position + Size / 2; }
+            set
+            {
+                Left = value.X - Width / 2;
+                Top = value.Y - Height / 2;
+            }
         }
 
         public float Right
@@ -47,19 +55,16 @@ namespace Glyph.Math.Shapes
             }
         }
 
-        IRectangle IArea.BoundingBox
+        TopLeftRectangle IArea.BoundingBox => this;
+
+        static public TopLeftRectangle Void => new TopLeftRectangle();
+
+        public TopLeftRectangle(Vector2 origin, Vector2 size)
+            : this(origin.X, origin.Y, size.X, size.Y)
         {
-            get { return this; }
         }
 
-        public OriginRectangle(Vector2 origin, Vector2 size)
-            : this()
-        {
-            Origin = origin;
-            Size = size;
-        }
-
-        public OriginRectangle(float x, float y, float width, float height)
+        public TopLeftRectangle(float x, float y, float width, float height)
             : this()
         {
             Left = x;
@@ -73,24 +78,24 @@ namespace Glyph.Math.Shapes
             return point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom;
         }
 
-        public bool Intersects(IRectangle rectangle)
+        public bool Intersects(TopLeftRectangle rectangle)
         {
             return IntersectionUtils.RectangleWithRectangle(this, rectangle);
         }
 
-        public bool Intersects(IRectangle rectangle, out IRectangle intersection)
+        public bool Intersects(TopLeftRectangle rectangle, out TopLeftRectangle intersection)
         {
             return IntersectionUtils.RectangleWithRectangle(this, rectangle, out intersection);
         }
 
-        public bool Intersects(ICircle circle)
+        public bool Intersects(Circle circle)
         {
             return IntersectionUtils.RectangleWithCircle(this, circle);
         }
 
         public override string ToString()
         {
-            return $"Origin: {Origin} - Size: {Size}";
+            return $"Origin: {Position} - Size: {Size}";
         }
     }
 }

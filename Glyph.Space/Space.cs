@@ -12,14 +12,14 @@ namespace Glyph.Space
     {
         private readonly List<T> _items;
         private readonly Func<T, Vector2> _getPoint;
-        private readonly Func<T, IRectangle> _getBox;
+        private readonly Func<T, TopLeftRectangle> _getBox;
 
         public IEnumerable<Vector2> Points
         {
             get { return _items.Select(x => _getBox(x).Center); }
         }
 
-        public IEnumerable<IRectangle> Boxes
+        public IEnumerable<TopLeftRectangle> Boxes
         {
             get { return _items.Select(x => _getBox(x)); }
         }
@@ -29,7 +29,7 @@ namespace Glyph.Space
             get { return _items.Count; }
         }
 
-        public IRectangle BoundingBox
+        public TopLeftRectangle BoundingBox
         {
             get { return MathUtils.GetBoundingBox(_items.Select(x => _getBox(x).Center)); }
         }
@@ -54,12 +54,12 @@ namespace Glyph.Space
         {
         }
 
-        public Space(Func<T, IRectangle> getBox)
+        public Space(Func<T, TopLeftRectangle> getBox)
             : this(x => getBox(x).Center, getBox)
         {
         }
 
-        public Space(Func<T, Vector2> getPoint, Func<T, IRectangle> getBox)
+        public Space(Func<T, Vector2> getPoint, Func<T, TopLeftRectangle> getBox)
         {
             _getPoint = getPoint;
             _getBox = getBox;
@@ -97,11 +97,11 @@ namespace Glyph.Space
             return GetAllItemsInRange(range).Select(x => _getBox(x).Center);
         }
 
-        public IEnumerable<IRectangle> GetAllBoxesInRange(IShape range)
+        public IEnumerable<TopLeftRectangle> GetAllBoxesInRange(IShape range)
         {
             foreach (T item in _items)
             {
-                IRectangle box = _getBox(item);
+                TopLeftRectangle box = _getBox(item);
                 if (range.Intersects(_getBox(item)))
                     yield return box;
             }
@@ -143,13 +143,13 @@ namespace Glyph.Space
             return ContainsPoint(position) ? this : null;
         }
 
-        IEnumerable<ISpace> ISpace.GetAllPartitionsInRange(IRectangle range)
+        IEnumerable<ISpace> ISpace.GetAllPartitionsInRange(TopLeftRectangle range)
         {
             if (BoundingBox.Intersects(range))
                 yield return this;
         }
 
-        IEnumerable<ISpace<T>> ISpace<T>.GetAllPartitionsInRange(IRectangle range)
+        IEnumerable<ISpace<T>> ISpace<T>.GetAllPartitionsInRange(TopLeftRectangle range)
         {
             if (BoundingBox.Intersects(range))
                 yield return this;

@@ -17,16 +17,16 @@ namespace Glyph.Scripting
         private readonly TriggerManager _triggerManager;
         private readonly MessagingTracker<RectangleCollider> _colliderMessagingTracker;
         private readonly List<Trigger> _activatedTriggers;
-        private IRectangle _boudingBox;
+        private TopLeftRectangle _boudingBox;
         private bool _dirtyBoundingBox = true;
         public List<ICollider> Colliders { get; private set; }
 
-        public IRectangle BoundingBox
+        public TopLeftRectangle BoundingBox
         {
             get
             {
                 if (_dirtyBoundingBox)
-                    _boudingBox = MathUtils.GetBoundingBox(Colliders) ?? new CenteredRectangle(_sceneNode.Position, Vector2.Zero);
+                    _boudingBox = MathUtils.GetBoundingBox(Colliders);
                 return _boudingBox;
             }
         }

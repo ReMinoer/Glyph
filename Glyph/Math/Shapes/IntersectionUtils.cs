@@ -11,13 +11,13 @@ namespace Glyph.Math.Shapes
 
     static public class IntersectionUtils
     {
-        static public bool RectangleWithRectangle(IRectangle rectangleA, IRectangle rectangleB)
+        static public bool RectangleWithRectangle(TopLeftRectangle rectangleA, TopLeftRectangle rectangleB)
         {
-            IRectangle intersection;
+            TopLeftRectangle intersection;
             return RectangleWithRectangle(rectangleA, rectangleB, out intersection);
         }
 
-        static public bool RectangleWithRectangle(IRectangle rectangleA, IRectangle rectangleB, out IRectangle intersection)
+        static public bool RectangleWithRectangle(TopLeftRectangle rectangleA, TopLeftRectangle rectangleB, out TopLeftRectangle intersection)
         {
             float left = MathHelper.Max(rectangleA.Left, rectangleB.Left);
             float right = MathHelper.Min(rectangleA.Right, rectangleB.Right);
@@ -26,18 +26,17 @@ namespace Glyph.Math.Shapes
 
             if (left >= right || top >= bottom)
             {
-                intersection = new CenteredRectangle(Vector2.Zero, 0, 0);
+                intersection = TopLeftRectangle.Void;
                 return false;
             }
 
-            Vector2 center = new Vector2(left + right, bottom + top) / 2;
-            intersection = new CenteredRectangle(center, right - left, bottom - top);
+            intersection = new TopLeftRectangle(left, top, right - left, bottom - top);
             return true;
         }
         
-        static public bool RectangleWithRectangle(IRectangle rectangle, IRectangle other, out Vector2 correction)
+        static public bool RectangleWithRectangle(TopLeftRectangle rectangle, TopLeftRectangle other, out Vector2 correction)
         {
-            IRectangle intersection;
+            TopLeftRectangle intersection;
             if (RectangleWithRectangle(rectangle, other, out intersection))
             {
                 bool isWiderThanTall = intersection.Width > intersection.Height;
@@ -62,13 +61,13 @@ namespace Glyph.Math.Shapes
             return false;
         }
 
-        static public bool CircleWithCircle(ICircle circleA, ICircle circleB)
+        static public bool CircleWithCircle(Circle circleA, Circle circleB)
         {
             Vector2 correction;
             return CircleWithCircle(circleA, circleB, out correction);
         }
 
-        static public bool CircleWithCircle(ICircle circleA, ICircle circleB, out Vector2 correction)
+        static public bool CircleWithCircle(Circle circleA, Circle circleB, out Vector2 correction)
         {
             Vector2 centersDistance = circleA.Center - circleB.Center;
 
@@ -83,13 +82,13 @@ namespace Glyph.Math.Shapes
             return false;
         }
 
-        static public bool RectangleWithCircle(IRectangle rectangle, ICircle circle)
+        static public bool RectangleWithCircle(TopLeftRectangle rectangle, Circle circle)
         {
             Vector2 correction;
             return RectangleWithCircle(rectangle, circle, out correction);
         }
 
-        static public bool RectangleWithCircle(IRectangle rectangle, ICircle circle, out Vector2 correction)
+        static public bool RectangleWithCircle(TopLeftRectangle rectangle, Circle circle, out Vector2 correction)
         {
             // Find the closest point to the circle within the rectangle
             float closestX = MathHelper.Clamp(circle.Center.X, rectangle.Left, rectangle.Right);
@@ -112,12 +111,12 @@ namespace Glyph.Math.Shapes
             return false;
         }
 
-        static public bool RectangleWithCircle(ICircle circle, IRectangle rectangle)
+        static public bool RectangleWithCircle(Circle circle, TopLeftRectangle rectangle)
         {
             return RectangleWithCircle(rectangle, circle);
         }
 
-        static public bool CircleWithRectangle(ICircle circle, IRectangle rectangle, out Vector2 correction)
+        static public bool CircleWithRectangle(Circle circle, TopLeftRectangle rectangle, out Vector2 correction)
         {
             bool result = RectangleWithCircle(rectangle, circle, out correction);
             correction = correction.Inverse();

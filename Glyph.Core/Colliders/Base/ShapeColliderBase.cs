@@ -9,7 +9,7 @@ namespace Glyph.Core.Colliders.Base
     {
         public abstract TShape Shape { get; }
 
-        public override IRectangle BoundingBox
+        public override TopLeftRectangle BoundingBox
         {
             get { return Shape.BoundingBox; }
         }
@@ -24,12 +24,12 @@ namespace Glyph.Core.Colliders.Base
             return Shape.ContainsPoint(point);
         }
 
-        public override bool Intersects(IRectangle rectangle)
+        public override bool Intersects(TopLeftRectangle rectangle)
         {
             return Shape.Intersects(rectangle);
         }
 
-        public override bool Intersects(ICircle circle)
+        public override bool Intersects(Circle circle)
         {
             return Shape.Intersects(circle);
         }

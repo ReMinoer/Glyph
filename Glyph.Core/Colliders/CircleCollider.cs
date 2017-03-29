@@ -3,11 +3,11 @@ using Glyph.Math.Shapes;
 
 namespace Glyph.Core.Colliders
 {
-    public class CircleCollider : ShapeColliderBase<ICircle>
+    public class CircleCollider : ShapeColliderBase<Circle>
     {
         public float Radius { get; set; }
 
-        public override ICircle Shape
+        public override Circle Shape
         {
             get { return new Circle(Center, Radius); }
         }
@@ -20,7 +20,7 @@ namespace Glyph.Core.Colliders
 
         protected override bool IsColliding(RectangleCollider collider, out Collision collision)
         {
-            return CollisionUtils.IsColliding(IntersectionUtils.CircleWithRectangle, this, collider, out collision);
+            return CollisionUtils.IsColliding<Circle, TopLeftRectangle>(IntersectionUtils.CircleWithRectangle, this, collider, out collision);
         }
 
         protected override bool IsColliding(CircleCollider collider, out Collision collision)

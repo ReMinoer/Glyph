@@ -8,6 +8,6 @@ namespace Glyph.UI
         Color Color { get; }
         int Thickness { get; }
         Vector2 Size { get; set; }
-        OriginRectangle Bounds { get; }
+        TopLeftRectangle Bounds { get; }
     }
 }

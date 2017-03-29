@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
 using Glyph.Composition;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Core.Colliders.Base
 {
-    internal class ColliderParentImplementation
+    internal class ColliderParentImplementation : IShape
     {
         private readonly IGlyphParent<ICollider> _colliderParent;
         public bool Enabled { get; set; }
@@ -59,31 +60,9 @@ namespace Glyph.Core.Colliders.Base
             }
         }
 
-        public IRectangle BoundingBox
+        public TopLeftRectangle BoundingBox
         {
-            get
-            {
-                float top = float.MaxValue;
-                float bottom = float.MinValue;
-                float left = float.MaxValue;
-                float right = float.MinValue;
-
-                foreach (ICollider collider in _colliderParent.Components)
-                {
-                    IRectangle boundingBox = collider.BoundingBox;
-
-                    if (boundingBox.Top < top)
-                        top = boundingBox.Top;
-                    if (boundingBox.Bottom > bottom)
-                        bottom = boundingBox.Bottom;
-                    if (boundingBox.Left < left)
-                        left = boundingBox.Left;
-                    if (boundingBox.Right > right)
-                        right = boundingBox.Right;
-                }
-
-                return new OriginRectangle(left, top, right - left, bottom - top);
-            }
+            get { return MathUtils.GetBoundingBox(_colliderParent.Components); }
         }
 
         public event Action<Collision> Colliding
@@ -145,12 +124,12 @@ namespace Glyph.Core.Colliders.Base
             return false;
         }
 
-        public bool Intersects(IRectangle rectangle)
+        public bool Intersects(TopLeftRectangle rectangle)
         {
             return _colliderParent.Components.Any(component => component.Intersects(rectangle));
         }
 
-        public bool Intersects(ICircle circle)
+        public bool Intersects(Circle circle)
         {
             return _colliderParent.Components.Any(component => component.Intersects(circle));
         }

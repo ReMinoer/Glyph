@@ -5,7 +5,7 @@ namespace Glyph.Math
 {
     public interface IArea
     {
-        IRectangle BoundingBox { get; }
+        TopLeftRectangle BoundingBox { get; }
         bool ContainsPoint(Vector2 point);
     }
 }

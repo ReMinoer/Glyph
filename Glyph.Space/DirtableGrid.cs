@@ -31,7 +31,7 @@ namespace Glyph.Space
             get { return _readOnlyDirtiedCases; }
         }
 
-        public IRectangle BoundingBox
+        public TopLeftRectangle BoundingBox
         {
             get { return _gridImplementation.BoundingBox; }
         }
@@ -173,12 +173,12 @@ namespace Glyph.Space
             return _gridImplementation.ContainsPoint(point);
         }
 
-        public bool Intersects(IRectangle rectangle)
+        public bool Intersects(TopLeftRectangle rectangle)
         {
             return _gridImplementation.Intersects(rectangle);
         }
 
-        public bool Intersects(ICircle circle)
+        public bool Intersects(Circle circle)
         {
             return _gridImplementation.Intersects(circle);
         }

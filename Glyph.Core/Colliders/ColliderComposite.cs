@@ -33,7 +33,7 @@ namespace Glyph.Core.Colliders
             set { _colliderParentImplementation.LocalCenter = value; }
         }
 
-        public IRectangle BoundingBox => _colliderParentImplementation.BoundingBox;
+        public TopLeftRectangle BoundingBox => _colliderParentImplementation.BoundingBox;
 
         public Predicate<ICollider> IgnoredFilter
         {
@@ -69,12 +69,12 @@ namespace Glyph.Core.Colliders
             return _colliderParentImplementation.ContainsPoint(point);
         }
 
-        public bool Intersects(IRectangle rectangle)
+        public bool Intersects(TopLeftRectangle rectangle)
         {
             return _colliderParentImplementation.Intersects(rectangle);
         }
 
-        public bool Intersects(ICircle circle)
+        public bool Intersects(Circle circle)
         {
             return _colliderParentImplementation.Intersects(circle);
         }

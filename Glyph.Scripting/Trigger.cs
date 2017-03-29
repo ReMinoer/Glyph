@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Scripting
 {
-    public class Trigger : GlyphContainer, IEnableable, IShapedComponent<IRectangle>, IShape
+    public class Trigger : GlyphContainer, IEnableable, IShapedComponent<CenteredRectangle>, IShape
     {
         private readonly TriggerManager _triggerManager;
         private readonly IRouter<OnEnterTrigger> _onEnterRouter;
@@ -22,7 +22,7 @@ namespace Glyph.Scripting
             set { _sceneNode.LocalPosition = value; }
         }
 
-        public IRectangle Shape
+        public CenteredRectangle Shape
         {
             get { return new CenteredRectangle(_sceneNode.Position, Size); }
         }
@@ -37,7 +37,7 @@ namespace Glyph.Scripting
             get { return Shape; }
         }
 
-        IRectangle IArea.BoundingBox
+        TopLeftRectangle IArea.BoundingBox
         {
             get { return Shape; }
         }
@@ -80,12 +80,12 @@ namespace Glyph.Scripting
             _onLeaveRouter.Send(new OnLeaveTrigger(this, actor));
         }
 
-        public bool Intersects(IRectangle rectangle)
+        public bool Intersects(TopLeftRectangle rectangle)
         {
             return Shape.Intersects(rectangle);
         }
 
-        public bool Intersects(ICircle circle)
+        public bool Intersects(Circle circle)
         {
             return Shape.Intersects(circle);
         }

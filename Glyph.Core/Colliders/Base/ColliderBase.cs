@@ -1,6 +1,5 @@
 ﻿using System;
 using Glyph.Composition;
-using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
@@ -13,7 +12,7 @@ namespace Glyph.Core.Colliders.Base
         public bool Enabled { get; set; }
         public Predicate<ICollider> IgnoredFilter { get; set; }
         protected SceneNode ParentNode { get; private set; }
-        public abstract IRectangle BoundingBox { get; }
+        public abstract TopLeftRectangle BoundingBox { get; }
 
         public Vector2 LocalCenter
         {
@@ -106,8 +105,8 @@ namespace Glyph.Core.Colliders.Base
         protected abstract bool IsColliding(RectangleCollider collider, out Collision collision);
         protected abstract bool IsColliding(CircleCollider collider, out Collision collision);
         protected abstract bool IsColliding(IGridCollider collider, out Collision collision);
-        public abstract bool Intersects(IRectangle rectangle);
-        public abstract bool Intersects(ICircle circle);
+        public abstract bool Intersects(TopLeftRectangle rectangle);
+        public abstract bool Intersects(Circle circle);
         public abstract bool ContainsPoint(Vector2 point);
 
         public override void Dispose()

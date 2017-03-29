@@ -7,31 +7,16 @@ namespace Glyph.Math.Shapes
         public Vector2 Center { get; set; }
         public float Width { get; set; }
         public float Height { get; set; }
+        
+        public Vector2 Position => new Vector2(Left, Top);
+        public Vector2 P1 => new Vector2(Right, Top);
+        public Vector2 P2 => new Vector2(Right, Bottom);
+        public Vector2 P3 => new Vector2(Left, Bottom);
 
-        public Vector2 Origin
-        {
-            get { return Center - Size / 2; }
-        }
-
-        public float Left
-        {
-            get { return Center.X - Width / 2; }
-        }
-
-        public float Right
-        {
-            get { return Center.X + Size.X / 2; }
-        }
-
-        public float Top
-        {
-            get { return Center.Y - Size.Y / 2; }
-        }
-
-        public float Bottom
-        {
-            get { return Center.Y + Size.Y / 2; }
-        }
+        public float Left => Center.X - Width / 2;
+        public float Right => Center.X + Width / 2;
+        public float Top => Center.Y - Height / 2;
+        public float Bottom => Center.Y + Height / 2;
 
         public Vector2 Size
         {
@@ -43,10 +28,9 @@ namespace Glyph.Math.Shapes
             }
         }
 
-        IRectangle IArea.BoundingBox
-        {
-            get { return this; }
-        }
+        TopLeftRectangle IArea.BoundingBox => this;
+
+        static public TopLeftRectangle Void => new TopLeftRectangle();
 
         public CenteredRectangle(Vector2 center, float width, float height)
             : this()
@@ -68,17 +52,17 @@ namespace Glyph.Math.Shapes
             return point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom;
         }
 
-        public bool Intersects(IRectangle rectangle)
+        public bool Intersects(TopLeftRectangle rectangle)
         {
             return IntersectionUtils.RectangleWithRectangle(this, rectangle);
         }
 
-        public bool Intersects(IRectangle rectangle, out IRectangle intersection)
+        public bool Intersects(TopLeftRectangle rectangle, out TopLeftRectangle intersection)
         {
             return IntersectionUtils.RectangleWithRectangle(this, rectangle, out intersection);
         }
 
-        public bool Intersects(ICircle circle)
+        public bool Intersects(Circle circle)
         {
             return IntersectionUtils.RectangleWithCircle(this, circle);
         }
@@ -86,6 +70,16 @@ namespace Glyph.Math.Shapes
         public override string ToString()
         {
             return $"Center: {Center} - Size: {Size}";
+        }
+
+        static public implicit operator CenteredRectangle(TopLeftRectangle rectangle)
+        {
+            return new CenteredRectangle(rectangle.Center, rectangle.Width, rectangle.Height);
+        }
+
+        static public implicit operator TopLeftRectangle(CenteredRectangle rectangle)
+        {
+            return new TopLeftRectangle(rectangle.Left, rectangle.Top, rectangle.Width, rectangle.Height);
         }
     }
 }

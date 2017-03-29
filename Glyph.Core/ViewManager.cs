@@ -90,13 +90,13 @@ namespace Glyph.Core
         static public IView GetView(Vector2 virtualScreenPosition, out Vector2 positionOnView)
         {
             IView view = GetView(virtualScreenPosition) ?? Main.Views.First();
-            positionOnView = virtualScreenPosition - view.BoundingBox.Origin;
+            positionOnView = virtualScreenPosition - view.BoundingBox.Position;
             return view;
         }
 
         static public Vector2 GetPositionOnVirtualScreen(Vector2 viewPosition, IView view)
         {
-            return viewPosition + view.BoundingBox.Origin;
+            return viewPosition + view.BoundingBox.Position;
         }
     }
 }

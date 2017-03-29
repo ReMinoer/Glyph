@@ -64,10 +64,9 @@
     <Compile Include="Math\Matrix3x3.cs" />
     <Compile Include="Math\Shapes\CenteredRectangle.cs" />
     <Compile Include="Math\Shapes\Circle.cs" />
-    <Compile Include="Math\Shapes\ICircle.cs" />
     <Compile Include="Math\Shapes\IntersectionUtils.cs" />
     <Compile Include="Math\Shapes\IRectangle.cs" />
-    <Compile Include="Math\Shapes\OriginRectangle.cs" />
+    <Compile Include="Math\Shapes\TopLeftRectangle.cs" />
     <Compile Include="Math\Transformation.cs" />
     <Compile Include="Point.Extension.cs" />
     <Compile Include="Rectangle.Extension.cs" />

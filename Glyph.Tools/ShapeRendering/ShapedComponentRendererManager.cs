@@ -62,7 +62,7 @@ namespace Glyph.Tools.ShapeRendering
 
         private void AddShape(T shapedObject)
         {
-            var circle = shapedObject as IShapedComponent<ICircle>;
+            var circle = shapedObject as IShapedComponent<Circle>;
             if (circle != null)
             {
                 AddShape(shapedObject, new CircleComponentRenderer(circle, _graphicsDeviceFunc));

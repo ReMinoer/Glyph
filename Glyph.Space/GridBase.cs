@@ -9,17 +9,17 @@ namespace Glyph.Space
 {
     public class GridBase : IGrid
     {
-        public IRectangle Rectangle { get; private set; }
+        public TopLeftRectangle Rectangle { get; private set; }
         public GridDimension Dimension { get; private set; }
         public Vector2 Delta { get; private set; }
 
         public Vector2 Center
         {
             get { return Rectangle.Center; }
-            set { Rectangle.Center = value; }
+            set { Rectangle = new TopLeftRectangle {Center = value, Size = Rectangle.Size}; }
         }
 
-        public GridBase(IRectangle rectangle, int columns, int rows)
+        public GridBase(TopLeftRectangle rectangle, int columns, int rows)
         {
             Rectangle = rectangle;
             Dimension = new GridDimension(columns, rows);
@@ -32,10 +32,10 @@ namespace Glyph.Space
             Dimension = new GridDimension(columns, rows);
             Delta = delta;
 
-            Rectangle = new OriginRectangle(origin, delta * new Vector2(columns, rows));
+            Rectangle = new TopLeftRectangle(origin, delta * new Vector2(columns, rows));
         }
 
-        public IRectangle BoundingBox
+        public TopLeftRectangle BoundingBox
         {
             get { return Rectangle; }
         }
@@ -57,7 +57,7 @@ namespace Glyph.Space
 
         public Vector2 ToWorldPoint(Point gridPoint)
         {
-            return Rectangle.Origin + Delta.Integrate(gridPoint);
+            return Rectangle.Position + Delta.Integrate(gridPoint);
         }
 
         public Vector2 ToWorldPoint(IGridPositionable gridPositionable)
@@ -67,15 +67,15 @@ namespace Glyph.Space
 
         public Point ToGridPoint(Vector2 worldPoint)
         {
-            return Delta.Discretize(worldPoint - Rectangle.Origin);
+            return Delta.Discretize(worldPoint - Rectangle.Position);
         }
 
-        public bool Intersects(IRectangle rectangle)
+        public bool Intersects(TopLeftRectangle rectangle)
         {
             return Rectangle.Intersects(rectangle);
         }
 
-        public bool Intersects(ICircle circle)
+        public bool Intersects(Circle circle)
         {
             return Rectangle.Intersects(circle);
         }
@@ -150,7 +150,7 @@ namespace Glyph.Space
             get { return new Enumerable<T>(new ValueEnumerator(this)); }
         }
 
-        protected GridBase(IRectangle rectangle, int columns, int rows)
+        protected GridBase(TopLeftRectangle rectangle, int columns, int rows)
             : base(rectangle, columns, rows)
         {
         }

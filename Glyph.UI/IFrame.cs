@@ -6,6 +6,6 @@ namespace Glyph.UI
     public interface IFrame : IControl
     {
         Vector2 Size { get; set; }
-        OriginRectangle Bounds { get; }
+        TopLeftRectangle Bounds { get; }
     }
 }

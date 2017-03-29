@@ -22,7 +22,7 @@ namespace Glyph.Space
             get { return new Enumerable<IGridCase<T>>(new Enumerator(this)); }
         }
 
-        public Grid(IRectangle rectangle, int columns, int rows)
+        public Grid(TopLeftRectangle rectangle, int columns, int rows)
             : base(rectangle, columns, rows)
         {
             _data = new T[Dimension.Rows][];

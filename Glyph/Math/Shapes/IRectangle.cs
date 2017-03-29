@@ -4,7 +4,10 @@ namespace Glyph.Math.Shapes
 {
     public interface IRectangle : IShape
     {
-        Vector2 Origin { get; }
+        Vector2 Position { get; }
+        Vector2 P1 { get; }
+        Vector2 P2 { get; }
+        Vector2 P3 { get; }
         float Left { get; }
         float Right { get; }
         float Top { get; }
@@ -12,6 +15,6 @@ namespace Glyph.Math.Shapes
         float Width { get; }
         float Height { get; }
         Vector2 Size { get; }
-        bool Intersects(IRectangle rectangle, out IRectangle intersection);
+        bool Intersects(TopLeftRectangle rectangle, out TopLeftRectangle intersection);
     }
 }

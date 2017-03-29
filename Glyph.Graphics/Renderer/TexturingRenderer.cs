@@ -24,19 +24,19 @@ namespace Glyph.Graphics.Renderer
 
         protected override void Render(IDrawer drawer)
         {
-            IRectangle cameraRectangle = drawer.DisplayedRectangle;
-            IRectangle drawnRectangle = new CenteredRectangle
+            CenteredRectangle cameraRectangle = drawer.DisplayedRectangle;
+            CenteredRectangle drawnRectangle = new CenteredRectangle
             {
                 Center = _sceneNode.Position + _fillingRectangle.Rectangle.Center,
                 Size = _fillingRectangle.Rectangle.Size
             };
 
-            IRectangle visibleRectangle;
+            TopLeftRectangle visibleRectangle;
             if (!drawnRectangle.Intersects(cameraRectangle, out visibleRectangle))
                 return;
 
-            IRectangle sourceRectangle = Source.GetDrawnRectagle().ToCenteredRectangle();
-            Vector2 sourcePatchInit = visibleRectangle.Origin - sourceRectangle.Size.Integrate(sourceRectangle.Size.Discretize(visibleRectangle.Origin - drawnRectangle.Origin)) + sourceRectangle.Origin;
+            TopLeftRectangle sourceRectangle = Source.GetDrawnRectagle().ToFloats();
+            Vector2 sourcePatchInit = visibleRectangle.Position - sourceRectangle.Size.Integrate(sourceRectangle.Size.Discretize(visibleRectangle.Position - drawnRectangle.Position)) + sourceRectangle.Position;
             Vector2 sourcePatchOrigin = sourcePatchInit;
 
             float y = 0;
@@ -55,22 +55,22 @@ namespace Glyph.Graphics.Renderer
                     float destinationRemainingWidth = visibleRectangle.Width - x;
                     float sourcePatchWidth = MathHelper.Min(sourceRemainingWidth, destinationRemainingWidth);
 
-                    Vector2 position = visibleRectangle.Origin + new Vector2(x, y);
-                    IRectangle sourcePatch = new OriginRectangle(sourcePatchOrigin, new Vector2(sourcePatchWidth, sourcePatchHeight));
+                    Vector2 position = visibleRectangle.Position + new Vector2(x, y);
+                    TopLeftRectangle sourcePatch = new TopLeftRectangle(sourcePatchOrigin, new Vector2(sourcePatchWidth, sourcePatchHeight));
 
                     if (SpriteTransformer != null)
-                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToStruct(), SpriteTransformer.Color, 0,
+                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToIntegers(), SpriteTransformer.Color, 0,
                             Vector2.Zero, SpriteTransformer.Scale, SpriteTransformer.Effects, _sceneNode.Depth);
                     else
-                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToStruct(), Color.White, 0,
+                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToIntegers(), Color.White, 0,
                             Vector2.Zero, 1f, SpriteEffects.None, _sceneNode.Depth);
 
                     x += sourcePatchWidth;
-                    sourcePatchOrigin.X = sourceRectangle.Origin.X;
+                    sourcePatchOrigin.X = sourceRectangle.Position.X;
                 }
 
                 y += sourcePatchHeight;
-                sourcePatchOrigin.Y = sourceRectangle.Origin.Y;
+                sourcePatchOrigin.Y = sourceRectangle.Position.Y;
             }
         }
     }

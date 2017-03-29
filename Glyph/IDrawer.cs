@@ -9,11 +9,11 @@ namespace Glyph
         SpriteBatchStack SpriteBatchStack { get; }
         GraphicsDevice GraphicsDevice { get; }
         Resolution Resolution { get; }
-        IRectangle ScreenBounds { get; }
+        TopLeftRectangle ScreenBounds { get; }
         ICamera Camera { get; }
         RenderTarget2D DefaultRenderTarget { get; }
         Texture2D Output { get; }
-        IRectangle DisplayedRectangle { get; }
+        CenteredRectangle DisplayedRectangle { get; }
         Matrix ViewMatrix { get; }
         void ApplyEffects(IDrawer drawer);
     }

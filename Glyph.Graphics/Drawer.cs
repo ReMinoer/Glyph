@@ -14,9 +14,9 @@ namespace Glyph.Graphics
         public ICamera Camera => CurrentView.Camera;
         public RenderTarget2D DefaultRenderTarget { get; }
         public Texture2D Output => CurrentView.Output;
-        public IRectangle DisplayedRectangle => CurrentView.DisplayedRectangle;
+        public CenteredRectangle DisplayedRectangle => CurrentView.DisplayedRectangle;
         public Matrix ViewMatrix => CurrentView.Matrix;
-        public IRectangle ScreenBounds => CurrentView.BoundingBox;
+        public TopLeftRectangle ScreenBounds => CurrentView.BoundingBox;
 
         public Drawer(GraphicsDevice graphicsDevice, Resolution resolution, RenderTarget2D defaultRenderTarget = null)
         {

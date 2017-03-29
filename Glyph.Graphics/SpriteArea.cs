@@ -23,7 +23,7 @@ namespace Glyph.Graphics
             _spriteSource = spriteSource;
         }
 
-        public IRectangle BoundingBox
+        public TopLeftRectangle BoundingBox
         {
             get
             {
