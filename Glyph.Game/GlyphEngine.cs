@@ -36,7 +36,6 @@ namespace Glyph.Game
         public IDependencyInjector Injector { get; }
         public ContentLibrary ContentLibrary { get; }
         public ControlManager ControlManager { get; }
-        public PerformanceViewer PerformanceViewer { get; }
 
         public IGlyphClient FocusedClient
         {
@@ -89,7 +88,6 @@ namespace Glyph.Game
             _contentManager.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
             ControlManager = new ControlManager();
-            PerformanceViewer = new PerformanceViewer();
 
             Registry.RegisterInstance<GlyphEngine>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
@@ -129,7 +127,6 @@ namespace Glyph.Game
         public void BeginUpdate(GameTime gameTime)
         {
             _elapsedTime.Update(gameTime);
-            PerformanceViewer.UpdateCall();
         }
 
         public void HandleInput()
@@ -188,9 +185,6 @@ namespace Glyph.Game
 
                 ViewManager.Main.Update(_elapsedTime);
                 SongPlayer.Instance.Update(_elapsedTime);
-                PerformanceViewer.Update(_elapsedTime.GameTime);
-
-                PerformanceViewer.UpdateEnd();
             }
 
             if (GlyphSchedulableBase.UpdateWatchTree.Enabled)
@@ -202,7 +196,6 @@ namespace Glyph.Game
 
         public void BeginDraw()
         {
-            PerformanceViewer.DrawCall();
         }
 
         public void Draw(DrawContext drawContext)
@@ -220,7 +213,6 @@ namespace Glyph.Game
 
         public void EndDraw()
         {
-            PerformanceViewer.DrawEnd();
         }
 
         public void Start()
