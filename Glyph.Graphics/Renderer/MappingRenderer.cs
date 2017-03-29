@@ -1,4 +1,5 @@
 ﻿using Glyph.Math;
+using Glyph.Math.Shapes;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,13 +30,22 @@ namespace Glyph.Graphics.Renderer
 
         protected override void Render(IDrawer drawer)
         {
-            for (int i = 0; i < Grid.Dimension.Rows; i++)
-                for (int j = 0; j < Grid.Dimension.Columns; j++)
-                {
-                    Vector2 position = Grid.ToWorldPoint(i, j) + Grid.Delta / 2;
+            TopLeftRectangle cameraRectangle = drawer.DisplayedRectangle;
+            TopLeftRectangle drawnRectangle = Grid.BoundingBox;
 
+            TopLeftRectangle visibleRectangle;
+            if (!drawnRectangle.Intersects(cameraRectangle, out visibleRectangle))
+                return;
+
+            Rectangle visibleSubGrid = MathUtils.ClampToRectangle(Grid.ToGridRange(visibleRectangle).ToFloats(), Grid.Bounds.ToFloats()).ToIntegers();
+
+            for (int i = visibleSubGrid.Top; i < visibleSubGrid.Bottom; i++)
+                for (int j = visibleSubGrid.Left; j < visibleSubGrid.Right; j++)
+                {
                     if (!RenderingBehaviour(Grid[i, j], this))
                         continue;
+
+                    Vector2 position = Grid.ToWorldPoint(i, j) + Grid.Delta / 2;
 
                     if (SpriteTransformer != null)
                         drawer.SpriteBatchStack.Current.Draw(Source.Texture, position + Transformation.Translation, Source.Rectangle, SpriteTransformer.Color,

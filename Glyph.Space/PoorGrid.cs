@@ -11,7 +11,6 @@ namespace Glyph.Space
         private readonly Dictionary<Point, T> _items;
         private Func<T> _defaultValueFactory;
         private T _defaultValue;
-        public override Func<T> OutOfBoundsValueFactory { get; set; }
 
         public Func<T> DefaultValueFactory
         {
@@ -55,7 +54,7 @@ namespace Glyph.Space
             get
             {
                 if (i < 0 || i >= Dimension.Rows || j < 0 || j >= Dimension.Columns)
-                    return OutOfBoundsValueFactory();
+                    throw new IndexOutOfRangeException();
 
                 T value;
                 if (!_items.TryGetValue(new Point(j, i), out value))

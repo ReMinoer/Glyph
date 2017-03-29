@@ -7,11 +7,17 @@ using Diese.Collections;
 
 namespace Glyph.Space
 {
+    // TODO : Clamp methods to grid dimensions
     public class GridBase : IGrid
     {
         public TopLeftRectangle Rectangle { get; private set; }
         public GridDimension Dimension { get; private set; }
         public Vector2 Delta { get; private set; }
+
+        public Rectangle Bounds
+        {
+            get { return new Rectangle(0, 0, Dimension.Columns, Dimension.Rows); }
+        }
 
         public Vector2 Center
         {
@@ -45,9 +51,14 @@ namespace Glyph.Space
             return Rectangle.ContainsPoint(worldPoint);
         }
 
+        public bool ContainsPoint(int i, int j)
+        {
+            return j >= 0 && j < Dimension.Columns && i >= 0 && i < Dimension.Rows;
+        }
+
         public bool ContainsPoint(Point gridPoint)
         {
-            return gridPoint.X >= 0 && gridPoint.X < Dimension.Columns && gridPoint.Y >= 0 && gridPoint.Y < Dimension.Rows;
+            return ContainsPoint(gridPoint.Y, gridPoint.X);
         }
 
         public Vector2 ToWorldPoint(int i, int j)
@@ -65,9 +76,25 @@ namespace Glyph.Space
             return ToWorldPoint(gridPositionable.GridPosition);
         }
 
+        public TopLeftRectangle ToWorldRange(int x, int y, int width, int height)
+        {
+            return ToWorldRange(new Rectangle(x, y, width, height));
+        }
+
+        public TopLeftRectangle ToWorldRange(Rectangle rectangle)
+        {
+            return new TopLeftRectangle(ToWorldPoint(rectangle.Location), Delta.Integrate(rectangle.Size) + Delta);
+        }
+
         public Point ToGridPoint(Vector2 worldPoint)
         {
             return Delta.Discretize(worldPoint - Rectangle.Position);
+        }
+
+        public Rectangle ToGridRange(TopLeftRectangle rectangle)
+        {
+            Point position = ToGridPoint(rectangle.Position);
+            return new Rectangle(position, ToGridPoint(rectangle.P2) - position + new Point(1, 1));
         }
 
         public bool Intersects(TopLeftRectangle rectangle)
@@ -129,8 +156,6 @@ namespace Glyph.Space
 
     public abstract class GridBase<T> : GridBase, IWriteableGrid<T>
     {
-        public abstract Func<T> OutOfBoundsValueFactory { get; set; }
-
         IEnumerable<IGridCase<T>> IGrid<T>.SignificantCases
         {
             get { return SignificantCasesProtected; }

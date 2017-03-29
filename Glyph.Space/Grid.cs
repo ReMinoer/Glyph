@@ -10,7 +10,6 @@ namespace Glyph.Space
     public class Grid<T> : GridBase<T>
     {
         private readonly T[][] _data;
-        public override Func<T> OutOfBoundsValueFactory { get; set; }
 
         protected override bool HasLowEntropyProtected
         {
@@ -40,12 +39,7 @@ namespace Glyph.Space
 
         public override T this[int i, int j]
         {
-            get
-            {
-                if (i < 0 || i >= Dimension.Rows || j < 0 || j >= Dimension.Columns)
-                    return OutOfBoundsValueFactory();
-                return _data[i][j];
-            }
+            get { return _data[i][j]; }
             set {  _data[i][j] = value; }
         }
 

@@ -72,7 +72,6 @@
     <Compile Include="Rectangle.Extension.cs" />
     <Compile Include="Referential.cs" />
     <Compile Include="Resolution.cs" />
-    <Compile Include="SpriteBatch.Extension.cs" />
     <Compile Include="SpriteBatchContext.cs" />
     <Compile Include="SpriteBatchStack.cs" />
     <Compile Include="Texture2D.Extension.cs" />

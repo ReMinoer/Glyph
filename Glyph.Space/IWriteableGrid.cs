@@ -9,6 +9,5 @@ namespace Glyph.Space
         new T this[Point gridPoint] { get; set; }
         new T this[Vector2 worldPoint] { get; set; }
         new T this[IGridPositionable gridPositionable] { get; set; }
-        Func<T> OutOfBoundsValueFactory { get; }
     }
 }

@@ -48,7 +48,7 @@ namespace Glyph.Core.Colliders
                             if ((x + y) % 2 == 0)
                                 continue;
 
-                            if (!gridCollider.IsCollidableCase(shape, i + y, j + x))
+                            if (!gridCollider.Grid.ContainsPoint(i + y, j + x) || !gridCollider.IsCollidableCase(shape, i + y, j + x))
                                 continue;
 
                             TopLeftRectangle otherCase = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i + y, j + x), gridCollider.Grid.Delta);

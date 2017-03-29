@@ -47,14 +47,14 @@ namespace Glyph.Space
             get { return _gridImplementation.Dimension; }
         }
 
+        public Rectangle Bounds
+        {
+            get { return _gridImplementation.Bounds; }
+        }
+
         public Vector2 Delta
         {
             get { return _gridImplementation.Delta; }
-        }
-
-        public Func<T> OutOfBoundsValueFactory
-        {
-            get { return _gridImplementation.OutOfBoundsValueFactory; }
         }
 
         public bool HasLowEntropy
@@ -198,9 +198,29 @@ namespace Glyph.Space
             return _gridImplementation.ToWorldPoint(gridPoint);
         }
 
+        public TopLeftRectangle ToWorldRange(int x, int y, int width, int height)
+        {
+            return _gridImplementation.ToWorldRange(x, y, width, height);
+        }
+
+        public TopLeftRectangle ToWorldRange(Rectangle rectangle)
+        {
+            return _gridImplementation.ToWorldRange(rectangle);
+        }
+
         public Point ToGridPoint(Vector2 worldPoint)
         {
             return _gridImplementation.ToGridPoint(worldPoint);
+        }
+
+        public Rectangle ToGridRange(TopLeftRectangle rectangle)
+        {
+            return _gridImplementation.ToGridRange(rectangle);
+        }
+
+        public bool ContainsPoint(int i, int j)
+        {
+            return _gridImplementation.ContainsPoint(i, j);
         }
 
         public bool ContainsPoint(Point gridPoint)
