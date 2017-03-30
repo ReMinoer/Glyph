@@ -167,13 +167,9 @@ namespace Glyph.Core
 
         public void SetParent(ISceneNode parent, Referential childStaticReferential = Referential.World)
         {
-            if (ParentNode != null)
-                ParentNode.UnlinkChild(this);
-
+            ParentNode?.UnlinkChild(this);
             ParentNode = parent;
-
-            if (ParentNode != null)
-                ParentNode.LinkChild(this, childStaticReferential);
+            ParentNode?.LinkChild(this, childStaticReferential);
 
             Refresh(childStaticReferential);
         }
@@ -213,8 +209,7 @@ namespace Glyph.Core
             foreach (ISceneNode childNode in _childrenNodes)
                 childNode.Refresh();
 
-            if (Refreshed != null)
-                Refreshed.Invoke(this);
+            Refreshed?.Invoke(this);
         }
 
         void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential)

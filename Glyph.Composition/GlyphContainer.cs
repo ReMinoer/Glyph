@@ -44,8 +44,8 @@ namespace Glyph.Composition
         [NotifyPropertyChangedInvocator]
         protected void OnPropertyChanged(params string[] propertyNames)
         {
-            for (int i = 0; i < propertyNames.Length; i++)
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyNames[i]));
+            foreach (string name in propertyNames)
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

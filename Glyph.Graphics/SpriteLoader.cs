@@ -19,8 +19,7 @@ namespace Glyph.Graphics
         {
             _texture = contentLibrary.GetTexture(Asset);
 
-            if (Loaded != null)
-                Loaded.Invoke(this);
+            Loaded?.Invoke(this);
         }
     }
 }

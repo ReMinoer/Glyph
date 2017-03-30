@@ -13,13 +13,13 @@ namespace Glyph.Core
             get { return _main ?? (_main = new ViewManager()); }
         }
 
-        private SceneNode _sceneNode;
-        private List<IView> _views;
-        private IReadOnlyCollection<IView> _readOnlyScreens;
+        private readonly SceneNode _sceneNode;
+        private readonly List<IView> _views;
+        private readonly IReadOnlyCollection<IView> _readOnlyScreens;
 
         public IEnumerable<IView> Views
         {
-            get { return _views; }
+            get { return _readOnlyScreens; }
         }
 
         public ViewManager()

@@ -109,7 +109,7 @@ namespace Glyph.Core.Scheduler
                 foreach (TDelegate item in _scheduler.SchedulerGraph.Vertices.SelectMany(x => x.Items))
                 {
                     var itemDelegate = item as Delegate;
-                    if (itemDelegate != null && itemDelegate.Target is T)
+                    if (itemDelegate?.Target is T)
                         Before(item);
                 }
                 return this;
@@ -121,7 +121,7 @@ namespace Glyph.Core.Scheduler
                 foreach (TDelegate item in _scheduler.SchedulerGraph.Vertices.SelectMany(x => x.Items))
                 {
                     var itemDelegate = item as Delegate;
-                    if (itemDelegate != null && itemDelegate.Target is T)
+                    if (itemDelegate?.Target is T)
                         After(item);
                 }
                 return this;

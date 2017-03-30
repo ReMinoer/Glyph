@@ -22,12 +22,12 @@ namespace Glyph.UI.Guide
         private readonly ControlManager _controlManager;
         protected readonly TransitionFloat TransitionOpacity = new TransitionFloat {Start = 0, End = 1, Duration = 500};
         protected bool IsGamePadUsed;
-        protected SpriteSheetSplit SpriteSheetSplit;
-        protected SpriteSheet ComputerIcon;
-        protected SpriteSheet GamePadIcon;
-        protected SpriteArea SpriteArea;
-        protected SpriteTransformer SpriteTransformer;
-        protected Text Text;
+        protected readonly SpriteSheetSplit SpriteSheetSplit;
+        protected readonly SpriteSheet ComputerIcon;
+        protected readonly SpriteSheet GamePadIcon;
+        protected readonly SpriteArea SpriteArea;
+        protected readonly SpriteTransformer SpriteTransformer;
+        protected readonly Text Text;
         private readonly Vector2 _keyPadding = new Vector2(20, 50);
         private Fingear.IControl _control;
         public SceneNode SceneNode { get; private set; }
@@ -110,8 +110,7 @@ namespace Glyph.UI.Guide
 
         private void LoadContentLocal(ContentLibrary content)
         {
-            if (IconChanged != null)
-                IconChanged(this, EventArgs.Empty);
+            IconChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void HandleInput(ElapsedTime elapsedTime)
@@ -125,8 +124,7 @@ namespace Glyph.UI.Guide
                 SpriteSheetSplit.CurrentFrame = IsGamePadUsed ? 1 : 0;
                 TransitionOpacity.Reset();
 
-                if (IconChanged != null)
-                    IconChanged(this, EventArgs.Empty);
+                IconChanged?.Invoke(this, EventArgs.Empty);
             }
 
             if (Clickable)
@@ -141,8 +139,7 @@ namespace Glyph.UI.Guide
 
                         MenuControls menuControls;
                         if (hover && _controlManager.TryGetLayer(out menuControls) && menuControls.Clic.IsActive())
-                            if (Clicked != null)
-                                Clicked(this, EventArgs.Empty);
+                            Clicked?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }

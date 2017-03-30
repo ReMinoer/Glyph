@@ -21,8 +21,8 @@ namespace Glyph.Space
             {
                 _isDirty = value;
 
-                if (_isDirty && Dirtied != null)
-                    Dirtied.Invoke();
+                if (_isDirty)
+                    Dirtied?.Invoke();
             }
         }
 

@@ -95,7 +95,7 @@ namespace Glyph.Core
             return _sceneNode == other;
         }
 
-        void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential = Referential.World)
+        void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential)
         {
             _sceneNode.LinkChild(child, childStaticReferential);
         }

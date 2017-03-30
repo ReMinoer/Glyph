@@ -8,7 +8,7 @@ namespace Glyph.Space.Partitioning
 {
     public class QuadtreeSpace<T> : SpacePartitionBase<T>
     {
-        private readonly TopLeftRectangle _bounds;
+        private TopLeftRectangle _bounds;
 
         public QuadtreeSpace(TopLeftRectangle bounds, int capacity, Func<T, Vector2> getPoint)
             : base(null, getPoint, capacity)
@@ -54,7 +54,7 @@ namespace Glyph.Space.Partitioning
             for (int i = 0; i < 2; i++)
                 for (int j = 0; j < 2; j++)
                 {
-                    TopLeftRectangle rectangle = new TopLeftRectangle
+                    var rectangle = new TopLeftRectangle
                     {
                         Position = _bounds.Position + new Vector2(j, i) * _bounds.Size / 2,
                         Size = _bounds.Size / 2

@@ -57,8 +57,7 @@ namespace Glyph.Core.Tracking
 
         private T CreateItem(TData data)
         {
-            if (DataConfiguration != null)
-                DataConfiguration(data);
+            DataConfiguration?.Invoke(data);
 
             T item = data.Create();
             return item;

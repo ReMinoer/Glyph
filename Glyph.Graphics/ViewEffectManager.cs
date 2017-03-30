@@ -53,8 +53,7 @@ namespace Glyph.Graphics
             _spriteTargetA.LoadContent(contentLibrary);
             _spriteTargetB.LoadContent(contentLibrary);
 
-            if (Loaded != null)
-                Loaded.Invoke(this);
+            Loaded?.Invoke(this);
         }
 
         public void Update(ElapsedTime elapsedTime)

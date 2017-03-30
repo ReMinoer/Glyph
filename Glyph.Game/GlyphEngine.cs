@@ -24,7 +24,7 @@ namespace Glyph.Game
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ContentManager _contentManager;
-        private ElapsedTime _elapsedTime = new ElapsedTime();
+        private readonly ElapsedTime _elapsedTime = new ElapsedTime();
         private IScene _scene;
         private bool _sceneChanged;
         private IGlyphClient _focusedClient;

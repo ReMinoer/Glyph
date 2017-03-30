@@ -27,7 +27,7 @@ namespace Glyph.Composition
                     continue;
 
                 var glyphAttribute = attribute as GlyphInjectableAttribute;
-                injectableProperties.Add(new InjectablePropertyInfo(propertyInfo, glyphAttribute != null ? glyphAttribute.Targets : GlyphInjectableTargets.All));
+                injectableProperties.Add(new InjectablePropertyInfo(propertyInfo, glyphAttribute?.Targets ?? GlyphInjectableTargets.All));
             }
         }
     }

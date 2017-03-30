@@ -38,8 +38,7 @@ namespace Glyph.Core.Tracking
             _tracker.Register(message.Instance);
             _newInstances.Register(message.Instance);
 
-            if (Registered != null)
-                Registered.Invoke(message.Instance);
+            Registered?.Invoke(message.Instance);
         }
 
         void IInterpreter<DisposingMessage<T>>.Interpret(DisposingMessage<T> message)
@@ -47,8 +46,7 @@ namespace Glyph.Core.Tracking
             _tracker.Unregister(message.Instance);
             _newInstances.Unregister(message.Instance);
 
-            if (Unregistered != null)
-                Unregistered.Invoke(message.Instance);
+            Unregistered?.Invoke(message.Instance);
         }
 
         public IEnumerator<T> GetEnumerator()

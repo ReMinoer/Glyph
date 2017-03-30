@@ -24,7 +24,7 @@ namespace Glyph.Graphics.Renderer
 
         protected override void Render(IDrawer drawer)
         {
-            CenteredRectangle drawnRectangle = new CenteredRectangle
+            var drawnRectangle = new CenteredRectangle
             {
                 Center = _sceneNode.Position + _fillingRectangle.Rectangle.Center,
                 Size = _fillingRectangle.Rectangle.Size

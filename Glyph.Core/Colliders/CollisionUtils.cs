@@ -39,7 +39,7 @@ namespace Glyph.Core.Colliders
                     if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;
 
-                    TopLeftRectangle rectangle = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
+                    var rectangle = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
 
                     bool colliding = false;
                     for (int x = -1; x <= 1 && !colliding; x++)
@@ -51,7 +51,7 @@ namespace Glyph.Core.Colliders
                             if (!gridCollider.Grid.ContainsPoint(i + y, j + x) || !gridCollider.IsCollidableCase(shape, i + y, j + x))
                                 continue;
 
-                            TopLeftRectangle otherCase = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i + y, j + x), gridCollider.Grid.Delta);
+                            var otherCase = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i + y, j + x), gridCollider.Grid.Delta);
 
                             Vector2 temp;
                             if (!collisionDelegate(shape.Shape, otherCase, out temp))
@@ -96,7 +96,7 @@ namespace Glyph.Core.Colliders
                     if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;
 
-                    TopLeftRectangle rectangle = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
+                    var rectangle = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
 
                     Vector2 correction;
                     if (collisionDelegate(rectangle, shape.Shape, out correction))

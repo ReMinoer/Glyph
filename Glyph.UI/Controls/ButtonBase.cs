@@ -35,8 +35,8 @@ namespace Glyph.UI.Controls
 
                 if (Hover && Entered != null)
                     Entered(this, EventArgs.Empty);
-                else if (!Hover && Leaved != null)
-                    Leaved(this, EventArgs.Empty);
+                else if (!Hover)
+                    Leaved?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -105,15 +105,13 @@ namespace Glyph.UI.Controls
         private void Trigger()
         {
             Pressed = true;
-            if (Triggered != null)
-                Triggered(this, EventArgs.Empty);
+            Triggered?.Invoke(this, EventArgs.Empty);
         }
 
         private void Release()
         {
             Pressed = false;
-            if (Released != null)
-                Released(this, EventArgs.Empty);
+            Released?.Invoke(this, EventArgs.Empty);
         }
     }
 }

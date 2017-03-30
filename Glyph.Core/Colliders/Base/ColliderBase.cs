@@ -64,16 +64,14 @@ namespace Glyph.Core.Colliders.Base
             int count = 0;
             while (count < 5 && _colliderManager.ResolveOneCollision(this, out collision))
             {
-                if (Colliding != null)
-                    Colliding.Invoke(collision);
+                Colliding?.Invoke(collision);
 
                 if (collision.IsHandled)
                     break;
 
                 ParentNode.Position += collision.Correction;
 
-                if (Collided != null)
-                    Collided.Invoke(collision);
+                Collided?.Invoke(collision);
 
                 count++;
             }

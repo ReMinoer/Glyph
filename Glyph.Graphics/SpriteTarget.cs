@@ -47,8 +47,7 @@ namespace Glyph.Graphics
             RenderTarget = new RenderTarget2D(_lazyGraphicsDevice(), (int)Size.X, (int)Size.Y, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
             _texture = RenderTarget;
 
-            if (Loaded != null)
-                Loaded.Invoke(this);
+            Loaded?.Invoke(this);
         }
     }
 }

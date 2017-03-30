@@ -13,9 +13,7 @@ namespace Glyph.Scripting
 {
     public class Actor : GlyphContainer, IUpdate, IArea
     {
-        private readonly SceneNode _sceneNode;
         private readonly TriggerManager _triggerManager;
-        private readonly MessagingTracker<RectangleCollider> _colliderMessagingTracker;
         private readonly List<Trigger> _activatedTriggers;
         private TopLeftRectangle _boudingBox;
         private bool _dirtyBoundingBox = true;
@@ -31,9 +29,8 @@ namespace Glyph.Scripting
             }
         }
 
-        public Actor(SceneNode sceneNode, TriggerManager triggerManager)
+        public Actor(TriggerManager triggerManager)
         {
-            _sceneNode = sceneNode;
             _triggerManager = triggerManager;
 
             _activatedTriggers = new List<Trigger>();

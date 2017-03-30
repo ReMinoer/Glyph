@@ -40,9 +40,7 @@ namespace Glyph.Core.Tracking
         public T Create()
         {
             var item = _parent.Add<T>();
-
-            if (ComponentCreated != null)
-                ComponentCreated.Invoke(item);
+            ComponentCreated?.Invoke(item);
 
             base.Register(item);
             return item;

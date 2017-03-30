@@ -111,7 +111,7 @@ namespace Glyph
 
         static public Period Parse(string s)
         {
-            return new Period(Int32.Parse(s));
+            return new Period(int.Parse(s));
         }
 
         public override string ToString()

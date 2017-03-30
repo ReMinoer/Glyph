@@ -27,16 +27,14 @@ namespace Glyph.Graphics.Shapes
         {
             GenerateTexture();
 
-            if (Loaded != null)
-                Loaded.Invoke(this);
+            Loaded?.Invoke(this);
         }
 
         protected abstract void GenerateTexture();
 
         public override void Dispose()
         {
-            if (Texture != null)
-                Texture.Dispose();
+            Texture?.Dispose();
 
             _texture = null;
 

@@ -94,22 +94,17 @@ namespace Glyph.Space
 
         public IEnumerable<Vector2> GetAllPointsInRange(IShape range)
         {
-            return GetAllItemsInRange(range).Select(x => _getBox(x).Center);
+            return _items.Select(x => _getPoint(x)).Where(range.ContainsPoint);
         }
 
         public IEnumerable<TopLeftRectangle> GetAllBoxesInRange(IShape range)
         {
-            foreach (T item in _items)
-            {
-                TopLeftRectangle box = _getBox(item);
-                if (range.Intersects(_getBox(item)))
-                    yield return box;
-            }
+            return _items.Select(item => _getBox(item)).Where(range.Intersects);
         }
 
         public IEnumerable<T> GetAllItemsInRange(IShape range)
         {
-            return this.Where(item => range.Intersects(_getBox(item)));
+            return _items.Where(item => range.Intersects(_getBox(item)));
         }
 
         public IEnumerator<T> GetEnumerator()

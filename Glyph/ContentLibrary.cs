@@ -67,7 +67,7 @@ namespace Glyph
 
                 stopwatch.Stop();
                 lock (Logger)
-                    Logger.Info("Loaded {0} ({1}s)", file, stopwatch.Elapsed.ToString(@"s\.fff"));
+                    Logger.Info("Loaded {0} ({1:s\\.fff}s)", file, stopwatch.Elapsed);
                 stopwatch.Reset();
             }
         }

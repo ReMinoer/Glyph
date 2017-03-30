@@ -131,8 +131,7 @@ namespace Glyph.UI.Menus
             if (button == null)
                 throw new InvalidCastException();
 
-            if (SelectionChanged != null)
-                SelectionChanged(this, new SelectionEventArgs(_buttons.IndexOf(button)));
+            SelectionChanged?.Invoke(this, new SelectionEventArgs(_buttons.IndexOf(button)));
         }
 
         private void ButtonOnTriggered(object sender, EventArgs eventArgs)
@@ -142,8 +141,7 @@ namespace Glyph.UI.Menus
 
         private void TriggerSelection(int selection)
         {
-            if (SelectionTriggered != null)
-                SelectionTriggered(this, new SelectionEventArgs(selection));
+            SelectionTriggered?.Invoke(this, new SelectionEventArgs(selection));
         }
     }
 }

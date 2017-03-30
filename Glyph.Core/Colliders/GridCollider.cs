@@ -65,7 +65,7 @@ namespace Glyph.Core.Colliders
                     if (!IsCollidableCase(null, i, j))
                         continue;
 
-                    TopLeftRectangle rectangle = new TopLeftRectangle(Grid.ToWorldPoint(i, j), Grid.Delta);
+                    var rectangle = new TopLeftRectangle(Grid.ToWorldPoint(i, j), Grid.Delta);
 
                     if (intersectionDelegate(rectangle, other))
                         return true;

@@ -56,7 +56,7 @@ namespace Glyph.Graphics.Renderer
                     float sourcePatchWidth = MathHelper.Min(sourceRemainingWidth, destinationRemainingWidth);
 
                     Vector2 position = visibleRectangle.Position + new Vector2(x, y);
-                    TopLeftRectangle sourcePatch = new TopLeftRectangle(sourcePatchOrigin, new Vector2(sourcePatchWidth, sourcePatchHeight));
+                    var sourcePatch = new TopLeftRectangle(sourcePatchOrigin, new Vector2(sourcePatchWidth, sourcePatchHeight));
 
                     if (SpriteTransformer != null)
                         drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToIntegers(), SpriteTransformer.Color, 0,

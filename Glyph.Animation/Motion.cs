@@ -288,16 +288,13 @@ namespace Glyph.Animation
 
         public void Resume()
         {
-            if (TrajectoryPlayer != null)
-                TrajectoryPlayer.Resume();
+            TrajectoryPlayer?.Resume();
         }
 
         public void Pause()
         {
             Direction = Vector2.Zero;
-
-            if (TrajectoryPlayer != null)
-                TrajectoryPlayer.Pause();
+            TrajectoryPlayer?.Pause();
         }
 
         public void Stop()

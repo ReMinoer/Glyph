@@ -92,11 +92,7 @@ namespace Glyph.Core
                 item.Initialize();
 
             if (_contentLoaded)
-            {
-                var loadContent = item as ILoadContent;
-                if (loadContent != null)
-                    loadContent.LoadContent(Injector.Resolve<ContentLibrary>());
-            }
+                (item as ILoadContent)?.LoadContent(Injector.Resolve<ContentLibrary>());
         }
 
         public override sealed bool Remove(IGlyphComponent item)

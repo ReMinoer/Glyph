@@ -60,8 +60,7 @@ namespace Glyph.Graphics
             Refresh();
             _loadedContent = true;
 
-            if (Loaded != null)
-                Loaded.Invoke(this);
+            Loaded?.Invoke(this);
         }
 
         public Rectangle GetFrameRectangle(int frameIndex)

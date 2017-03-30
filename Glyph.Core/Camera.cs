@@ -6,7 +6,6 @@ namespace Glyph.Core
     public class Camera : GlyphContainer, ICamera
     {
         private readonly SceneNode _sceneNode;
-        private ReadOnlySceneNode _readOnlySceneNode;
         public float Zoom { get; set; }
 
         public Vector2 LocalPosition
@@ -46,7 +45,6 @@ namespace Glyph.Core
             Zoom = 1f;
 
             Components.Add(_sceneNode = new SceneNode());
-            _readOnlySceneNode = new ReadOnlySceneNode(_sceneNode);
         }
 
         public override void Initialize()

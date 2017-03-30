@@ -37,7 +37,7 @@ namespace Glyph.Core.Injection
         public override object Resolve(Type type, InjectableAttribute injectableAttribute, object serviceKey = null)
         {
             var glyphInjectableAttribute = injectableAttribute as GlyphInjectableAttribute;
-            GlyphInjectableTargets targets = glyphInjectableAttribute != null ? glyphInjectableAttribute.Targets : GlyphInjectableTargets.All;
+            GlyphInjectableTargets targets = glyphInjectableAttribute?.Targets ?? GlyphInjectableTargets.All;
 
             if (targets == 0)
                 throw new InvalidOperationException();
@@ -75,7 +75,7 @@ namespace Glyph.Core.Injection
         public override bool TryResolve(out object obj, Type type, InjectableAttribute injectableAttribute, object serviceKey = null)
         {
             var glyphInjectableAttribute = injectableAttribute as GlyphInjectableAttribute;
-            GlyphInjectableTargets targets = glyphInjectableAttribute != null ? glyphInjectableAttribute.Targets : GlyphInjectableTargets.All;
+            GlyphInjectableTargets targets = glyphInjectableAttribute?.Targets ?? GlyphInjectableTargets.All;
 
             if (targets == 0)
                 throw new InvalidOperationException();
@@ -137,7 +137,7 @@ namespace Glyph.Core.Injection
         internal object Add(Type type)
         {
             if (!typeof(IGlyphComponent).IsAssignableFrom(type))
-                throw new InvalidCastException(string.Format("Type must implements {0} !", typeof(IGlyphComponent)));
+                throw new InvalidCastException($"Type must implements {typeof(IGlyphComponent)} !");
 
             var component = (IGlyphComponent)base.Resolve(type, null);
             _context.Add(component);

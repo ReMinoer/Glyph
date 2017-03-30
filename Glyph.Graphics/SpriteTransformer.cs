@@ -70,10 +70,8 @@ namespace Glyph.Graphics
 
         private void RefreshAnchor()
         {
-            Vector2 size = SpriteSource != null && SpriteSource.Texture != null
-                ? SpriteSource.Rectangle != null
-                    ? SpriteSource.Rectangle.Value.Size.ToVector2()
-                    : SpriteSource.Texture.Size()
+            Vector2 size = SpriteSource?.Texture != null
+                ? SpriteSource.Rectangle?.Size.ToVector2() ?? SpriteSource.Texture.Size()
                 : Vector2.Zero;
 
             switch (_lastAnchorType)
