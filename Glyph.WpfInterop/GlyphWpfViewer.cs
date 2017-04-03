@@ -20,6 +20,7 @@ namespace Glyph.WpfInterop
 
         public GlyphWpfViewer()
         {
+            Focusable = true;
             SizeChanged += OnClientSizeChanged;
 
             _wpfInputStates = new WpfInputStates(this);
