@@ -30,7 +30,8 @@ namespace Glyph
             if (GameTime == null)
                 GameTime = gameTime;
 
-            GameTime = new GameTime(GameTime.TotalGameTime + gameTime.ElapsedGameTime, gameTime.ElapsedGameTime);
+            GameTime.TotalGameTime += gameTime.ElapsedGameTime;
+            GameTime.ElapsedGameTime = gameTime.ElapsedGameTime;
 
             UnscaledTotal += gameTime.ElapsedGameTime;
             UnscaledDelta = (float)gameTime.ElapsedGameTime.TotalSeconds;

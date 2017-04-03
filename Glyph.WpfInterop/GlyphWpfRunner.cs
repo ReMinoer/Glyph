@@ -10,10 +10,11 @@ namespace Glyph.WpfInterop
     public class GlyphWpfRunner : IGameRunner, IDisposable
     {
         private GlyphEngine _engine;
-        private readonly Stopwatch _timer = new Stopwatch();
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        private readonly GameTime _gameTime = new GameTime();
+        private TimeSpan _previousTime = TimeSpan.Zero;
         private TimeSpan _lastRenderingTime;
-        private TimeSpan _timeSinceStart = TimeSpan.Zero;
-        static private readonly TimeSpan MaxElapsedTime = TimeSpan.FromMilliseconds(500);
+        public TimeSpan MaxElapsedTime { get; set; } = TimeSpan.FromSeconds(1.0 / 30);
 
         public GlyphEngine Engine
         {
@@ -32,7 +33,7 @@ namespace Glyph.WpfInterop
                     return;
                 
                 CompositionTarget.Rendering += OnRendering;
-                _timer.Reset();
+                _stopwatch.Reset();
 
                 if (!Engine.IsInitialized)
                 {
@@ -53,37 +54,34 @@ namespace Glyph.WpfInterop
             if (Engine == null || !Engine.IsInitialized || !Engine.IsLoaded)
                 return;
 
-            _timer.Start();
+            _stopwatch.Start();
 
             var renderingEventArgs = (RenderingEventArgs)e;
-            if (_lastRenderingTime != renderingEventArgs.RenderingTime)
-            {
-                _lastRenderingTime = renderingEventArgs.RenderingTime;
+            if (_lastRenderingTime == renderingEventArgs.RenderingTime)
+                return;
 
-                TimeSpan elapsed = _timer.Elapsed;
-                TimeSpan diff = elapsed - _timeSinceStart;
+            _lastRenderingTime = renderingEventArgs.RenderingTime;
 
-                if (diff > MaxElapsedTime)
-                {
-                    elapsed -= diff - MaxElapsedTime;
-                    diff = MaxElapsedTime;
-                }
+            TimeSpan currentTime = _stopwatch.Elapsed;
+            TimeSpan delta = currentTime - _previousTime;
+            _previousTime = currentTime;
 
-                _timeSinceStart = elapsed;
+            if (delta > MaxElapsedTime)
+                delta = MaxElapsedTime;
 
-                var gameTime = new GameTime(_timer.Elapsed, diff);
+            _gameTime.ElapsedGameTime = delta;
+            _gameTime.TotalGameTime += delta;
 
-                Engine?.BeginUpdate(gameTime);
-                Engine?.HandleInput();
-                Engine?.Update();
+            Engine?.BeginUpdate(_gameTime);
+            Engine?.HandleInput();
+            Engine?.Update();
 
-                Drawing?.Invoke(this, new DrawingEventArgs(gameTime));
-            }
+            Drawing?.Invoke(this, new DrawingEventArgs(_gameTime));
         }
 
         public void Dispose()
         {
-            _timer.Stop();
+            _stopwatch.Stop();
             if (_engine != null)
                 CompositionTarget.Rendering -= OnRendering;
 
