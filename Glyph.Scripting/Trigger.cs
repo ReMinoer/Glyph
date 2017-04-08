@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Scripting
 {
-    public class Trigger : GlyphContainer, IEnableable, IShapedComponent<CenteredRectangle>, IShape
+    public class Trigger : GlyphContainer, IEnableable, IShapedComponent<CenteredRectangle>, IMovableShape
     {
         private readonly TriggerManager _triggerManager;
         private readonly IRouter<OnEnterTrigger> _onEnterRouter;
@@ -48,6 +48,11 @@ namespace Glyph.Scripting
         }
 
         Vector2 IShape.Center
+        {
+            get { return Shape.Center; }
+        }
+
+        Vector2 IMovableShape.Center
         {
             get { return Shape.Center; }
             set { _sceneNode.Position = value - Size / 2; }

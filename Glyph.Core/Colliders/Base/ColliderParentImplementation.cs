@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Core.Colliders.Base
 {
-    internal class ColliderParentImplementation : IShape
+    internal class ColliderParentImplementation : IMovableShape
     {
         private readonly IGlyphParent<ICollider> _colliderParent;
         public bool Enabled { get; set; }

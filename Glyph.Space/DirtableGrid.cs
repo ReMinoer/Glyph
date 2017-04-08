@@ -39,7 +39,6 @@ namespace Glyph.Space
         public Vector2 Center
         {
             get { return _gridImplementation.Center; }
-            set { _gridImplementation.Center = value; }
         }
 
         public GridDimension Dimension

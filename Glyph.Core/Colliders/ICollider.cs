@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Core.Colliders
 {
-    public interface ICollider : IShape, IEnableable, IUpdate
+    public interface ICollider : IMovableShape, IEnableable, IUpdate
     {
         bool IsFreeze { get; set; }
         Vector2 LocalCenter { get; set; }

@@ -49,12 +49,16 @@
     <Compile Include="IGridPositionable.cs" />
     <Compile Include="ISpace.cs" />
     <Compile Include="IWriteableGrid.cs" />
-    <Compile Include="Partitioning\SpacePartitionBase.cs" />
-    <Compile Include="Partitioning\QuadtreeSpace.cs" />
+    <Compile Include="IWriteableSpace.cs" />
+    <Compile Include="IPartitioner.cs" />
+    <Compile Include="Space.cs" />
+    <Compile Include="Partitioning\QuadtreePartitioner.cs" />
     <Compile Include="PoorGrid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlyGrid.cs" />
-    <Compile Include="Space.cs" />
+    <Compile Include="ReadOnlySpace.cs" />
+    <Compile Include="TrackingSpace.cs" />
+    <Compile Include="WriteableSpaceBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">

@@ -5,8 +5,13 @@ namespace Glyph.Math
 {
     public interface IShape : IArea
     {
-        Vector2 Center { get; set; }
+        Vector2 Center { get; }
         bool Intersects(TopLeftRectangle rectangle);
         bool Intersects(Circle circle);
+    }
+
+    public interface IMovableShape : IShape
+    {
+        new Vector2 Center { get; set; }
     }
 }

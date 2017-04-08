@@ -6,9 +6,9 @@ namespace Glyph.Core
 {
     public class ColliderManager
     {
-        private ISpace<ICollider> _space;
+        private IWriteableSpace<ICollider> _space;
 
-        public ISpace<ICollider> Space
+        public IWriteableSpace<ICollider> Space
         {
             get { return _space; }
             set

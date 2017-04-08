@@ -4,9 +4,9 @@ namespace Glyph.Scripting
 {
     public class TriggerManager
     {
-        private ISpace<Trigger> _space;
+        private IWriteableSpace<Trigger> _space;
 
-        public ISpace<Trigger> Space
+        public IWriteableSpace<Trigger> Space
         {
             get { return _space; }
             set

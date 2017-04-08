@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Diese.Collections.Trackers;
+using Diese.Collections;
 using Diese.Modelization;
 using Glyph.Composition;
 
@@ -15,18 +15,6 @@ namespace Glyph.Core.Tracking
         public Factory(GlyphSchedulableBase parent)
         {
             _parent = parent;
-        }
-
-        public override T this[int index]
-        {
-            get { return base[index]; }
-            set
-            {
-                if (index < Count)
-                    _parent.Remove(this[index]);
-
-                base[index] = value;
-            }
         }
 
         public void Init(IEnumerable<T> items)

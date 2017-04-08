@@ -99,6 +99,7 @@
     <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
     <Compile Include="Tracking\Factory.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
+    <Compile Include="Tracking\MessagingSpace.cs" />
     <Compile Include="Tracking\MessagingTracker.cs" />
     <Compile Include="ViewManager.cs" />
   </ItemGroup>

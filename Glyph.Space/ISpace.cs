@@ -17,10 +17,9 @@ namespace Glyph.Space
         IEnumerable<TopLeftRectangle> GetAllBoxesInRange(IShape range);
     }
 
-    public interface ISpace<T> : ISpace, ICollection<T>
+    public interface ISpace<out T> : ISpace, IEnumerable<T>
     {
         new IEnumerable<ISpace<T>> Partitions { get; }
-        new bool Add(T item);
         new ISpace<T> GetPartition(Vector2 position);
         new ISpace<T> GetBestPartition(Vector2 position);
         new IEnumerable<ISpace<T>> GetAllPartitionsInRange(TopLeftRectangle range);
