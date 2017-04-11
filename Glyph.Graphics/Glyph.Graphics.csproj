@@ -42,7 +42,6 @@
     <Compile Include="DepthManager.cs" />
     <Compile Include="Drawer.cs" />
     <Compile Include="Renderer\FillingRectangle.cs" />
-    <Compile Include="ISceneRenderer.cs" />
     <Compile Include="ISpriteSheet.cs" />
     <Compile Include="ISpriteSheetCarver.cs" />
     <Compile Include="ISpriteSource.cs" />

@@ -5,13 +5,11 @@ using System.Runtime.CompilerServices;
 using Diese.Injection;
 using Glyph.Application;
 using Glyph.Audio;
-using Glyph.Composition;
 using Glyph.Composition.Annotations;
 using Glyph.Core;
 using Glyph.Graphics;
 using Glyph.Input;
 using Glyph.Input.StandardControls;
-using Glyph.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,8 +23,6 @@ namespace Glyph.Game
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ContentManager _contentManager;
         private readonly ElapsedTime _elapsedTime = new ElapsedTime();
-        private IScene _scene;
-        private bool _sceneChanged;
         private IGlyphClient _focusedClient;
         public bool IsInitialized { get; private set; }
         public bool IsLoaded { get; private set; }
@@ -36,6 +32,7 @@ namespace Glyph.Game
         public IDependencyInjector Injector { get; }
         public ContentLibrary ContentLibrary { get; }
         public ControlManager ControlManager { get; }
+        public GlyphObject Root { get; set; }
 
         public IGlyphClient FocusedClient
         {
@@ -48,21 +45,6 @@ namespace Glyph.Game
                 _focusedClient = value;
                 ControlManager.InputClient = value;
                 FocusChanged?.Invoke(_focusedClient);
-            }
-        }
-
-        public IScene Scene
-        {
-            get { return _scene; }
-            set
-            {
-                if (_scene == value)
-                    return;
-
-                _scene = value;
-                _sceneChanged = true;
-                Logger.Info("Change scene : " + _scene.Name);
-                OnPropertyChanged();
             }
         }
 
@@ -106,7 +88,7 @@ namespace Glyph.Game
         public void Initialize()
         {
             ViewManager.Main.Initialize();
-            Scene?.Initialize();
+            Root?.Initialize();
 
             IsInitialized = true;
         }
@@ -118,8 +100,7 @@ namespace Glyph.Game
             ViewManager.Main.LoadContent(ContentLibrary);
             SongPlayer.Instance.LoadContent(ContentLibrary);
 
-            Scene?.LoadContent(ContentLibrary);
-            _sceneChanged = false;
+            Root?.LoadContent(ContentLibrary);
 
             IsLoaded = true;
         }
@@ -146,10 +127,7 @@ namespace Glyph.Game
                     Stop();
 
                 if (developerControls.UpdateSnapshot.IsActive())
-                    GlyphSchedulableBase.UpdateWatchTree.Enabled = true;
-
-                if (developerControls.CompositionLog.IsActive())
-                    CompositionLog.Write(Scene, Scene.RootNode);
+                    GlyphObject.UpdateWatchTree.Enabled = true;
 
                 if (developerControls.ToogleSong.IsActive())
                     switch (MediaPlayer.State)
@@ -169,28 +147,17 @@ namespace Glyph.Game
                     SongPlayer.Instance.Next();
             }
 
-            using (GlyphSchedulableBase.UpdateWatchTree.Start("Root"))
+            using (GlyphObject.UpdateWatchTree.Start("Root"))
             {
-                do
-                {
-                    if (_sceneChanged)
-                    {
-                        Scene?.Initialize();
-                        Scene?.LoadContent(ContentLibrary);
-
-                        _sceneChanged = false;
-                    }
-                    Scene?.Update(_elapsedTime);
-                } while (_sceneChanged);
-
+                Root?.Update(_elapsedTime);
                 ViewManager.Main.Update(_elapsedTime);
                 SongPlayer.Instance.Update(_elapsedTime);
             }
 
-            if (GlyphSchedulableBase.UpdateWatchTree.Enabled)
+            if (GlyphObject.UpdateWatchTree.Enabled)
             {
-                GlyphSchedulableBase.UpdateWatchTree.Results.First().Value.SaveToCsv("watchtree_" + DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss"));
-                GlyphSchedulableBase.UpdateWatchTree.Enabled = false;
+                GlyphObject.UpdateWatchTree.Results.First().Value.SaveToCsv("watchtree_" + DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss"));
+                GlyphObject.UpdateWatchTree.Enabled = false;
             }
         }
 
@@ -207,7 +174,7 @@ namespace Glyph.Game
             {
                 drawer.CurrentView = view;
                 view.PrepareDraw(drawer);
-                Scene?.Draw(drawer);
+                Root?.Draw(drawer);
             }
         }
 
@@ -244,7 +211,7 @@ namespace Glyph.Game
         }
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

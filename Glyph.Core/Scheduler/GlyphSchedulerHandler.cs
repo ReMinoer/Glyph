@@ -73,44 +73,5 @@ namespace Glyph.Core.Scheduler
             foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
                 scheduler.ClearComponents();
         }
-
-        //public IState<TValue> GetState<TValue>()
-        //{
-        //    return _statableModel.GetState<TValue>();
-        //}
-
-        //public void SetState<TValue>(IState<TValue> state)
-        //{
-        //    _statableModel.SetState(state);
-
-        //    foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
-        //        scheduler.SetState(state);
-        //}
-
-        //public IState<TValue> AddState<TValue>()
-        //{
-        //    IState<TValue> state = _statableModel.AddState<TValue>();
-
-        //    foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
-        //        scheduler.AddState(state);
-
-        //    return state;
-        //}
-
-        //public void AddState<TValue>(IState<TValue> state)
-        //{
-        //    _statableModel.AddState(state);
-
-        //    foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
-        //        scheduler.AddState(state);
-        //}
-
-        //public bool RemoveState<TValue>()
-        //{
-        //    foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
-        //        scheduler.RemoveState<TValue>();
-
-        //    return _statableModel.RemoveState<TValue>();
-        //}
     }
 }

@@ -12,7 +12,7 @@ namespace Glyph.Core.Injection
         private readonly GlyphComposite _context;
         private readonly LocalDependencyInjector _local;
 
-        internal GlyphSchedulableBase Parent
+        internal GlyphObject Parent
         {
             set { _local.Parent = value.Injector._local; }
         }

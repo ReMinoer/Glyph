@@ -9,10 +9,10 @@ namespace Glyph.Core.Tracking
     public class Factory<T> : Tracker<T>, ICreator<T>
         where T : class, IGlyphComponent
     {
-        private readonly GlyphSchedulableBase _parent;
+        private readonly IGlyphCompositeResolver _parent;
         public event Action<T> ComponentCreated;
 
-        public Factory(GlyphSchedulableBase parent)
+        public Factory(IGlyphCompositeResolver parent)
         {
             _parent = parent;
         }

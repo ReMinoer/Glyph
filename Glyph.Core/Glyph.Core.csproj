@@ -60,7 +60,6 @@
     <Compile Include="Colliders\RectangleCollider.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="GlyphObject.cs" />
-    <Compile Include="GlyphSchedulableBase.cs" />
     <Compile Include="IBoxedComponent.cs" />
     <Compile Include="Injection\GlyphCompositeInjector.cs" />
     <Compile Include="Injection\InjectionScope.cs" />
