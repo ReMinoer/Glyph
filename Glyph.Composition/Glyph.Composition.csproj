@@ -74,14 +74,6 @@
       <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
       <Name>Diese.Collections</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Debug\Diese.Debug.csproj">
-      <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
-      <Name>Diese.Debug</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Graph\Diese.Graph.csproj">
-      <Project>{BBC6C938-95A5-4CBF-AA6B-DA2A9A09C4F1}</Project>
-      <Name>Diese.Graph</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>

@@ -60,7 +60,6 @@
     <Compile Include="Simple\SimpleButton.cs" />
     <Compile Include="Simple\SimpleFrame.cs" />
     <Compile Include="Text.cs" />
-    <Compile Include="Misc\TextSprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
@@ -98,10 +97,6 @@
     <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
       <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
       <Name>Glyph.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Entities\Glyph.Entities.csproj">
-      <Project>{729CF52C-D06C-42FD-A2EE-6C19E07D185F}</Project>
-      <Name>Glyph.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
       <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
