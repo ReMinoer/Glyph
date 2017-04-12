@@ -1,52 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{618DD39A-686C-4B91-BB24-BD9334109335}</ProjectGuid>
+    <ProjectGuid>{25400349-233E-404D-BB4E-A0CB4AF893EA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph.Game</RootNamespace>
-    <AssemblyName>Glyph.Game</AssemblyName>
+    <RootNamespace>Glyph.Engine</RootNamespace>
+    <AssemblyName>Glyph.Engine</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
-    <Optimize>true</Optimize>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.5.1.1679, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.5.1.1679\lib\net40\MonoGame.Framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NLog">
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.1\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlyphEngine.cs" />
-    <Compile Include="IGlyphClient.cs" />
     <Compile Include="GlyphGame.cs" />
+    <Compile Include="IGlyphClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Debug\Diese.Debug.csproj">
@@ -56,14 +65,6 @@
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
-      <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
-      <Name>Diese.Modelization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese\Diese.csproj">
-      <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
-      <Name>Diese</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
       <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
@@ -82,7 +83,7 @@
       <Name>Glyph.Application</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
-      <Project>{46aa8a4b-5a43-45f3-99e4-b7bad0d47fea}</Project>
+      <Project>{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}</Project>
       <Name>Glyph.Audio</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
@@ -101,24 +102,10 @@
       <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
       <Name>Glyph.Input</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Glyph.Tools\Glyph.Tools.csproj">
-      <Project>{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}</Project>
-      <Name>Glyph.Tools</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
-      <Project>{457cbbf3-26c7-478b-b4eb-1f85ff3c07f5}</Project>
+      <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
       <Name>Glyph</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

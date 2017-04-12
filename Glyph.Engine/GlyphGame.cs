@@ -7,9 +7,9 @@ using Glyph.Input.StandardControls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Game
+namespace Glyph.Engine
 {
-    public class GlyphGame : Microsoft.Xna.Framework.Game, IGlyphClient
+    public class GlyphGame : Game, IGlyphClient, IInputClient
     {
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private readonly GameInputStates _gameInputStates;

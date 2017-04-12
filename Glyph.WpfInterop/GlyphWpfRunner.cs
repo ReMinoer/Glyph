@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Media;
-using Glyph.Game;
+using Glyph.Engine;
 using Microsoft.Xna.Framework;
 using MonoGame.Framework.WpfInterop;
 

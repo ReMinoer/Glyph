@@ -2,7 +2,7 @@
 using System.Windows;
 using Fingear.MonoGame;
 using Glyph.Core;
-using Glyph.Game;
+using Glyph.Engine;
 using Glyph.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

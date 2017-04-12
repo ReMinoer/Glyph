@@ -69,9 +69,9 @@
       <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
       <Name>Glyph.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Glyph.Game\Glyph.Game.csproj">
-      <Project>{618DD39A-686C-4B91-BB24-BD9334109335}</Project>
-      <Name>Glyph.Game</Name>
+    <ProjectReference Include="..\Glyph.Engine\Glyph.Engine.csproj">
+      <Project>{25400349-233E-404D-BB4E-A0CB4AF893EA}</Project>
+      <Name>Glyph.Engine</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
       <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>

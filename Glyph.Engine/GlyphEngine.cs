@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 using NLog;
 
-namespace Glyph.Game
+namespace Glyph.Engine
 {
     public class GlyphEngine : INotifyPropertyChanged
     {
