@@ -19,8 +19,8 @@ namespace Glyph.Space
 
         protected abstract ICollection<T> Items { get; }
         public WriteableSpaceBase<T> Parent { get; }
-        public TopLeftRectangle BoundingBox => _partitioner.BoundingBox;
         public bool IsVoid => _partitioner != null && _partitioner.IsVoid;
+        public TopLeftRectangle BoundingBox => _partitioner?.BoundingBox ?? TopLeftRectangle.Void;
         public int Count => Items.Count;
         public IEnumerable<Vector2> Points => Items.Select(GetPoint);
         public IEnumerable<TopLeftRectangle> Boxes => Items.Select(GetBox);
@@ -90,7 +90,7 @@ namespace Glyph.Space
 
             RemoveFromParents(item);
 
-            if (!_partitions.Any(child => child.Remove(item)))
+            if (_partitions.Count != 0 && !_partitions.Any(child => child.Remove(item)))
                 throw new InvalidOperationException();
 
             _changing = false;

@@ -11,7 +11,7 @@ namespace Glyph.Space
         protected override ICollection<T> Items => _items;
 
         public Space(Func<T, Vector2> getPoint, IPartitioner partitioner = null)
-            : this(null, getPoint, x => new CenteredRectangle(getPoint(x), 0, 0), partitioner)
+            : this(null, getPoint, x => new CenteredRectangle(getPoint(x), 1, 1), partitioner)
         {
         }
 
