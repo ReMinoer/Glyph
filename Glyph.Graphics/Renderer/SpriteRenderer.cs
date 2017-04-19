@@ -20,7 +20,10 @@ namespace Glyph.Graphics.Renderer
         {
             get
             {
-                Rectangle rectangle = Source.Rectangle ?? Source.Texture.Bounds;
+                if (Source == null)
+                    return null;
+
+                Rectangle rectangle = Source.GetDrawnRectagle();
                 Vector2 origin = SpriteTransformer?.Origin ?? Source.GetDefaultOrigin();
                 Vector2 scale = _sceneNode.Scale * (SpriteTransformer?.Scale ?? Vector2.One);
 
