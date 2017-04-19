@@ -23,6 +23,15 @@ namespace Glyph.Graphics
             _spriteSource = spriteSource;
         }
 
+        public bool IsVoid
+        {
+            get
+            {
+                Rectangle drawnRectangle = _spriteSource.GetDrawnRectagle();
+                return drawnRectangle.Width == 0 && drawnRectangle.Height == 0;
+            }
+        }
+
         public TopLeftRectangle BoundingBox
         {
             get

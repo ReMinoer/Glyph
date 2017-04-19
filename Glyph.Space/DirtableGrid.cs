@@ -13,6 +13,7 @@ namespace Glyph.Space
         private readonly List<IGridCase<T>> _dirtiedCases;
         private readonly IReadOnlyList<IGridCase<T>> _readOnlyDirtiedCases;
         private bool _isDirty;
+        public bool IsVoid => _gridImplementation.IsVoid;
 
         public bool IsDirty
         {

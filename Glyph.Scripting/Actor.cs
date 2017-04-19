@@ -18,6 +18,7 @@ namespace Glyph.Scripting
         private TopLeftRectangle _boudingBox;
         private bool _dirtyBoundingBox = true;
         public List<ICollider> Colliders { get; private set; }
+        public bool IsVoid => _boudingBox.IsVoid;
 
         public TopLeftRectangle BoundingBox
         {

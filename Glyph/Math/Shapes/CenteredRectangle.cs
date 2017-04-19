@@ -17,6 +17,7 @@ namespace Glyph.Math.Shapes
         public float Right => Center.X + Width / 2;
         public float Top => Center.Y - Height / 2;
         public float Bottom => Center.Y + Height / 2;
+        public bool IsVoid => Width.EqualsZero() && Height.EqualsZero();
 
         public Vector2 Size
         {

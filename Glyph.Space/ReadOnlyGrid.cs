@@ -9,6 +9,8 @@ namespace Glyph.Space
     {
         private readonly IGrid<T> _gridImplementation;
 
+        public bool IsVoid => _gridImplementation.IsVoid;
+
         public TopLeftRectangle BoundingBox
         {
             get { return _gridImplementation.BoundingBox; }

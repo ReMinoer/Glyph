@@ -13,6 +13,7 @@ namespace Glyph.Space
         public TopLeftRectangle Rectangle { get; private set; }
         public GridDimension Dimension { get; private set; }
         public Vector2 Delta { get; private set; }
+        public bool IsVoid => (Dimension.Columns == 0 && Dimension.Rows == 0) || Delta == Vector2.Zero;
 
         public Rectangle Bounds
         {

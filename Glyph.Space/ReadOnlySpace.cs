@@ -15,6 +15,8 @@ namespace Glyph.Space
             _space = space;
         }
 
+        public bool IsVoid => _space.IsVoid;
+
         public TopLeftRectangle BoundingBox
         {
             get { return _space.BoundingBox; }

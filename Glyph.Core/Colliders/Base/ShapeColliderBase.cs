@@ -8,6 +8,7 @@ namespace Glyph.Core.Colliders.Base
         where TShape : IShape
     {
         public abstract TShape Shape { get; }
+        public override bool IsVoid => Shape.IsVoid;
 
         public override TopLeftRectangle BoundingBox
         {

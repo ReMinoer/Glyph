@@ -22,6 +22,7 @@ namespace Glyph.Math.Shapes
         public Vector2 P1 => new Vector2(Right, Top);
         public Vector2 P2 => new Vector2(Right, Bottom);
         public Vector2 P3 => new Vector2(Left, Bottom);
+        public bool IsVoid => Width.EqualsZero() && Height.EqualsZero();
 
         public Vector2 Center
         {

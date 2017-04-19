@@ -8,6 +8,7 @@ namespace Glyph.Math.Shapes
         public float Radius { get; set; }
 
         public TopLeftRectangle BoundingBox => new TopLeftRectangle(Center.X - Radius, Center.Y - Radius, Radius * 2, Radius * 2);
+        public bool IsVoid => Radius.EqualsZero();
 
         public Circle(Vector2 center, float radius)
             : this()

@@ -10,6 +10,7 @@ namespace Glyph.Space.Partitioning
         public TopLeftRectangle BoundingBox { get; }
         public int Capacity { get; }
         public Vector2 Center => BoundingBox.Center;
+        public bool IsVoid => BoundingBox.IsVoid;
 
         public QuadtreePartitioner(TopLeftRectangle bounds, int capacity)
         {

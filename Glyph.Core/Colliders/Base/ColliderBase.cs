@@ -13,6 +13,7 @@ namespace Glyph.Core.Colliders.Base
         public Predicate<ICollider> IgnoredFilter { get; set; }
         protected SceneNode ParentNode { get; private set; }
         public abstract TopLeftRectangle BoundingBox { get; }
+        public abstract bool IsVoid { get; }
 
         public Vector2 LocalCenter
         {

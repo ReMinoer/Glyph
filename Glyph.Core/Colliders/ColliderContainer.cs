@@ -33,6 +33,7 @@ namespace Glyph.Core.Colliders
             set { _colliderParentImplementation.LocalCenter = value; }
         }
 
+        public bool IsVoid => _colliderParentImplementation.IsVoid;
         public TopLeftRectangle BoundingBox => _colliderParentImplementation.BoundingBox;
 
         public Predicate<ICollider> IgnoredFilter

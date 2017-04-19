@@ -16,6 +16,7 @@ namespace Glyph.Graphics
         public bool Visible { get; set; }
         public Camera Camera { get; set; }
         public ViewEffectManager EffectManager { get; private set; }
+        public bool IsVoid => _fillingRectangle.Rectangle.IsVoid;
 
         public TopLeftRectangle BoundingBox
         {

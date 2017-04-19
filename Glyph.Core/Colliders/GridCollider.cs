@@ -23,6 +23,8 @@ namespace Glyph.Core.Colliders
             get { return Grid.BoundingBox; }
         }
 
+        public override bool IsVoid => Grid.IsVoid;
+
         public GridCollider(ColliderManager colliderManager)
             : base(colliderManager)
         {

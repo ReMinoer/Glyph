@@ -15,6 +15,7 @@ namespace Glyph.Scripting
         private readonly SceneNode _sceneNode;
         public bool Enabled { get; set; }
         public Vector2 Size { get; set; }
+        public bool IsVoid => Shape.IsVoid;
 
         public Vector2 LocalPosition
         {
