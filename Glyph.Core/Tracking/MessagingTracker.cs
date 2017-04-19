@@ -8,12 +8,13 @@ using Glyph.Messaging;
 
 namespace Glyph.Core.Tracking
 {
-    public class MessagingTracker<T> : GlyphContainer, IInterpreter<InstantiatingMessage<T>>, IInterpreter<DisposingMessage<T>>, IEnumerable<T>
+    public class MessagingTracker<T> : GlyphContainer, IMessagingCollection<T>
         where T : class
     {
         private readonly List<T> _tracker;
         private readonly List<T> _newInstances;
-        public ReadOnlyCollection<T> NewInstances { get; private set; }
+        public IReadOnlyCollection<T> NewInstances { get; }
+        public Predicate<T> Filter { get; set; }
 
         public event Action<T> Registered;
         public event Action<T> Unregistered;
@@ -35,18 +36,23 @@ namespace Glyph.Core.Tracking
 
         void IInterpreter<InstantiatingMessage<T>>.Interpret(InstantiatingMessage<T> message)
         {
-            _tracker.Add(message.Instance);
-            _newInstances.Add(message.Instance);
+            T instance = message.Instance;
+            if (Filter != null && !Filter(message.Instance))
+                return;
 
-            Registered?.Invoke(message.Instance);
+            _tracker.Add(instance);
+            _newInstances.Add(instance);
+            Registered?.Invoke(instance);
         }
 
         void IInterpreter<DisposingMessage<T>>.Interpret(DisposingMessage<T> message)
         {
-            _tracker.Remove(message.Instance);
-            _newInstances.Remove(message.Instance);
+            T instance = message.Instance;
+            if (!_tracker.Remove(instance))
+                return;
 
-            Unregistered?.Invoke(message.Instance);
+            _newInstances.Remove(instance);
+            Unregistered?.Invoke(instance);
         }
 
         public IEnumerator<T> GetEnumerator()

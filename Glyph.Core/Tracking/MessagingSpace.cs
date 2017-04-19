@@ -12,13 +12,15 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Core.Tracking
 {
-    public class MessagingSpace<T> : GlyphContainer, IInterpreter<InstantiatingMessage<T>>, IInterpreter<DisposingMessage<T>>, ISpace<T>
+    public class MessagingSpace<T> : GlyphContainer, ISpace<T>, IMessagingCollection<T>
         where T : class, IBoxedComponent
     {
         private readonly Space<T> _space;
         private readonly List<T> _newInstances;
-        public ReadOnlyCollection<T> NewInstances { get; }
+        public IReadOnlyCollection<T> NewInstances { get; }
+        public Predicate<T> Filter { get; set; }
 
+        public bool IsVoid => _space.IsVoid;
         public TopLeftRectangle BoundingBox => _space.BoundingBox;
         public IEnumerable<Vector2> Points => _space.Points;
         public IEnumerable<TopLeftRectangle> Boxes => _space.Boxes;
@@ -66,18 +68,23 @@ namespace Glyph.Core.Tracking
 
         void IInterpreter<InstantiatingMessage<T>>.Interpret(InstantiatingMessage<T> message)
         {
-            _space.Add(message.Instance);
-            _newInstances.Add(message.Instance);
+            T instance = message.Instance;
+            if (Filter != null && !Filter(message.Instance))
+                return;
 
-            Registered?.Invoke(message.Instance);
+            _space.Add(instance);
+            _newInstances.Add(instance);
+            Registered?.Invoke(instance);
         }
 
         void IInterpreter<DisposingMessage<T>>.Interpret(DisposingMessage<T> message)
         {
-            _space.Remove(message.Instance);
-            _newInstances.Remove(message.Instance);
+            T instance = message.Instance;
+            if (!_space.Remove(instance))
+                return;
 
-            Unregistered?.Invoke(message.Instance);
+            _newInstances.Remove(instance);
+            Unregistered?.Invoke(instance);
         }
 
         public bool ContainsPoint(Vector2 point)
