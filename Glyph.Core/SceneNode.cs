@@ -163,6 +163,8 @@ namespace Glyph.Core
         {
             foreach (ISceneNode childNode in _childrenNodes)
                 childNode.SetParent(null);
+
+            SetParent(null);
         }
 
         public void SetParent(ISceneNode parent, Referential childStaticReferential = Referential.World)
