@@ -46,12 +46,16 @@ namespace Glyph.Math
 
         static public TopLeftRectangle GetBoundingBox(IEnumerable<TopLeftRectangle> rectangles)
         {
+            TopLeftRectangle[] topLeftRectangles = rectangles as TopLeftRectangle[] ?? rectangles.ToArray();
+            if (topLeftRectangles.Length == 0)
+                return TopLeftRectangle.Void;
+
             float left = float.MaxValue;
             float right = float.MinValue;
             float top = float.MaxValue;
             float bottom = float.MinValue;
 
-            foreach (TopLeftRectangle rectangle in rectangles)
+            foreach (TopLeftRectangle rectangle in topLeftRectangles)
             {
                 if (rectangle.Left < left)
                     left = rectangle.Left;
