@@ -174,6 +174,8 @@ namespace Glyph.Application
             Register<RectangleComponentRenderer>();
             Register<CircleComponentRenderer>();
 
+            Register<ShapedObjectSelector>();
+
             Register<InputLogger>();
             Register<ControlLogger>();
 

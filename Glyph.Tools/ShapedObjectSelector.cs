@@ -16,37 +16,45 @@ namespace Glyph.Tools
 {
     public class ShapedObjectSelector : GlyphContainer, IUpdate
     {
-        private readonly MessagingSpace<IShapedComponent> _messagingSpace;
+        private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
         private readonly ControlManager _controlManager;
-        private IShapedComponent _selection;
+        private IBoxedComponent _selection;
+        public ReadOnlySpace<IBoxedComponent> Space { get; }
 
-        public IShapedComponent Selection
+        public IBoxedComponent Selection
         {
             get => _selection;
             set
             {
+                if (_selection == value)
+                    return;
+
                 _selection = value;
                 SelectionChanged?.Invoke(this, _selection);
             }
         }
 
-        public event EventHandler<IShapedComponent> SelectionChanged;
+        public event EventHandler<IBoxedComponent> SelectionChanged;
 
         public ShapedObjectSelector(ControlManager controlManager,
-            IRouter<InstantiatingMessage<IShapedComponent>> instantiatingRouter,
-            IRouter<DisposingMessage<IShapedComponent>> disposingRouter,
+            IRouter<InstantiatingMessage<IBoxedComponent>> instantiatingRouter,
+            IRouter<DisposingMessage<IBoxedComponent>> disposingRouter,
             IPartitioner partitioner = null)
         {
-            Components.Add(_messagingSpace = new MessagingSpace<IShapedComponent>(instantiatingRouter, disposingRouter, x => x.Area.BoundingBox, partitioner));
+            _messagingSpace = new MessagingSpace<IBoxedComponent>(instantiatingRouter, disposingRouter, x => x.Area.BoundingBox, partitioner);
+            Components.Add(_messagingSpace);
             _controlManager = controlManager;
+
+            Space = new ReadOnlySpace<IBoxedComponent>(_messagingSpace);
         }
 
         public void Update(ElapsedTime elapsedTime)
         {
-            if (_controlManager.TryGetLayer(out MouseControls mouseControls)
-                && mouseControls.Left.IsTriggered()
-                && mouseControls.ScenePosition.IsActive(out System.Numerics.Vector2 mousePosition))
-                Selection = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(mousePosition.AsMonoGameVector(), 0, 0)).FirstOrDefault();
+            if (_controlManager.TryGetLayer(out MouseControls mouseControls) && mouseControls.Left.IsTriggered())
+            {
+                mouseControls.ScenePosition.IsActive(out System.Numerics.Vector2 mousePosition);
+                Selection = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(mousePosition.AsMonoGameVector(), 1, 1)).FirstOrDefault();
+            }
         }
     }
 }
