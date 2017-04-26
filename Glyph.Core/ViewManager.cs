@@ -62,14 +62,14 @@ namespace Glyph.Core
             _views.Remove(view);
         }
 
-        static public bool IsVisibleOnWindow(Vector2 position)
+        public bool IsPointVisible(Vector2 position)
         {
-            return Main.Views.Any(view => view.Visible && view.IsVisibleOnView(position));
+            return Views.Any(view => view.Visible && view.IsVisibleOnView(position));
         }
 
-        static public bool IsVisibleOnWindow(Vector2 position, out IView view)
+        public bool IsPointVisible(Vector2 position, out IView view)
         {
-            foreach (IView v in Main.Views)
+            foreach (IView v in Views)
             {
                 if (!v.IsVisibleOnView(position))
                     continue;
@@ -82,14 +82,14 @@ namespace Glyph.Core
             return false;
         }
 
-        static public IView GetView(Vector2 virtualScreenPosition)
+        public IView GetViewAtPoint(Vector2 virtualScreenPosition)
         {
-            return Main.Views.Reverse().FirstOrDefault(view => view.Visible && view.BoundingBox.ContainsPoint(virtualScreenPosition));
+            return Views.Reverse().FirstOrDefault(view => view.Visible && view.BoundingBox.ContainsPoint(virtualScreenPosition));
         }
 
-        static public IView GetView(Vector2 virtualScreenPosition, out Vector2 positionOnView)
+        public IView GetViewAtPoint(Vector2 virtualScreenPosition, out Vector2 positionOnView)
         {
-            IView view = GetView(virtualScreenPosition) ?? Main.Views.FirstOrDefault();
+            IView view = GetViewAtPoint(virtualScreenPosition) ?? Views.FirstOrDefault(v => v.Visible);
             if (view == null)
             {
                 positionOnView = Vector2.Zero;
@@ -100,7 +100,7 @@ namespace Glyph.Core
             return view;
         }
 
-        static public Vector2 GetPositionOnVirtualScreen(Vector2 viewPosition, IView view)
+        public Vector2 GetPositionOnVirtualScreen(Vector2 viewPosition, IView view)
         {
             return viewPosition + view.BoundingBox.Position;
         }
