@@ -11,17 +11,18 @@ namespace Glyph.Tools.ShapeRendering
 {
     public abstract class ShapedComponentRendererBase : GlyphContainer, ILoadContent, IUpdate, IDraw
     {
+        protected readonly FillingRectangle FillingRectangle;
         private readonly IBoxedComponent _boxedComponent;
         private readonly SceneNode _sceneNode;
-        protected readonly SpriteTransformer SpriteTransformer;
+        private readonly SpriteTransformer _spriteTransformer;
         private readonly ShapedSpriteBase _shapedSprite;
-        private readonly SpriteRenderer _spriteRenderer;
+        private readonly FillingRenderer _fillingRenderer;
         public bool Visible { get; set; }
 
         public Color Color
         {
-            get { return SpriteTransformer.Color; }
-            set { SpriteTransformer.Color = value; }
+            get => _spriteTransformer.Color;
+            set => _spriteTransformer.Color = value;
         }
 
         protected ShapedComponentRendererBase(IBoxedComponent boxedComponent, ShapedSpriteBase shapedSprite)
@@ -29,15 +30,16 @@ namespace Glyph.Tools.ShapeRendering
             Visible = true;
             _boxedComponent = boxedComponent;
 
-            Components.Add(_sceneNode = new SceneNode(boxedComponent.SceneNode));
+            Components.Add(_sceneNode = new SceneNode());
+            Components.Add(FillingRectangle = new FillingRectangle());
             Components.Add(_shapedSprite = shapedSprite);
 
-            Components.Add(SpriteTransformer = new SpriteTransformer());
-            SpriteTransformer.SpriteSource = _shapedSprite;
+            Components.Add(_spriteTransformer = new SpriteTransformer());
+            _spriteTransformer.SpriteSource = _shapedSprite;
+            _spriteTransformer.Origin = Vector2.Zero;
 
-            Components.Add(_spriteRenderer = new SpriteRenderer(_shapedSprite, _sceneNode));
-
-            _spriteRenderer.SpriteTransformer = SpriteTransformer;
+            Components.Add(_fillingRenderer = new FillingRenderer(FillingRectangle, _shapedSprite, _sceneNode));
+            _fillingRenderer.SpriteTransformer = _spriteTransformer;
         }
 
         public override void Initialize()
@@ -52,17 +54,15 @@ namespace Glyph.Tools.ShapeRendering
 
         public void Update(ElapsedTime elapsedTime)
         {
-            UpdateSize();
+            FillingRectangle.Rectangle = _boxedComponent.Area.BoundingBox;
         }
-
-        protected abstract void UpdateSize();
 
         public void Draw(IDrawer drawer)
         {
             if (!Visible || _boxedComponent.ParentQueue().OfType<IEnableable>().Any(x => !x.Enabled))
                 return;
 
-            _spriteRenderer.Draw(drawer);
+            _fillingRenderer.Draw(drawer);
         }
     }
 }
