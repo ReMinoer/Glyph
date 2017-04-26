@@ -4,10 +4,10 @@ using Fingear;
 using Fingear.Controls.Base;
 using Fingear.MonoGame;
 using Fingear.Utils;
-using Glyph.Core;
+using Glyph.Input;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
-namespace Glyph.Input.Controls
+namespace Glyph.Core.Controls
 {
     public enum CursorSpace
     {

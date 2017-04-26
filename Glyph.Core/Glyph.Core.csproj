@@ -43,6 +43,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.Numerics.Vectors.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
@@ -59,6 +62,7 @@
     <Compile Include="Colliders\IGridCollider.cs" />
     <Compile Include="Colliders\RectangleCollider.cs" />
     <Compile Include="Collision.cs" />
+    <Compile Include="Controls\ReferentialCursorControl.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="IBoxedComponent.cs" />
     <Compile Include="Injection\GlyphCompositeInjector.cs" />
@@ -97,6 +101,9 @@
     <Compile Include="Scheduler\IGlyphScheduler.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerAssigner.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
+    <Compile Include="ControlLayers\DeveloperControls.cs" />
+    <Compile Include="ControlLayers\MenuControls.cs" />
+    <Compile Include="ControlLayers\MouseControls.cs" />
     <Compile Include="Tracking\Factory.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
     <Compile Include="Tracking\IMessagingCollection.cs" />
@@ -133,9 +140,21 @@
       <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
       <Name>Stave</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj">
+      <Project>{9eef1863-44be-423e-a29d-088c23aac45e}</Project>
+      <Name>Fingear.MonoGame</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
+      <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
+      <Name>Fingear</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
+      <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
+      <Name>Glyph.Input</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
       <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>

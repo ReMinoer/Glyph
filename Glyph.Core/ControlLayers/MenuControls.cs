@@ -1,14 +1,15 @@
-﻿using System;   
+﻿using System;
 using Fingear;
 using Fingear.Controls;
 using Fingear.Controls.Composites;
 using Fingear.Converters;
 using Fingear.MonoGame.Inputs;
 using Fingear.Utils;
+using Glyph.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Glyph.Input.StandardControls
+namespace Glyph.Core.ControlLayers
 {
     [Flags]
     public enum MenuInputsType

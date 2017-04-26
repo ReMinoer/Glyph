@@ -2,9 +2,10 @@
 using Fingear.Controls;
 using Fingear.Controls.Composites;
 using Fingear.MonoGame.Inputs;
+using Glyph.Input;
 using Microsoft.Xna.Framework.Input;
 
-namespace Glyph.Input.StandardControls
+namespace Glyph.Core.ControlLayers
 {
     public class DeveloperControls : ControlLayerBase
     {

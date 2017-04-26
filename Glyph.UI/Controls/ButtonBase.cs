@@ -7,9 +7,9 @@ using Glyph.Animation;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Input;
-using Glyph.Input.StandardControls;
 using Microsoft.Xna.Framework;
 using Diese.Collections;
+using Glyph.Core.ControlLayers;
 
 namespace Glyph.UI.Controls
 {

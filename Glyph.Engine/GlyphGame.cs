@@ -2,8 +2,8 @@ using System;
 using System.Windows.Forms;
 using Diese.Injection;
 using Fingear.MonoGame;
+using Glyph.Core.ControlLayers;
 using Glyph.Input;
-using Glyph.Input.StandardControls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

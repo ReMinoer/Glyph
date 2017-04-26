@@ -3,9 +3,10 @@ using Fingear;
 using Fingear.Controls;
 using Fingear.Converters;
 using Fingear.MonoGame.Inputs;
-using Glyph.Input.Controls;
+using Glyph.Core.Controls;
+using Glyph.Input;
 
-namespace Glyph.Input.StandardControls
+namespace Glyph.Core.ControlLayers
 {
     public class MouseControls : ControlLayerBase
     {

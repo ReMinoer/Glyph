@@ -9,11 +9,11 @@ using Glyph.Graphics;
 using Glyph.Graphics.Carvers;
 using Glyph.Graphics.Renderer;
 using Glyph.Input;
-using Glyph.Input.StandardControls;
 using Glyph.Transition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Diese.Collections;
+using Glyph.Core.ControlLayers;
 
 namespace Glyph.UI.Guide
 {

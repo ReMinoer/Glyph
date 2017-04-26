@@ -45,12 +45,8 @@
     <Compile Include="ControlLayerBase.cs" />
     <Compile Include="IInputClient.cs" />
     <Compile Include="IControlLayer.cs" />
-    <Compile Include="StandardControls\MenuControls.cs" />
-    <Compile Include="Controls\ReferentialCursorControl.cs" />
-    <Compile Include="StandardControls\DeveloperControls.cs" />
     <Compile Include="ControlManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StandardControls\MouseControls.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
@@ -68,14 +64,6 @@
     <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
       <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
       <Name>Fingear</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
-      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
-      <Name>Glyph.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
-      <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
-      <Name>Glyph.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

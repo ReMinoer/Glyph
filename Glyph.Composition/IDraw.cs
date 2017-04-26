@@ -1,3 +1,5 @@
+using Diese;
+
 namespace Glyph.Composition
 {
     public interface IDraw : IGlyphComponent
