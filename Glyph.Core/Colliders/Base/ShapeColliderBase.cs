@@ -35,11 +35,6 @@ namespace Glyph.Core.Colliders.Base
             return Shape.Intersects(circle);
         }
 
-        ISceneNode IBoxedComponent.SceneNode
-        {
-            get { return new ReadOnlySceneNode(SceneNode); }
-        }
-
         IShape IShapedComponent.Shape
         {
             get { return Shape; }

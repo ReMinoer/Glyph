@@ -170,8 +170,7 @@ namespace Glyph.Core
             var router = Injector.Resolve<IRouter<TMessage>>();
             router.Send(message);
         }
-
-        ISceneNode IBoxedComponent.SceneNode => Components.FirstOrDefault<ISceneNode>() ?? this.ParentQueue().SelectMany(x => x.Components).First<ISceneNode>();
+        
         IArea IBoxedComponent.Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));
 
         private sealed class NewComponentBatchTree : BatchTree<IGlyphComponent>

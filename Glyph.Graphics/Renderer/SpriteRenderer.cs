@@ -31,11 +31,6 @@ namespace Glyph.Graphics.Renderer
             }
         }
 
-        ISceneNode IBoxedComponent.SceneNode
-        {
-            get { return _sceneNode; }
-        }
-
         public SpriteRenderer(ISpriteSource source, SceneNode sceneNode)
             : base(source)
         {

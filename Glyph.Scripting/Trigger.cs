@@ -28,11 +28,6 @@ namespace Glyph.Scripting
             get { return new CenteredRectangle(_sceneNode.Position, Size); }
         }
 
-        ISceneNode IBoxedComponent.SceneNode
-        {
-            get { return new ReadOnlySceneNode(_sceneNode); }
-        }
-
         IShape IShapedComponent.Shape
         {
             get { return Shape; }

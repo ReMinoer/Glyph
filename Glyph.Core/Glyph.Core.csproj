@@ -76,6 +76,7 @@
     <Compile Include="Layers\LayerRoot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlySceneNode.cs" />
+    <Compile Include="SceneGraphUtils.cs" />
     <Compile Include="SceneNode.cs" />
     <Compile Include="Scheduler\Base\Controllers\IPriorityController.cs" />
     <Compile Include="Scheduler\Base\Controllers\IRelativeController.cs" />
