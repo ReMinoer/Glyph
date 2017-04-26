@@ -27,7 +27,7 @@ namespace Glyph.Graphics.Renderer
                 Vector2 origin = SpriteTransformer?.Origin ?? Source.GetDefaultOrigin();
                 Vector2 scale = _sceneNode.Scale * (SpriteTransformer?.Scale ?? Vector2.One);
 
-                return new TopLeftRectangle(rectangle.Location.ToVector2() - origin * scale, rectangle.Size.ToVector2() * scale);
+                return new TopLeftRectangle(_sceneNode.Position + rectangle.Location.ToVector2() - origin * scale, rectangle.Size.ToVector2() * scale);
             }
         }
 
