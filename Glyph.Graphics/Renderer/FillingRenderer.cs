@@ -24,18 +24,12 @@ namespace Glyph.Graphics.Renderer
 
         protected override void Render(IDrawer drawer)
         {
-            var drawnRectangle = new CenteredRectangle
-            {
-                Center = _sceneNode.Position + _fillingRectangle.Rectangle.Center,
-                Size = _fillingRectangle.Rectangle.Size
-            };
-
             if (SpriteTransformer != null)
-                drawer.SpriteBatchStack.Current.Draw(Source.Texture, drawnRectangle.ToIntegers(), Source.Rectangle,
-                    SpriteTransformer.Color, _sceneNode.Rotation, SpriteTransformer.Origin, SpriteTransformer.Effects, _sceneNode.Depth);
+                drawer.SpriteBatchStack.Current.Draw(Source.Texture, _sceneNode.Position + _fillingRectangle.Rectangle.Position, Source.Rectangle,
+                    SpriteTransformer.Color, _sceneNode.Rotation, SpriteTransformer.Origin, _fillingRectangle.Rectangle.Size / Source.Texture.Size(), SpriteTransformer.Effects, _sceneNode.Depth);
             else
-                drawer.SpriteBatchStack.Current.Draw(Source.Texture, drawnRectangle.ToIntegers(), Source.Rectangle,
-                    Color.White, _sceneNode.Rotation, Vector2.Zero, SpriteEffects.None, _sceneNode.Depth);
+                drawer.SpriteBatchStack.Current.Draw(Source.Texture, _sceneNode.Position + _fillingRectangle.Rectangle.Position, Source.Rectangle,
+                    Color.White, _sceneNode.Rotation, Vector2.Zero, _fillingRectangle.Rectangle.Size / Source.Texture.Size(), SpriteEffects.None, _sceneNode.Depth);
         }
     }
 }
