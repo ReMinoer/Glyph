@@ -32,7 +32,13 @@ namespace Glyph.Engine
         public IDependencyInjector Injector { get; }
         public ContentLibrary ContentLibrary { get; }
         public ControlManager ControlManager { get; }
-        public GlyphObject Root { get; set; }
+        private GlyphObject _root;
+
+        public GlyphObject Root
+        {
+            get => _root ?? (_root = Injector.Resolve<GlyphObject>());
+            set => _root = value;
+        }
 
         public IGlyphClient FocusedClient
         {
