@@ -89,7 +89,7 @@ namespace Glyph.Core
 
         public IView GetViewAtPoint(Vector2 virtualScreenPosition, IDrawClient drawClient, out Vector2 positionOnView)
         {
-            IView view = GetViewAtPoint(virtualScreenPosition) ?? Views.FirstOrDefault(v => v.Displayed(drawClient));
+            IView view = GetViewAtPoint(virtualScreenPosition, drawClient) ?? Views.FirstOrDefault(v => v.Displayed(drawClient));
             if (view == null)
             {
                 positionOnView = Vector2.Zero;
