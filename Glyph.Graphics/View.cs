@@ -1,4 +1,5 @@
 ﻿using System;
+using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics.Renderer;
@@ -14,6 +15,7 @@ namespace Glyph.Graphics
         private readonly FillingRectangle _fillingRectangle;
         private readonly FillingRenderer _fillingRenderer;
         public bool Visible { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
         public Camera Camera { get; set; }
         public ViewEffectManager EffectManager { get; private set; }
         public bool IsVoid => _fillingRectangle.Rectangle.IsVoid;

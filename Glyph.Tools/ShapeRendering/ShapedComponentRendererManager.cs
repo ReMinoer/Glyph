@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Tracking;
@@ -13,6 +14,7 @@ namespace Glyph.Tools.ShapeRendering
         where T : class, IBoxedComponent
     {
         public bool Visible { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
         public Color Color { get; set; }
 
         private readonly SceneNode _sceneNode;
@@ -53,7 +55,7 @@ namespace Glyph.Tools.ShapeRendering
 
         public void Draw(IDrawer drawer)
         {
-            if (!Visible)
+            if (!this.Displayed(drawer.Client))
                 return;
 
             foreach (ShapedComponentRendererBase colliderObject in _colliderObjects.Values)

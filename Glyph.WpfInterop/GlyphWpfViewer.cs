@@ -14,8 +14,8 @@ namespace Glyph.WpfInterop
     {
         private readonly WpfInputStates _wpfInputStates;
         public Resolution Resolution { get; }
-        public Predicate<IView> IsViewVisiblePredicate { get; set; }
-        GraphicsDevice IGlyphClient.GraphicsDevice => GraphicsDevice;
+        public RenderTarget2D DefaultRenderTarget => RenderTarget;
+        GraphicsDevice IDrawClient.GraphicsDevice => GraphicsDevice;
         IInputStates IInputClient.States => _wpfInputStates;
 
         public GlyphWpfViewer()
@@ -37,13 +37,8 @@ namespace Glyph.WpfInterop
                 return;
 
             base.Draw(gameTime);
-
-            var drawContext = new GlyphEngine.DrawContext(GraphicsDevice, Resolution)
-            {
-                DefaultRenderTarget = RenderTarget,
-                IsViewVisiblePredicate = IsViewVisiblePredicate
-            };
-            Runner.Engine.Draw(drawContext);
+            
+            Runner.Engine.Draw(this);
 
             Runner.Engine.EndDraw();
         }

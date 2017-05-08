@@ -3,8 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Engine
 {
-    public interface IGlyphClient : IInputClient
+    public interface IGlyphClient : IDrawClient, IInputClient
     {
-        GraphicsDevice GraphicsDevice { get; }
     }
 }

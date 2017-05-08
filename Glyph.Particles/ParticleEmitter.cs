@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
 using Microsoft.Xna.Framework;
@@ -13,6 +14,7 @@ namespace Glyph.Particles
         private readonly Period _period;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
         public Func<IParticle> Factory { get; set; }
         public bool UseUnscaledTime { get; set; }
 
@@ -79,7 +81,7 @@ namespace Glyph.Particles
 
         public void Draw(IDrawer drawer)
         {
-            if (!Visible)
+            if (!this.Displayed(drawer.Client))
                 return;
 
             foreach (IParticle particle in _particles)

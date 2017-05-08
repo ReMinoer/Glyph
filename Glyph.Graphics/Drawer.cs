@@ -7,6 +7,7 @@ namespace Glyph.Graphics
 {
     public class Drawer : IDrawer
     {
+        public IDrawClient Client { get; }
         public GraphicsDevice GraphicsDevice { get; }
         public SpriteBatchStack SpriteBatchStack { get; }
         public Resolution Resolution { get; }
@@ -18,12 +19,13 @@ namespace Glyph.Graphics
         public Matrix ViewMatrix => CurrentView.Matrix;
         public TopLeftRectangle ScreenBounds => CurrentView.BoundingBox;
 
-        public Drawer(GraphicsDevice graphicsDevice, Resolution resolution, RenderTarget2D defaultRenderTarget = null)
+        public Drawer(IDrawClient drawClient)
         {
-            GraphicsDevice = graphicsDevice;
-            Resolution = resolution;
-            DefaultRenderTarget = defaultRenderTarget;
-            SpriteBatchStack = new SpriteBatchStack(new SpriteBatch(graphicsDevice));
+            Client = drawClient;
+            GraphicsDevice = drawClient.GraphicsDevice;
+            Resolution = drawClient.Resolution;
+            DefaultRenderTarget = drawClient.DefaultRenderTarget;
+            SpriteBatchStack = new SpriteBatchStack(new SpriteBatch(GraphicsDevice));
         }
 
         public void ApplyEffects(IDrawer drawer)

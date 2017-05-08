@@ -6,6 +6,7 @@ namespace Glyph
 {
     public interface IDrawer
     {
+        IDrawClient Client { get; }
         SpriteBatchStack SpriteBatchStack { get; }
         GraphicsDevice GraphicsDevice { get; }
         Resolution Resolution { get; }

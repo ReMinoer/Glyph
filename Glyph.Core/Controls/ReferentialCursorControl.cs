@@ -69,7 +69,7 @@ namespace Glyph.Core.Controls
                     break;
                 case CursorSpace.Scene:
                     Vector2 virtualPosition = _controlManager.InputClient.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint());
-                    IView view = ViewManager.Main.GetViewAtPoint(virtualPosition, out Vector2 viewPosition);
+                    IView view = ViewManager.Main.GetViewAtPoint(virtualPosition, _controlManager.InputClient as IDrawClient, out Vector2 viewPosition);
                     if (view == null)
                     {
                         value = default(System.Numerics.Vector2);

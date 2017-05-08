@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Delegates\DrawDelegate.cs" />
+    <Compile Include="DrawUtils.cs" />
     <Compile Include="Exceptions\ComponentNotFoundException.cs" />
     <Compile Include="GlyphTypeInfo.cs" />
     <Compile Include="IGlyphCompositeResolver.cs" />

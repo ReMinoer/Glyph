@@ -30,6 +30,7 @@ namespace Glyph.Core
         protected internal readonly GlyphCompositeInjector Injector;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
 
         public GlyphObject(IDependencyInjector injector)
         {
@@ -157,7 +158,7 @@ namespace Glyph.Core
         
         public void Draw(IDrawer drawer)
         {
-            if (!Visible)
+            if (!this.Displayed(drawer.Client))
                 return;
 
             foreach (DrawDelegate draw in Schedulers.Draw.Planning)

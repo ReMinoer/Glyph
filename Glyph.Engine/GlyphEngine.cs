@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Diese.Injection;
 using Glyph.Application;
 using Glyph.Audio;
+using Glyph.Composition;
 using Glyph.Composition.Annotations;
 using Glyph.Core;
 using Glyph.Core.ControlLayers;
@@ -171,12 +172,12 @@ namespace Glyph.Engine
         {
         }
 
-        public void Draw(DrawContext drawContext)
+        public void Draw(IGlyphClient glyphClient)
         {
-            var drawer = new Drawer(drawContext.GraphicsDevice, drawContext.Resolution, drawContext.DefaultRenderTarget);
-            drawContext.GraphicsDevice.Clear(Color.Black);
+            var drawer = new Drawer(glyphClient);
+            drawer.GraphicsDevice.Clear(Color.Black);
 
-            foreach (IView view in ViewManager.Main.Views.Where(x => x.Visible && (drawContext.IsViewVisiblePredicate == null || drawContext.IsViewVisiblePredicate(x))))
+            foreach (IView view in ViewManager.Main.Views.Where(x => x.Displayed(glyphClient)))
             {
                 drawer.CurrentView = view;
                 view.PrepareDraw(drawer);
@@ -220,20 +221,6 @@ namespace Glyph.Engine
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public class DrawContext
-        {
-            public GraphicsDevice GraphicsDevice { get; private set; }
-            public Resolution Resolution { get; private set; }
-            public RenderTarget2D DefaultRenderTarget { get; set; }
-            public Predicate<IView> IsViewVisiblePredicate { get; set; }
-
-            public DrawContext(GraphicsDevice graphicsDevice, Resolution resolution)
-            {
-                GraphicsDevice = graphicsDevice;
-                Resolution = resolution;
-            }
         }
     }
 }

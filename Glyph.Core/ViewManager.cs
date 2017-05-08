@@ -62,14 +62,14 @@ namespace Glyph.Core
             _views.Remove(view);
         }
 
-        public bool IsPointVisible(Vector2 position)
+        public bool IsPointVisible(Vector2 position, IDrawClient drawClient = null)
         {
-            return Views.Any(view => view.Visible && view.IsVisibleOnView(position));
+            return Views.Any(view => view.Displayed(drawClient) && view.IsVisibleOnView(position));
         }
 
-        public bool IsPointVisible(Vector2 position, out IView view)
+        public bool IsPointVisible(Vector2 position, IDrawClient drawClient, out IView view)
         {
-            foreach (IView v in Views)
+            foreach (IView v in Views.Where(v => v.Displayed(drawClient)))
             {
                 if (!v.IsVisibleOnView(position))
                     continue;
@@ -82,14 +82,14 @@ namespace Glyph.Core
             return false;
         }
 
-        public IView GetViewAtPoint(Vector2 virtualScreenPosition)
+        public IView GetViewAtPoint(Vector2 virtualScreenPosition, IDrawClient drawClient = null)
         {
-            return Views.Reverse().FirstOrDefault(view => view.Visible && view.BoundingBox.ContainsPoint(virtualScreenPosition));
+            return Views.Reverse().FirstOrDefault(view => view.Displayed(drawClient) && view.BoundingBox.ContainsPoint(virtualScreenPosition));
         }
 
-        public IView GetViewAtPoint(Vector2 virtualScreenPosition, out Vector2 positionOnView)
+        public IView GetViewAtPoint(Vector2 virtualScreenPosition, IDrawClient drawClient, out Vector2 positionOnView)
         {
-            IView view = GetViewAtPoint(virtualScreenPosition) ?? Views.FirstOrDefault(v => v.Visible);
+            IView view = GetViewAtPoint(virtualScreenPosition) ?? Views.FirstOrDefault(v => v.Displayed(drawClient));
             if (view == null)
             {
                 positionOnView = Vector2.Zero;

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using Fingear.MonoGame;
-using Glyph.Core;
 using Glyph.Engine;
 using Glyph.Input;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Framework.WpfInterop;
 
 namespace Glyph.WpfInterop
@@ -14,7 +13,7 @@ namespace Glyph.WpfInterop
         private GlyphEngine _engine;
         private readonly WpfInputStates _wpfInputStates;
         public Resolution Resolution { get; }
-        public Predicate<IView> IsViewVisiblePredicate { get; set; }
+        public RenderTarget2D DefaultRenderTarget => RenderTarget;
         IInputStates IInputClient.States => _wpfInputStates;
         public virtual bool IsFocus => IsFocused;
 
@@ -90,13 +89,7 @@ namespace Glyph.WpfInterop
                 return;
 
             base.Draw(gameTime);
-
-            var drawContext = new GlyphEngine.DrawContext(GraphicsDevice, Resolution)
-            {
-                DefaultRenderTarget = RenderTarget,
-                IsViewVisiblePredicate = IsViewVisiblePredicate
-            };
-            Engine.Draw(drawContext);
+            Engine.Draw(this);
 
             Engine.EndDraw();
         }

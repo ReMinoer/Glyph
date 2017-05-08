@@ -1,9 +1,9 @@
 ﻿using System;
+using Diese.Collections;
 using Glyph.Animation;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics.Shapes;
-using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,6 +15,7 @@ namespace Glyph.UI.Simple
         private readonly RectangleSprite _rectangleSprite;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
         public SceneNode SceneNode { get; private set; }
         public Motion Motion { get; private set; }
         public Vector2 Size { get; set; }
@@ -46,7 +47,7 @@ namespace Glyph.UI.Simple
 
         public void Draw(IDrawer drawer)
         {
-            if (!Visible)
+            if (!this.Displayed(drawer.Client))
                 return;
 
             drawer.SpriteBatchStack.Current.Draw(_rectangleSprite.Texture, Bounds.ToIntegers(), Color);

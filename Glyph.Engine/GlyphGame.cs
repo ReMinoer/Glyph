@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Engine
 {
-    public class GlyphGame : Game, IGlyphClient, IInputClient
+    public class GlyphGame : Game, IGlyphClient
     {
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private readonly GameInputStates _gameInputStates;
@@ -19,7 +19,8 @@ namespace Glyph.Engine
         public Resolution Resolution { get; }
         public virtual bool IsFocus => IsActive && Form.ActiveForm?.Handle == Window.Handle;
         IInputStates IInputClient.States => _gameInputStates;
-        GraphicsDevice IGlyphClient.GraphicsDevice => GraphicsDevice;
+        RenderTarget2D IDrawClient.DefaultRenderTarget => null;
+        GraphicsDevice IDrawClient.GraphicsDevice => GraphicsDevice;
 
         public GlyphGame(Action<IDependencyRegistry> dependencyConfigurator = null)
         {
@@ -124,7 +125,7 @@ namespace Glyph.Engine
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            Engine.Draw(new GlyphEngine.DrawContext(GraphicsDevice, Resolution));
+            Engine.Draw(this);
         }
 
         protected override void EndDraw()

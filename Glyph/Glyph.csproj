@@ -53,6 +53,7 @@
     <Compile Include="GlyphData.cs" />
     <Compile Include="ICamera.cs" />
     <Compile Include="IDirtable.cs" />
+    <Compile Include="IDrawClient.cs" />
     <Compile Include="IDrawer.cs" />
     <Compile Include="IHandlable.cs" />
     <Compile Include="Injection\GlyphInjectableAttribute.cs" />
