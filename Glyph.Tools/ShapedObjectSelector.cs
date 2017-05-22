@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Diese.Collections;
 using Fingear;
 using Fingear.MonoGame;
 using Glyph.Composition;
@@ -11,11 +13,14 @@ using Glyph.Input;
 using Glyph.Math.Shapes;
 using Glyph.Messaging;
 using Glyph.Space;
+using NLog;
 
 namespace Glyph.Tools
 {
     public class ShapedObjectSelector : GlyphContainer, IUpdate
     {
+        static protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
         private readonly ControlManager _controlManager;
         private IBoxedComponent _selection;
@@ -53,7 +58,20 @@ namespace Glyph.Tools
             if (_controlManager.TryGetLayer(out MouseControls mouseControls) && mouseControls.Left.IsTriggered())
             {
                 mouseControls.ScenePosition.IsActive(out System.Numerics.Vector2 mousePosition);
-                Selection = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(mousePosition.AsMonoGameVector(), 1, 1)).FirstOrDefault();
+
+                IEnumerable<IBoxedComponent> inRange = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(mousePosition.AsMonoGameVector(), 1, 1));
+                IBoxedComponent[] array = inRange as IBoxedComponent[] ?? inRange.ToArray();
+
+                if (array.Length != 0)
+                {
+                    Selection = array.MinBy(x => x.Area.BoundingBox.Width * x.Area.BoundingBox.Height);
+                    Logger.Trace($"Shaped component selected: {Selection?.Name}");
+                }
+                else
+                {
+                    Selection = null;
+                    Logger.Trace("Clean selection");
+                }
             }
         }
     }
