@@ -203,6 +203,7 @@ namespace Glyph.Engine
         {
             IsStarted = false;
             IsPaused = false;
+            _elapsedTime.Pause();
             Logger.Info("Stop engine");
 
             Stopped?.Invoke();
