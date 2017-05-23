@@ -27,6 +27,11 @@ namespace Glyph.Composition
         {
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
         public virtual void Dispose()
         {
             foreach (TComponent component in Components)

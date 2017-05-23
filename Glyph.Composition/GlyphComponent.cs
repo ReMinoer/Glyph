@@ -21,6 +21,11 @@ namespace Glyph.Composition
         {
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
         public virtual void Dispose()
         {
             InstanceManager.DisposeProcess(this);
