@@ -66,7 +66,7 @@ namespace Glyph.Input
 
             IControl[] controls = Layers.Where(x => x.Enabled).SelectMany(x => x).ToArray();
 
-            foreach (IInput input in controls.SelectMany(x => x.Inputs))
+            foreach (IInput input in controls.SelectMany(x => x.Inputs).Distinct())
                 input.Update();
 
             foreach (IControl control in controls)
