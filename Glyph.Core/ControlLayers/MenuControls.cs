@@ -3,6 +3,7 @@ using Fingear;
 using Fingear.Controls;
 using Fingear.Controls.Composites;
 using Fingear.Converters;
+using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Fingear.Utils;
 using Glyph.Input;
@@ -35,6 +36,8 @@ namespace Glyph.Core.ControlLayers
 
         public MenuControls(MenuInputsType type, PlayerIndex playerIndex = PlayerIndex.One)
         {
+            MonoGameInputSytem inputSystem = MonoGameInputSytem.Instance;
+
             var up = new ControlSet<InputActivity>("Up");
             var down = new ControlSet<InputActivity>("Down");
             var left = new ControlSet<InputActivity>("Left");
@@ -47,50 +50,56 @@ namespace Glyph.Core.ControlLayers
 
             if (type.HasFlag(MenuInputsType.Gamepad))
             {
-                up.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.Up, playerIndex)));
-                up.Add(new ActivityControl(new GamePadThumbstickInput(GamePadThumbstick.Left, playerIndex).Boolean(DeadZone.Plus(Fingear.Converters.Axis.Y, JoystickDeadZone))));
+                GamePadSource gamePad = inputSystem[PlayerIndex.One];
 
-                down.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.Down, playerIndex)));
-                down.Add(new ActivityControl(new GamePadThumbstickInput(GamePadThumbstick.Left, playerIndex).Boolean(DeadZone.Minus(Fingear.Converters.Axis.Y, -JoystickDeadZone))));
+                up.Add(new ActivityControl(gamePad[GamePadButton.Up]));
+                up.Add(new ActivityControl(gamePad[GamePadThumbstick.Left].Boolean(DeadZone.Plus(Fingear.Converters.Axis.Y, JoystickDeadZone))));
 
-                left.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.Left, playerIndex)));
-                left.Add(new ActivityControl(new GamePadThumbstickInput(GamePadThumbstick.Left, playerIndex).Boolean(DeadZone.Plus(Fingear.Converters.Axis.X, -JoystickDeadZone))));
+                down.Add(new ActivityControl(gamePad[GamePadButton.Down]));
+                down.Add(new ActivityControl(gamePad[GamePadThumbstick.Left].Boolean(DeadZone.Minus(Fingear.Converters.Axis.Y, -JoystickDeadZone))));
 
-                right.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.Right, playerIndex)));
-                right.Add(new ActivityControl(new GamePadThumbstickInput(GamePadThumbstick.Left, playerIndex).Boolean(DeadZone.Minus(Fingear.Converters.Axis.X, JoystickDeadZone))));
+                left.Add(new ActivityControl(gamePad[GamePadButton.Left]));
+                left.Add(new ActivityControl(gamePad[GamePadThumbstick.Left].Boolean(DeadZone.Plus(Fingear.Converters.Axis.X, -JoystickDeadZone))));
 
-                confirm.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.A, playerIndex)));
+                right.Add(new ActivityControl(gamePad[GamePadButton.Right]));
+                right.Add(new ActivityControl(gamePad[GamePadThumbstick.Left].Boolean(DeadZone.Minus(Fingear.Converters.Axis.X, JoystickDeadZone))));
 
-                cancel.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.B, playerIndex)));
-                cancel.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.Back, playerIndex)));
+                confirm.Add(new ActivityControl(gamePad[GamePadButton.A]));
 
-                launch.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.A, playerIndex)));
-                launch.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.Start, playerIndex)));
+                cancel.Add(new ActivityControl(gamePad[GamePadButton.B]));
+                cancel.Add(new ActivityControl(gamePad[GamePadButton.Back]));
 
-                exit.Add(new ActivityControl(new GamePadButtonInput(GamePadButton.Back, playerIndex)));
+                launch.Add(new ActivityControl(gamePad[GamePadButton.A]));
+                launch.Add(new ActivityControl(gamePad[GamePadButton.Start]));
+
+                exit.Add(new ActivityControl(gamePad[GamePadButton.Back]));
             }
 
             if (type.HasFlag(MenuInputsType.Mouse))
             {
-                clic.Add(new ActivityControl(new MouseButtonInput(MouseButton.Left)));
+                MouseSource mouse = inputSystem.Mouse;
+
+                clic.Add(new ActivityControl(mouse[MouseButton.Left]));
             }
 
             if (type.HasFlag(MenuInputsType.Keyboard))
             {
-                up.Add(new ActivityControl(new KeyInput(Keys.Up)));
-                down.Add(new ActivityControl(new KeyInput(Keys.Down)));
-                left.Add(new ActivityControl(new KeyInput(Keys.Left)));
-                right.Add(new ActivityControl(new KeyInput(Keys.Right)));
+                KeyboardSource keyboard = inputSystem.Keyboard;
 
-                confirm.Add(new ActivityControl(new KeyInput(Keys.Enter)));
-                confirm.Add(new ActivityControl(new KeyInput(Keys.Space)));
+                up.Add(new ActivityControl(keyboard[Keys.Up]));
+                down.Add(new ActivityControl(keyboard[Keys.Down]));
+                left.Add(new ActivityControl(keyboard[Keys.Left]));
+                right.Add(new ActivityControl(keyboard[Keys.Right]));
 
-                cancel.Add(new ActivityControl(new KeyInput(Keys.Escape)));
+                confirm.Add(new ActivityControl(keyboard[Keys.Enter]));
+                confirm.Add(new ActivityControl(keyboard[Keys.Space]));
 
-                launch.Add(new ActivityControl(new KeyInput(Keys.Enter)));
-                launch.Add(new ActivityControl(new KeyInput(Keys.Space)));
+                cancel.Add(new ActivityControl(keyboard[Keys.Escape]));
 
-                exit.Add(new ActivityControl(new KeyInput(Keys.Escape)));
+                launch.Add(new ActivityControl(keyboard[Keys.Enter]));
+                launch.Add(new ActivityControl(keyboard[Keys.Space]));
+
+                exit.Add(new ActivityControl(keyboard[Keys.Escape]));
             }
 
             Add(Up = up);

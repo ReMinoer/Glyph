@@ -1,12 +1,14 @@
-﻿using System.Numerics;
-using Fingear;
+﻿using Fingear;
 using Fingear.Controls;
 using Fingear.Controls.Composites;
 using Fingear.Controls.Containers;
+using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Glyph.Core.Controls;
 using Glyph.Input;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Vector2 = System.Numerics.Vector2;
 
 namespace Glyph.Core.ControlLayers
 {
@@ -25,26 +27,31 @@ namespace Glyph.Core.ControlLayers
 
         public DeveloperControls(ControlManager controlManager)
         {
+            MonoGameInputSytem inputSystem = MonoGameInputSytem.Instance;
+            KeyboardSource keyboard = inputSystem.Keyboard;
+            MouseSource mouse = inputSystem.Mouse;
+            GamePadSource gamePad = inputSystem[PlayerIndex.One];
+
             var xboxQuit = new ControlSimultaneous<IControl>("XboxQuit");
-            xboxQuit.Add(new Control(new GamePadButtonInput(GamePadButton.Start)));
-            xboxQuit.Add(new Control(new GamePadButtonInput(GamePadButton.Back)));
+            xboxQuit.Add(new Control(gamePad[GamePadButton.Start]));
+            xboxQuit.Add(new Control(gamePad[GamePadButton.Back]));
             Add(XboxQuit = xboxQuit);
 
-            Add(Fullscreen = new Control("Fullscreen", new KeyInput(Keys.F12)));
-            Add(StatusDisplay = new Control("StatusDisplay", new KeyInput(Keys.F11)));
-            Add(Mute = new Control("Mute", new KeyInput(Keys.F10)));
+            Add(Fullscreen = new Control("Fullscreen", keyboard[Keys.F12]));
+            Add(StatusDisplay = new Control("StatusDisplay", keyboard[Keys.F11]));
+            Add(Mute = new Control("Mute", keyboard[Keys.F10]));
 
-            Add(CompositionLog = new Control("CompositionLog", new KeyInput(Keys.F9)));
-            Add(UpdateSnapshot = new Control("UpdateSnapshot", new KeyInput(Keys.F8)));
+            Add(CompositionLog = new Control("CompositionLog", keyboard[Keys.F9]));
+            Add(UpdateSnapshot = new Control("UpdateSnapshot", keyboard[Keys.F8]));
 
-            Add(ToogleSong = new Control("ToggleSong", new KeyInput(Keys.F2)));
-            Add(PreviousSong = new Control("PreviousSong", new KeyInput(Keys.F3)));
-            Add(NextSong = new Control("NextSong", new KeyInput(Keys.F4)));
+            Add(ToogleSong = new Control("ToggleSong", keyboard[Keys.F2]));
+            Add(PreviousSong = new Control("PreviousSong", keyboard[Keys.F3]));
+            Add(NextSong = new Control("NextSong", keyboard[Keys.F4]));
 
             Add(Pointer = new HybridControl<Vector2>("Pointer")
             {
-                TriggerControl = new Control(new MouseButtonInput(MouseButton.Left)),
-                ValueControl = new ReferentialCursorControl(controlManager, new MouseCursorInput(), CursorSpace.Scene)
+                TriggerControl = new Control(mouse[MouseButton.Left]),
+                ValueControl = new ReferentialCursorControl(controlManager, mouse.Cursor, CursorSpace.Scene)
             });
         }
     }

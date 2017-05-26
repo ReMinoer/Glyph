@@ -2,6 +2,7 @@
 using Fingear;
 using Fingear.Controls;
 using Fingear.Converters;
+using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Glyph.Core.Controls;
 using Glyph.Input;
@@ -21,14 +22,16 @@ namespace Glyph.Core.ControlLayers
 
         public MouseControls(ControlManager controlManager)
         {
-            Add(WindowPosition = new ReferentialCursorControl(controlManager, "WindowPosition", new MouseCursorInput(), CursorSpace.Window));
-            Add(ScreenPosition = new ReferentialCursorControl(controlManager, "ScreenPosition", new MouseCursorInput(), CursorSpace.Screen));
-            Add(VirtualScreenPosition = new ReferentialCursorControl(controlManager, "VirtualScreenPosition", new MouseCursorInput(), CursorSpace.VirtualScreen));
-            Add(ScenePosition = new ReferentialCursorControl(controlManager, "ScenePosition", new MouseCursorInput(), CursorSpace.Scene));
-            Add(Left = new ActivityControl("Left", new MouseButtonInput(MouseButton.Left)));
-            Add(Right = new ActivityControl("Right", new MouseButtonInput(MouseButton.Right)));
-            Add(Middle = new ActivityControl("Middle", new MouseButtonInput(MouseButton.Middle)));
-            Add(Wheel = new Control<float>("Wheel", new MouseWheelInput().Force()));
+            MouseSource mouse = MonoGameInputSytem.Instance.Mouse;
+
+            Add(WindowPosition = new ReferentialCursorControl(controlManager, "WindowPosition", mouse.Cursor, CursorSpace.Window));
+            Add(ScreenPosition = new ReferentialCursorControl(controlManager, "ScreenPosition", mouse.Cursor, CursorSpace.Screen));
+            Add(VirtualScreenPosition = new ReferentialCursorControl(controlManager, "VirtualScreenPosition", mouse.Cursor, CursorSpace.VirtualScreen));
+            Add(ScenePosition = new ReferentialCursorControl(controlManager, "ScenePosition", mouse.Cursor, CursorSpace.Scene));
+            Add(Left = new ActivityControl("Left", mouse[MouseButton.Left]));
+            Add(Right = new ActivityControl("Right", mouse[MouseButton.Right]));
+            Add(Middle = new ActivityControl("Middle", mouse[MouseButton.Middle]));
+            Add(Wheel = new Control<float>("Wheel", mouse.Wheel.Force()));
         }
     }
 }
