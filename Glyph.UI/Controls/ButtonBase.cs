@@ -65,7 +65,7 @@ namespace Glyph.UI.Controls
             if (isMouseUsed)
             {
                 MouseControls mouseControls;
-                if (_controlManager.TryGetLayer(out mouseControls))
+                if (_controlManager.Layers.Any(out mouseControls))
                 {
                     System.Numerics.Vector2 mousePosition;
                     if (mouseControls.VirtualScreenPosition.IsActive(out mousePosition))
@@ -76,7 +76,7 @@ namespace Glyph.UI.Controls
             if (Hover)
             {
                 MenuControls menuControls;
-                if (_controlManager.TryGetLayer(out menuControls))
+                if (_controlManager.Layers.Any(out menuControls))
                 {
                     if (isMouseUsed)
                     {

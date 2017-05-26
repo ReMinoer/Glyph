@@ -14,11 +14,9 @@ namespace Glyph.Input
     public class ControlManager
     {
         private IInputClient _inputClient;
-        private readonly Dictionary<object, IControlLayer> _layers;
-        private readonly IReadOnlyDictionary<object, IControlLayer> _layersReadOnly;
+        public IEnumerable<IInput> Inputs => Layers.SelectMany(x => x).SelectMany(x => x.Inputs);
+        public ObservableCollection<IControlLayer> Layers { get; } = new ObservableCollection<IControlLayer>();
         public IEnumerable<IInputSource> InputSources { get; private set; }
-        public IControlLayer this[object key] => _layers[key];
-        public IEnumerable<IControlLayer> Layers => _layersReadOnly.Values;
         public Point DefaultMousePosition { get; set; }
 
         public IInputClient InputClient
@@ -54,8 +52,6 @@ namespace Glyph.Input
         public ControlManager()
         {
             InputSources = Enumerable.Empty<IInputSource>();
-            _layers = new Dictionary<object, IControlLayer>();
-            _layersReadOnly = new ReadOnlyDictionary<object, IControlLayer>(_layers);
         }
 
         public void Update(ElapsedTime elapsedTime, bool isGameActive)
@@ -68,7 +64,11 @@ namespace Glyph.Input
 
             InputClient?.States.Update();
 
-            IControl[] controls = _layers.Values.SelectMany(x => x).ToArray();
+            IControl[] controls = Layers.Where(x => x.Enabled).SelectMany(x => x).ToArray();
+
+            foreach (IInput input in controls.SelectMany(x => x.Inputs))
+                input.Update();
+
             foreach (IControl control in controls)
                 control.Update(elapsedTime.UnscaledDelta);
 
@@ -78,37 +78,6 @@ namespace Glyph.Input
 
             InputSources = sources;
             InputSourcesChanged?.Invoke(InputSources);
-        }
-
-        public void AddLayer(object key, IControlLayer layer)
-        {
-            if (_layers.ContainsKey(key))
-                throw new ArgumentException();
-
-            _layers.Add(key, layer);
-        }
-
-        public void RemoveLayer(object key)
-        {
-            _layers.Remove(key);
-        }
-
-        public bool ContainsLayer(object key)
-        {
-            return _layers.ContainsKey(key);
-        }
-
-        public bool TryGetLayer<T>(out T layer)
-            where T : class, IControlLayer
-        {
-            return _layers.Values.Where(x => x.Enabled).Any(out layer);
-        }
-
-        public bool TryGetLayer<T>(object key, out T layer)
-            where T : class, IControlLayer
-        {
-            layer = _layers[key] as T;
-            return layer != null && layer.Enabled;
         }
 
         public void ResetMouse()

@@ -163,7 +163,7 @@ namespace Glyph.Application
 
             #region Input
             
-            RegisterInstance<InputSystem>(MonoGameInputSytem.Instance);
+            RegisterInstance<MonoGameInputSytem>(MonoGameInputSytem.Instance);
 
             #endregion
 

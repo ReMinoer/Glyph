@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using Diese.Collections;
 using Diese.Injection;
 using Fingear.MonoGame;
 using Glyph.Core.ControlLayers;
@@ -68,7 +69,7 @@ namespace Glyph.Engine
                 return;
 
             DeveloperControls developerControls;
-            if (Engine.ControlManager.TryGetLayer(out developerControls) && developerControls.Fullscreen.IsActive())
+            if (Engine.ControlManager.Layers.Any(out developerControls) && developerControls.Fullscreen.IsActive())
                 ToggleFullscreen();
 
             Engine.Update();

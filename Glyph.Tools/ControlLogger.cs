@@ -29,7 +29,7 @@ namespace Glyph.Tools
             if (!Enabled)
                 return;
 
-            foreach (IControlLayer layer in _controlManager.Layers)
+            foreach (IControlLayer layer in _controlManager.Layers.Where(x => x.Enabled))
             {
                 if (LayerFilter != null && !LayerFilter(layer))
                     continue;

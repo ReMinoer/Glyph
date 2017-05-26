@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Diese.Collections;
 using Diese.Injection;
 using Glyph.Application;
 using Glyph.Audio;
@@ -125,7 +126,7 @@ namespace Glyph.Engine
         public void Update()
         {
             DeveloperControls developerControls;
-            if (ControlManager.TryGetLayer(out developerControls))
+            if (ControlManager.Layers.Any(out developerControls))
             {
                 if (developerControls.Mute.IsActive())
                     MediaPlayer.IsMuted = !MediaPlayer.IsMuted;

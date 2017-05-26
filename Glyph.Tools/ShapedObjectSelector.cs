@@ -17,13 +17,15 @@ using NLog;
 
 namespace Glyph.Tools
 {
-    public class ShapedObjectSelector : GlyphContainer, IUpdate
+    public class ShapedObjectSelector : GlyphContainer, IUpdate, IEnableable
     {
         static protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
         private readonly ControlManager _controlManager;
         private IBoxedComponent _selection;
+        public bool Enabled { get; set; } = true;
+        public IFilter<IInputClient> ClientFilter { get; set; }
         public ReadOnlySpace<IBoxedComponent> Space { get; }
 
         public IBoxedComponent Selection
@@ -55,10 +57,14 @@ namespace Glyph.Tools
 
         public void Update(ElapsedTime elapsedTime)
         {
-            if (_controlManager.TryGetLayer(out MouseControls mouseControls) && mouseControls.Left.IsTriggered())
-            {
-                mouseControls.ScenePosition.IsActive(out System.Numerics.Vector2 mousePosition);
+            if (!Enabled)
+                return;
 
+            if (ClientFilter != null && !ClientFilter.Filter(_controlManager.InputClient))
+                return;
+
+            if (_controlManager.Layers.Any(out DeveloperControls developerControls) && developerControls.Pointer.IsActive(out System.Numerics.Vector2 mousePosition))
+            {
                 IEnumerable<IBoxedComponent> inRange = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(mousePosition.AsMonoGameVector(), 1, 1));
                 IBoxedComponent[] array = inRange as IBoxedComponent[] ?? inRange.ToArray();
 
@@ -72,6 +78,8 @@ namespace Glyph.Tools
                     Selection = null;
                     Logger.Trace("Clean selection");
                 }
+
+                developerControls.Pointer.HandleInputs();
             }
         }
     }

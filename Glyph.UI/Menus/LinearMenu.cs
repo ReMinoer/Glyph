@@ -87,7 +87,7 @@ namespace Glyph.UI.Menus
                     SelectedIndex = DefaultSelection;
                 else
                 {
-                    if (_controlManager.TryGetLayer(out menuControls))
+                    if (_controlManager.Layers.Any(out menuControls))
                     {
                         switch (NavigationAxis)
                         {
@@ -118,7 +118,7 @@ namespace Glyph.UI.Menus
                 _buttons[SelectedIndex].Hover = true;
             }
 
-            if (_controlManager.TryGetLayer(out menuControls))
+            if (_controlManager.Layers.Any(out menuControls))
             {
                 if (menuControls.Cancel.IsActive())
                     TriggerSelection(DefaultSelection);

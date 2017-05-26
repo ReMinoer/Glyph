@@ -130,7 +130,7 @@ namespace Glyph.UI.Guide
             if (Clickable)
             {
                 MouseControls mouseControls;
-                if (_controlManager.TryGetLayer(out mouseControls))
+                if (_controlManager.Layers.Any(out mouseControls))
                 {
                     System.Numerics.Vector2 mouseInScreen;
                     if (mouseControls.VirtualScreenPosition.IsActive(out mouseInScreen))
@@ -138,7 +138,7 @@ namespace Glyph.UI.Guide
                         bool hover = SpriteArea.ContainsPoint(mouseInScreen.AsMonoGameVector());
 
                         MenuControls menuControls;
-                        if (hover && _controlManager.TryGetLayer(out menuControls) && menuControls.Clic.IsActive())
+                        if (hover && _controlManager.Layers.Any(out menuControls) && menuControls.Clic.IsActive())
                             Clicked?.Invoke(this, EventArgs.Empty);
                     }
                 }

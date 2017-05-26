@@ -58,6 +58,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
+      <Project>{8e354191-e8e5-498b-9c24-a6765da86417}</Project>
+      <Name>Diese.Collections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Debug\Diese.Debug.csproj">
       <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
       <Name>Diese.Debug</Name>

@@ -1,7 +1,10 @@
-﻿using Fingear;
+﻿using System.Numerics;
+using Fingear;
 using Fingear.Controls;
 using Fingear.Controls.Composites;
+using Fingear.Controls.Containers;
 using Fingear.MonoGame.Inputs;
+using Glyph.Core.Controls;
 using Glyph.Input;
 using Microsoft.Xna.Framework.Input;
 
@@ -18,8 +21,9 @@ namespace Glyph.Core.ControlLayers
         public IControl ToogleSong { get; }
         public IControl PreviousSong { get; }
         public IControl NextSong { get; }
+        public IControl<Vector2> Pointer { get; }
 
-        public DeveloperControls()
+        public DeveloperControls(ControlManager controlManager)
         {
             var xboxQuit = new ControlSimultaneous<IControl>("XboxQuit");
             xboxQuit.Add(new Control(new GamePadButtonInput(GamePadButton.Start)));
@@ -36,6 +40,12 @@ namespace Glyph.Core.ControlLayers
             Add(ToogleSong = new Control("ToggleSong", new KeyInput(Keys.F2)));
             Add(PreviousSong = new Control("PreviousSong", new KeyInput(Keys.F3)));
             Add(NextSong = new Control("NextSong", new KeyInput(Keys.F4)));
+
+            Add(Pointer = new HybridControl<Vector2>("Pointer")
+            {
+                TriggerControl = new Control(new MouseButtonInput(MouseButton.Left)),
+                ValueControl = new ReferentialCursorControl(controlManager, new MouseCursorInput(), CursorSpace.Scene)
+            });
         }
     }
 }
