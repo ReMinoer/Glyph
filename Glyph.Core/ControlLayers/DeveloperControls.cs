@@ -23,13 +23,11 @@ namespace Glyph.Core.ControlLayers
         public IControl ToogleSong { get; }
         public IControl PreviousSong { get; }
         public IControl NextSong { get; }
-        public IControl<Vector2> Pointer { get; }
 
-        public DeveloperControls(ControlManager controlManager)
+        public DeveloperControls()
         {
             MonoGameInputSytem inputSystem = MonoGameInputSytem.Instance;
             KeyboardSource keyboard = inputSystem.Keyboard;
-            MouseSource mouse = inputSystem.Mouse;
             GamePadSource gamePad = inputSystem[PlayerIndex.One];
 
             var xboxQuit = new ControlSimultaneous<IControl>("XboxQuit");
@@ -47,12 +45,6 @@ namespace Glyph.Core.ControlLayers
             Add(ToogleSong = new Control("ToggleSong", keyboard[Keys.F2]));
             Add(PreviousSong = new Control("PreviousSong", keyboard[Keys.F3]));
             Add(NextSong = new Control("NextSong", keyboard[Keys.F4]));
-
-            Add(Pointer = new HybridControl<Vector2>("Pointer")
-            {
-                TriggerControl = new Control(mouse[MouseButton.Left]),
-                ValueControl = new ReferentialCursorControl(controlManager, mouse.Cursor, CursorSpace.Scene)
-            });
         }
     }
 }
