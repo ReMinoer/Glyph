@@ -64,10 +64,9 @@ namespace Glyph.Input
 
             InputClient?.States.Update();
 
-            IControl[] controls = Layers.Where(x => x.Enabled).SelectMany(x => x).ToArray();
+            InputManager.Instance.Update();
 
-            foreach (IInput input in controls.SelectMany(x => x.Inputs).Distinct())
-                input.Update();
+            IControl[] controls = Layers.Where(x => x.Enabled).SelectMany(x => x).ToArray();
 
             foreach (IControl control in controls)
                 control.Update(elapsedTime.UnscaledDelta);
