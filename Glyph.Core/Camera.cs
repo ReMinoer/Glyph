@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Core
 {
-    public class Camera : GlyphContainer, ICamera
+    public class Camera : GlyphContainer
     {
         private readonly SceneNode _sceneNode;
         public float Zoom { get; set; }

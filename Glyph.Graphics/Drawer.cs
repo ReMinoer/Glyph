@@ -12,7 +12,6 @@ namespace Glyph.Graphics
         public SpriteBatchStack SpriteBatchStack { get; }
         public Resolution Resolution { get; }
         public IView CurrentView { get; set; }
-        public ICamera Camera => CurrentView.Camera;
         public RenderTarget2D DefaultRenderTarget { get; }
         public Texture2D Output => CurrentView.Output;
         public CenteredRectangle DisplayedRectangle => CurrentView.DisplayedRectangle;

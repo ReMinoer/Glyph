@@ -52,7 +52,7 @@ namespace Glyph.Graphics
             get { return new ReadOnlySceneNode(_sceneNode); }
         }
 
-        ICamera IView.Camera
+        Camera IView.Camera
         {
             get { return Camera; }
         }

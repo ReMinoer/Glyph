@@ -51,7 +51,6 @@
     <Compile Include="Color.Extension.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="GlyphData.cs" />
-    <Compile Include="ICamera.cs" />
     <Compile Include="IDirtable.cs" />
     <Compile Include="IDrawClient.cs" />
     <Compile Include="IDrawer.cs" />

@@ -11,7 +11,6 @@ namespace Glyph
         GraphicsDevice GraphicsDevice { get; }
         Resolution Resolution { get; }
         TopLeftRectangle ScreenBounds { get; }
-        ICamera Camera { get; }
         RenderTarget2D DefaultRenderTarget { get; }
         Texture2D Output { get; }
         CenteredRectangle DisplayedRectangle { get; }

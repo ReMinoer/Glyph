@@ -8,7 +8,7 @@ namespace Glyph.Core
 {
     public interface IView : ILoadContent, IUpdate, IDraw, IArea
     {
-        ICamera Camera { get; }
+        Camera Camera { get; }
         CenteredRectangle DisplayedRectangle { get; }
         Texture2D Output { get; }
         Matrix Matrix { get; }
