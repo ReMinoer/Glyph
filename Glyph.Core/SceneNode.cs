@@ -90,10 +90,8 @@ namespace Glyph.Core
             get { return _position; }
             set
             {
-                if (ParentNode != null)
-                    LocalPosition = ParentNode.Matrix.Inverse * value;
-                else
-                    LocalPosition = value;
+                SetWorldPosition(value);
+                Refresh(Referential.Local);
             }
         }
 
@@ -102,10 +100,8 @@ namespace Glyph.Core
             get { return _rotation; }
             set
             {
-                if (ParentNode != null)
-                    LocalRotation = value - ParentNode.Rotation;
-                else
-                    LocalRotation = value;
+                SetWorldRotation(value);
+                Refresh(Referential.Local);
             }
         }
 
@@ -114,10 +110,8 @@ namespace Glyph.Core
             get { return _scale; }
             set
             {
-                if (ParentNode != null)
-                    LocalScale = value / ParentNode.Scale;
-                else
-                    LocalScale = value;
+                SetWorldScale(value);
+                Refresh(Referential.Local);
             }
         }
 
@@ -126,10 +120,8 @@ namespace Glyph.Core
             get { return _depth; }
             set
             {
-                if (ParentNode != null)
-                    LocalDepth = value - ParentNode.Depth;
-                else
-                    LocalDepth = value;
+                SetWorldDepth(value);
+                Refresh(Referential.Local);
             }
         }
 
@@ -167,6 +159,61 @@ namespace Glyph.Core
             SetParent(null);
         }
 
+        public void SetValues(Vector2? position, float? rotation, float? scale, float? depth, Referential childStaticReferential)
+        {
+            switch (childStaticReferential)
+            {
+                case Referential.Local:
+                    Transformation.RefreshMatrix(position, rotation, scale);
+                    if (depth.HasValue)
+                        _localDepth = depth.Value;
+                    break;
+                case Referential.World:
+                    if (position.HasValue)
+                        SetWorldPosition(position.Value);
+                    if (rotation.HasValue)
+                        SetWorldRotation(rotation.Value);
+                    if (scale.HasValue)
+                        SetWorldScale(scale.Value);
+                    if (depth.HasValue)
+                        SetWorldDepth(depth.Value);
+                    break;
+            }
+            Refresh(Referential.Local);
+        }
+
+        private void SetWorldPosition(Vector2 value)
+        {
+            if (ParentNode != null)
+                Transformation.Translation = ParentNode.Matrix.Inverse * value;
+            else
+                Transformation.Translation = value;
+        }
+
+        private void SetWorldRotation(float value)
+        {
+            if (ParentNode != null)
+                Transformation.Rotation = value - ParentNode.Rotation;
+            else
+                Transformation.Rotation = value;
+        }
+
+        private void SetWorldScale(float value)
+        {
+            if (ParentNode != null)
+                Transformation.Scale = value / ParentNode.Scale;
+            else
+                Transformation.Scale = value;
+        }
+
+        private void SetWorldDepth(float value)
+        {
+            if (ParentNode != null)
+                _localDepth = value - ParentNode.Depth;
+            else
+                _localDepth = value;
+        }
+
         public void SetParent(ISceneNode parent, Referential childStaticReferential = Referential.World)
         {
             ParentNode?.UnlinkChild(this);
@@ -193,18 +240,22 @@ namespace Glyph.Core
             }
             else
             {
-                if (childStaticReferential == Referential.Local)
+                switch (childStaticReferential)
                 {
-                    _position = ParentNode.Matrix * LocalPosition;
-                    _rotation = ParentNode.Rotation + LocalRotation;
-                    _scale = ParentNode.Scale * LocalScale;
-                    _depth = ParentNode.Depth + LocalDepth;
+                    case Referential.Local:
+                        _position = ParentNode.Matrix * LocalPosition;
+                        _rotation = MathHelper.WrapAngle(ParentNode.Rotation + LocalRotation);
+                        _scale = ParentNode.Scale * LocalScale;
+                        _depth = ParentNode.Depth + LocalDepth;
+                        break;
+                    case Referential.World:
+                        _transformation.RefreshMatrix(ParentNode.Matrix.Inverse * _position, _rotation - ParentNode.Rotation, _scale / ParentNode.Scale);
+                        _localDepth = _depth - ParentNode.Depth;
+                        break;
+                    default:
+                        throw new NotSupportedException();
                 }
-                else if (childStaticReferential == Referential.World)
-                {
-                    _transformation = new Transformation(ParentNode.Matrix.Inverse * _position, _rotation - ParentNode.Rotation, _scale / ParentNode.Scale);
-                    _localDepth = _depth - ParentNode.Depth;
-                }
+
                 Matrix = ParentNode.Matrix * LocalMatrix;
             }
 
