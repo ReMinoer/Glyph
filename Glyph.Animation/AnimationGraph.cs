@@ -102,7 +102,7 @@ namespace Glyph.Animation
                 player.Update(elapsedTime);
         }
 
-        public bool RequestTransitionTo(TState key)
+        public bool TryRequestTransitionTo(TState key)
         {
             Vertex vertex = _states[Current];
             State state = vertex.Update(Animatable);
