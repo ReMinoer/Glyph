@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows;
 using Fingear.MonoGame;
 using Microsoft.Xna.Framework;
@@ -13,44 +11,65 @@ namespace Glyph.WpfInterop
     {
         private readonly WpfKeyboard _keyboard;
         private readonly WpfMouse _mouse;
-        private readonly Dictionary<PlayerIndex, GamePadState> _gamePadStates;
-        private readonly PlayerIndex[] _padPlayerIndexes;
-        public KeyboardState KeyboardState { get; private set; }
-        public MouseState MouseState { get; private set; }
-        public ReadOnlyDictionary<PlayerIndex, GamePadState> GamePadStates { get; private set; }
+        private KeyboardState? _keyboardState;
+        private MouseState? _mouseState;
+        private Dictionary<PlayerIndex, GamePadState> _gamePadStates;
+        public bool Ignored { get; private set; }
+
+        public KeyboardState KeyboardState
+        {
+            get
+            {
+                if (_keyboardState == null)
+                    _keyboardState = Ignored ? new KeyboardState() : _keyboard.GetState();
+                return _keyboardState.Value;
+            }
+        }
+
+        public MouseState MouseState
+        {
+            get
+            {
+                if (_mouseState == null)
+                    _mouseState = Ignored ? new MouseState() : _mouse.GetState();
+                return _mouseState.Value;
+            }
+        }
+
+        public GamePadState this[PlayerIndex playerIndex]
+        {
+            get
+            {
+                GamePadState gamePadState;
+                if (_gamePadStates == null)
+                    _gamePadStates = new Dictionary<PlayerIndex, GamePadState>();
+                else if (_gamePadStates.TryGetValue(playerIndex, out gamePadState))
+                    return gamePadState;
+
+                gamePadState = Ignored ? new GamePadState() : GamePad.GetState(playerIndex);
+                _gamePadStates.Add(playerIndex, gamePadState);
+                return gamePadState;
+            }
+        }
 
         public WpfInputStates(UIElement uiElement)
         {
             _keyboard = new WpfKeyboard(uiElement);
             _mouse = new WpfMouse(uiElement);
-
-            _gamePadStates = new Dictionary<PlayerIndex, GamePadState>();
-            _padPlayerIndexes = Enum.GetValues(typeof(PlayerIndex)) as PlayerIndex[];
-            if (_padPlayerIndexes == null)
-                return;
-
-            foreach (PlayerIndex playerIndex in _padPlayerIndexes)
-                _gamePadStates[playerIndex] = new GamePadState();
-
-            GamePadStates = new ReadOnlyDictionary<PlayerIndex, GamePadState>(_gamePadStates);
-
-            Reset();
         }
 
-        public void Update()
+        public void Clean()
         {
-            KeyboardState = _keyboard.GetState();
-            MouseState = _mouse.GetState();
-            foreach (PlayerIndex playerIndex in _padPlayerIndexes)
-                _gamePadStates[playerIndex] = GamePad.GetState(playerIndex);
+            _keyboardState = null;
+            _mouseState = null;
+            _gamePadStates?.Clear();
+
+            Ignored = false;
         }
 
-        public void Reset()
+        public void Ignore()
         {
-            KeyboardState = new KeyboardState();
-            MouseState = new MouseState();
-            foreach (PlayerIndex playerIndex in _padPlayerIndexes)
-                _gamePadStates[playerIndex] = new GamePadState();
+            Ignored = true;
         }
     }
 }
