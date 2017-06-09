@@ -10,7 +10,7 @@ namespace Glyph.Tools
 {
     public class ControlLogger : GlyphComponent, IUpdate, IEnableable
     {
-        private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ControlManager _controlManager;
         private readonly HashSet<IControl> _activateControls;
         public bool Enabled { get; set; }

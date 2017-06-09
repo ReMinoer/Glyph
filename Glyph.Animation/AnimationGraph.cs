@@ -15,7 +15,7 @@ namespace Glyph.Animation
     public class AnimationGraph<T, TState> : GlyphContainer<IAnimationPlayer>, IGraph<AnimationGraph<T, TState>.Vertex, AnimationGraph<T, TState>.Transition>, IUpdate, ITimeUnscalable, IEnableable
         where T : class
     {
-        private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly Graph<Vertex, Transition> _graph;
         private readonly Dictionary<TState, Vertex> _states;
