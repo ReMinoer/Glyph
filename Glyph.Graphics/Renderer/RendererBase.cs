@@ -1,4 +1,5 @@
-﻿using Diese.Collections;
+﻿using System;
+using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Injection;
 
@@ -9,7 +10,8 @@ namespace Glyph.Graphics.Renderer
     {
         protected abstract float DepthProtected { get; }
         public bool Visible { get; set; }
-        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
+        public Predicate<IDrawer> DrawPredicate { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; }
         public ISpriteSource Source { get; private set; }
 
         [GlyphInjectable(GlyphInjectableTargets.Fraternal)]
@@ -26,7 +28,7 @@ namespace Glyph.Graphics.Renderer
 
         public void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer.Client) || (DrawableParent != null && !DrawableParent.Visible) || !DepthManager.VisibilityPredicate(DepthProtected) || Source.Texture == null)
+            if (!this.Displayed(drawer.Client, drawer) || (DrawableParent != null && !DrawableParent.Visible) || !DepthManager.VisibilityPredicate(DepthProtected) || Source.Texture == null)
                 return;
 
             Render(drawer);

@@ -26,11 +26,12 @@ namespace Glyph.Core
         private bool _initialized;
         private bool _contentLoaded;
         private readonly NewComponentBatchTree _newComponents;
-        protected readonly SchedulerHandler Schedulers;
+        public SchedulerHandler Schedulers { get; }
         protected internal readonly GlyphCompositeInjector Injector;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
-        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
+        public Predicate<IDrawer> DrawPredicate { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; }
 
         public GlyphObject(IDependencyInjector injector)
         {
@@ -158,7 +159,7 @@ namespace Glyph.Core
         
         public void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer.Client))
+            if (!this.Displayed(drawer.Client, drawer))
                 return;
 
             foreach (DrawDelegate draw in Schedulers.Draw.Planning)

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Diese.Collections;
 using Glyph.Composition;
@@ -19,7 +20,8 @@ namespace Glyph.Tools.ShapeRendering
         private readonly ShapedSpriteBase _shapedSprite;
         private readonly FillingRenderer _fillingRenderer;
         public bool Visible { get; set; }
-        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
+        public Predicate<IDrawer> DrawPredicate { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; }
 
         public Color Color
         {
@@ -61,7 +63,7 @@ namespace Glyph.Tools.ShapeRendering
 
         public void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer.Client) || _boxedComponent.ParentQueue().OfType<IEnableable>().Any(x => !x.Enabled))
+            if (!this.Displayed(drawer.Client, drawer) || _boxedComponent.ParentQueue().OfType<IEnableable>().Any(x => !x.Enabled))
                 return;
 
             _fillingRenderer.Draw(drawer);

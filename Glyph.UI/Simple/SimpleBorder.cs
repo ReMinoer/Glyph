@@ -15,7 +15,8 @@ namespace Glyph.UI.Simple
         private readonly RectangleSprite _rectangleSprite;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
-        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
+        public Predicate<IDrawer> DrawPredicate { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; }
         public SceneNode SceneNode { get; private set; }
         public Motion Motion { get; private set; }
         public Vector2 Size { get; set; }
@@ -47,7 +48,7 @@ namespace Glyph.UI.Simple
 
         public void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer.Client))
+            if (!this.Displayed(drawer.Client, drawer))
                 return;
 
             drawer.SpriteBatchStack.Current.Draw(_rectangleSprite.Texture, Bounds.ToIntegers(), Color);

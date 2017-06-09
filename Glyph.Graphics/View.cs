@@ -15,7 +15,8 @@ namespace Glyph.Graphics
         private readonly FillingRectangle _fillingRectangle;
         private readonly FillingRenderer _fillingRenderer;
         public bool Visible { get; set; }
-        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
+        public Predicate<IDrawer> DrawPredicate { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; }
         public Camera Camera { get; set; }
         public ViewEffectManager EffectManager { get; private set; }
         public bool IsVoid => _fillingRectangle.Rectangle.IsVoid;

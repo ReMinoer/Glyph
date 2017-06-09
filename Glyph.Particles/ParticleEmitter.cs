@@ -14,7 +14,8 @@ namespace Glyph.Particles
         private readonly Period _period;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
-        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
+        public Predicate<IDrawer> DrawPredicate { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; }
         public Func<IParticle> Factory { get; set; }
         public bool UseUnscaledTime { get; set; }
 
@@ -81,7 +82,7 @@ namespace Glyph.Particles
 
         public void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer.Client))
+            if (!this.Displayed(drawer.Client, drawer))
                 return;
 
             foreach (IParticle particle in _particles)

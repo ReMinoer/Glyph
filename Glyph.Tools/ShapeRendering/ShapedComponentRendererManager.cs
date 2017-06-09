@@ -14,7 +14,8 @@ namespace Glyph.Tools.ShapeRendering
         where T : class, IBoxedComponent
     {
         public bool Visible { get; set; }
-        public IFilter<IDrawClient> DrawClientFilter { get; set; } = null;
+        public Predicate<IDrawer> DrawPredicate { get; set; }
+        public IFilter<IDrawClient> DrawClientFilter { get; set; }
         public Color Color { get; set; }
 
         private readonly SceneNode _sceneNode;
@@ -55,7 +56,7 @@ namespace Glyph.Tools.ShapeRendering
 
         public void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer.Client))
+            if (!this.Displayed(drawer.Client, drawer))
                 return;
 
             foreach (ShapedComponentRendererBase colliderObject in _colliderObjects.Values)
