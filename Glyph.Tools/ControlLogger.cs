@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Fingear;
 using Glyph.Composition;
-using Glyph.Input;
 using NLog;
 
 namespace Glyph.Tools

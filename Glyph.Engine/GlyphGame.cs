@@ -2,24 +2,24 @@ using System;
 using System.Windows.Forms;
 using Diese.Collections;
 using Diese.Injection;
+using Fingear;
 using Fingear.MonoGame;
-using Glyph.Core.ControlLayers;
-using Glyph.Input;
+using Glyph.Core.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using IInputStates = Fingear.MonoGame.IInputStates;
 
 namespace Glyph.Engine
 {
     public class GlyphGame : Game, IGlyphClient
     {
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
-        private readonly GameInputStates _gameInputStates;
         private Vector2 _lastWindowSize;
         private bool _resizing;
         public GlyphEngine Engine { get; }
         public Resolution Resolution { get; }
         public virtual bool IsFocus => IsActive && Form.ActiveForm?.Handle == Window.Handle;
-        IInputStates IInputClient.States => _gameInputStates;
+        IInputStates IInputClient.States { get; } = new InputStates();
         RenderTarget2D IDrawClient.DefaultRenderTarget => null;
         GraphicsDevice IDrawClient.GraphicsDevice => GraphicsDevice;
 
@@ -34,8 +34,6 @@ namespace Glyph.Engine
                 PreferMultiSampling = true
             };
             _graphicsDeviceManager.ApplyChanges();
-
-            _gameInputStates = new GameInputStates();
 
             Resolution = new Resolution();
             _lastWindowSize = Resolution.WindowSize;

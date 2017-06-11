@@ -1,6 +1,6 @@
 ﻿using Fingear.MonoGame;
 
-namespace Glyph.Input
+namespace Glyph.Core.Inputs
 {
     public interface IInputClient
     {

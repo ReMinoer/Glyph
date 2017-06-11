@@ -8,8 +8,8 @@ using Fingear.MonoGame;
 using Glyph.Composition;
 using Glyph.Composition.Messaging;
 using Glyph.Core;
+using Glyph.Core.Inputs;
 using Glyph.Core.Tracking;
-using Glyph.Input;
 using Glyph.Math.Shapes;
 using Glyph.Messaging;
 using Glyph.Space;
@@ -23,6 +23,7 @@ namespace Glyph.Tools
 
         private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
         private readonly ControlManager _controlManager;
+        private readonly InputClientManager _inputClientManager;
         private IBoxedComponent _selection;
         public bool Enabled { get; set; } = true;
         public ReadOnlySpace<IBoxedComponent> Space { get; }
@@ -46,13 +47,16 @@ namespace Glyph.Tools
         public event EventHandler<IBoxedComponent> SelectionChanged;
 
         public ShapedObjectSelector(ControlManager controlManager,
+            InputClientManager inputClientManager,
             IRouter<InstantiatingMessage<IBoxedComponent>> instantiatingRouter,
             IRouter<DisposingMessage<IBoxedComponent>> disposingRouter,
             IPartitioner partitioner = null)
         {
             _messagingSpace = new MessagingSpace<IBoxedComponent>(instantiatingRouter, disposingRouter, x => x.Area.BoundingBox, partitioner);
             Components.Add(_messagingSpace);
+
             _controlManager = controlManager;
+            _inputClientManager = inputClientManager;
 
             Space = new ReadOnlySpace<IBoxedComponent>(_messagingSpace);
         }
@@ -62,7 +66,7 @@ namespace Glyph.Tools
             if (!Enabled)
                 return;
 
-            if (ClientFilter != null && !ClientFilter.Filter(_controlManager.InputClient))
+            if (ClientFilter != null && !ClientFilter.Filter(_inputClientManager.Current))
                 return;
 
             IControl<Vector2> control = ControlSelector?.Invoke(_controlManager);

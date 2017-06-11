@@ -62,12 +62,14 @@
     <Compile Include="Colliders\IGridCollider.cs" />
     <Compile Include="Colliders\RectangleCollider.cs" />
     <Compile Include="Collision.cs" />
-    <Compile Include="Controls\ReferentialCursorControl.cs" />
+    <Compile Include="Inputs\ReferentialCursorControl.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="IBoxedComponent.cs" />
     <Compile Include="Injection\GlyphCompositeInjector.cs" />
     <Compile Include="Injection\InjectionScope.cs" />
     <Compile Include="Injection\LocalDependencyInjector.cs" />
+    <Compile Include="Inputs\IInputClient.cs" />
+    <Compile Include="Inputs\InputClientManager.cs" />
     <Compile Include="ISceneNode.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="IShapedComponent.cs" />
@@ -101,9 +103,9 @@
     <Compile Include="Scheduler\IGlyphScheduler.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerAssigner.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
-    <Compile Include="ControlLayers\DeveloperControls.cs" />
-    <Compile Include="ControlLayers\MenuControls.cs" />
-    <Compile Include="ControlLayers\MouseControls.cs" />
+    <Compile Include="Inputs\DeveloperControls.cs" />
+    <Compile Include="Inputs\MenuControls.cs" />
+    <Compile Include="Inputs\CursorControls.cs" />
     <Compile Include="Tracking\Factory.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
     <Compile Include="Tracking\IMessagingCollection.cs" />
@@ -151,10 +153,6 @@
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
-      <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
-      <Name>Glyph.Input</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
       <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>

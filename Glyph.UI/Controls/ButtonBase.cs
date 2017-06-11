@@ -6,10 +6,9 @@ using Fingear.MonoGame;
 using Glyph.Animation;
 using Glyph.Composition;
 using Glyph.Core;
-using Glyph.Input;
 using Microsoft.Xna.Framework;
 using Diese.Collections;
-using Glyph.Core.ControlLayers;
+using Glyph.Core.Inputs;
 
 namespace Glyph.UI.Controls
 {
@@ -64,36 +63,26 @@ namespace Glyph.UI.Controls
 
             if (isMouseUsed)
             {
-                MouseControls mouseControls;
-                if (_controlManager.Layers.Any(out mouseControls))
-                {
-                    System.Numerics.Vector2 mousePosition;
-                    if (mouseControls.VirtualScreenPosition.IsActive(out mousePosition))
-                        hover = Frame.Bounds.ContainsPoint(mousePosition.AsMonoGameVector());
-                }
+                if (_controlManager.Layers.Any(out CursorControls cursorControls) && cursorControls.VirtualScreenPosition.IsActive(out System.Numerics.Vector2 mousePosition))
+                    hover = Frame.Bounds.ContainsPoint(mousePosition.AsMonoGameVector());
             }
 
             if (Hover)
             {
-                MenuControls menuControls;
-                if (_controlManager.Layers.Any(out menuControls))
+                if (isMouseUsed)
                 {
-                    if (isMouseUsed)
+                    if (_controlManager.Layers.Any(out CursorControls cursorControls))
                     {
-                        InputActivity inputActivity;
-                        if (menuControls.Clic.IsActive(out inputActivity))
-                        {
-                            if (inputActivity.IsTriggered())
-                                Trigger();
-                            else if (Pressed && inputActivity.IsReleased())
-                                Release();
-                        }
+                        if (cursorControls.Clic.IsActive())
+                            Trigger();
+                        else if (cursorControls.ReleaseClic.IsActive())
+                            Release();
                     }
-                    else if (menuControls.Confirm.IsActive())
-                    {
-                        Trigger();
-                        Release();
-                    }
+                }
+                else if (_controlManager.Layers.Any(out MenuControls menuControls) && menuControls.Confirm.IsActive())
+                {
+                    Trigger();
+                    Release();
                 }
             }
             else if (Pressed)

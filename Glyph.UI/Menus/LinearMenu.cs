@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using Diese.Injection;
 using Fingear.MonoGame;
-using Glyph.Composition;
-using Glyph.Input;
 using Glyph.UI.Controls;
 using Diese.Collections;
+using Fingear;
 using Glyph.Core;
-using Glyph.Core.ControlLayers;
+using Glyph.Core.Inputs;
 
 namespace Glyph.UI.Menus
 {

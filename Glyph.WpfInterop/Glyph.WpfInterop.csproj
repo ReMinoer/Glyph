@@ -57,6 +57,10 @@
       <Project>{9EEF1863-44BE-423E-A29D-088C23AAC45E}</Project>
       <Name>Fingear.MonoGame</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
+      <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
+      <Name>Fingear</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\MonoGame.Framework.WpfInterop\MonoGame.Framework.WpfInterop\MonoGame.Framework.WpfInterop.csproj">
       <Project>{809f0d79-aedc-4754-a213-fdbe97ccd6d6}</Project>
       <Name>MonoGame.Framework.WpfInterop</Name>
@@ -72,10 +76,6 @@
     <ProjectReference Include="..\Glyph.Engine\Glyph.Engine.csproj">
       <Project>{25400349-233E-404D-BB4E-A0CB4AF893EA}</Project>
       <Name>Glyph.Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
-      <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
-      <Name>Glyph.Input</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>

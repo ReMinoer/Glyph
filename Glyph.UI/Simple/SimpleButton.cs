@@ -1,6 +1,6 @@
 ﻿using System;
 using Diese.Injection;
-using Glyph.Input;
+using Fingear;
 using Glyph.UI.Controls;
 using Microsoft.Xna.Framework;
 

@@ -1,5 +1,4 @@
-﻿using Glyph.Input;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Glyph.Core.Inputs;
 
 namespace Glyph.Engine
 {

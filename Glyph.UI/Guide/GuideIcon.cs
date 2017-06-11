@@ -1,19 +1,17 @@
 ﻿using System;
-using System.Linq;
 using Diese.Injection;
 using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
-using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics;
 using Glyph.Graphics.Carvers;
 using Glyph.Graphics.Renderer;
-using Glyph.Input;
 using Glyph.Transition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Diese.Collections;
-using Glyph.Core.ControlLayers;
+using Fingear;
+using Glyph.Core.Inputs;
 
 namespace Glyph.UI.Guide
 {
@@ -127,21 +125,11 @@ namespace Glyph.UI.Guide
                 IconChanged?.Invoke(this, EventArgs.Empty);
             }
 
-            if (Clickable)
+            if (Clickable && _controlManager.Layers.Any(out CursorControls cursorControls) && cursorControls.VirtualScreenPosition.IsActive(out System.Numerics.Vector2 mouseInScreen))
             {
-                MouseControls mouseControls;
-                if (_controlManager.Layers.Any(out mouseControls))
-                {
-                    System.Numerics.Vector2 mouseInScreen;
-                    if (mouseControls.VirtualScreenPosition.IsActive(out mouseInScreen))
-                    {
-                        bool hover = SpriteArea.ContainsPoint(mouseInScreen.AsMonoGameVector());
-
-                        MenuControls menuControls;
-                        if (hover && _controlManager.Layers.Any(out menuControls) && menuControls.Clic.IsActive())
-                            Clicked?.Invoke(this, EventArgs.Empty);
-                    }
-                }
+                bool hover = SpriteArea.ContainsPoint(mouseInScreen.AsMonoGameVector());
+                if (hover && cursorControls.Clic.IsActive())
+                    Clicked?.Invoke(this, EventArgs.Empty);
             }
         }
 

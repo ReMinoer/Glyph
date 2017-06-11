@@ -23,7 +23,7 @@ namespace Glyph.Tools
             if (!Enabled)
                 return;
             
-            foreach (IInput input in MonoGameInputSytem.Instance.Sources.SelectMany(x => x.InstantiatedInputs))
+            foreach (IInput input in InputSystem.Instance.Sources.SelectMany(x => x.InstantiatedInputs))
             {
                 if (InputFilter != null && !InputFilter(input))
                     continue;

@@ -4,14 +4,15 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Diese.Collections;
 using Diese.Injection;
+using Fingear;
+using Fingear.MonoGame;
 using Glyph.Application;
 using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Annotations;
 using Glyph.Core;
-using Glyph.Core.ControlLayers;
+using Glyph.Core.Inputs;
 using Glyph.Graphics;
-using Glyph.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -34,6 +35,7 @@ namespace Glyph.Engine
         public IDependencyInjector Injector { get; }
         public ContentLibrary ContentLibrary { get; }
         public ControlManager ControlManager { get; }
+        public InputClientManager InputClientManager { get; }
         private GlyphObject _root;
 
         public GlyphObject Root
@@ -51,7 +53,7 @@ namespace Glyph.Engine
                     return;
 
                 _focusedClient = value;
-                ControlManager.InputClient = value;
+                InputClientManager.Current = _focusedClient;
                 FocusChanged?.Invoke(_focusedClient);
             }
         }
@@ -78,10 +80,12 @@ namespace Glyph.Engine
             _contentManager.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
             ControlManager = new ControlManager();
+            InputClientManager = new InputClientManager(ControlManager);
 
             Registry.RegisterInstance<GlyphEngine>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
             Registry.RegisterInstance<ControlManager>(ControlManager);
+            Registry.RegisterInstance<InputClientManager>(InputClientManager);
             Registry.RegisterFunc(() =>
             {
                 if (FocusedClient != null)
@@ -120,7 +124,10 @@ namespace Glyph.Engine
 
         public void HandleInput()
         {
-            ControlManager.Update(_elapsedTime, FocusedClient != null);
+            if (InputClientManager.Current != null)
+                ControlManager.Update(_elapsedTime.UnscaledDelta);
+            else
+                ControlManager.IgnoreUpdate();
         }
 
         public void Update()

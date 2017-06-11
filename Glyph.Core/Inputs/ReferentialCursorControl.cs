@@ -4,10 +4,9 @@ using Fingear;
 using Fingear.Controls.Base;
 using Fingear.MonoGame;
 using Fingear.Utils;
-using Glyph.Input;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
-namespace Glyph.Core.Controls
+namespace Glyph.Core.Inputs
 {
     public enum CursorSpace
     {
@@ -19,7 +18,7 @@ namespace Glyph.Core.Controls
 
     public class ReferentialCursorControl : ControlBase<System.Numerics.Vector2>
     {
-        private readonly ControlManager _controlManager;
+        private readonly InputClientManager _inputClientManager;
         public ICursorInput Input { get; set; }
         public CursorSpace CursorSpace { get; set; }
         public override IEnumerable<IInputSource> Sources => Input?.Source.ToEnumerable();
@@ -29,20 +28,20 @@ namespace Glyph.Core.Controls
             get { yield return Input; }
         }
 
-        public ReferentialCursorControl(ControlManager controlManager)
+        public ReferentialCursorControl(InputClientManager inputClientManager)
         {
-            _controlManager = controlManager;
+            _inputClientManager = inputClientManager;
         }
 
-        public ReferentialCursorControl(ControlManager controlManager, ICursorInput input, CursorSpace cursorSpace)
-            : this(controlManager)
+        public ReferentialCursorControl(InputClientManager inputClientManager, ICursorInput input, CursorSpace cursorSpace)
+            : this(inputClientManager)
         {
             Input = input;
             CursorSpace = cursorSpace;
         }
 
-        public ReferentialCursorControl(ControlManager controlManager, string name, ICursorInput input, CursorSpace cursorSpace)
-            : this(controlManager, input, cursorSpace)
+        public ReferentialCursorControl(InputClientManager inputClientManager, string name, ICursorInput input, CursorSpace cursorSpace)
+            : this(inputClientManager, input, cursorSpace)
         {
             Name = name;
         }
@@ -62,14 +61,14 @@ namespace Glyph.Core.Controls
                     value = state;
                     break;
                 case CursorSpace.Screen:
-                    value = _controlManager.InputClient.Resolution.WindowToScreen(state.AsMonoGamePoint()).AsSystemVector();
+                    value = _inputClientManager.Current.Resolution.WindowToScreen(state.AsMonoGamePoint()).AsSystemVector();
                     break;
                 case CursorSpace.VirtualScreen:
-                    value = _controlManager.InputClient.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint()).AsSystemVector();
+                    value = _inputClientManager.Current.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint()).AsSystemVector();
                     break;
                 case CursorSpace.Scene:
-                    Vector2 virtualPosition = _controlManager.InputClient.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint());
-                    IView view = ViewManager.Main.GetViewAtPoint(virtualPosition, _controlManager.InputClient as IDrawClient, out Vector2 viewPosition);
+                    Vector2 virtualPosition = _inputClientManager.Current.Resolution.WindowToVirtualScreen(state.AsMonoGamePoint());
+                    IView view = ViewManager.Main.GetViewAtPoint(virtualPosition, _inputClientManager.Current as IDrawClient, out Vector2 viewPosition);
                     if (view == null)
                     {
                         value = default(System.Numerics.Vector2);

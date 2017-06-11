@@ -1,16 +1,12 @@
 ﻿using Fingear;
 using Fingear.Controls;
 using Fingear.Controls.Composites;
-using Fingear.Controls.Containers;
 using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
-using Glyph.Core.Controls;
-using Glyph.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Vector2 = System.Numerics.Vector2;
 
-namespace Glyph.Core.ControlLayers
+namespace Glyph.Core.Inputs
 {
     public class DeveloperControls : ControlLayerBase
     {
@@ -26,7 +22,7 @@ namespace Glyph.Core.ControlLayers
 
         public DeveloperControls()
         {
-            MonoGameInputSytem inputSystem = MonoGameInputSytem.Instance;
+            InputSystem inputSystem = InputSystem.Instance;
             KeyboardSource keyboard = inputSystem.Keyboard;
             GamePadSource gamePad = inputSystem[PlayerIndex.One];
 

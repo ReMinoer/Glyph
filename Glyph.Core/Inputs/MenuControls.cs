@@ -6,19 +6,17 @@ using Fingear.Converters;
 using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Fingear.Utils;
-using Glyph.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Glyph.Core.ControlLayers
+namespace Glyph.Core.Inputs
 {
     [Flags]
     public enum MenuInputsType
     {
         Gamepad = 1 << 0,
-        Mouse = 1 << 1,
-        Keyboard = 1 << 2,
-        All = Gamepad | Mouse | Keyboard
+        Keyboard = 1 << 1,
+        All = Gamepad | Keyboard
     }
 
     public class MenuControls : ControlLayerBase
@@ -32,11 +30,10 @@ namespace Glyph.Core.ControlLayers
         public IControl<InputActivity> Cancel { get; }
         public IControl<InputActivity> Launch { get; }
         public IControl<InputActivity> Exit { get; }
-        public IControl<InputActivity> Clic { get; }
 
         public MenuControls(MenuInputsType type, PlayerIndex playerIndex = PlayerIndex.One)
         {
-            MonoGameInputSytem inputSystem = MonoGameInputSytem.Instance;
+            InputSystem inputSystem = InputSystem.Instance;
 
             var up = new ControlSet<InputActivity>("Up");
             var down = new ControlSet<InputActivity>("Down");
@@ -46,7 +43,6 @@ namespace Glyph.Core.ControlLayers
             var cancel = new ControlSet<InputActivity>("Cancel");
             var launch = new ControlSet<InputActivity>("Launch");
             var exit = new ControlSet<InputActivity>("Exit");
-            var clic = new ControlSet<InputActivity>("Clic");
 
             if (type.HasFlag(MenuInputsType.Gamepad))
             {
@@ -73,13 +69,6 @@ namespace Glyph.Core.ControlLayers
                 launch.Add(new ActivityControl(gamePad[GamePadButton.Start]));
 
                 exit.Add(new ActivityControl(gamePad[GamePadButton.Back]));
-            }
-
-            if (type.HasFlag(MenuInputsType.Mouse))
-            {
-                MouseSource mouse = inputSystem.Mouse;
-
-                clic.Add(new ActivityControl(mouse[MouseButton.Left]));
             }
 
             if (type.HasFlag(MenuInputsType.Keyboard))
@@ -110,7 +99,6 @@ namespace Glyph.Core.ControlLayers
             Add(Cancel = cancel);
             Add(Launch = launch);
             Add(Exit = exit);
-            Add(Clic = clic);
         }
     }
 }

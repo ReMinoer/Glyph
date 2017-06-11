@@ -102,10 +102,6 @@
       <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
       <Name>Glyph.Graphics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Glyph.Input\Glyph.Input.csproj">
-      <Project>{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}</Project>
-      <Name>Glyph.Input</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
       <Name>Glyph</Name>
