@@ -28,7 +28,7 @@ namespace Glyph.Core.Inputs
                 {
                     _current.States.Clean();
 
-                    InputSystem.Instance.Mouse.DefaultMousePosition = (_current.Resolution.WindowSize / 2).ToPoint();
+                    InputSystem.Instance.Mouse.Cursor.DefaultValue = (_current.Resolution.WindowSize / 2).AsSystemVector();
                     _current.Resolution.SizeChanged += OnResolutionChanged;
                 }
 
@@ -47,7 +47,7 @@ namespace Glyph.Core.Inputs
         private void OnResolutionChanged(Vector2 size)
         {
             Vector2 scale = size / _current.Resolution.WindowSize;
-            InputSystem.Instance.Mouse.DefaultMousePosition = InputSystem.Instance.Mouse.DefaultMousePosition.ToVector2().Multiply(scale.X, scale.Y).ToPoint();
+            InputSystem.Instance.Mouse.Cursor.DefaultValue = InputSystem.Instance.Mouse.Cursor.DefaultValue * scale.AsSystemVector();
         }
     }
 }
