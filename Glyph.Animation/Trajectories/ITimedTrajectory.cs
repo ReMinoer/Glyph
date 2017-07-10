@@ -5,7 +5,7 @@ namespace Glyph.Animation.Trajectories
     public interface ITimedTrajectory : ITrajectory
     {
         float Duration { get; }
-        EasingDelegate Easing { get; }
-        Vector2 GetPosition(float time, out float advance);
+        Vector2 GetPositionAtTime(float time);
+        Vector2 GetPositionAtTime(float time, out float progress);
     }
 }

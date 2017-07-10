@@ -1,4 +1,5 @@
 ﻿using Glyph.Animation;
+using Glyph.Animation.Motors.Base;
 using Glyph.Animation.Trajectories.Players;
 using Glyph.Audio;
 using Glyph.Composition;
@@ -22,8 +23,9 @@ namespace Glyph.Application
             {
                 Add<SceneNode>();
                 Add<ILayerRoot>();
-                Add<Motion>();
                 Add<ITrajectoryPlayer>();
+                Add<MotorBase>();
+                Add<Motion>();
 
                 Add<ISpriteSource>();
                 Add<SpriteTransformer>();
@@ -59,8 +61,9 @@ namespace Glyph.Application
         {
             public Update()
             {
-                Add<Motion>();
                 Add<ITrajectoryPlayer>();
+                Add<MotorBase>();
+                Add<Motion>();
 
                 Add<SpriteAnimator>();
 

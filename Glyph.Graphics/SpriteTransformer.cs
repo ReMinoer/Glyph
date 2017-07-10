@@ -1,12 +1,11 @@
 using Glyph.Composition;
-using Glyph.Core.Injection;
 using Glyph.Injection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class SpriteTransformer : GlyphComponent
+    public class SpriteTransformer : GlyphComponent, IFlipable
     {
         private ISpriteSource _spriteSource;
         private Vector2 _origin;
@@ -14,7 +13,20 @@ namespace Glyph.Graphics
         private AnchorType _lastAnchorType;
         public Color Color { get; set; }
         public Vector2 Scale { get; set; }
-        public SpriteEffects Effects { get; set; }
+        public Axes FlipAxes { get; set; }
+
+        public SpriteEffects Effects
+        {
+            get
+            {
+                var effects = SpriteEffects.None;
+                if ((FlipAxes & Axes.Horizontal) == Axes.Horizontal)
+                    effects |= SpriteEffects.FlipHorizontally;
+                if ((FlipAxes & Axes.Vertical) == Axes.Vertical)
+                    effects |= SpriteEffects.FlipVertically;
+                return effects;
+            }
+        }
 
         [GlyphInjectable(GlyphInjectableTargets.Fraternal)]
         public ISpriteSource SpriteSource
@@ -66,6 +78,11 @@ namespace Glyph.Graphics
             Scale = Vector2.One;
             Color = Color.White;
             Pivot = Vector2.One * 0.5f;
+        }
+
+        public void Flip(Axes axes)
+        {
+            FlipAxes ^= axes;
         }
 
         private void RefreshAnchor()

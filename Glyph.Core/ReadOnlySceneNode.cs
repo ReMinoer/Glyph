@@ -90,6 +90,26 @@ namespace Glyph.Core
             _sceneNode.SetParent(parent, childStaticReferential);
         }
 
+        public Vector2 GetPosition(Referential referential)
+        {
+            return _sceneNode.GetPosition(referential);
+        }
+
+        public float GetRotation(Referential referential)
+        {
+            return _sceneNode.GetRotation(referential);
+        }
+
+        public float GetScale(Referential referential)
+        {
+            return _sceneNode.GetScale(referential);
+        }
+
+        public float GetDepth(Referential referential)
+        {
+            return _sceneNode.GetDepth(referential);
+        }
+
         public bool Represent(IRepresentative<ISceneNode> other)
         {
             return _sceneNode == other;

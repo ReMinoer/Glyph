@@ -223,6 +223,100 @@ namespace Glyph.Core
             Refresh(childStaticReferential);
         }
 
+        public Vector2 GetPosition(Referential referential)
+        {
+            switch (referential)
+            {
+                case Referential.World: return Position;
+                case Referential.Local: return LocalPosition;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        public float GetRotation(Referential referential)
+        {
+            switch (referential)
+            {
+                case Referential.World: return Rotation;
+                case Referential.Local: return LocalRotation;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        public float GetScale(Referential referential)
+        {
+            switch (referential)
+            {
+                case Referential.World: return Scale;
+                case Referential.Local: return LocalScale;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        public float GetDepth(Referential referential)
+        {
+            switch (referential)
+            {
+                case Referential.World: return Depth;
+                case Referential.Local: return LocalDepth;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        public void SetPosition(Referential referential, Vector2 value)
+        {
+            switch (referential)
+            {
+                case Referential.World: Position = value; break;
+                case Referential.Local: LocalPosition = value; break;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        public void SetRotation(Referential referential, float value)
+        {
+            switch (referential)
+            {
+                case Referential.World: Rotation = value; break;
+                case Referential.Local: LocalRotation = value; break;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        public void SetScale(Referential referential, float value)
+        {
+            switch (referential)
+            {
+                case Referential.World: Scale = value; break;
+                case Referential.Local: LocalScale = value; break;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        public void SetDepth(Referential referential, float value)
+        {
+            switch (referential)
+            {
+                case Referential.World: Depth = value; break;
+                case Referential.Local: LocalDepth = value; break;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        public void Flip(Axes axes)
+        {
+            Transformation.Flip(axes);
+            Refresh(Referential.Local);
+        }
+
         public bool Represent(IRepresentative<ISceneNode> other)
         {
             return this == other;

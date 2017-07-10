@@ -77,11 +77,10 @@ namespace Glyph.Core
 
             base.Add(item);
 
-            foreach (IGlyphComponent component in Components)
+            foreach (IGlyphComponent component in Components.Where(x => x != item))
                 foreach (InjectablePropertyInfo injectable in InstanceManager.GetInfo(component.GetType()).InjectableProperties)
-                    if (injectable.InjectableTargets.HasFlag(GlyphInjectableTargets.Fraternal)
-                        && item.GetType().IsInstanceOfType(injectable.PropertyInfo.PropertyType))
-                        injectable.PropertyInfo.SetValue(component, item);
+                    if ((injectable.Attribute.Targets & GlyphInjectableTargets.Fraternal) != 0 && injectable.Type.IsInstanceOfType(item))
+                        injectable.Attribute.Inject(injectable.PropertyInfo, component, item);
 
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)

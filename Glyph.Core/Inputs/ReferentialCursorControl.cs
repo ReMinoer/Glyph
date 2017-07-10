@@ -18,6 +18,7 @@ namespace Glyph.Core.Inputs
 
     public class ReferentialCursorControl : ControlBase<System.Numerics.Vector2>
     {
+        private System.Numerics.Vector2? _lastValue;
         private readonly InputClientManager _inputClientManager;
         public ICursorInput Input { get; set; }
         public CursorSpace CursorSpace { get; set; }
@@ -79,8 +80,10 @@ namespace Glyph.Core.Inputs
                 default:
                     throw new InvalidOperationException();
             }
-            
-            return !Input.Activity.IsIdle();
+
+            bool isTriggered = value != _lastValue;
+            _lastValue = value;
+            return isTriggered;
         }
     }
 }

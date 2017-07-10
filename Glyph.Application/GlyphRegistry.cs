@@ -2,6 +2,7 @@
 using Fingear;
 using Fingear.MonoGame;
 using Glyph.Animation;
+using Glyph.Animation.Motors;
 using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
@@ -89,11 +90,17 @@ namespace Glyph.Application
             Register<Camera>();
             Register<View>();
 
+            Register<Flipper>();
+
             #endregion
 
             #region Animation
 
             Register<Motion>();
+            Register<LinearMotor>();
+            Register<SteeringMotor>();
+            Register<TimedTrajectoryMotor>();
+            Register<MeasurableTrajectoryMotor>();
             RegisterGeneric(typeof(AnimationGraph<,>));
             RegisterGeneric(typeof(AnimationPlayer<>));
 

@@ -5,9 +5,11 @@ namespace Glyph.Animation.Trajectories.Players
 {
     public interface ITrajectoryPlayer : IEnableable, IUpdate, ITimeUnscalable
     {
-        TrajectoryPlayerState State { get; }
+        bool Playing { get; }
+        bool Paused { get; }
+        bool Ended { get; }
         ITrajectory Trajectory { get; }
-        float Advance { get; }
+        float Progress { get; }
         float Time { get; }
         float Distance { get; }
         float EstimatedDuration { get; }

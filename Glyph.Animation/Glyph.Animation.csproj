@@ -48,6 +48,12 @@
     <Compile Include="AnimationGraph.cs" />
     <Compile Include="AnimationTransition.cs" />
     <Compile Include="IAnimationBuilder.cs" />
+    <Compile Include="Motors\Base\MotorBase.cs" />
+    <Compile Include="Motors\LinearMotor.cs" />
+    <Compile Include="Motors\MeasurableTrajectoryMotor.cs" />
+    <Compile Include="Motors\SteeringMotor.cs" />
+    <Compile Include="Motors\TimedTrajectoryMotor.cs" />
+    <Compile Include="Motors\Base\TrajectoryMotorBase.cs" />
     <Compile Include="NumericAnimationBuilder.cs" />
     <Compile Include="PropertiesAnimationBuilder.cs" />
     <Compile Include="AnimationKeyPoint.cs" />
@@ -57,18 +63,20 @@
     <Compile Include="IAnimationPlayer.cs" />
     <Compile Include="ITimeOffsetable.cs" />
     <Compile Include="SpriteAnimationBuilder.cs" />
-    <Compile Include="Trajectories\IProgressiveTrajectory.cs" />
-    <Compile Include="Trajectories\IStandardTrajectory.cs" />
     <Compile Include="Trajectories\ITimedTrajectory.cs" />
+    <Compile Include="Trajectories\IMeasurableTrajectory.cs" />
     <Compile Include="Trajectories\ITrajectory.cs" />
     <Compile Include="Motion.cs" />
+    <Compile Include="Trajectories\GoToTrajectory.cs" />
+    <Compile Include="Trajectories\MeasurableTrajectoryBase.cs" />
     <Compile Include="Trajectories\Players\ITrajectoryPlayer.cs" />
-    <Compile Include="Trajectories\Players\ProgressiveTrajectoryPlayer.cs" />
+    <Compile Include="Trajectories\Players\MeasurableTrajectoryPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Trajectories\Players\TrajectoryPlayerBase.cs" />
-    <Compile Include="Trajectories\StandardTrajectory.cs" />
     <Compile Include="Trajectories\Players\TimedTrajectoryPlayer.cs" />
-    <Compile Include="Trajectories\Players\TrajectoryPlayerState.cs" />
+    <Compile Include="Trajectories\TimedTrajectory.cs" />
+    <Compile Include="Trajectories\Trajectory.cs" />
+    <Compile Include="Trajectories\TrajectoryExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
@@ -115,6 +123,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

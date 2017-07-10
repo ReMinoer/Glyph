@@ -23,6 +23,10 @@ namespace Glyph.Core
         Matrix3X3 LocalMatrix { get; }
         Transformation Transformation { get; }
         void SetParent(ISceneNode parent, Referential childStaticReferential = Referential.World);
+        Vector2 GetPosition(Referential referential);
+        float GetRotation(Referential referential);
+        float GetScale(Referential referential);
+        float GetDepth(Referential referential);
         void LinkChild(ISceneNode child, Referential childStaticReferential = Referential.World);
         void UnlinkChild(ISceneNode child);
         void Refresh();

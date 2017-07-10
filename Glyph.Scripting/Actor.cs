@@ -2,9 +2,7 @@
 using System.Linq;
 using Diese.Collections;
 using Glyph.Composition;
-using Glyph.Core;
 using Glyph.Core.Colliders;
-using Glyph.Core.Tracking;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
@@ -47,10 +45,10 @@ namespace Glyph.Scripting
                 return;
 
             foreach (Trigger trigger in leavedTriggers)
-                trigger.OnLeave(this);
+                trigger.Leave(this);
 
             foreach (Trigger trigger in enteredTriggers)
-                trigger.OnEnter(this);
+                trigger.Enter(this);
 
             _activatedTriggers.Clear();
             _activatedTriggers.AddRange(newActivatedTriggers);

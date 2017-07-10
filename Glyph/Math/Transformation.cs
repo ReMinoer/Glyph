@@ -2,7 +2,7 @@
 
 namespace Glyph.Math
 {
-    public class Transformation
+    public class Transformation : IFlipable
     {
         private Vector2 _translation;
         private float _rotation;
@@ -50,6 +50,25 @@ namespace Glyph.Math
             _rotation = MathHelper.WrapAngle(rotation);
             _scale = scale;
 
+            RefreshMatrix();
+        }
+
+        public void Flip(Axes axes)
+        {
+            double cos = System.Math.Cos(_rotation);
+            double sin = System.Math.Sin(_rotation);
+            if ((axes & Axes.Horizontal) == Axes.Horizontal)
+            {
+                _translation.X *= -1;
+                cos *= -1;
+            }
+            if ((axes & Axes.Vertical) == Axes.Vertical)
+            {
+                _translation.Y *= -1;
+                sin *= -1;
+            }
+
+            _rotation = (float)System.Math.Atan2(sin, cos);
             RefreshMatrix();
         }
 

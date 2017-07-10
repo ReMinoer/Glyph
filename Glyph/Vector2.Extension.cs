@@ -1,18 +1,23 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Glyph
 {
     static public class Vector2Extension
     {
+        static public bool EpsilonEquals(this Vector2 value, Vector2 other)
+        {
+            Vector2 diff = value - other;
+            return System.Math.Abs(diff.X) < float.Epsilon && System.Math.Abs(diff.Y) < float.Epsilon;
+        }
+
+        static public bool EqualsZero(this Vector2 value)
+        {
+            return System.Math.Abs(value.X) < float.Epsilon && System.Math.Abs(value.Y) < float.Epsilon;
+        }
+
         static public Vector2 Normalized(this Vector2 value)
         {
-            if (value == Vector2.Zero)
-                return value;
-
-            Vector2 temp = value;
-            temp.Normalize();
-            return temp;
+            return value == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(value);
         }
 
         static public Vector3 ToVector3(this Vector2 value)
@@ -20,15 +25,13 @@ namespace Glyph
             return new Vector3(value.X, value.Y, 0);
         }
 
-        static public float ToRotation(this Vector2 value)
+        static public float? ToRotation(this Vector2 value)
         {
-            Vector2 norm = Vector2.Normalize(value);
-            double result = System.Math.Atan2(norm.Y, norm.X);
+            if (value == Vector2.Zero)
+                return null;
 
-            result += MathHelper.TwoPi;
-            result %= MathHelper.TwoPi;
-
-            return (float)result;
+            value = Vector2.Normalize(value);
+            return (float)System.Math.Atan2(value.Y, value.X);
         }
 
         static public Vector2 SetX(this Vector2 value, float x)
@@ -88,10 +91,26 @@ namespace Glyph
 
         static public Vector2 RotateToward(this Vector2 value, Vector2 directionGoal, float angularSpeed, float deltaTime)
         {
-            float angle = value.ToRotation();
-            float angleGoal = directionGoal.ToRotation();
+            float? angle = value.ToRotation();
+            if (angle == null)
+                return value;
 
-            float newAngle = angle.Transition(angleGoal, angularSpeed, deltaTime);
+            float? angleGoal = directionGoal.ToRotation();
+            if (angleGoal == null)
+                return value;
+
+            float diff = angleGoal.Value - angle.Value;
+            if (diff.EqualsZero())
+                return value;
+
+            float speedSign = System.Math.Sign(diff);
+            if (diff > MathHelper.Pi || diff < -MathHelper.Pi)
+                speedSign *= -1;
+
+            float newAngle = angle.Value + speedSign * angularSpeed * deltaTime;
+            float newDiff = angleGoal.Value - newAngle;
+            if (diff * newDiff < 0)
+                newAngle = angleGoal.Value;
 
             return new Vector2((float)System.Math.Cos(newAngle), (float)System.Math.Sin(newAngle));
         }
@@ -104,6 +123,42 @@ namespace Glyph
         static public Vector2 Integrate(this Vector2 value, Point gridPoint)
         {
             return new Vector2(gridPoint.X * value.X, gridPoint.Y * value.Y);
+        }
+
+        static public float Transition(this float value, float goal, float speed, GameTime gameTime)
+        {
+            return Transition(value, goal, speed, (float)gameTime.ElapsedGameTime.TotalMilliseconds);
+        }
+
+        static public Vector2 Transition(this Vector2 value, Vector2 goal, float speed, GameTime gameTime)
+        {
+            return Transition(value, goal, speed, (float)gameTime.ElapsedGameTime.TotalMilliseconds);
+        }
+
+        static public float Transition(this float value, float goal, float speed, float deltaTime)
+        {
+            float diff = goal - value;
+            if (diff.EqualsZero())
+                return value;
+
+            float delta = System.Math.Sign(diff) * speed * deltaTime;
+            if (System.Math.Abs(delta) >= System.Math.Abs(diff))
+                return goal;
+
+            return value + delta;
+        }
+
+        static public Vector2 Transition(this Vector2 value, Vector2 goal, float speed, float deltaTime)
+        {
+            Vector2 diff = goal - value;
+            if (diff.EqualsZero())
+                return value;
+
+            Vector2 modif = Vector2.Normalize(diff) * speed * deltaTime;
+            if (modif.Length() >= diff.Length())
+                return goal;
+
+            return value + modif;
         }
     }
 }

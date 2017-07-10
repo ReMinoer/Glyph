@@ -9,11 +9,7 @@ namespace Glyph.Composition
     public class GlyphTypeInfo
     {
         private readonly IReadOnlyCollection<InjectablePropertyInfo> _readOnlyInjectableProperties;
-
-        public IEnumerable<InjectablePropertyInfo> InjectableProperties
-        {
-            get { return _readOnlyInjectableProperties; }
-        }
+        public IEnumerable<InjectablePropertyInfo> InjectableProperties => _readOnlyInjectableProperties;
 
         internal GlyphTypeInfo(Type type)
         {
@@ -22,12 +18,11 @@ namespace Glyph.Composition
 
             foreach (PropertyInfo propertyInfo in type.GetProperties())
             {
-                var attribute = propertyInfo.GetCustomAttribute<InjectableAttribute>();
+                var attribute = propertyInfo.GetCustomAttribute<InjectableAttributeBase>();
                 if (attribute == null)
                     continue;
 
-                var glyphAttribute = attribute as GlyphInjectableAttribute;
-                injectableProperties.Add(new InjectablePropertyInfo(propertyInfo, glyphAttribute?.Targets ?? GlyphInjectableTargets.All));
+                injectableProperties.Add(new InjectablePropertyInfo(propertyInfo.PropertyType, propertyInfo, attribute as IGlyphInjectableAttribute));
             }
         }
     }

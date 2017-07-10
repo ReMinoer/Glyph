@@ -62,6 +62,7 @@
     <Compile Include="Colliders\IGridCollider.cs" />
     <Compile Include="Colliders\RectangleCollider.cs" />
     <Compile Include="Collision.cs" />
+    <Compile Include="Flipper.cs" />
     <Compile Include="Inputs\ReferentialCursorControl.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="IBoxedComponent.cs" />

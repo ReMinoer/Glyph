@@ -50,13 +50,18 @@
     <Compile Include="Axis.cs" />
     <Compile Include="Color.Extension.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
+    <Compile Include="Axes.cs" />
     <Compile Include="GlyphData.cs" />
     <Compile Include="IDirtable.cs" />
     <Compile Include="IDrawClient.cs" />
     <Compile Include="IDrawer.cs" />
+    <Compile Include="IFlipable.cs" />
     <Compile Include="IHandlable.cs" />
+    <Compile Include="Injection\GlyphInjectableCollectionAttribute.cs" />
+    <Compile Include="Injection\GlyphInjectableTrackerAttribute.cs" />
     <Compile Include="Injection\GlyphInjectableAttribute.cs" />
     <Compile Include="Injection\GlyphInjectableTargets.cs" />
+    <Compile Include="Injection\IGlyphInjectableAttribute.cs" />
     <Compile Include="ITimeUnscalable.cs" />
     <Compile Include="Math\IArea.cs" />
     <Compile Include="Math\IShape.cs" />
@@ -76,7 +81,6 @@
     <Compile Include="SpriteBatchStack.cs" />
     <Compile Include="Texture2D.Extension.cs" />
     <Compile Include="ElapsedTime.cs" />
-    <Compile Include="Transition.Extension.cs" />
     <Compile Include="Float.Extension.cs" />
     <Compile Include="Vector2.Extension.cs" />
     <Compile Include="Vector3.Extension.cs" />
@@ -100,6 +104,10 @@
     <Compile Include="VirtualResolution.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
+      <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
+      <Name>Diese.Collections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Injection\Diese.Injection.csproj">
       <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
       <Name>Diese.Injection</Name>

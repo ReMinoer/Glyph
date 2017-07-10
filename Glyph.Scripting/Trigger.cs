@@ -1,4 +1,5 @@
-﻿using Glyph.Composition;
+﻿using System;
+using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -19,42 +20,26 @@ namespace Glyph.Scripting
 
         public Vector2 LocalPosition
         {
-            get { return _sceneNode.LocalPosition; }
-            set { _sceneNode.LocalPosition = value; }
-        }
-
-        public CenteredRectangle Shape
-        {
-            get { return new CenteredRectangle(_sceneNode.Position, Size); }
-        }
-
-        IShape IShapedComponent.Shape
-        {
-            get { return Shape; }
-        }
-
-        TopLeftRectangle IArea.BoundingBox
-        {
-            get { return Shape; }
-        }
-
-        IArea IBoxedComponent.Area
-        {
-            get { return Shape; }
-        }
-
-        Vector2 IShape.Center
-        {
-            get { return Shape.Center; }
+            get => _sceneNode.LocalPosition;
+            set => _sceneNode.LocalPosition = value;
         }
 
         Vector2 IMovableShape.Center
         {
-            get { return Shape.Center; }
-            set { _sceneNode.Position = value - Size / 2; }
+            get => Shape.Center;
+            set => _sceneNode.Position = value - Size / 2;
         }
 
-        public Trigger(TriggerManager triggerManager, IRouter<OnEnterTrigger> onEnterRouter, IRouter<OnLeaveTrigger> onLeaveRouter)
+        public CenteredRectangle Shape => new CenteredRectangle(_sceneNode.Position, Size);
+        IShape IShapedComponent.Shape => Shape;
+        TopLeftRectangle IArea.BoundingBox => Shape;
+        IArea IBoxedComponent.Area => Shape;
+        Vector2 IShape.Center => Shape.Center;
+
+        public event Action<OnEnterTrigger> OnEnter;
+        public event Action<OnLeaveTrigger> OnLeave;
+
+        public Trigger(TriggerManager triggerManager, IRouter<OnEnterTrigger> onEnterRouter = null, IRouter<OnLeaveTrigger> onLeaveRouter = null)
         {
             _triggerManager = triggerManager;
             _onEnterRouter = onEnterRouter;
@@ -71,14 +56,18 @@ namespace Glyph.Scripting
             _sceneNode.Initialize();
         }
 
-        internal void OnEnter(Actor actor)
+        internal void Enter(Actor actor)
         {
-            _onEnterRouter.Send(new OnEnterTrigger(this, actor));
+            var message = new OnEnterTrigger(this, actor);
+            _onEnterRouter?.Send(message);
+            OnEnter?.Invoke(message);
         }
 
-        internal void OnLeave(Actor actor)
+        internal void Leave(Actor actor)
         {
-            _onLeaveRouter.Send(new OnLeaveTrigger(this, actor));
+            var message = new OnLeaveTrigger(this, actor);
+            _onLeaveRouter?.Send(message);
+            OnLeave?.Invoke(message);
         }
 
         public bool Intersects(TopLeftRectangle rectangle)

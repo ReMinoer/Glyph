@@ -2,16 +2,16 @@
 
 namespace Glyph.Injection
 {
-    public class GlyphInjectableAttribute : InjectableAttribute, IGlyphInjectableAttribute
+    public class GlyphInjectableCollectionAttribute : InjectableCollectionAttribute, IGlyphInjectableAttribute
     {
         public GlyphInjectableTargets Targets { get; }
 
-        public GlyphInjectableAttribute()
+        public GlyphInjectableCollectionAttribute()
         {
             Targets = GlyphInjectableTargets.All;
         }
 
-        public GlyphInjectableAttribute(GlyphInjectableTargets targets)
+        public GlyphInjectableCollectionAttribute(GlyphInjectableTargets targets)
         {
             Targets = targets;
         }

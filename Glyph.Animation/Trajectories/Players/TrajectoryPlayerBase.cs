@@ -10,11 +10,13 @@ namespace Glyph.Animation.Trajectories.Players
         protected Vector2 LastPosition;
         protected float CurrentSpeed;
         public bool Enabled { get; set; }
-        public TrajectoryPlayerState State { get; private set; }
+        public bool Playing => !Paused && !Ended;
+        public bool Paused { get; private set; }
+        public bool Ended { get; private set; }
         public TTrajectory Trajectory { get; set; }
         public float Time { get; protected set; }
         public float Distance { get; protected set; }
-        public float Advance { get; protected set; }
+        public float Progress { get; protected set; }
         public bool UseUnscaledTime { get; set; }
         public Vector2 Position { get; protected set; }
         public Vector2 StartPosition { get; private set; }
@@ -22,7 +24,7 @@ namespace Glyph.Animation.Trajectories.Players
 
         public float Speed
         {
-            get { return State == TrajectoryPlayerState.Play ? CurrentSpeed : 0; }
+            get => Playing ? CurrentSpeed : 0;
             set
             {
                 if (ReadOnlySpeed)
@@ -36,15 +38,7 @@ namespace Glyph.Animation.Trajectories.Players
         public abstract float EstimatedDuration { get; }
         public abstract float EstimatedLength { get; }
 
-        ITrajectory ITrajectoryPlayer.Trajectory
-        {
-            get { return Trajectory; }
-        }
-
-        protected TrajectoryPlayerBase()
-        {
-            State = TrajectoryPlayerState.End;
-        }
+        ITrajectory ITrajectoryPlayer.Trajectory => Trajectory;
 
         public virtual void Update(ElapsedTime elapsedTime)
         {
@@ -59,32 +53,31 @@ namespace Glyph.Animation.Trajectories.Players
             StartPosition = startPosition;
             LastPosition = startPosition;
 
-            Advance = 0;
+            Progress = 0;
             Time = 0;
             Distance = 0;
             Direction = Vector2.Zero;
             CurrentSpeed = 0;
 
-            State = TrajectoryPlayerState.Play;
+            Paused = false;
+            Ended = false;
         }
 
         public void Resume()
         {
-            if (State == TrajectoryPlayerState.Pause)
-                State = TrajectoryPlayerState.Play;
+            Paused = false;
         }
 
         public void Pause()
         {
-            if (State == TrajectoryPlayerState.Play)
-                State = TrajectoryPlayerState.Pause;
+            Paused = true;
         }
 
         protected abstract void UpdateLocal(ElapsedTime elapsedTime);
 
         protected void End()
         {
-            State = TrajectoryPlayerState.End;
+            Ended = true;
         }
     }
 }

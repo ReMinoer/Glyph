@@ -9,6 +9,16 @@ namespace Glyph.Graphics.Shapes
         public int Width { get; set; }
         public int Height { get; set; }
 
+        public Point Size
+        {
+            get => new Point(Width, Height);
+            set
+            {
+                Width = value.X;
+                Height = value.Y;
+            }
+        }
+
         public FilledRectangleSprite(Func<GraphicsDevice> graphicsDeviceFunc)
             : base(graphicsDeviceFunc)
         {

@@ -15,7 +15,7 @@ namespace Glyph.Core.Injection
             _glyphCompositeInjector = glyphCompositeInjector;
         }
 
-        public override object Resolve(Type type, InjectableAttribute injectableAttribute, object serviceKey = null)
+        public override object Resolve(Type type, InjectableAttributeBase injectableAttribute, object serviceKey = null)
         {
             object obj;
             if (TryResolve(out obj, type, injectableAttribute, serviceKey))
@@ -24,7 +24,7 @@ namespace Glyph.Core.Injection
             throw new NotRegisterException(type, serviceKey);
         }
 
-        public override bool TryResolve(out object obj, Type type, InjectableAttribute injectableAttribute, object serviceKey = null)
+        public override bool TryResolve(out object obj, Type type, InjectableAttributeBase injectableAttribute, object serviceKey = null)
         {
             IDependencyFactory factory;
             if (Registry.TryGetFactory(out factory, type, serviceKey))
