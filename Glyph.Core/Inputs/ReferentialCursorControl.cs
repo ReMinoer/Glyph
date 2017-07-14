@@ -22,7 +22,6 @@ namespace Glyph.Core.Inputs
         private readonly InputClientManager _inputClientManager;
         public ICursorInput Input { get; set; }
         public CursorSpace CursorSpace { get; set; }
-        public override IEnumerable<IInputSource> Sources => Input?.Source.ToEnumerable();
 
         public override IEnumerable<IInput> Inputs
         {
