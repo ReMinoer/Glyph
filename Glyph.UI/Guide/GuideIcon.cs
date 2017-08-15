@@ -17,7 +17,6 @@ namespace Glyph.UI.Guide
 {
     public class GuideIcon : GlyphObject
     {
-        private readonly ControlManager _controlManager;
         protected readonly TransitionFloat TransitionOpacity = new TransitionFloat {Start = 0, End = 1, Duration = 500};
         protected bool IsGamePadUsed;
         protected readonly SpriteSheetSplit SpriteSheetSplit;
@@ -28,6 +27,8 @@ namespace Glyph.UI.Guide
         protected readonly Text Text;
         private readonly Vector2 _keyPadding = new Vector2(20, 50);
         private Fingear.IControl _control;
+        private readonly ReferentialCursorControl _sceneCursor;
+        private readonly IControl<InputActivity> _clic;
         public SceneNode SceneNode { get; private set; }
         public bool Clickable { get; protected set; }
         public bool KeyNameVisible { get; set; }
@@ -62,11 +63,9 @@ namespace Glyph.UI.Guide
         public event EventHandler Clicked;
         public event EventHandler IconChanged;
 
-        public GuideIcon(ControlManager controlManager, IDependencyInjector injector)
+        public GuideIcon(IDependencyInjector injector)
             : base(injector)
         {
-            _controlManager = controlManager;
-
             SceneNode = Add<SceneNode>();
             SpriteTransformer = Add<SpriteTransformer>();
 
@@ -94,6 +93,14 @@ namespace Glyph.UI.Guide
 
             Add<SpriteRenderer>();
 
+            var controls = Add<Core.Inputs.Controls>();
+            controls.Tags.Add(ControlLayerTag.Ui);
+            controls.RegisterMany(new Fingear.IControl[]
+            {
+                _sceneCursor = Injector.Resolve<InputClientManager>().CursorControls.ScenePosition,
+                _clic = MenuControls.Instance.Clic
+            });
+
             Schedulers.Initialize.Plan(InitializeLocal);
             Schedulers.LoadContent.Plan(LoadContentLocal);
             Schedulers.Update.Plan(HandleInput);
@@ -113,7 +120,7 @@ namespace Glyph.UI.Guide
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
-            bool isGamePadUsed = _controlManager.InputSources.Any<GamePadSource>();
+            bool isGamePadUsed = InputManager.Instance.InputSources.Any<GamePadSource>();
 
             if (IsGamePadUsed != isGamePadUsed)
             {
@@ -125,10 +132,11 @@ namespace Glyph.UI.Guide
                 IconChanged?.Invoke(this, EventArgs.Empty);
             }
 
-            if (Clickable && _controlManager.Layers.Any(out CursorControls cursorControls) && cursorControls.VirtualScreenPosition.IsActive(out System.Numerics.Vector2 mouseInScreen))
+            if (Clickable)
             {
+                _sceneCursor.IsActive(out System.Numerics.Vector2 mouseInScreen);
                 bool hover = SpriteArea.ContainsPoint(mouseInScreen.AsMonoGameVector());
-                if (hover && cursorControls.Clic.IsActive())
+                if (hover && _clic.IsActive())
                     Clicked?.Invoke(this, EventArgs.Empty);
             }
         }

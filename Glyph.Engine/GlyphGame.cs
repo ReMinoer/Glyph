@@ -1,12 +1,13 @@
 using System;
-using System.Windows.Forms;
 using Diese.Collections;
 using Diese.Injection;
 using Fingear;
+using Fingear.Controls;
 using Fingear.MonoGame;
 using Glyph.Core.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using IInputStates = Fingear.MonoGame.IInputStates;
 
 namespace Glyph.Engine
@@ -16,9 +17,10 @@ namespace Glyph.Engine
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private Vector2 _lastWindowSize;
         private bool _resizing;
+        private IControl _toggleFullscreen;
         public GlyphEngine Engine { get; }
         public Resolution Resolution { get; }
-        public virtual bool IsFocus => IsActive && Form.ActiveForm?.Handle == Window.Handle;
+        public virtual bool IsFocus => IsActive && System.Windows.Forms.Form.ActiveForm?.Handle == Window.Handle;
         IInputStates IInputClient.States { get; } = new InputStates();
         RenderTarget2D IDrawClient.DefaultRenderTarget => null;
         GraphicsDevice IDrawClient.GraphicsDevice => GraphicsDevice;
@@ -41,6 +43,11 @@ namespace Glyph.Engine
             Engine = new GlyphEngine(Content, dependencyConfigurator);
             Engine.Stopped += OnEngineStopped;
             Engine.FocusedClient = this;
+
+            Engine.ControlManager.Plan(new ControlLayer("Window controls", ControlLayerTag.Debug)).RegisterMany(new []
+            {
+                _toggleFullscreen = new Control("Toogle fullscreen", InputSystem.Instance.Keyboard[Keys.F12])
+            });
         }
 
         protected override void Initialize()
@@ -65,9 +72,8 @@ namespace Glyph.Engine
 
             if (!IsActive)
                 return;
-
-            DeveloperControls developerControls;
-            if (Engine.ControlManager.Layers.Any(out developerControls) && developerControls.Fullscreen.IsActive())
+            
+            if (_toggleFullscreen.IsActive())
                 ToggleFullscreen();
 
             Engine.Update();

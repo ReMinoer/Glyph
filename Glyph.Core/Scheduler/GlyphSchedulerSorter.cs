@@ -14,7 +14,7 @@ namespace Glyph.Core.Scheduler
         private readonly IDictionary<object, IGlyphSchedulerAssigner> _schedulers;
         public object DefaultKey { get; set; }
         public bool IsBatching => _schedulers.Values.Any(x => x.IsBatching);
-        int IBatchTree.CurrentDepth => _schedulers.Values.Max(x => x.CurrentDepth);
+        int IBatchTree.BatchDepth => _schedulers.Values.Max(x => x.BatchDepth);
 
         public GlyphSchedulerSorter(IDependencyInjector injector)
         {
@@ -38,9 +38,15 @@ namespace Glyph.Core.Scheduler
             return scheduler;
         }
 
-        public IDisposable BeginBatch()
+        public IDisposable Batch()
         {
-            return new DisposableCollection(_schedulers.Values.Select(x => x.BeginBatch()));
+            return new DisposableCollection(_schedulers.Values.Select(x => x.Batch()));
+        }
+
+        public void BeginBatch()
+        {
+            foreach (IGlyphSchedulerAssigner scheduler in _schedulers.Values)
+                scheduler.BeginBatch();
         }
 
         public void EndBatch()

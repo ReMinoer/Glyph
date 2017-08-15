@@ -1,5 +1,5 @@
 using System;
-using Glyph.Core.Scheduler.Base.Controllers;
+using Diese.Scheduling.Controllers;
 
 namespace Glyph.Core.Scheduler
 {

@@ -1,9 +1,8 @@
 using System;
-using System.Linq;
-using Diese.Injection;
+using Diese.Graph;
+using Diese.Scheduling;
+using Diese.Scheduling.Controllers;
 using Glyph.Composition;
-using Glyph.Core.Scheduler.Base;
-using Glyph.Core.Scheduler.Base.Controllers;
 
 namespace Glyph.Core.Scheduler
 {
@@ -13,7 +12,7 @@ namespace Glyph.Core.Scheduler
         private readonly Func<TInterface, TDelegate> _interfaceToDelegate;
         private readonly Func<GlyphObject, TDelegate> _glyphObjectToDelegate;
 
-        public GlyphScheduler(IDependencyInjector injector, Func<TInterface, TDelegate> interfaceToDelegate, Func<GlyphObject, TDelegate> glyphObjectToDelegate)
+        public GlyphScheduler(IReadOnlyScheduler<Predicate<object>> schedulerProfile, Func<TInterface, TDelegate> interfaceToDelegate, Func<GlyphObject, TDelegate> glyphObjectToDelegate)
         {
             if (!typeof(TDelegate).IsSubclassOf(typeof(Delegate)))
                 throw new InvalidOperationException(typeof(TDelegate).Name + " is not a delegate type");
@@ -21,7 +20,7 @@ namespace Glyph.Core.Scheduler
             _interfaceToDelegate = interfaceToDelegate;
             _glyphObjectToDelegate = glyphObjectToDelegate;
 
-            ApplyProfile(injector.Resolve<SchedulerProfile<TInterface>>());
+            ApplyProfile(schedulerProfile.GraphData);
         }
 
         new public Controller Plan(TDelegate item)
@@ -106,7 +105,7 @@ namespace Glyph.Core.Scheduler
             public Controller Before<T>()
                 where T : TInterface
             {
-                foreach (TDelegate item in _scheduler.SchedulerGraph.Vertices.SelectMany(x => x.Items))
+                foreach (TDelegate item in _scheduler.Items)
                 {
                     var itemDelegate = item as Delegate;
                     if (itemDelegate?.Target is T)
@@ -118,7 +117,7 @@ namespace Glyph.Core.Scheduler
             public Controller After<T>()
                 where T : TInterface
             {
-                foreach (TDelegate item in _scheduler.SchedulerGraph.Vertices.SelectMany(x => x.Items))
+                foreach (TDelegate item in _scheduler.Items)
                 {
                     var itemDelegate = item as Delegate;
                     if (itemDelegate?.Target is T)
@@ -129,7 +128,7 @@ namespace Glyph.Core.Scheduler
 
             public Controller Before(Type type)
             {
-                foreach (TDelegate item in _scheduler.SchedulerGraph.Vertices.SelectMany(x => x.Items))
+                foreach (TDelegate item in _scheduler.Items)
                 {
                     var itemDelegate = item as Delegate;
                     if (itemDelegate != null && type.IsInstanceOfType(itemDelegate.Target))
@@ -140,7 +139,7 @@ namespace Glyph.Core.Scheduler
 
             public Controller After(Type type)
             {
-                foreach (TDelegate item in _scheduler.SchedulerGraph.Vertices.SelectMany(x => x.Items))
+                foreach (TDelegate item in _scheduler.Items)
                 {
                     var itemDelegate = item as Delegate;
                     if (itemDelegate != null && type.IsInstanceOfType(itemDelegate.Target))

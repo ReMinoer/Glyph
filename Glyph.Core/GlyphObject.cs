@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Diese;
 using Diese.Collections;
 using Diese.Debug;
 using Diese.Injection;
+using Diese.Scheduling;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
@@ -15,7 +15,6 @@ using Glyph.Core.Scheduler;
 using Glyph.Injection;
 using Glyph.Math;
 using Glyph.Messaging;
-using Stave;
 
 namespace Glyph.Core
 {
@@ -38,7 +37,7 @@ namespace Glyph.Core
             Enabled = true;
             Visible = true;
 
-            var compositeInjector = new GlyphCompositeInjector(this, injector.Resolve<IDependencyRegistry>(), injector.Resolve<IDependencyRegistry>(InjectionScope.Local));
+            var compositeInjector = new GlyphCompositeInjector(this, injector.Resolve<IDependencyRegistry>(), injector.Resolve<IDependencyRegistry>(serviceKey: InjectionScope.Local));
             Injector = compositeInjector;
 
             Schedulers = new SchedulerHandler(injector);
@@ -65,8 +64,11 @@ namespace Glyph.Core
         // TODO : Handle injection on changing children & parents
         public override sealed void Add(IGlyphComponent item)
         {
-            if (_newComponents.Batch(item))
+            if (_newComponents.IsBatching)
+            {
+                _newComponents.Add(item);
                 return;
+            }
 
             if (Contains(item))
                 throw new ArgumentException("Component provided is already contained by this entity !");
@@ -121,7 +123,7 @@ namespace Glyph.Core
 
         public override sealed void Initialize()
         {
-            using (_newComponents.BeginBatch())
+            using (_newComponents.Batch())
             {
                 foreach (InitializeDelegate initialize in Schedulers.Initialize.Planning)
                     initialize();
@@ -132,7 +134,7 @@ namespace Glyph.Core
 
         public void LoadContent(ContentLibrary contentLibrary)
         {
-            using (_newComponents.BeginBatch())
+            using (_newComponents.Batch())
             {
                 foreach (LoadContentDelegate loadContent in Schedulers.LoadContent.Planning)
                     loadContent(contentLibrary);
@@ -143,7 +145,7 @@ namespace Glyph.Core
 
         public void Update(ElapsedTime elapsedTime)
         {
-            using (_newComponents.BeginBatch())
+            using (_newComponents.Batch())
             {
                 foreach (UpdateDelegate update in Schedulers.Update.Planning)
                 {
@@ -174,7 +176,7 @@ namespace Glyph.Core
         
         IArea IBoxedComponent.Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));
 
-        private sealed class NewComponentBatchTree : BatchTree<IGlyphComponent>
+        private sealed class NewComponentBatchTree : BatchTree<QueueBatchNode<IGlyphComponent>>
         {
             private readonly GlyphObject _owner;
 
@@ -183,27 +185,50 @@ namespace Glyph.Core
                 _owner = owner;
             }
 
-            protected override void OnNodeEnded(Queue<IGlyphComponent> queue, int depth)
+            public void Add(IGlyphComponent item)
             {
-                while (queue.Count != 0)
-                    _owner.Add(queue.Dequeue());
+                NodeStack.Peek().Queue.Enqueue(item);
+            }
+
+            protected override QueueBatchNode<IGlyphComponent> CreateBatchNode()
+            {
+                return new QueueBatchNode<IGlyphComponent>(this);
+            }
+
+            protected override void OnNodeEnded(QueueBatchNode<IGlyphComponent> batchNode, int depth)
+            {
+                while (batchNode.Queue.Count != 0)
+                    _owner.Add(batchNode.Queue.Dequeue());
             }
         }
 
         public class SchedulerHandler : GlyphSchedulerHandler
         {
-            public GlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; private set; }
-            public GlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; private set; }
-            public GlyphScheduler<IUpdate, UpdateDelegate> Update { get; private set; }
-            public GlyphScheduler<IDraw, DrawDelegate> Draw { get; private set; }
+            private readonly IDependencyInjector _injector;
+            public GlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; }
+            public GlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; }
+            public GlyphScheduler<IUpdate, UpdateDelegate> Update { get; }
+            public GlyphScheduler<IDraw, DrawDelegate> Draw { get; }
 
             public SchedulerHandler(IDependencyInjector injector)
-                : base(injector)
             {
+                _injector = injector;
+
                 Initialize = AddScheduler<IGlyphComponent, InitializeDelegate>();
                 LoadContent = AddScheduler<ILoadContent, LoadContentDelegate>();
                 Update = AddScheduler<IUpdate, UpdateDelegate>();
                 Draw = AddScheduler<IDraw, DrawDelegate>();
+            }
+
+            public GlyphScheduler<TInterface, TDelegate> AddScheduler<TInterface, TDelegate>()
+                where TInterface : class, IGlyphComponent
+            {
+                var glyphScheduler = _injector
+                    .WithLink<IReadOnlyScheduler<Predicate<object>>, IReadOnlyScheduler<Predicate<object>>>(typeof(TInterface))
+                    .Resolve<GlyphScheduler<TInterface, TDelegate>>();
+
+                Schedulers.Add(glyphScheduler);
+                return glyphScheduler;
             }
         }
     }

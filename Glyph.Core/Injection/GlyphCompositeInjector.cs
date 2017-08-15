@@ -26,10 +26,10 @@ namespace Glyph.Core.Injection
             : base(globalRegistry)
         {
             _context = context;
-            _local = new LocalDependencyInjector(this, localRegistry);
+            _local = new LocalDependencyInjector(localRegistry);
         }
 
-        public override object Resolve(Type type, InjectableAttributeBase injectableAttribute, object serviceKey = null)
+        public override object Resolve(Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, IDependencyInjector dependencyInjector = null)
         {
             GlyphInjectableTargets targets = GetTargets(type, injectableAttribute);
 
@@ -41,18 +41,18 @@ namespace Glyph.Core.Injection
                     return ResolveManyFamily(type).First<object>();
             }
 
-            if ((targets & GlyphInjectableTargets.Local) != 0 && _local.TryResolve(out object obj, type, injectableAttribute, serviceKey))
+            if ((targets & GlyphInjectableTargets.Local) != 0 && _local.TryResolve(out object obj, type, injectableAttribute, serviceKey, dependencyInjector ?? this))
                 return obj;
             if (targets == GlyphInjectableTargets.Local)
                 throw new ComponentNotFoundException(type);
 
             if ((targets & GlyphInjectableTargets.Global) != 0)
-                return base.Resolve(type, injectableAttribute, serviceKey);
+                return base.Resolve(type, injectableAttribute, serviceKey, dependencyInjector ?? this);
 
             throw new InvalidOperationException();
         }
 
-        public override bool TryResolve(out object obj, Type type, InjectableAttributeBase injectableAttribute, object serviceKey = null)
+        public override bool TryResolve(out object obj, Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, IDependencyInjector dependencyInjector = null)
         {
             GlyphInjectableTargets targets = GetTargets(type, injectableAttribute);
 
@@ -70,7 +70,7 @@ namespace Glyph.Core.Injection
                 }
             }
 
-            if ((targets & GlyphInjectableTargets.Local) != 0 && _local.TryResolve(out obj, type, injectableAttribute, serviceKey))
+            if ((targets & GlyphInjectableTargets.Local) != 0 && _local.TryResolve(out obj, type, injectableAttribute, serviceKey, dependencyInjector ?? this))
                 return true;
             if (targets == GlyphInjectableTargets.Local)
             {
@@ -79,17 +79,17 @@ namespace Glyph.Core.Injection
             }
 
             if ((targets & GlyphInjectableTargets.Global) != 0)
-                return base.TryResolve(out obj, type, injectableAttribute, serviceKey);
+                return base.TryResolve(out obj, type, injectableAttribute, serviceKey, dependencyInjector ?? this);
 
             obj = null;
             return false;
         }
 
-        public override IEnumerable ResolveMany(Type type, InjectableAttributeBase injectableAttribute, object serviceKey = null)
+        public override IEnumerable ResolveMany(Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, IDependencyInjector dependencyInjector = null)
         {
             var glyphInjectableAttribute = injectableAttribute as IGlyphInjectableAttribute;
             if (glyphInjectableAttribute == null)
-                return base.ResolveMany(type, injectableAttribute, serviceKey);
+                return base.ResolveMany(type, injectableAttribute, serviceKey, dependencyInjector ?? this);
 
             GlyphInjectableTargets targets = glyphInjectableAttribute.Targets;
             if (targets == 0)
@@ -101,11 +101,11 @@ namespace Glyph.Core.Injection
             return ResolveManyFamily(type);
         }
 
-        public override bool TryResolveMany(out IEnumerable objs, Type type, InjectableAttributeBase injectableAttribute, object serviceKey = null)
+        public override bool TryResolveMany(out IEnumerable objs, Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, IDependencyInjector dependencyInjector = null)
         {
             var glyphInjectableAttribute = injectableAttribute as IGlyphInjectableAttribute;
             if (glyphInjectableAttribute == null)
-                return base.TryResolveMany(out objs, type, injectableAttribute, serviceKey);
+                return base.TryResolveMany(out objs, type, injectableAttribute, serviceKey, dependencyInjector ?? this);
 
             GlyphInjectableTargets targets = glyphInjectableAttribute.Targets;
             if (targets == 0)
@@ -167,14 +167,14 @@ namespace Glyph.Core.Injection
             return any;
         }
 
-        public T ResolveLocal<T>(object serviceKey = null)
+        public T ResolveLocal<T>(object serviceKey = null, IDependencyInjector dependencyInjector = null)
         {
-            return Resolve<T>(new GlyphInjectableAttribute(GlyphInjectableTargets.Local), serviceKey);
+            return Resolve<T>(new GlyphInjectableAttribute(GlyphInjectableTargets.Local), serviceKey, dependencyInjector);
         }
 
-        public object ResolveLocal(Type type, object serviceKey = null)
+        public object ResolveLocal(Type type, object serviceKey = null, IDependencyInjector dependencyInjector = null)
         {
-            return Resolve(type, new GlyphInjectableAttribute(GlyphInjectableTargets.Local), serviceKey);
+            return Resolve(type, new GlyphInjectableAttribute(GlyphInjectableTargets.Local), serviceKey, dependencyInjector);
         }
 
         internal T Add<T>()
@@ -188,7 +188,7 @@ namespace Glyph.Core.Injection
             if (!typeof(IGlyphComponent).IsAssignableFrom(type))
                 throw new InvalidCastException($"Type must implements {typeof(IGlyphComponent)} !");
 
-            var component = (IGlyphComponent)base.Resolve(type, null);
+            var component = (IGlyphComponent)base.Resolve(type);
             _context.Add(component);
 
             return component;

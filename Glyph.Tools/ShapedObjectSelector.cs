@@ -22,13 +22,12 @@ namespace Glyph.Tools
         static protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
-        private readonly ControlManager _controlManager;
         private readonly InputClientManager _inputClientManager;
         private IBoxedComponent _selection;
         public bool Enabled { get; set; } = true;
         public ReadOnlySpace<IBoxedComponent> Space { get; }
         public IFilter<IInputClient> ClientFilter { get; set; }
-        public Func<ControlManager, IControl<Vector2>> ControlSelector { get; set; }
+        public IControl<Vector2> Control { get; set; }
         public bool HandleInputs { get; set; }
 
         public IBoxedComponent Selection
@@ -46,16 +45,14 @@ namespace Glyph.Tools
 
         public event EventHandler<IBoxedComponent> SelectionChanged;
 
-        public ShapedObjectSelector(ControlManager controlManager,
-            InputClientManager inputClientManager,
+        public ShapedObjectSelector(InputClientManager inputClientManager,
             IRouter<InstantiatingMessage<IBoxedComponent>> instantiatingRouter,
             IRouter<DisposingMessage<IBoxedComponent>> disposingRouter,
             IPartitioner partitioner = null)
         {
             _messagingSpace = new MessagingSpace<IBoxedComponent>(instantiatingRouter, disposingRouter, x => x.Area.BoundingBox, partitioner);
             Components.Add(_messagingSpace);
-
-            _controlManager = controlManager;
+            
             _inputClientManager = inputClientManager;
 
             Space = new ReadOnlySpace<IBoxedComponent>(_messagingSpace);
@@ -68,9 +65,8 @@ namespace Glyph.Tools
 
             if (ClientFilter != null && !ClientFilter.Filter(_inputClientManager.Current))
                 return;
-
-            IControl<Vector2> control = ControlSelector?.Invoke(_controlManager);
-            if (control == null || !ControlSelector(_controlManager).IsActive(out Vector2 mousePosition))
+            
+            if (Control == null || !Control.IsActive(out Vector2 mousePosition))
                 return;
 
             IEnumerable<IBoxedComponent> inRange = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(mousePosition.AsMonoGameVector(), 1, 1));
@@ -88,7 +84,7 @@ namespace Glyph.Tools
             }
 
             if (HandleInputs)
-                control.HandleInputs();
+                Control.HandleInputs();
         }
     }
 }

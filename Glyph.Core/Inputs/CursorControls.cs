@@ -1,30 +1,20 @@
-﻿using System.Numerics;
-using Fingear;
-using Fingear.Controls;
-using Fingear.MonoGame;
-using Fingear.MonoGame.Inputs;
+﻿using Fingear.MonoGame;
 
 namespace Glyph.Core.Inputs
 {
-    public class CursorControls : ControlLayerBase
+    public class CursorControls
     {
-        public IControl<Vector2> WindowPosition { get; }
-        public IControl<Vector2> ScreenPosition { get; }
-        public IControl<Vector2> VirtualScreenPosition { get; }
-        public IControl<Vector2> ScenePosition { get; }
-        public IControl Clic { get; }
-        public IControl ReleaseClic { get; }
+        private readonly InputClientManager _inputClientManager;
+        private readonly MouseSource _mouseSource;
+        public ReferentialCursorControl WindowPosition => new ReferentialCursorControl(_inputClientManager, nameof(WindowPosition), _mouseSource.Cursor, CursorSpace.Window);
+        public ReferentialCursorControl ScreenPosition => new ReferentialCursorControl(_inputClientManager, nameof(ScreenPosition), _mouseSource.Cursor, CursorSpace.Screen);
+        public ReferentialCursorControl VirtualScreenPosition => new ReferentialCursorControl(_inputClientManager, nameof(VirtualScreenPosition), _mouseSource.Cursor, CursorSpace.VirtualScreen);
+        public ReferentialCursorControl ScenePosition => new ReferentialCursorControl(_inputClientManager, nameof(ScenePosition), _mouseSource.Cursor, CursorSpace.Scene);
 
         public CursorControls(InputClientManager inputClientManager)
         {
-            MouseSource mouse = InputSystem.Instance.Mouse;
-
-            Add(WindowPosition = new ReferentialCursorControl(inputClientManager, "WindowPosition", mouse.Cursor, CursorSpace.Window));
-            Add(ScreenPosition = new ReferentialCursorControl(inputClientManager, "ScreenPosition", mouse.Cursor, CursorSpace.Screen));
-            Add(VirtualScreenPosition = new ReferentialCursorControl(inputClientManager, "VirtualScreenPosition", mouse.Cursor, CursorSpace.VirtualScreen));
-            Add(ScenePosition = new ReferentialCursorControl(inputClientManager, "ScenePosition", mouse.Cursor, CursorSpace.Scene));
-            Add(Clic = new Control(mouse[MouseButton.Left]));
-            Add(ReleaseClic = new Control(mouse[MouseButton.Left], InputActivity.Released));
+            _inputClientManager = inputClientManager;
+            _mouseSource = InputSystem.Instance.Mouse;
         }
     }
 }

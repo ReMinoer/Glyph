@@ -5,7 +5,10 @@ using System.Runtime.CompilerServices;
 using Diese.Collections;
 using Diese.Injection;
 using Fingear;
+using Fingear.Controls;
+using Fingear.Controls.Composites;
 using Fingear.MonoGame;
+using Fingear.MonoGame.Inputs;
 using Glyph.Application;
 using Glyph.Audio;
 using Glyph.Composition;
@@ -16,6 +19,7 @@ using Glyph.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using NLog;
 
@@ -34,9 +38,11 @@ namespace Glyph.Engine
         public IDependencyRegistry Registry { get; }
         public IDependencyInjector Injector { get; }
         public ContentLibrary ContentLibrary { get; }
-        public ControlManager ControlManager { get; }
         public InputClientManager InputClientManager { get; }
+        public ControlManager ControlManager { get; }
         private GlyphObject _root;
+        private IControl _mute;
+        private IControl _xboxQuit;
 
         public GlyphObject Root
         {
@@ -79,13 +85,27 @@ namespace Glyph.Engine
 
             _contentManager.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
+            InputClientManager = new InputClientManager();
             ControlManager = new ControlManager();
-            InputClientManager = new InputClientManager(ControlManager);
+            ControlManager.ApplyProfile(ControlLayerSchedulerProfile.Get().GraphData);
+
+            ControlManager.Plan(new ControlLayer("Program controls", ControlLayerTag.Debug)).RegisterMany(new []
+            {
+                _mute = new Control("Mute", InputSystem.Instance.Keyboard[Keys.F10]),
+                _xboxQuit = new ControlSimultaneous<IControl>("Quit game")
+                {
+                    Components =
+                    {
+                        new Control(InputSystem.Instance[PlayerIndex.One][GamePadButton.Start]),
+                        new Control(InputSystem.Instance[PlayerIndex.One][GamePadButton.Back])
+                    }
+                }
+            });
 
             Registry.RegisterInstance<GlyphEngine>(this);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
-            Registry.RegisterInstance<ControlManager>(ControlManager);
             Registry.RegisterInstance<InputClientManager>(InputClientManager);
+            Registry.RegisterInstance<ControlManager>(ControlManager);
             Registry.RegisterFunc(() =>
             {
                 if (FocusedClient != null)
@@ -127,40 +147,16 @@ namespace Glyph.Engine
             if (InputClientManager.Current != null)
                 ControlManager.Update(_elapsedTime.UnscaledDelta);
             else
-                ControlManager.IgnoreUpdate();
+                InputManager.Instance.InputStates.Ignore();
         }
 
         public void Update()
         {
-            DeveloperControls developerControls;
-            if (ControlManager.Layers.Any(out developerControls))
-            {
-                if (developerControls.Mute.IsActive())
-                    MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
+            if (_mute.IsActive())
+                MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
 
-                if (developerControls.XboxQuit.IsActive())
-                    Stop();
-
-                if (developerControls.UpdateSnapshot.IsActive())
-                    GlyphObject.UpdateWatchTree.Enabled = true;
-
-                if (developerControls.ToogleSong.IsActive())
-                    switch (MediaPlayer.State)
-                    {
-                        case MediaState.Playing:
-                            MediaPlayer.Pause();
-                            break;
-                        case MediaState.Paused:
-                            MediaPlayer.Resume();
-                            break;
-                    }
-
-                if (developerControls.PreviousSong.IsActive())
-                    SongPlayer.Instance.Previous();
-
-                if (developerControls.NextSong.IsActive())
-                    SongPlayer.Instance.Next();
-            }
+            if (_xboxQuit.IsActive())
+                Stop();
 
             using (GlyphObject.UpdateWatchTree.Start("Root"))
             {

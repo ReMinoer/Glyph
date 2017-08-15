@@ -63,6 +63,9 @@
     <Compile Include="Colliders\RectangleCollider.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Flipper.cs" />
+    <Compile Include="Inputs\ControlLayerSchedulerProfile.cs" />
+    <Compile Include="Inputs\ControlLayerTag.cs" />
+    <Compile Include="Inputs\Controls.cs" />
     <Compile Include="Inputs\ReferentialCursorControl.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="IBoxedComponent.cs" />
@@ -85,27 +88,12 @@
     <Compile Include="ReadOnlySceneNode.cs" />
     <Compile Include="SceneGraphUtils.cs" />
     <Compile Include="SceneNode.cs" />
-    <Compile Include="Scheduler\Base\Controllers\IPriorityController.cs" />
-    <Compile Include="Scheduler\Base\Controllers\IRelativeController.cs" />
-    <Compile Include="Scheduler\Base\Controllers\PriorityController.cs" />
-    <Compile Include="Scheduler\Base\Controllers\RelativeController.cs" />
-    <Compile Include="Scheduler\Base\CyclicDependencyException.cs" />
-    <Compile Include="Scheduler\Base\IScheduler.cs" />
-    <Compile Include="Scheduler\Base\ISchedulerProfile.cs" />
-    <Compile Include="Scheduler\Base\Priority.cs" />
-    <Compile Include="Scheduler\Base\Scheduler.cs" />
-    <Compile Include="Scheduler\Base\SchedulerBase.cs" />
-    <Compile Include="Scheduler\Base\SchedulerGraph.cs" />
-    <Compile Include="Scheduler\Base\SchedulerProfile.cs" />
-    <Compile Include="Scheduler\Base\TopologicalOrderVisitor.cs" />
     <Compile Include="Scheduler\GlyphScheduler.cs" />
     <Compile Include="Scheduler\GlyphSchedulerHandler.cs" />
     <Compile Include="Scheduler\GlyphSchedulerSorter.cs" />
     <Compile Include="Scheduler\IGlyphScheduler.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerAssigner.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
-    <Compile Include="Inputs\DeveloperControls.cs" />
-    <Compile Include="Inputs\MenuControls.cs" />
     <Compile Include="Inputs\CursorControls.cs" />
     <Compile Include="Tracking\Factory.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
@@ -134,6 +122,10 @@
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
       <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
       <Name>Diese.Modelization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Scheduling\Diese.Scheduling.csproj">
+      <Project>{ed3283b6-9691-4418-96d0-6e83aee37540}</Project>
+      <Name>Diese.Scheduling</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese\Diese.csproj">
       <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>

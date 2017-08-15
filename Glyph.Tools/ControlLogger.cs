@@ -13,7 +13,7 @@ namespace Glyph.Tools
         private readonly ControlManager _controlManager;
         private readonly HashSet<IControl> _activateControls;
         public bool Enabled { get; set; }
-        public Predicate<IControlLayer> LayerFilter { get; set; }
+        public Predicate<ControlLayer> LayerFilter { get; set; }
         public Predicate<IControl> ControlFilter { get; set; }
 
         public ControlLogger(ControlManager controlManager)
@@ -28,7 +28,7 @@ namespace Glyph.Tools
             if (!Enabled)
                 return;
 
-            foreach (IControlLayer layer in _controlManager.Layers.Where(x => x.Enabled))
+            foreach (ControlLayer layer in _controlManager.Layers.Where(x => x.Enabled))
             {
                 if (LayerFilter != null && !LayerFilter(layer))
                     continue;
@@ -47,7 +47,7 @@ namespace Glyph.Tools
                     if (!_activateControls.Add(control))
                         continue;
                 
-                    Logger.Debug($"({layer.DisplayName}) {control.Name} is active");
+                    Logger.Debug($"({layer.Name}) {control.Name} is active");
                 }
             }
         }

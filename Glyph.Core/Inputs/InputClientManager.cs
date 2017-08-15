@@ -7,13 +7,12 @@ namespace Glyph.Core.Inputs
 {
     public class InputClientManager
     {
-        private readonly ControlManager _controlManager;
         private IInputClient _current;
-        public event Action<IInputClient> ClientChanged;
+        public CursorControls CursorControls { get; }
 
         public IInputClient Current
         {
-            get { return _current; }
+            get => _current;
             set
             {
                 if (_current == value)
@@ -33,15 +32,17 @@ namespace Glyph.Core.Inputs
                 }
 
                 InputSystem.Instance.InputStates = _current?.States;
-                _controlManager.States = _current?.States;
+                InputManager.Instance.InputStates = _current?.States;
 
                 ClientChanged?.Invoke(_current);
             }
         }
 
-        public InputClientManager(ControlManager controlManager)
+        public event Action<IInputClient> ClientChanged;
+
+        public InputClientManager()
         {
-            _controlManager = controlManager;
+            CursorControls = new CursorControls(this);
         }
 
         private void OnResolutionChanged(Vector2 size)

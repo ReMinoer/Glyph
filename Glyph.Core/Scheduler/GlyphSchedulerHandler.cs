@@ -2,30 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using Diese;
-using Diese.Injection;
 using Glyph.Composition;
 
 namespace Glyph.Core.Scheduler
 {
     public class GlyphSchedulerHandler : IGlyphSchedulerAssigner
     {
-        private readonly IDependencyInjector _injector;
         protected readonly ICollection<IGlyphSchedulerAssigner> Schedulers;
-        public int CurrentDepth => Schedulers.Max(x => x.CurrentDepth);
+        public int BatchDepth => Schedulers.Max(x => x.BatchDepth);
         public bool IsBatching => Schedulers.Any(x => x.IsBatching);
 
-        public GlyphSchedulerHandler(IDependencyInjector injector)
+        public GlyphSchedulerHandler()
         {
-            _injector = injector;
             Schedulers = new List<IGlyphSchedulerAssigner>();
-        }
-
-        public GlyphScheduler<TInterface, TDelegate> AddScheduler<TInterface, TDelegate>()
-            where TInterface : class, IGlyphComponent
-        {
-            var scheduler = _injector.Resolve<GlyphScheduler<TInterface, TDelegate>>();
-            Schedulers.Add(scheduler);
-            return scheduler;
         }
 
         public void AddScheduler(IGlyphSchedulerAssigner schedulerAssigner)
@@ -33,9 +22,15 @@ namespace Glyph.Core.Scheduler
             Schedulers.Add(schedulerAssigner);
         }
 
-        public IDisposable BeginBatch()
+        public IDisposable Batch()
         {
-            return new DisposableCollection(Schedulers.Select(x => x.BeginBatch()));
+            return new DisposableCollection(Schedulers.Select(x => x.Batch()));
+        }
+
+        public void BeginBatch()
+        {
+            foreach (IGlyphSchedulerAssigner scheduler in Schedulers)
+                scheduler.BeginBatch();
         }
 
         public void EndBatch()

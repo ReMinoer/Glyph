@@ -18,8 +18,8 @@ namespace Glyph.UI.Simple
             get { return SimpleFrame; }
         }
 
-        public SimpleButton(ControlManager controlManager, IDependencyInjector injector)
-            : base(controlManager, injector)
+        public SimpleButton(IDependencyInjector injector)
+            : base(injector)
         {
             SimpleFrame = Add<SimpleFrame>();
 

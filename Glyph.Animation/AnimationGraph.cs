@@ -6,7 +6,6 @@ using Diese;
 using Diese.Collections;
 using Diese.Graph;
 using Glyph.Composition;
-using Glyph.Core.Injection;
 using Glyph.Injection;
 using NLog;
 
@@ -31,8 +30,8 @@ namespace Glyph.Animation
         public IReadOnlyDictionary<TState, Vertex> States => _readOnlyStates;
         public IEnumerable<Transition> Transitions => _graph.Edges;
 
-        IEnumerable<Vertex> IGraph<Vertex, Transition>.Vertices => _graph.Vertices;
-        IEnumerable<Transition> IGraph<Vertex, Transition>.Edges => _graph.Edges;
+        IEnumerable<Vertex> IGraphData<Vertex, Transition>.Vertices => _graph.Vertices;
+        IEnumerable<Transition> IGraphData<Vertex, Transition>.Edges => _graph.Edges;
         Transition IGraph<Vertex, Transition>.this[Vertex start, Vertex end] => _graph[start, end];
 
         public Transition this[TState start, TState end] => _graph[ResolveVertex(start), ResolveVertex(end)];

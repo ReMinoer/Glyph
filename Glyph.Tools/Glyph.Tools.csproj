@@ -55,7 +55,6 @@
     <Compile Include="ShapeRendering\CircleComponentRenderer.cs" />
     <Compile Include="ShapeRendering\AreaComponentRenderer.cs" />
     <Compile Include="ShapeRendering\ShapedComponentRendererBase.cs" />
-    <Compile Include="CompositionLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShapeRendering\ShapedComponentRendererManager.cs" />
     <Compile Include="ShapeRendering\RectangleComponentRenderer.cs" />

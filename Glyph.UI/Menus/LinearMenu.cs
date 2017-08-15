@@ -12,9 +12,13 @@ namespace Glyph.UI.Menus
 {
     public class LinearMenu : GlyphObject, IMenu
     {
-        private readonly ControlManager _controlManager;
         private readonly List<IButton> _buttons;
         private readonly IReadOnlyCollection<IButton> _buttonsReadOnly;
+        private readonly IControl<InputActivity> _up;
+        private readonly IControl<InputActivity> _down;
+        private readonly IControl<InputActivity> _left;
+        private readonly IControl<InputActivity> _right;
+        private readonly IControl<InputActivity> _cancel;
         public int SelectedIndex { get; private set; }
         public int DefaultSelection { get; set; }
         public Axis NavigationAxis { get; set; }
@@ -38,16 +42,26 @@ namespace Glyph.UI.Menus
         public event EventHandler<SelectionEventArgs> SelectionChanged;
         public event EventHandler<SelectionEventArgs> SelectionTriggered;
 
-        public LinearMenu(ControlManager controlManager, IDependencyInjector injector)
+        public LinearMenu(IDependencyInjector injector)
             : base(injector)
         {
-            _controlManager = controlManager;
             _buttons = new List<IButton>();
             _buttonsReadOnly = new ReadOnlyCollection<IButton>(_buttons);
 
             NavigationAxis = Axis.Vertical;
             SelectedIndex = -1;
             NavigationLoop = true;
+
+            var controls = Add<Core.Inputs.Controls>();
+            controls.Tags.Add(ControlLayerTag.Ui);
+            controls.RegisterMany(new []
+            {
+                _up = MenuControls.Instance.Up,
+                _down = MenuControls.Instance.Down,
+                _left = MenuControls.Instance.Left,
+                _right = MenuControls.Instance.Right,
+                _cancel = MenuControls.Instance.Cancel
+            });
 
             Schedulers.Initialize.Plan(InitializeLocal).AtStart();
             Schedulers.Update.Plan(HandleInput).AtStart();
@@ -75,9 +89,8 @@ namespace Glyph.UI.Menus
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
-            bool isMouseUsed = _controlManager.InputSources.Any<MouseSource>();
-
-            MenuControls menuControls;
+            bool isMouseUsed = InputManager.Instance.InputSources.Any<MouseSource>();
+            
             if (!isMouseUsed)
             {
                 if (_buttons.Count == 0)
@@ -86,23 +99,20 @@ namespace Glyph.UI.Menus
                     SelectedIndex = DefaultSelection;
                 else
                 {
-                    if (_controlManager.Layers.Any(out menuControls))
+                    switch (NavigationAxis)
                     {
-                        switch (NavigationAxis)
-                        {
-                            case Axis.Vertical:
-                                if (menuControls.Up.IsActive())
-                                    SelectedIndex--;
-                                if (menuControls.Down.IsActive())
-                                    SelectedIndex++;
-                                break;
-                            case Axis.Horizontal:
-                                if (menuControls.Left.IsActive())
-                                    SelectedIndex--;
-                                if (menuControls.Right.IsActive())
-                                    SelectedIndex++;
-                                break;
-                        }
+                        case Axis.Vertical:
+                            if (_up.IsActive())
+                                SelectedIndex--;
+                            if (_down.IsActive())
+                                SelectedIndex++;
+                            break;
+                        case Axis.Horizontal:
+                            if (_left.IsActive())
+                                SelectedIndex--;
+                            if (_right.IsActive())
+                                SelectedIndex++;
+                            break;
                     }
 
                     if (SelectedIndex < 0)
@@ -116,12 +126,9 @@ namespace Glyph.UI.Menus
 
                 _buttons[SelectedIndex].Hover = true;
             }
-
-            if (_controlManager.Layers.Any(out menuControls))
-            {
-                if (menuControls.Cancel.IsActive())
-                    TriggerSelection(DefaultSelection);
-            }
+            
+            if (_cancel.IsActive())
+                TriggerSelection(DefaultSelection);
         }
 
         private void ButtonOnEntered(object sender, EventArgs eventArgs)

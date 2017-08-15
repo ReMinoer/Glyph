@@ -1,21 +1,22 @@
 ﻿using System;
-using System.Linq;
+using Diese.Collections;
 using Diese.Injection;
 using Fingear;
+using Fingear.Controls;
 using Fingear.MonoGame;
+using Fingear.MonoGame.Inputs;
 using Glyph.Animation;
-using Glyph.Composition;
 using Glyph.Core;
-using Microsoft.Xna.Framework;
-using Diese.Collections;
 using Glyph.Core.Inputs;
 
 namespace Glyph.UI.Controls
 {
     public abstract class ButtonBase : GlyphObject, IButton
     {
-        private readonly ControlManager _controlManager;
         private bool _hover;
+        private readonly ReferentialCursorControl _sceneCursor;
+        private readonly ActivityControl _clic;
+        private readonly IControl<InputActivity> _confirm;
         public SceneNode SceneNode { get; private set; }
         public Motion Motion { get; private set; }
         public Text Text { get; private set; }
@@ -24,7 +25,7 @@ namespace Glyph.UI.Controls
 
         public bool Hover
         {
-            get { return _hover; }
+            get => _hover;
             set
             {
                 if (_hover == value)
@@ -44,14 +45,21 @@ namespace Glyph.UI.Controls
         public event EventHandler Entered;
         public event EventHandler Leaved;
 
-        protected ButtonBase(ControlManager controlManager, IDependencyInjector injector)
+        protected ButtonBase(IDependencyInjector injector)
             : base(injector)
         {
-            _controlManager = controlManager;
-
             SceneNode = Add<SceneNode>();
             Motion = Add<Motion>();
             Text = Add<Text>();
+
+            var controls = Add<Core.Inputs.Controls>();
+            controls.Tags.Add(ControlLayerTag.Ui);
+            controls.RegisterMany(new Fingear.IControl[]
+            {
+                _sceneCursor = Injector.Resolve<InputClientManager>().CursorControls.ScenePosition,
+                _clic = new ActivityControl("Clic", InputSystem.Instance.Mouse[MouseButton.Left]),
+                _confirm = MenuControls.Instance.Confirm
+            });
 
             Schedulers.Update.Plan(HandleInput);
         }
@@ -59,34 +67,39 @@ namespace Glyph.UI.Controls
         private void HandleInput(ElapsedTime elapsedTime)
         {
             bool hover = Hover;
-            bool isMouseUsed = _controlManager.InputSources.Any<MouseSource>();
+            bool isMouseUsed = InputManager.Instance.InputSources.Any<MouseSource>();
 
             if (isMouseUsed)
             {
-                if (_controlManager.Layers.Any(out CursorControls cursorControls) && cursorControls.VirtualScreenPosition.IsActive(out System.Numerics.Vector2 mousePosition))
+                if (_sceneCursor.IsActive(out System.Numerics.Vector2 mousePosition))
                     hover = Frame.Bounds.ContainsPoint(mousePosition.AsMonoGameVector());
             }
 
-            if (Hover)
+            if (hover)
             {
                 if (isMouseUsed)
                 {
-                    if (_controlManager.Layers.Any(out CursorControls cursorControls))
+                    if (_clic.IsActive(out InputActivity inputActivity))
                     {
-                        if (cursorControls.Clic.IsActive())
-                            Trigger();
-                        else if (cursorControls.ReleaseClic.IsActive())
-                            Release();
+                        switch (inputActivity)
+                        {
+                            case InputActivity.Triggered:
+                                Trigger();
+                                break;
+                            case InputActivity.Released:
+                                Release();
+                                break;
+                        }
                     }
                 }
-                else if (_controlManager.Layers.Any(out MenuControls menuControls) && menuControls.Confirm.IsActive())
+                else if (_confirm.IsActive())
                 {
                     Trigger();
                     Release();
                 }
             }
             else if (Pressed)
-                Release();
+                Pressed = false;
 
             Hover = hover;
         }

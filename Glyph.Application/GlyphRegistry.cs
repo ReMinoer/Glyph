@@ -1,5 +1,6 @@
-﻿using Diese.Injection;
-using Fingear;
+﻿using System;
+using Diese.Injection;
+using Diese.Scheduling;
 using Fingear.MonoGame;
 using Glyph.Animation;
 using Glyph.Animation.Motors;
@@ -10,9 +11,9 @@ using Glyph.Composition.Messaging;
 using Glyph.Core;
 using Glyph.Core.Colliders;
 using Glyph.Core.Injection;
+using Glyph.Core.Inputs;
 using Glyph.Core.Layers;
 using Glyph.Core.Scheduler;
-using Glyph.Core.Scheduler.Base;
 using Glyph.Core.Tracking;
 using Glyph.Graphics;
 using Glyph.Graphics.Particles;
@@ -51,10 +52,10 @@ namespace Glyph.Application
             Register<GlyphScheduler<IUpdate, UpdateDelegate>>();
             Register<GlyphScheduler<IDraw, DrawDelegate>>();
 
-            Register<SchedulerProfile<IGlyphComponent>, GlyphSchedulerProfiles.Initialize>();
-            Register<SchedulerProfile<ILoadContent>, GlyphSchedulerProfiles.LoadContent>();
-            Register<SchedulerProfile<IUpdate>, GlyphSchedulerProfiles.Update>();
-            Register<SchedulerProfile<IDraw>, GlyphSchedulerProfiles.Draw>();
+            RegisterInstance(GlyphSchedulerProfiles.Instance.Initialize, typeof(IGlyphComponent));
+            RegisterInstance(GlyphSchedulerProfiles.Instance.LoadContent, typeof(ILoadContent));
+            RegisterInstance(GlyphSchedulerProfiles.Instance.Update, typeof(IUpdate));
+            RegisterInstance(GlyphSchedulerProfiles.Instance.Draw, typeof(IDraw));
 
             RegisterFunc<IGlyphComponent, InitializeDelegate>(x => x.Initialize);
             RegisterFunc<ILoadContent, LoadContentDelegate>(x => x.LoadContent);
@@ -89,6 +90,8 @@ namespace Glyph.Application
 
             Register<Camera>();
             Register<View>();
+
+            Register<Controls>();
 
             Register<Flipper>();
 
