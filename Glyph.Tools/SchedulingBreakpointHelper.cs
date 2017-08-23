@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using Diese;
+using Glyph.Composition.Delegates;
 using NLog;
 
 namespace Glyph.Tools
@@ -7,28 +10,52 @@ namespace Glyph.Tools
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        static public void Initialize()
+        static public InitializeDelegate Initialize(Predicate predicate = null)
         {
-            Logger.Debug("Initialize breakpoint");
-            Debugger.Break();
+            return () =>
+            {
+                if (predicate != null && !predicate())
+                    return;
+
+                Logger.Debug("Initialize breakpoint");
+                Debugger.Break();
+            };
         }
 
-        static public void LoadContent(ContentLibrary contentLibrary)
+        static public LoadContentDelegate LoadContent(Predicate predicate = null)
         {
-            Logger.Debug("LoadContent breakpoint");
-            Debugger.Break();
+            return x =>
+            {
+                if (predicate != null && !predicate())
+                    return;
+
+                Logger.Debug("LoadContent breakpoint");
+                Debugger.Break();
+            };
         }
 
-        static public void Update(ElapsedTime elapsedTime)
+        static public UpdateDelegate Update(Predicate predicate = null)
         {
-            Logger.Debug("Update breakpoint");
-            Debugger.Break();
+            return x =>
+            {
+                if (predicate != null && !predicate())
+                    return;
+
+                Logger.Debug("Update breakpoint");
+                Debugger.Break();
+            };
         }
 
-        static public void Draw(IDrawer drawer)
+        static public DrawDelegate Draw(Predicate predicate = null)
         {
-            Logger.Debug("Draw breakpoint");
-            Debugger.Break();
+            return x =>
+            {
+                if (predicate != null && !predicate())
+                    return;
+
+                Logger.Debug("Draw breakpoint");
+                Debugger.Break();
+            };
         }
     }
 }
