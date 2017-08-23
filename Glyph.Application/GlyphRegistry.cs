@@ -102,6 +102,7 @@ namespace Glyph.Application
             Register<Motion>();
             Register<LinearMotor>();
             Register<SteeringMotor>();
+            Register<SeekingMotor>();
             Register<TimedTrajectoryMotor>();
             Register<MeasurableTrajectoryMotor>();
             RegisterGeneric(typeof(AnimationGraph<,>));

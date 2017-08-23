@@ -8,7 +8,7 @@ namespace Glyph.Animation.Motors
     {
         private Vector2 _direction;
         public float Speed { get; set; }
-        public float AngularSpeed { get; set; } = float.MaxValue;
+        public float SteeringSpeed { get; set; } = float.MaxValue;
         public ISceneNode Target { get; set; }
 
         private Vector2? _destination;
@@ -45,12 +45,13 @@ namespace Glyph.Animation.Motors
             if (_direction.EqualsZero())
                 _direction = remainingDistance.Normalized();
             else
-                _direction = _direction.RotateToward(remainingDistance, AngularSpeed, elapsedTime.GetDelta(Motion)).Normalized();
+                _direction = _direction.RotateToward(remainingDistance, SteeringSpeed, elapsedTime.GetDelta(Motion)).Normalized();
 
             Vector2 velocity = _direction * Speed * elapsedTime.GetDelta(Motion);
+
             if (float.IsPositiveInfinity(velocity.X) || float.IsNegativeInfinity(velocity.X) || float.IsPositiveInfinity(velocity.Y) || float.IsNegativeInfinity(velocity.Y))
                 return remainingDistance;
-            
+
             Vector2 newRemainingDistance = Destination.Value - (Motion.SceneNode.Position + velocity);
             return Vector2.Dot(newRemainingDistance, remainingDistance) <= 0 ? remainingDistance : velocity;
         }

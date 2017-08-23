@@ -51,6 +51,7 @@
     <Compile Include="Motors\Base\MotorBase.cs" />
     <Compile Include="Motors\LinearMotor.cs" />
     <Compile Include="Motors\MeasurableTrajectoryMotor.cs" />
+    <Compile Include="Motors\SeekingMotor.cs" />
     <Compile Include="Motors\SteeringMotor.cs" />
     <Compile Include="Motors\TimedTrajectoryMotor.cs" />
     <Compile Include="Motors\Base\TrajectoryMotorBase.cs" />
