@@ -1,5 +1,5 @@
 using System;
-using Diese.Graph;
+using System.Linq;
 using Diese.Scheduling;
 using Diese.Scheduling.Controllers;
 using Glyph.Composition;
@@ -49,12 +49,31 @@ namespace Glyph.Core.Scheduler
         {
             var castedComponent = component as TInterface;
             if (castedComponent != null)
-                Add(_interfaceToDelegate(castedComponent));
+                Add(castedComponent, _interfaceToDelegate);
         }
 
         void IGlyphSchedulerAssigner.AssignComponent(GlyphObject glyphObject)
         {
-            Add(_glyphObjectToDelegate(glyphObject));
+            Add(glyphObject, _glyphObjectToDelegate);
+        }
+
+        protected void Add<T>(T item, Func<T, TDelegate> delegateFunc)
+        {
+            TDelegate delegateItem = delegateFunc(item);
+
+            if (ItemsVertex.ContainsKey(delegateItem))
+                return;
+
+            SchedulerGraph<TDelegate>.Vertex vertex = SchedulerGraph.Vertices.FirstOrDefault(x => x.Predicate != null && x.Predicate(item));
+            if (vertex != null)
+            {
+                ItemsVertex.Add(delegateItem, vertex);
+                vertex.Items.Add(delegateItem);
+            }
+            else
+                AddItemVertex(delegateItem);
+
+            Refresh();
         }
 
         void IGlyphSchedulerAssigner.RemoveComponent(IGlyphComponent component)
@@ -105,46 +124,34 @@ namespace Glyph.Core.Scheduler
             public Controller Before<T>()
                 where T : TInterface
             {
-                foreach (TDelegate item in _scheduler.Items)
-                {
-                    var itemDelegate = item as Delegate;
-                    if (itemDelegate?.Target is T)
-                        Before(item);
-                }
+                foreach (TDelegate item in _scheduler.Items.Where(x => (x as Delegate)?.Target is T).ToArray())
+                    Before(item);
+
                 return this;
             }
 
             public Controller After<T>()
                 where T : TInterface
             {
-                foreach (TDelegate item in _scheduler.Items)
-                {
-                    var itemDelegate = item as Delegate;
-                    if (itemDelegate?.Target is T)
-                        After(item);
-                }
+                foreach (TDelegate item in _scheduler.Items.Where(x => (x as Delegate)?.Target is T).ToArray())
+                    After(item);
+
                 return this;
             }
 
             public Controller Before(Type type)
             {
-                foreach (TDelegate item in _scheduler.Items)
-                {
-                    var itemDelegate = item as Delegate;
-                    if (itemDelegate != null && type.IsInstanceOfType(itemDelegate.Target))
-                        Before(item);
-                }
+                foreach (TDelegate item in _scheduler.Items.Where(x => x is Delegate itemDelegate && type.IsInstanceOfType(itemDelegate.Target)).ToArray())
+                    Before(item);
+
                 return this;
             }
 
             public Controller After(Type type)
             {
-                foreach (TDelegate item in _scheduler.Items)
-                {
-                    var itemDelegate = item as Delegate;
-                    if (itemDelegate != null && type.IsInstanceOfType(itemDelegate.Target))
-                        After(item);
-                }
+                foreach (TDelegate item in _scheduler.Items.Where(x => x is Delegate itemDelegate && type.IsInstanceOfType(itemDelegate.Target)).ToArray())
+                    After(item);
+
                 return this;
             }
 
