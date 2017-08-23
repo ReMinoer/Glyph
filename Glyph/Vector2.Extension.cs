@@ -20,6 +20,11 @@ namespace Glyph
             return value == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(value);
         }
 
+        static public Vector2 ClampLength(this Vector2 value, float lengthMax)
+        {
+            return value.Length() > lengthMax ? value.Normalized() * lengthMax : value;
+        }
+
         static public Vector3 ToVector3(this Vector2 value)
         {
             return new Vector3(value.X, value.Y, 0);
@@ -82,6 +87,11 @@ namespace Glyph
         static public Vector2 Divide(this Vector2 value, float x, float y)
         {
             return new Vector2(value.X / x, value.Y / y);
+        }
+
+        static public Vector2 Orthogonal(this Vector2 value)
+        {
+            return new Vector2(-value.Y, value.X);
         }
 
         static public Vector2 Inverse(this Vector2 value)
