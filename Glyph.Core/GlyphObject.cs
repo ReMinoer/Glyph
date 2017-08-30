@@ -24,7 +24,6 @@ namespace Glyph.Core
 
         private bool _initialized;
         private bool _contentLoaded;
-        private readonly NewComponentBatchTree _newComponents;
         public SchedulerHandler Schedulers { get; }
         protected internal readonly GlyphCompositeInjector Injector;
         public bool Enabled { get; set; }
@@ -41,7 +40,6 @@ namespace Glyph.Core
             Injector = compositeInjector;
 
             Schedulers = new SchedulerHandler(injector);
-            _newComponents = new NewComponentBatchTree(this);
 
             foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ILocalInterpreter<>)))
                 Injector.LocalRegistry.Register(typeof(IRouter<>).MakeGenericType(type.GetGenericArguments()), typeof(LocalRouter<>).MakeGenericType(type.GetGenericArguments()), Subsistence.Singleton);
@@ -64,12 +62,6 @@ namespace Glyph.Core
         // TODO : Handle injection on changing children & parents
         public override sealed void Add(IGlyphComponent item)
         {
-            if (_newComponents.IsBatching)
-            {
-                _newComponents.Add(item);
-                return;
-            }
-
             if (Contains(item))
                 throw new ArgumentException("Component provided is already contained by this entity !");
 
@@ -123,38 +115,29 @@ namespace Glyph.Core
 
         public override sealed void Initialize()
         {
-            using (_newComponents.Batch())
-            {
-                foreach (InitializeDelegate initialize in Schedulers.Initialize.Planning)
-                    initialize();
+            foreach (InitializeDelegate initialize in Schedulers.Initialize.Planning.ToArray())
+                initialize();
 
-                _initialized = true;
-            }
+            _initialized = true;
         }
 
         public void LoadContent(ContentLibrary contentLibrary)
         {
-            using (_newComponents.Batch())
-            {
-                foreach (LoadContentDelegate loadContent in Schedulers.LoadContent.Planning)
-                    loadContent(contentLibrary);
+            foreach (LoadContentDelegate loadContent in Schedulers.LoadContent.Planning.ToArray())
+                loadContent(contentLibrary);
 
-                _contentLoaded = true;
-            }
+            _contentLoaded = true;
         }
 
         public void Update(ElapsedTime elapsedTime)
         {
-            using (_newComponents.Batch())
+            foreach (UpdateDelegate update in Schedulers.Update.Planning.ToArray())
             {
-                foreach (UpdateDelegate update in Schedulers.Update.Planning)
-                {
-                    if (!Enabled)
-                        return;
+                if (!Enabled)
+                    return;
 
-                    using (UpdateWatchTree.Start($"{update.Target?.GetType().GetDisplayName()} -- {update.Method.Name}"))
-                        update(elapsedTime);
-                }
+                using (UpdateWatchTree.Start($"{update.Target?.GetType().GetDisplayName()} -- {update.Method.Name}"))
+                    update(elapsedTime);
             }
         }
         
@@ -163,7 +146,7 @@ namespace Glyph.Core
             if (!this.Displayed(drawer.Client, drawer))
                 return;
 
-            foreach (DrawDelegate draw in Schedulers.Draw.Planning)
+            foreach (DrawDelegate draw in Schedulers.Draw.Planning.ToArray())
                 draw(drawer);
         }
 
@@ -175,32 +158,6 @@ namespace Glyph.Core
         }
         
         IArea IBoxedComponent.Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));
-
-        private sealed class NewComponentBatchTree : BatchTree<QueueBatchNode<IGlyphComponent>>
-        {
-            private readonly GlyphObject _owner;
-
-            public NewComponentBatchTree(GlyphObject owner)
-            {
-                _owner = owner;
-            }
-
-            public void Add(IGlyphComponent item)
-            {
-                NodeStack.Peek().Queue.Enqueue(item);
-            }
-
-            protected override QueueBatchNode<IGlyphComponent> CreateBatchNode()
-            {
-                return new QueueBatchNode<IGlyphComponent>(this);
-            }
-
-            protected override void OnNodeEnded(QueueBatchNode<IGlyphComponent> batchNode, int depth)
-            {
-                while (batchNode.Queue.Count != 0)
-                    _owner.Add(batchNode.Queue.Dequeue());
-            }
-        }
 
         public class SchedulerHandler : GlyphSchedulerHandler
         {
