@@ -110,7 +110,7 @@ namespace Glyph.Animation
             Transition transition;
             if (!vertex.Successors.Any(x => x.OnRequest && x.End.InnerStates.ContainsKey(key), out transition))
                 return false;
-            
+
             vertex = _states[transition.End.InnerStates.First().Key];
             state = vertex.Update(Animatable);
             Current = state.Key;
@@ -119,6 +119,14 @@ namespace Glyph.Animation
 
             UpdateAnimationPlayer(state);
             return true;
+        }
+
+        public bool CanTransitTo(TState key)
+        {
+            Vertex vertex = _states[Current];
+            State state = vertex.Update(Animatable);
+            Current = state.Key;
+            return vertex.Successors.Any(x => x.OnRequest && x.End.InnerStates.ContainsKey(key));
         }
 
         public IStateController GetState(TState state)
