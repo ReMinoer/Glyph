@@ -55,6 +55,7 @@
     <Compile Include="Motors\SteeringMotor.cs" />
     <Compile Include="Motors\TimedTrajectoryMotor.cs" />
     <Compile Include="Motors\Base\TrajectoryMotorBase.cs" />
+    <Compile Include="Motors\TrackMotor.cs" />
     <Compile Include="NumericAnimationBuilder.cs" />
     <Compile Include="PropertiesAnimationBuilder.cs" />
     <Compile Include="AnimationKeyPoint.cs" />
