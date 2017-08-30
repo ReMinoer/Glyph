@@ -6,6 +6,7 @@ namespace Glyph.Animation.Trajectories
     {
         public ITrajectory Trajectory { get; }
         public float Duration { get; }
+
         public Vector2 Origin => Trajectory.Origin;
         public Vector2 Destination => Trajectory.Destination;
 
@@ -13,6 +14,17 @@ namespace Glyph.Animation.Trajectories
         {
             Trajectory = trajectory;
             Duration = duration;
+        }
+
+        public float GetTime(float progress)
+        {
+            return Duration * progress;
+        }
+
+        public Vector2 GetPosition(float progress, out float time)
+        {
+            time = GetTime(progress);
+            return Trajectory.GetPosition(progress);
         }
 
         public Vector2 GetPositionAtTime(float time)
