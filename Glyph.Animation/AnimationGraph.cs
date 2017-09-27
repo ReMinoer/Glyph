@@ -38,13 +38,13 @@ namespace Glyph.Animation
 
         public IAnimation<T> this[TState state]
         {
-            get { return ResolveState(state).Animation; }
-            set { ResolveState(state).Animation = value; }
+            get => ResolveState(state).Animation;
+            set => ResolveState(state).Animation = value;
         }
 
         public bool UseUnscaledTime
         {
-            get { return _useUnscaledTime; }
+            get => _useUnscaledTime;
             set
             {
                 _useUnscaledTime = value;
@@ -84,8 +84,7 @@ namespace Glyph.Animation
                 Logger.Trace($"{Animatable.GetType().GetDisplayName()} state: {Current}");
             }
 
-            Transition transition;
-            while (vertex.Successors.Any(x => Components.All(y => y.IsLooping || y.Ended) && (x.Predicate == null || x.Predicate != null && x.Predicate(Animatable)) && !x.OnRequest, out transition))
+            while (vertex.Successors.Any(x => Components.All(y => y.IsLooping || y.Ended) && (x.Predicate == null || x.Predicate(Animatable)) && !x.OnRequest, out Transition transition))
             {
                 Current = transition.End.InnerStates.First().Key;
 
@@ -104,15 +103,12 @@ namespace Glyph.Animation
         public bool TryRequestTransitionTo(TState key)
         {
             Vertex vertex = _states[Current];
-            State state = vertex.Update(Animatable);
-            Current = state.Key;
 
-            Transition transition;
-            if (!vertex.Successors.Any(x => x.OnRequest && x.End.InnerStates.ContainsKey(key), out transition))
+            if (!vertex.Successors.Any(x => x.OnRequest && x.End.InnerStates.ContainsKey(key), out Transition transition))
                 return false;
 
             vertex = _states[transition.End.InnerStates.First().Key];
-            state = vertex.Update(Animatable);
+            State state = vertex.Update(Animatable);
             Current = state.Key;
 
             Logger.Trace($"{Animatable.GetType().GetDisplayName()} state: {Current}");
@@ -124,8 +120,6 @@ namespace Glyph.Animation
         public bool CanTransitTo(TState key)
         {
             Vertex vertex = _states[Current];
-            State state = vertex.Update(Animatable);
-            Current = state.Key;
             return vertex.Successors.Any(x => x.OnRequest && x.End.InnerStates.ContainsKey(key));
         }
 
@@ -178,16 +172,14 @@ namespace Glyph.Animation
 
         private Vertex ResolveVertex(TState state)
         {
-            Vertex vertex;
-            if (!_states.TryGetValue(state, out vertex))
+            if (!_states.TryGetValue(state, out Vertex vertex))
                 _graph.AddVertex(_states[state] = vertex = new SingleStateVertex(state));
             return vertex;
         }
 
         private State ResolveState(TState state)
         {
-            Vertex vertex;
-            if (_states.TryGetValue(state, out vertex))
+            if (_states.TryGetValue(state, out Vertex vertex))
                 return vertex.InnerStates[state];
 
             var newState = new SingleStateVertex(state);
@@ -261,7 +253,7 @@ namespace Glyph.Animation
 
         public class Transition : Edge<Vertex, Transition>
         {
-            public Predicate<T> Predicate { get; set; }
+            public Predicate<T> Predicate { get; }
             public bool OnRequest { get; set; }
 
             public Transition(Predicate<T> predicate)
