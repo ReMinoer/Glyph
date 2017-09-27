@@ -71,6 +71,7 @@
     <Compile Include="Math\Shapes\Circle.cs" />
     <Compile Include="Math\Shapes\IntersectionUtils.cs" />
     <Compile Include="Math\Shapes\IRectangle.cs" />
+    <Compile Include="Math\Shapes\RectangleExtensions.cs" />
     <Compile Include="Math\Shapes\TopLeftRectangle.cs" />
     <Compile Include="Math\Transformation.cs" />
     <Compile Include="Point.Extension.cs" />

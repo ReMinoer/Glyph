@@ -37,7 +37,7 @@ namespace Glyph.Graphics.Renderer
             if (!drawnRectangle.Intersects(cameraRectangle, out visibleRectangle))
                 return;
 
-            Rectangle visibleSubGrid = MathUtils.ClampToRectangle(Grid.ToGridRange(visibleRectangle).ToFloats(), Grid.Bounds.ToFloats()).ToIntegers();
+            Rectangle visibleSubGrid = RectangleExtensions.ClampToRectangle(Grid.ToGridRange(visibleRectangle).ToFloats(), Grid.Bounds.ToFloats()).ToIntegers();
 
             for (int i = visibleSubGrid.Top; i < visibleSubGrid.Bottom; i++)
                 for (int j = visibleSubGrid.Left; j < visibleSubGrid.Right; j++)

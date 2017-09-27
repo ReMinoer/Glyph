@@ -79,55 +79,5 @@ namespace Glyph.Math
         {
             return GetBoundingBox(areas.Select(x => x.BoundingBox));
         }
-
-        static public Vector2 ClampToRectangle(Vector2 point, TopLeftRectangle rectangle)
-        {
-            if (point.X < rectangle.Left)
-                point.X = rectangle.Left;
-            if (point.X > rectangle.Right)
-                point.X = rectangle.Right;
-            if (point.Y < rectangle.Top)
-                point.Y = rectangle.Top;
-            if (point.Y > rectangle.Bottom)
-                point.Y = rectangle.Bottom;
-
-            return point;
-        }
-
-        static public TopLeftRectangle ClampToRectangle(TopLeftRectangle inner, TopLeftRectangle outer)
-        {
-            if (inner.Left < outer.Left)
-            {
-                inner.Width -= outer.Left - inner.Left;
-                inner.Left = outer.Left;
-            }
-            if (inner.Right > outer.Right)
-                inner.Width -= inner.Right - outer.Right;
-
-            if (inner.Top < outer.Top)
-            {
-                inner.Height -= outer.Top - inner.Top;
-                inner.Top = outer.Top;
-            }
-            if (inner.Bottom > outer.Bottom)
-                inner.Height -= inner.Bottom - outer.Bottom;
-
-            return inner;
-        }
-
-        static public TopLeftRectangle EncaseRectangle(TopLeftRectangle inner, TopLeftRectangle outer)
-        {
-            if (inner.Left < outer.Left)
-                inner.Left += outer.Left - inner.Left;
-            else if (inner.Right > outer.Right)
-                inner.Left -= inner.Right - outer.Right;
-
-            if (inner.Top < outer.Top)
-                inner.Top += outer.Top - inner.Top;
-            else if (inner.Bottom > outer.Bottom)
-                inner.Top -= inner.Bottom - outer.Bottom;
-
-            return inner;
-        }
     }
 }
