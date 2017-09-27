@@ -106,6 +106,12 @@ namespace Glyph.Core
             return true;
         }
 
+        public void RemoveAndDispose(IGlyphComponent item)
+        {
+            Remove(item);
+            item.Dispose();
+        }
+
         public override sealed void Clear()
         {
             base.Clear();
@@ -115,25 +121,44 @@ namespace Glyph.Core
 
         public override sealed void Initialize()
         {
+            if (Disposed)
+                return;
+
             foreach (InitializeDelegate initialize in Schedulers.Initialize.Planning.ToArray())
+            {
+                if (Disposed)
+                    return;
+
                 initialize();
+            }
 
             _initialized = true;
         }
 
         public void LoadContent(ContentLibrary contentLibrary)
         {
+            if (Disposed)
+                return;
+
             foreach (LoadContentDelegate loadContent in Schedulers.LoadContent.Planning.ToArray())
+            {
+                if (Disposed)
+                    return;
+
                 loadContent(contentLibrary);
+            }
 
             _contentLoaded = true;
         }
 
         public void Update(ElapsedTime elapsedTime)
         {
+            if (Disposed || !Enabled)
+                return;
+
             foreach (UpdateDelegate update in Schedulers.Update.Planning.ToArray())
             {
-                if (!Enabled)
+                if (Disposed || !Enabled)
                     return;
 
                 using (UpdateWatchTree.Start($"{update.Target?.GetType().GetDisplayName()} -- {update.Method.Name}"))
@@ -143,7 +168,7 @@ namespace Glyph.Core
         
         public void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer.Client, drawer))
+            if (Disposed || !this.Displayed(drawer.Client, drawer))
                 return;
 
             foreach (DrawDelegate draw in Schedulers.Draw.Planning.ToArray())

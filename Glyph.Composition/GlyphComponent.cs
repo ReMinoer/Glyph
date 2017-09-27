@@ -9,6 +9,7 @@ namespace Glyph.Composition
     public class GlyphComponent : Component<IGlyphComponent, IGlyphParent>, IGlyphComponent
     {
         public string Name { get; set; }
+        public bool Disposed { get; private set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
         public GlyphComponent()
@@ -29,6 +30,7 @@ namespace Glyph.Composition
         public virtual void Dispose()
         {
             InstanceManager.DisposeProcess(this);
+            Disposed = true;
         }
 
         [NotifyPropertyChangedInvocator]

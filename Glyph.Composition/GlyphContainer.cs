@@ -15,6 +15,7 @@ namespace Glyph.Composition
     {
         public string Name { get; set; }
         public bool IsFreeze { get; set; }
+        public bool Disposed { get; private set; }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected GlyphContainer()
@@ -38,6 +39,7 @@ namespace Glyph.Composition
                 component.Dispose();
 
             InstanceManager.DisposeProcess(this);
+            Disposed = true;
         }
 
         [NotifyPropertyChangedInvocator]

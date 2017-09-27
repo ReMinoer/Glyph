@@ -8,6 +8,7 @@ namespace Glyph.Composition
     public interface IGlyphComponent : IComponent<IGlyphComponent, IGlyphParent>, IDisposable, INotifyPropertyChanged
     {
         string Name { get; set; }
+        bool Disposed { get; }
         void Initialize();
     }
 }
