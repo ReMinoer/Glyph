@@ -20,6 +20,11 @@ namespace Glyph
             return value == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(value);
         }
 
+        static public bool IsNormalizedCoordinates(this Vector2 point)
+        {
+            return point.X >= 0 && point.X <= 1 && point.Y >= 0 && point.Y <= 1;
+        }
+
         static public Vector2 ClampLength(this Vector2 value, float lengthMax)
         {
             return value.Length() > lengthMax ? value.Normalized() * lengthMax : value;
