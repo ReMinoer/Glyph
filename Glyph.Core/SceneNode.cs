@@ -153,7 +153,7 @@ namespace Glyph.Core
 
         public override void Dispose()
         {
-            foreach (ISceneNode childNode in _childrenNodes)
+            foreach (ISceneNode childNode in _childrenNodes.ToArray())
                 childNode.SetParent(null);
 
             SetParent(null);
