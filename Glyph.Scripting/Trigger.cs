@@ -16,7 +16,7 @@ namespace Glyph.Scripting
         private readonly SceneNode _sceneNode;
         public bool Enabled { get; set; }
         public Vector2 Size { get; set; }
-        public bool IsVoid => Shape.IsVoid;
+        public Predicate<Actor> ActorPredicate { get; set; }
 
         public Vector2 LocalPosition
         {
@@ -35,6 +35,7 @@ namespace Glyph.Scripting
         TopLeftRectangle IArea.BoundingBox => Shape;
         IArea IBoxedComponent.Area => Shape;
         Vector2 IShape.Center => Shape.Center;
+        public bool IsVoid => Shape.IsVoid;
 
         public event Action<OnEnterTrigger> OnEnter;
         public event Action<OnLeaveTrigger> OnLeave;
@@ -68,6 +69,11 @@ namespace Glyph.Scripting
             var message = new OnLeaveTrigger(this, actor);
             _onLeaveRouter?.Send(message);
             OnLeave?.Invoke(message);
+        }
+
+        private bool Interpret(TriggerMessageBase message)
+        {
+            return !message.IsHandled && (ActorPredicate == null || ActorPredicate(message.Actor));
         }
 
         public bool Intersects(TopLeftRectangle rectangle)
