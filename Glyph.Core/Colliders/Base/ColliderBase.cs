@@ -14,6 +14,7 @@ namespace Glyph.Core.Colliders.Base
         protected SceneNode ParentNode { get; private set; }
         public abstract TopLeftRectangle BoundingBox { get; }
         public abstract bool IsVoid { get; }
+        public bool Unphysical { get; set; }
 
         public Vector2 LocalCenter
         {
@@ -58,7 +59,7 @@ namespace Glyph.Core.Colliders.Base
 
         public void Update(ElapsedTime elapsedTime)
         {
-            if (!Enabled || IsFreeze || Parent.IsFreeze)
+            if (!Enabled || Unphysical || IsFreeze || Parent.IsFreeze)
                 return;
 
             Collision collision;

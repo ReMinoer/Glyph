@@ -38,7 +38,7 @@ namespace Glyph.Core
 
         internal bool ResolveOneCollision(ICollider collider, out Collision collision)
         {
-            foreach (ICollider other in Space.GetAllItemsInRange(collider).Where(other => other != collider && other.Enabled))
+            foreach (ICollider other in Space.GetAllItemsInRange(collider).Where(other => other != collider && other.Enabled && !other.Unphysical))
                 if (collider.IsColliding(other, out collision))
                     return true;
 

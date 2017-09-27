@@ -21,6 +21,12 @@ namespace Glyph.Core.Colliders
             set { _colliderParentImplementation.Enabled = value; }
         }
 
+        public bool Unphysical
+        {
+            get { return _colliderParentImplementation.Unphysical; }
+            set { _colliderParentImplementation.Unphysical = value; }
+        }
+
         public Vector2 Center
         {
             get { return _colliderParentImplementation.Center; }

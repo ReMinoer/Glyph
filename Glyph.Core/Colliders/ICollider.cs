@@ -8,6 +8,7 @@ namespace Glyph.Core.Colliders
     public interface ICollider : IMovableShape, IEnableable, IUpdate
     {
         bool IsFreeze { get; set; }
+        bool Unphysical { get; set; }
         Vector2 LocalCenter { get; set; }
         Predicate<ICollider> IgnoredFilter { get; set; }
         event Action<Collision> Colliding;

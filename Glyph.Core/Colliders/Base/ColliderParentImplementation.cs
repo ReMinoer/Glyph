@@ -11,6 +11,7 @@ namespace Glyph.Core.Colliders.Base
     {
         private readonly IGlyphParent<ICollider> _colliderParent;
         public bool Enabled { get; set; }
+        public bool Unphysical { get; set; }
         public Predicate<ICollider> IgnoredFilter { get; set; }
         public bool IsVoid => _colliderParent.Components.All(x => x.IsVoid);
 
