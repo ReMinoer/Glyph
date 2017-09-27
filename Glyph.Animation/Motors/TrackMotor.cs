@@ -9,6 +9,7 @@ namespace Glyph.Animation.Motors
         public IMeasurableTrajectory Trajectory { get; set; }
         public float Speed { get; set; }
         public float Progress { get; set; }
+        public float Distance => Trajectory.GetDistance(Progress);
 
         public TrackMotor(Motion motion)
             : base(motion)
@@ -17,7 +18,10 @@ namespace Glyph.Animation.Motors
 
         protected override Vector2 UpdateVelocity(ElapsedTime elapsedTime)
         {
-            float distance = Trajectory.GetDistance(Progress);
+            if (Trajectory == null)
+                return Vector2.Zero;
+
+            float distance = Distance;
             distance += Speed * elapsedTime.GetDelta(Motion);
             Vector2 newPosition = Trajectory.GetPositionAtDistance(distance, out float progress);
             Progress = progress;
