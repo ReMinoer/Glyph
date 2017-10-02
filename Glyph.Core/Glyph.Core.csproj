@@ -90,6 +90,7 @@
     <Compile Include="ReadOnlySceneNode.cs" />
     <Compile Include="SceneGraphUtils.cs" />
     <Compile Include="SceneNode.cs" />
+    <Compile Include="SceneNodeExtension.cs" />
     <Compile Include="Scheduler\GlyphScheduler.cs" />
     <Compile Include="Scheduler\GlyphSchedulerHandler.cs" />
     <Compile Include="Scheduler\GlyphSchedulerSorter.cs" />
