@@ -20,7 +20,8 @@ namespace Glyph.Animation
         private readonly Dictionary<TState, Vertex> _states;
         private readonly ReadOnlyDictionary<TState, Vertex> _readOnlyStates;
         private bool _useUnscaledTime;
-        
+        private bool _started;
+
         [GlyphInjectable(GlyphInjectableTargets.Parent | GlyphInjectableTargets.Fraternal)]
         public T Animatable { get; set; }
         public TState Current { get; private set; }
@@ -65,6 +66,7 @@ namespace Glyph.Animation
         public override void Initialize()
         {
             Current = Start;
+            _started = false;
         }
 
         public void Update(ElapsedTime elapsedTime)
@@ -78,10 +80,11 @@ namespace Glyph.Animation
             State state = vertex.Update(Animatable);
             Current = state.Key;
 
-            if (!Current.Equals(previous))
+            if (!_started || !Current.Equals(previous))
             {
                 UpdateAnimationPlayer(state);
                 Logger.Trace($"{Animatable.GetType().GetDisplayName()} state: {Current}");
+                _started = true;
             }
 
             while (vertex.Successors.Any(x => Components.All(y => y.IsLooping || y.Ended) && (x.Predicate == null || x.Predicate(Animatable)) && !x.OnRequest, out Transition transition))
