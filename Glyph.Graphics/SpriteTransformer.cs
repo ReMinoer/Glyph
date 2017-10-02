@@ -70,7 +70,7 @@ namespace Glyph.Graphics
         public float Opacity
         {
             get { return Color.GetOpacity(); }
-            set { Color = Color.SetOpacity(value); }
+            set { Color = Color.WithOpacity(value); }
         }
 
         public SpriteTransformer()

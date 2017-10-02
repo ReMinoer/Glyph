@@ -6,12 +6,12 @@ namespace Glyph
     {
         static public float GetOpacity(this Color color)
         {
-            return MathHelper.Lerp(0, 1, (float)color.A / 255);
+            return (float)color.A / 255;
         }
 
-        static public Color SetOpacity(this Color color, float alpha)
+        static public Color WithOpacity(this Color color, float alpha)
         {
-            return color * alpha;
+            return color.A == 0 ? Color.Transparent : color * (255f / color.A) * alpha;
         }
     }
 }
