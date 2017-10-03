@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Diese;
-using Glyph.Composition.Annotations;
 using Stave;
 
 namespace Glyph.Composition
@@ -42,19 +40,6 @@ namespace Glyph.Composition
 
             InstanceManager.DisposeProcess(this);
             Disposed = true;
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged(params string[] propertyNames)
-        {
-            foreach (string name in propertyNames)
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

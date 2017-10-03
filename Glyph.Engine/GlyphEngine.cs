@@ -12,7 +12,6 @@ using Fingear.MonoGame.Inputs;
 using Glyph.Application;
 using Glyph.Audio;
 using Glyph.Composition;
-using Glyph.Composition.Annotations;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Graphics;
@@ -220,12 +219,6 @@ namespace Glyph.Engine
             Logger.Info("Pause engine");
 
             Paused?.Invoke();
-        }
-
-        [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
