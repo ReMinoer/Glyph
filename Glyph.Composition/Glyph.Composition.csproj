@@ -40,6 +40,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\GlyphComponentBase.cs" />
+    <Compile Include="Base\GlyphContainerBase.cs" />
     <Compile Include="Delegates\DrawDelegate.cs" />
     <Compile Include="DrawUtils.cs" />
     <Compile Include="Exceptions\ComponentNotFoundException.cs" />
@@ -62,7 +64,6 @@
     <Compile Include="IGlyphComponent.cs" />
     <Compile Include="IGlyphComposite.cs" />
     <Compile Include="IGlyphContainer.cs" />
-    <Compile Include="IGlyphParent.cs" />
     <Compile Include="Delegates\InitializeDelegate.cs" />
     <Compile Include="Delegates\LoadContentDelegate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

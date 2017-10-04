@@ -6,14 +6,14 @@ using Stave;
 
 namespace Glyph.Effects
 {
-    public class EffectContainer : EffectContainer<IEffectComponent>, IEffectContainer
+    public class EffectContainer : EffectContainer<IEffectComponent>
     {
         protected EffectContainer()
         {
         }
     }
 
-    public class EffectContainer<TComponent> : Container<IEffectComponent, IEffectParent, TComponent>, IEffectContainer<TComponent>
+    public class EffectContainer<TComponent> : Container<IEffectComponent, IEffectContainer, TComponent>, IEffectContainer<TComponent>
         where TComponent : class, IEffectComponent
     {
         public bool Enabled { get; set; }

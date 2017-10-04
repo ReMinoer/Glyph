@@ -9,15 +9,15 @@ namespace Glyph.Core.Colliders.Base
 {
     internal class ColliderParentImplementation : IMovableShape
     {
-        private readonly IGlyphParent<ICollider> _colliderParent;
+        private readonly IGlyphContainer<ICollider> _colliderContainer;
         public bool Enabled { get; set; }
         public bool Unphysical { get; set; }
         public Predicate<ICollider> IgnoredFilter { get; set; }
-        public bool IsVoid => _colliderParent.Components.All(x => x.IsVoid);
+        public bool IsVoid => _colliderContainer.Components.All(x => x.IsVoid);
 
-        public ColliderParentImplementation(IGlyphParent<ICollider> colliderParent)
+        public ColliderParentImplementation(IGlyphContainer<ICollider> colliderContainer)
         {
-            _colliderParent = colliderParent;
+            _colliderContainer = colliderContainer;
         }
 
         public Vector2 Center
@@ -26,7 +26,7 @@ namespace Glyph.Core.Colliders.Base
             {
                 int i = 0;
                 Vector2 center = Vector2.Zero;
-                foreach (ICollider collider in _colliderParent.Components)
+                foreach (ICollider collider in _colliderContainer.Components)
                 {
                     center += collider.Center;
                     i++;
@@ -36,7 +36,7 @@ namespace Glyph.Core.Colliders.Base
             set
             {
                 Vector2 center = Center;
-                foreach (ICollider collider in _colliderParent.Components)
+                foreach (ICollider collider in _colliderContainer.Components)
                     collider.Center = collider.Center - center + value;
             }
         }
@@ -47,7 +47,7 @@ namespace Glyph.Core.Colliders.Base
             {
                 int i = 0;
                 Vector2 localCenter = Vector2.Zero;
-                foreach (ICollider collider in _colliderParent.Components)
+                foreach (ICollider collider in _colliderContainer.Components)
                 {
                     localCenter += collider.LocalCenter;
                     i++;
@@ -57,26 +57,26 @@ namespace Glyph.Core.Colliders.Base
             set
             {
                 Vector2 localCenter = LocalCenter;
-                foreach (ICollider collider in _colliderParent.Components)
+                foreach (ICollider collider in _colliderContainer.Components)
                     collider.LocalCenter = collider.LocalCenter - localCenter + value;
             }
         }
 
         public TopLeftRectangle BoundingBox
         {
-            get { return MathUtils.GetBoundingBox(_colliderParent.Components); }
+            get { return MathUtils.GetBoundingBox(_colliderContainer.Components); }
         }
 
         public event Action<Collision> Colliding
         {
             add
             {
-                foreach (ICollider collider in _colliderParent.Components)
+                foreach (ICollider collider in _colliderContainer.Components)
                     collider.Colliding += value;
             }
             remove
             {
-                foreach (ICollider collider in _colliderParent.Components)
+                foreach (ICollider collider in _colliderContainer.Components)
                     collider.Colliding -= value;
             }
         }
@@ -85,19 +85,19 @@ namespace Glyph.Core.Colliders.Base
         {
             add
             {
-                foreach (ICollider collider in _colliderParent.Components)
+                foreach (ICollider collider in _colliderContainer.Components)
                     collider.Collided += value;
             }
             remove
             {
-                foreach (ICollider collider in _colliderParent.Components)
+                foreach (ICollider collider in _colliderContainer.Components)
                     collider.Collided -= value;
             }
         }
 
         public void Initialize()
         {
-            foreach (ICollider collider in _colliderParent.Components)
+            foreach (ICollider collider in _colliderContainer.Components)
                 collider.Initialize();
         }
 
@@ -106,7 +106,7 @@ namespace Glyph.Core.Colliders.Base
             if (!Enabled)
                 return;
 
-            foreach (ICollider collider in _colliderParent.Components)
+            foreach (ICollider collider in _colliderContainer.Components)
                 collider.Update(elapsedTime);
         }
 
@@ -118,7 +118,7 @@ namespace Glyph.Core.Colliders.Base
                 return false;
             }
 
-            foreach (ICollider component in _colliderParent.Components)
+            foreach (ICollider component in _colliderContainer.Components)
                 if (component.IsColliding(component, out collision))
                     return true;
 
@@ -128,17 +128,17 @@ namespace Glyph.Core.Colliders.Base
 
         public bool Intersects(TopLeftRectangle rectangle)
         {
-            return _colliderParent.Components.Any(component => component.Intersects(rectangle));
+            return _colliderContainer.Components.Any(component => component.Intersects(rectangle));
         }
 
         public bool Intersects(Circle circle)
         {
-            return _colliderParent.Components.Any(component => component.Intersects(circle));
+            return _colliderContainer.Components.Any(component => component.Intersects(circle));
         }
 
         public bool ContainsPoint(Vector2 point)
         {
-            return _colliderParent.Components.Any(component => component.ContainsPoint(point));
+            return _colliderContainer.Components.Any(component => component.ContainsPoint(point));
         }
     }
 }

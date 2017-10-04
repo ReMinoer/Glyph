@@ -44,7 +44,6 @@
     <Compile Include="EffectContainer.cs" />
     <Compile Include="IEffectComponent.cs" />
     <Compile Include="IEffectComposite.cs" />
-    <Compile Include="IEffectParent.cs" />
     <Compile Include="IEffectContainer.cs" />
     <Compile Include="Masked\MaskedEffect.cs" />
     <Compile Include="Masked\MaskPatch.cs" />

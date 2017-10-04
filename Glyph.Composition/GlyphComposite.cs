@@ -1,45 +1,45 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Diese;
+using Diese.Collections;
+using Glyph.Composition.Base;
 using Stave;
+using IComponent = Stave.IComponent;
 
 namespace Glyph.Composition
 {
-    public abstract class GlyphComposite : GlyphComposite<IGlyphComponent>
+    public class GlyphComposite : GlyphComposite<IGlyphComponent>
     {
     }
 
-    public abstract class GlyphComposite<TComponent> : Composite<IGlyphComponent, IGlyphParent, TComponent>, IGlyphComposite<TComponent>
+    public class GlyphComposite<TComponent> : GlyphContainerBase<TComponent>, IGlyphComposite<TComponent>
         where TComponent : class, IGlyphComponent
     {
-        public string Name { get; set; }
-        public bool IsFreeze { get; set; }
-        public bool Disposed { get; private set; }
-        public event PropertyChangedEventHandler PropertyChanged;
-
         protected GlyphComposite()
         {
-            Name = GetType().GetDisplayName();
-            InstanceManager.ConstructorProcess(this);
+            _component = new Composite<IGlyphComponent, IGlyphContainer, TComponent>(this);
         }
 
-        public virtual void Initialize()
+        public override void Dispose()
         {
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public virtual void Dispose()
-        {
-            foreach (TComponent component in Components)
+            foreach (TComponent component in ReadOnlyComponents)
                 component.Dispose();
 
             Clear();
 
-            InstanceManager.DisposeProcess(this);
-            Disposed = true;
+            base.Dispose();
         }
+
+        private readonly IComposite<IGlyphComponent, IGlyphContainer, TComponent> _component;
+
+        internal override IContainer<IGlyphComponent, IGlyphContainer, TComponent> ContainerImplementation => _component;
+        internal override IEnumerable<TComponent> ReadOnlyComponents => _component.Components;
+
+        public IWrappedCollection<TComponent> Components => _component.Components;
+        public virtual void Add(TComponent item) => _component.Add(item);
+        public virtual bool Remove(TComponent item) => _component.Remove(item);
+        public virtual void Clear() => _component.Clear();
+        public bool Contains(TComponent item) => _component.Contains(item);
     }
 }

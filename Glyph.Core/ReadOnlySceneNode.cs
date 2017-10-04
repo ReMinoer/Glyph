@@ -10,7 +10,7 @@ namespace Glyph.Core
     {
         private readonly ISceneNode _sceneNode;
 
-        public IGlyphParent Parent
+        public IGlyphContainer Parent
         {
             get { return _sceneNode.Parent; }
         }

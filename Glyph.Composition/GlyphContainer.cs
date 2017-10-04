@@ -1,43 +1,36 @@
-﻿using System.ComponentModel;
-using Diese;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Glyph.Composition.Base;
 using Stave;
+using Stave.Base;
 
 namespace Glyph.Composition
 {
-    public abstract class GlyphContainer : GlyphContainer<IGlyphComponent>
+    public class GlyphContainer : GlyphContainer<IGlyphComponent>
     {
     }
 
-    public abstract class GlyphContainer<TComponent> : Container<IGlyphComponent, IGlyphParent, TComponent>, IGlyphContainer<TComponent>
+    public class GlyphContainer<TComponent> : GlyphContainerBase<TComponent>
         where TComponent : class, IGlyphComponent
     {
-        public string Name { get; set; }
-        public bool IsFreeze { get; set; }
-        public bool Disposed { get; private set; }
-        public event PropertyChangedEventHandler PropertyChanged;
-
         protected GlyphContainer()
         {
-            Name = GetType().GetDisplayName();
-            InstanceManager.ConstructorProcess(this);
+            _component = new SealedOrderedComposite<IGlyphComponent, IGlyphContainer, TComponent>(this);
+            ReadOnlyComponents = new ReadOnlyCollection<TComponent>(Components);
         }
 
-        public virtual void Initialize()
+        public override void Dispose()
         {
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public virtual void Dispose()
-        {
-            foreach (TComponent component in Components)
+            foreach (TComponent component in ReadOnlyComponents)
                 component.Dispose();
 
-            InstanceManager.DisposeProcess(this);
-            Disposed = true;
+            base.Dispose();
         }
+
+        private readonly SealedOrderedComposite<IGlyphComponent, IGlyphContainer, TComponent> _component;
+        protected ComponentList<IGlyphComponent, IGlyphContainer, TComponent> Components => _component.Components;
+
+        internal override IContainer<IGlyphComponent, IGlyphContainer, TComponent> ContainerImplementation => _component;
+        internal override IEnumerable<TComponent> ReadOnlyComponents { get; }
     }
 }

@@ -6,7 +6,7 @@ namespace Glyph.Effects
     {
     }
 
-    public interface IEffectComposite<TComponent> : IEffectComponent, IComposite<IEffectComponent, IEffectParent, TComponent>
+    public interface IEffectComposite<TComponent> : IEffectComponent, IComposite<IEffectComponent, IEffectContainer, TComponent>
         where TComponent : class, IEffectComponent
     {
     }

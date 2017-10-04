@@ -6,7 +6,7 @@ namespace Glyph.Composition
     {
     }
 
-    public interface IGlyphComposite<TComponent> : IComposite<IGlyphComponent, IGlyphParent, TComponent>, IGlyphParent<TComponent>
+    public interface IGlyphComposite<TComponent> : IComposite<IGlyphComponent, IGlyphContainer, TComponent>, IGlyphContainer<TComponent>
         where TComponent : class, IGlyphComponent
     {
     }

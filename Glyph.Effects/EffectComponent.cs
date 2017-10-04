@@ -5,7 +5,7 @@ using Stave;
 
 namespace Glyph.Effects
 {
-    public abstract class EffectComponent : Component<IEffectComponent, IEffectParent>, IEffectComponent
+    public abstract class EffectComponent : Component<IEffectComponent, IEffectContainer>, IEffectComponent
     {
         public virtual bool Enabled { get; set; }
         public string Name { get; set; }

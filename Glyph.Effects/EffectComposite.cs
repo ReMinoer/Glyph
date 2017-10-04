@@ -9,7 +9,7 @@ namespace Glyph.Effects
     {
     }
 
-    public abstract class EffectComposite<TComponent> : OrderedComposite<IEffectComponent, IEffectParent, TComponent>, IEffectComposite<TComponent>
+    public abstract class EffectComposite<TComponent> : OrderedComposite<IEffectComponent, IEffectContainer, TComponent>, IEffectComposite<TComponent>
         where TComponent : class, IEffectComponent
     {
         public bool Enabled { get; set; }

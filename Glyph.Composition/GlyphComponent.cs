@@ -1,35 +1,15 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Diese;
+﻿using Glyph.Composition.Base;
 using Stave;
 
 namespace Glyph.Composition
 {
-    public class GlyphComponent : Component<IGlyphComponent, IGlyphParent>, IGlyphComponent
+    public class GlyphComponent : GlyphComponentBase
     {
-        public string Name { get; set; }
-        public bool Disposed { get; private set; }
-        public event PropertyChangedEventHandler PropertyChanged;
+        internal override sealed IComponent<IGlyphComponent, IGlyphContainer> ComponentImplementation { get; }
 
         public GlyphComponent()
         {
-            Name = GetType().GetDisplayName();
-            InstanceManager.ConstructorProcess(this);
-        }
-
-        public virtual void Initialize()
-        {
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public virtual void Dispose()
-        {
-            InstanceManager.DisposeProcess(this);
-            Disposed = true;
+            ComponentImplementation = new Component<IGlyphComponent, IGlyphContainer>(this);
         }
     }
 }

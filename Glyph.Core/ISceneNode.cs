@@ -8,7 +8,7 @@ namespace Glyph.Core
 {
     public interface ISceneNode : IRepresentative<ISceneNode>
     {
-        IGlyphParent Parent { get; }
+        IGlyphContainer Parent { get; }
         ISceneNode ParentNode { get; }
         IEnumerable<ISceneNode> Children { get; }
         Vector2 Position { get; }
