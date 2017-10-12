@@ -27,8 +27,25 @@ namespace Glyph.Tools
         public bool Enabled { get; set; } = true;
         public ReadOnlySpace<IBoxedComponent> Space { get; }
         public IFilter<IInputClient> ClientFilter { get; set; }
-        public IControl<Vector2> Control { get; set; }
         public bool HandleInputs { get; set; }
+
+        private readonly Controls _controls;
+        private IControl<Vector2> _control;
+
+        public IControl<Vector2> Control
+        {
+            get => _control;
+            set
+            {
+                if (_control != null)
+                    _controls.Unregister(_control);
+                
+                _control = value;
+                
+                if (_control != null)
+                    _controls.Register(_control);
+            }
+        }
 
         public IBoxedComponent Selection
         {
@@ -45,7 +62,7 @@ namespace Glyph.Tools
 
         public event EventHandler<IBoxedComponent> SelectionChanged;
 
-        public ShapedObjectSelector(InputClientManager inputClientManager,
+        public ShapedObjectSelector(InputClientManager inputClientManager, ControlManager controlManager,
             IRouter<InstantiatingMessage<IBoxedComponent>> instantiatingRouter,
             IRouter<DisposingMessage<IBoxedComponent>> disposingRouter,
             IPartitioner partitioner = null)
@@ -54,8 +71,17 @@ namespace Glyph.Tools
             Components.Add(_messagingSpace);
             
             _inputClientManager = inputClientManager;
-
+            _controls = new Controls(controlManager);
+            _controls.Tags.Add(ControlLayerTag.Tools);
+            Components.Add(_controls);
+            
             Space = new ReadOnlySpace<IBoxedComponent>(_messagingSpace);
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            _controls.Initialize();
         }
 
         public void Update(ElapsedTime elapsedTime)
