@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Diese;
 using Stave;
 
 namespace Glyph.Composition.Base
 {
-    public abstract class GlyphComponentBase : IGlyphComponent
+    public abstract class GlyphComponentBase : IGlyphComponent, INotifyPropertyChanged
     {
         public string Name { get; set; }
         public bool Disposed { get; private set; }
         public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         protected GlyphComponentBase()
         {

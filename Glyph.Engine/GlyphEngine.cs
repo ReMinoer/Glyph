@@ -24,7 +24,7 @@ using NLog;
 
 namespace Glyph.Engine
 {
-    public class GlyphEngine : INotifyPropertyChanged
+    public class GlyphEngine
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ContentManager _contentManager;
@@ -62,8 +62,7 @@ namespace Glyph.Engine
                 FocusChanged?.Invoke(_focusedClient);
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        
         public event Action Started;
         public event Action Stopped;
         public event Action Paused;

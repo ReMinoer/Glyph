@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph", "Glyph\Glyph.csproj", "{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Audio", "Glyph.Audio\Glyph.Audio.csproj", "{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Tools", "Glyph.Tools\Glyph.Tools.csproj", "{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Input", "Glyph.Input\Glyph.Input.csproj", "{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.UI", "Glyph.UI\Glyph.UI.csproj", "{47E66422-AEFC-4B28-92C3-356FFD2E783C}"
 EndProject
@@ -94,10 +92,6 @@ Global
 		{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C0D6FD93-B1EB-4877-8125-A69BC3C2795A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{47E66422-AEFC-4B28-92C3-356FFD2E783C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{47E66422-AEFC-4B28-92C3-356FFD2E783C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47E66422-AEFC-4B28-92C3-356FFD2E783C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -228,5 +222,8 @@ Global
 		{4AE2D764-4161-453D-8B2D-BD66607EC27A} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{809F0D79-AEDC-4754-A213-FDBE97CCD6D6} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{ED3283B6-9691-4418-96D0-6E83AEE37540} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {484F9B0D-760F-48AD-893C-CCFB7A1CF541}
 	EndGlobalSection
 EndGlobal
