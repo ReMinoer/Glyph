@@ -11,7 +11,7 @@ namespace Glyph.Core
     {
         static public SceneNode GetSceneNode(this IGlyphComponent component)
         {
-            return component?.Components.FirstOrDefault<SceneNode>() ?? component?.ParentQueue().SelectMany(x => x.Components).First<SceneNode>();
+            return component?.Components.FirstOrDefault<SceneNode>() ?? component?.ParentQueue().SelectMany(x => x.Components).FirstOrDefault<SceneNode>();
         }
     }
 }
