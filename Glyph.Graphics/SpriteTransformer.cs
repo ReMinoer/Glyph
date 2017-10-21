@@ -8,9 +8,10 @@ namespace Glyph.Graphics
     public class SpriteTransformer : GlyphComponent, IFlipable
     {
         private ISpriteSource _spriteSource;
-        private Vector2 _origin;
-        private Vector2 _pivot;
+        private Vector2 _origin = new Vector2(float.NaN, float.NaN);
+        private Vector2 _pivot = new Vector2(float.NaN, float.NaN);
         private AnchorType _lastAnchorType;
+        private bool _spriteSizeKnown;
         public Color Color { get; set; }
         public Vector2 Scale { get; set; }
         public Axes FlipAxes { get; set; }
@@ -45,7 +46,13 @@ namespace Glyph.Graphics
 
         public Vector2 Origin
         {
-            get { return _origin; }
+            get
+            {
+                if (!_spriteSizeKnown)
+                    RefreshAnchor();
+                
+                return _origin;
+            }
             set
             {
                 _origin = value;
@@ -57,7 +64,13 @@ namespace Glyph.Graphics
 
         public Vector2 Pivot
         {
-            get { return _pivot; }
+            get
+            {
+                if (!_spriteSizeKnown)
+                    RefreshAnchor();
+                
+                return _pivot;
+            }
             set
             {
                 _pivot = value;
@@ -87,9 +100,11 @@ namespace Glyph.Graphics
 
         private void RefreshAnchor()
         {
-            Vector2 size = SpriteSource?.Texture != null
-                ? SpriteSource.Rectangle?.Size.ToVector2() ?? SpriteSource.Texture.Size()
-                : Vector2.Zero;
+            if (SpriteSource?.Texture == null)
+                return;
+
+            Vector2 size = SpriteSource.Rectangle?.Size.ToVector2() ?? SpriteSource.Texture.Size();
+            _spriteSizeKnown = true;
 
             switch (_lastAnchorType)
             {

@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Glyph.PropertyChanged;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Math
 {
-    public class Transformation : IFlipable
+    public class Transformation : ConfigurableNotifyPropertyChanged, IFlipable
     {
         private Vector2 _translation;
         private float _rotation;
