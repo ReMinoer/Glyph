@@ -1,4 +1,5 @@
-﻿using Glyph.PropertyChanged;
+﻿using Glyph.Observation;
+using Glyph.Observation.Properties;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Math
@@ -50,6 +51,15 @@ namespace Glyph.Math
             _translation = translation;
             _rotation = MathHelper.WrapAngle(rotation);
             _scale = scale;
+
+            RefreshMatrix();
+        }
+
+        public Transformation(Transformation transformation)
+        {
+            _translation = transformation._translation;
+            _rotation = transformation._rotation;
+            _scale = transformation._scale;
 
             RefreshMatrix();
         }

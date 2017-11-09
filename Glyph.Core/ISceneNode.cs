@@ -6,11 +6,11 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Core
 {
-    public interface ISceneNode : IRepresentative<ISceneNode>
+    public interface ISceneNode : IRepresentative<ISceneNode>, IFlipable
     {
         IGlyphContainer Parent { get; }
         ISceneNode ParentNode { get; }
-        IEnumerable<ISceneNode> Children { get; }
+        IReadOnlyCollection<ISceneNode> Children { get; }
         Vector2 Position { get; }
         float Rotation { get; }
         float Scale { get; }

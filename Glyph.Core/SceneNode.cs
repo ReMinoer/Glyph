@@ -25,7 +25,7 @@ namespace Glyph.Core
         public ISceneNode ParentNode { get; private set; }
         public Matrix3X3 Matrix { get; private set; }
 
-        public IEnumerable<ISceneNode> Children
+        public IReadOnlyCollection<ISceneNode> Children
         {
             get { return _readOnlyChildrenNodes; }
         }

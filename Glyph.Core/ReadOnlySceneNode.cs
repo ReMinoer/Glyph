@@ -20,7 +20,7 @@ namespace Glyph.Core
             get { return _sceneNode.ParentNode; }
         }
 
-        public IEnumerable<ISceneNode> Children
+        public IReadOnlyCollection<ISceneNode> Children
         {
             get { return _sceneNode.Children; }
         }
@@ -108,6 +108,11 @@ namespace Glyph.Core
         public float GetDepth(Referential referential)
         {
             return _sceneNode.GetDepth(referential);
+        }
+
+        public void Flip(Axes axes)
+        {
+            _sceneNode.Flip(axes);
         }
 
         public bool Represent(IRepresentative<ISceneNode> other)
