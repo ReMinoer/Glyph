@@ -41,7 +41,8 @@ namespace Glyph.Application
             Link<IDependencyRegistry, IDependencyRegistry>(null, InjectionScope.Global);
 
             Register<GlyphCompositeInjector>();
-            Register<IDependencyRegistry, LocalGlyphRegistry>(Subsistence.Singleton, InjectionScope.Local);
+            Register<GlyphInjectionContext>();
+            Register<IDependencyRegistry, LocalGlyphRegistry>(InjectionScope.Local);
 
             #endregion
 
@@ -74,7 +75,7 @@ namespace Glyph.Application
             #region Messaging
 
             RegisterGeneric(typeof(Receiver<>));
-            RegisterGeneric(typeof(GlobalRouter<>), Subsistence.Singleton);
+            RegisterGenericSingleton(typeof(GlobalRouter<>));
             LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>));
             LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>), null, InjectionScope.Global);
             RegisterGeneric(typeof(MessagingTracker<>));
@@ -154,8 +155,8 @@ namespace Glyph.Application
 
             #region Physics
 
-            Register<PhysicsManager>(Subsistence.Singleton);
-            Register<ColliderManager>(Subsistence.Singleton);
+            RegisterSingleton<PhysicsManager>();
+            RegisterSingleton<ColliderManager>();
 
             Register<RectangleCollider>();
             Register<CircleCollider>();
@@ -167,7 +168,7 @@ namespace Glyph.Application
 
             #region Scripting
 
-            Register<TriggerManager>(Subsistence.Singleton);
+            RegisterSingleton<TriggerManager>();
             Register<Trigger>();
             Register<Actor>();
 

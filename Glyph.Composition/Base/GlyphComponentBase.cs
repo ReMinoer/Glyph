@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Diese;
-using Glyph.PropertyChanged;
+using Glyph.Observation.Properties;
 using Stave;
 
 namespace Glyph.Composition.Base

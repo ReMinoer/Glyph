@@ -42,8 +42,8 @@ namespace Glyph.UI.Menus
         public event EventHandler<SelectionEventArgs> SelectionChanged;
         public event EventHandler<SelectionEventArgs> SelectionTriggered;
 
-        public LinearMenu(IDependencyInjector injector)
-            : base(injector)
+        public LinearMenu(GlyphInjectionContext context)
+            : base(context)
         {
             _buttons = new List<IButton>();
             _buttonsReadOnly = new ReadOnlyCollection<IButton>(_buttons);

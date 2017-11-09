@@ -5,7 +5,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 
-namespace Glyph.PropertyChanged
+namespace Glyph.Observation.Properties
 {
     public class PropertyChangedObservable : IPropertyChangedObservable, IDisposable
     {

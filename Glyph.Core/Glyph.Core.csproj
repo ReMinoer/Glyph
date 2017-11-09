@@ -70,6 +70,7 @@
     <Compile Include="Colliders\RectangleCollider.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Flipper.cs" />
+    <Compile Include="GlyphInjectionContext.cs" />
     <Compile Include="Inputs\ControlLayerSchedulerProfile.cs" />
     <Compile Include="Inputs\ControlLayerTag.cs" />
     <Compile Include="Inputs\Controls.cs" />

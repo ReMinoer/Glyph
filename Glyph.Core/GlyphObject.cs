@@ -15,6 +15,7 @@ using Glyph.Core.Scheduler;
 using Glyph.Injection;
 using Glyph.Math;
 using Glyph.Messaging;
+using Stave;
 
 namespace Glyph.Core
 {
@@ -31,18 +32,21 @@ namespace Glyph.Core
         public Predicate<IDrawer> DrawPredicate { get; set; }
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
 
-        public GlyphObject(IDependencyInjector injector)
+        public GlyphObject(GlyphInjectionContext context)
         {
             Enabled = true;
             Visible = true;
 
-            var compositeInjector = new GlyphCompositeInjector(this, injector.Resolve<IDependencyRegistry>(), injector.Resolve<IDependencyRegistry>(serviceKey: InjectionScope.Local));
+            var compositeInjector = new GlyphCompositeInjector(this, context);
             Injector = compositeInjector;
 
-            Schedulers = new SchedulerHandler(injector);
+            Schedulers = new SchedulerHandler(compositeInjector.Base);
+            
+            foreach (Type type in GetType().GetNestedTypes())
+                Injector.LocalRegistry.Register(type);
 
             foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ILocalInterpreter<>)))
-                Injector.LocalRegistry.Register(typeof(IRouter<>).MakeGenericType(type.GetGenericArguments()), typeof(LocalRouter<>).MakeGenericType(type.GetGenericArguments()), Subsistence.Singleton);
+                Injector.LocalRegistry.RegisterSingleton(typeof(IRouter<>).MakeGenericType(type.GetGenericArguments()), typeof(LocalRouter<>).MakeGenericType(type.GetGenericArguments()));
 
             foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IInterpreter<>)))
                 Add(typeof(Receiver<>).MakeGenericType(type.GetGenericArguments()));
@@ -69,6 +73,10 @@ namespace Glyph.Core
             if (Components.Any(type) && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
                 throw new SingleComponentException(type);
 
+            var glyphObject = item as GlyphObject;
+            if (glyphObject != null)
+                glyphObject.Injector.Parent = null;
+
             base.Add(item);
 
             foreach (IGlyphComponent component in Components.Where(x => x != item))
@@ -76,11 +84,10 @@ namespace Glyph.Core
                     if ((injectable.Attribute.Targets & GlyphInjectableTargets.Fraternal) != 0 && injectable.Type.IsInstanceOfType(item))
                         injectable.Attribute.Inject(injectable.PropertyInfo, component, item);
 
-            var glyphObject = item as GlyphObject;
             if (glyphObject != null)
             {
                 Schedulers.AssignComponent(glyphObject);
-                glyphObject.Injector.Parent = this;
+                glyphObject.Injector.Parent = this ?? this.ParentQueue().FirstOrDefault<GlyphObject>();
             }
             else
                 Schedulers.AssignComponent(item);
@@ -97,8 +104,7 @@ namespace Glyph.Core
             if (!Contains(item) || !base.Remove(item))
                 return false;
 
-            var glyphObject = item as GlyphObject;
-            if (glyphObject != null)
+            if (item is GlyphObject glyphObject)
                 Schedulers.RemoveComponent(glyphObject);
             else
                 Schedulers.RemoveComponent(item);

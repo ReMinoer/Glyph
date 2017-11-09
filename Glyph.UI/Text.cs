@@ -18,8 +18,8 @@ namespace Glyph.UI
         public Shadow? Shadow { get; set; }
         public SpriteTransformer SpriteTransformer { get; private set; }
 
-        public Text(IDependencyInjector injector)
-            : base(injector)
+        public Text(GlyphInjectionContext context)
+            : base(context)
         {
             SceneNode = Add<SceneNode>();
             SpriteTransformer = Add<SpriteTransformer>();

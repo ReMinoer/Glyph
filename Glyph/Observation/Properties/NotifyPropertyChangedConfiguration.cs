@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Subjects;
 
-namespace Glyph.PropertyChanged
+namespace Glyph.Observation.Properties
 {
     public class NotifyPropertyChangedConfiguration : INotifyPropertyChangedConfiguration
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Reactive.Subjects;
 
-namespace Glyph.PropertyChanged
+namespace Glyph.Observation.Properties
 {
     internal class SubjectPool
     {

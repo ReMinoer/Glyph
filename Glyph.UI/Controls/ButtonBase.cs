@@ -45,8 +45,8 @@ namespace Glyph.UI.Controls
         public event EventHandler Entered;
         public event EventHandler Leaved;
 
-        protected ButtonBase(IDependencyInjector injector)
-            : base(injector)
+        protected ButtonBase(GlyphInjectionContext context)
+            : base(context)
         {
             SceneNode = Add<SceneNode>();
             Motion = Add<Motion>();

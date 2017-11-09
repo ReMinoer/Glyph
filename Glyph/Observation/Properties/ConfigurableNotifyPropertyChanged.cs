@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Glyph.PropertyChanged
+namespace Glyph.Observation.Properties
 {
     public class ConfigurableNotifyPropertyChanged : PropertyChangedObservable, INotifyPropertyChanged
     {

@@ -63,8 +63,8 @@ namespace Glyph.UI.Guide
         public event EventHandler Clicked;
         public event EventHandler IconChanged;
 
-        public GuideIcon(IDependencyInjector injector)
-            : base(injector)
+        public GuideIcon(GlyphInjectionContext context)
+            : base(context)
         {
             SceneNode = Add<SceneNode>();
             SpriteTransformer = Add<SpriteTransformer>();

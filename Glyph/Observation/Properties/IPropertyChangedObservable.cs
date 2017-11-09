@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Glyph.PropertyChanged
+namespace Glyph.Observation.Properties
 {
     public interface IPropertyChangedObservable
     {

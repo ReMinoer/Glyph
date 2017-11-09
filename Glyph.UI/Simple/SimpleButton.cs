@@ -1,6 +1,7 @@
 ﻿using System;
 using Diese.Injection;
 using Fingear;
+using Glyph.Core;
 using Glyph.UI.Controls;
 using Microsoft.Xna.Framework;
 
@@ -18,8 +19,8 @@ namespace Glyph.UI.Simple
             get { return SimpleFrame; }
         }
 
-        public SimpleButton(IDependencyInjector injector)
-            : base(injector)
+        public SimpleButton(GlyphInjectionContext context)
+            : base(context)
         {
             SimpleFrame = Add<SimpleFrame>();
 

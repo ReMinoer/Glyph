@@ -24,8 +24,8 @@ namespace Glyph.Graphics.Particles
             set { AnimationPlayer.TimeOffset = value; }
         }
 
-        public StandardParticle(IDependencyInjector injector)
-            : base(injector)
+        public StandardParticle(GlyphInjectionContext context)
+            : base(context)
         {
             SceneNode = Add<SceneNode>();
             SpriteLoader = Add<SpriteLoader>();

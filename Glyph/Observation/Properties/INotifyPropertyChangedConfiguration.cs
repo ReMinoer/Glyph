@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reactive.Subjects;
 
-namespace Glyph.PropertyChanged
+namespace Glyph.Observation.Properties
 {
     public delegate IObservable<string> NotifyPropertyChangedOperation(IObservable<string> observable);
     
