@@ -29,6 +29,7 @@ namespace Glyph.Application
         {
             var initialize = new Scheduler<Predicate<object>>();
             initialize.Plan(x => x is SceneNode);
+            initialize.Plan(x => x is PositionBinding);
             initialize.Plan(x => x is ILayerRoot);
             initialize.Plan(x => x is ITrajectoryPlayer);
             initialize.Plan(x => x is MotorBase);
@@ -57,6 +58,7 @@ namespace Glyph.Application
             loadContent.Plan(x => x is SongPlayer);
 
             var update = new Scheduler<Predicate<object>>();
+            update.Plan(x => x is PositionBinding);
             update.Plan(x => x is ITrajectoryPlayer);
             update.Plan(x => x is MotorBase);
             update.Plan(x => x is Motion);

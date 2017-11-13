@@ -92,6 +92,7 @@
     <Compile Include="Layers\LayerBase.cs" />
     <Compile Include="Layers\LayerManager.cs" />
     <Compile Include="Layers\LayerRoot.cs" />
+    <Compile Include="PositionBinding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlySceneNode.cs" />
     <Compile Include="SceneGraphUtils.cs" />

@@ -85,6 +85,7 @@ namespace Glyph.Application
             #region Core
 
             Register<SceneNode>();
+            Register<PositionBinding>();
 
             RegisterGeneric(typeof(LayerRoot<>));
             LinkGeneric(typeof(ILayerRoot<>), typeof(LayerRoot<>));
