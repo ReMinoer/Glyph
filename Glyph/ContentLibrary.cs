@@ -45,7 +45,9 @@ namespace Glyph
             const string path = "Content";
 
             var files = new List<string>();
-            files.AddRange(Directory.GetFiles(path, "*.xnb", SearchOption.AllDirectories));
+            
+            if (Directory.Exists(path))
+                files.AddRange(Directory.GetFiles(path, "*.xnb", SearchOption.AllDirectories));
             
             foreach (string filename in files)
             {
