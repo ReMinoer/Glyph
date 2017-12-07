@@ -48,6 +48,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FreeCamera.cs" />
     <Compile Include="SceneNodeControl.cs" />
     <Compile Include="ShapedObjectSelector.cs" />
     <Compile Include="ControlLogger.cs" />
