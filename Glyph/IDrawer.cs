@@ -9,12 +9,12 @@ namespace Glyph
         IDrawClient Client { get; }
         SpriteBatchStack SpriteBatchStack { get; }
         GraphicsDevice GraphicsDevice { get; }
-        Resolution Resolution { get; }
         TopLeftRectangle ScreenBounds { get; }
         RenderTarget2D DefaultRenderTarget { get; }
         Texture2D Output { get; }
         CenteredRectangle DisplayedRectangle { get; }
         Matrix ViewMatrix { get; }
+        Matrix ResolutionMatrix { get; }
         void ApplyEffects(IDrawer drawer);
     }
 }

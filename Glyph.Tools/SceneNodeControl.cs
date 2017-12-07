@@ -61,7 +61,7 @@ namespace Glyph.Tools
             var spriteBatchContext = new SpriteBatchContext
             {
                 SpriteSortMode = SpriteSortMode.Immediate,
-                TransformMatrix = drawer.Resolution.TransformationMatrix  * drawer.ViewMatrix
+                TransformMatrix = drawer.ResolutionMatrix  * drawer.ViewMatrix
             };
             
             drawer.SpriteBatchStack.Push(spriteBatchContext);

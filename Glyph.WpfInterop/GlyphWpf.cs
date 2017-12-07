@@ -13,9 +13,10 @@ namespace Glyph.WpfInterop
         private GlyphEngine _engine;
         private readonly WpfInputStates _wpfInputStates;
         public Resolution Resolution { get; }
-        public RenderTarget2D DefaultRenderTarget => RenderTarget;
-        IInputStates IInputClient.States => _wpfInputStates;
         public virtual bool IsFocus => IsFocused;
+        IInputStates IInputClient.States => _wpfInputStates;
+        RenderTarget2D IDrawClient.DefaultRenderTarget => RenderTarget;
+        Matrix IDrawClient.ResolutionMatrix => Resolution.TransformationMatrix;
 
         public GlyphEngine Engine
         {

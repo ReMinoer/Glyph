@@ -22,6 +22,7 @@ namespace Glyph.Engine
         public Resolution Resolution { get; }
         public virtual bool IsFocus => IsActive && System.Windows.Forms.Form.ActiveForm?.Handle == Window.Handle;
         IInputStates IInputClient.States { get; } = new InputStates();
+        Matrix IDrawClient.ResolutionMatrix => Resolution.TransformationMatrix;
         RenderTarget2D IDrawClient.DefaultRenderTarget => null;
         GraphicsDevice IDrawClient.GraphicsDevice => GraphicsDevice;
 

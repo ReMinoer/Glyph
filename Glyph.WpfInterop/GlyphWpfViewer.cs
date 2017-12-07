@@ -10,11 +10,12 @@ using MonoGame.Framework.WpfInterop;
 
 namespace Glyph.WpfInterop
 {
-    public class GlyphWpfViewer : D3D11Client<GlyphWpfRunner>, IGlyphClient
+    public class GlyphWpfViewer : D3D11Client, IGlyphClient
     {
         private readonly WpfInputStates _wpfInputStates;
         public Resolution Resolution { get; }
-        public RenderTarget2D DefaultRenderTarget => RenderTarget;
+        Matrix IDrawClient.ResolutionMatrix => Resolution.TransformationMatrix;
+        RenderTarget2D IDrawClient.DefaultRenderTarget => RenderTarget;
         GraphicsDevice IDrawClient.GraphicsDevice => GraphicsDevice;
         IInputStates IInputClient.States => _wpfInputStates;
 
@@ -25,22 +26,6 @@ namespace Glyph.WpfInterop
 
             _wpfInputStates = new WpfInputStates(this);
             Resolution = new Resolution();
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            if (Runner == null)
-                return;
-
-            Runner.Engine?.BeginDraw();
-            if (Runner.Engine == null)
-                return;
-
-            base.Draw(gameTime);
-            
-            Runner.Engine.Draw(this);
-
-            Runner.Engine.EndDraw();
         }
 
         private void OnClientSizeChanged(object sender, SizeChangedEventArgs e)

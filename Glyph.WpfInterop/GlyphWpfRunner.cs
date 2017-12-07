@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Media;
+using Fingear.MonoGame;
+using Glyph.Core.Inputs;
 using Glyph.Engine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Framework.WpfInterop;
+using Matrix = Microsoft.Xna.Framework.Matrix;
 
 namespace Glyph.WpfInterop
 {
-    public class GlyphWpfRunner : IGameRunner, IDisposable
+    public class GlyphWpfRunner : IGameRunner
     {
         private GlyphEngine _engine;
         private readonly Stopwatch _stopwatch = new Stopwatch();
@@ -79,11 +83,36 @@ namespace Glyph.WpfInterop
             Drawing?.Invoke(this, new DrawingEventArgs(_gameTime));
         }
 
+        public void Draw(D3D11Client client, GameTime gameTime)
+        {
+            Engine.BeginDraw();
+            Engine.Draw(client as IDrawClient ?? new DrawClient(client));
+            Engine.EndDraw();
+        }
+
+        public class DrawClient : IDrawClient
+        {
+            private readonly D3D11Client _client;
+            private readonly Resolution _resolution;
+            public Matrix ResolutionMatrix => _resolution.TransformationMatrix;
+            public GraphicsDevice GraphicsDevice => D3D11Client.GraphicsDevice;
+            public RenderTarget2D DefaultRenderTarget => _client.RenderTarget;
+
+            public DrawClient(D3D11Client client)
+            {
+                _client = client;
+                _resolution = new Resolution { WindowSize = new Vector2(DefaultRenderTarget.Width, DefaultRenderTarget.Height) };
+            }
+        }
+
         public void Dispose()
         {
             _stopwatch.Stop();
             if (_engine != null)
+            {
                 CompositionTarget.Rendering -= OnRendering;
+                _engine = null;
+            }
 
             Disposed?.Invoke(this, EventArgs.Empty);
         }

@@ -174,12 +174,12 @@ namespace Glyph.Engine
         {
         }
 
-        public void Draw(IGlyphClient glyphClient)
+        public void Draw(IDrawClient drawClient)
         {
-            var drawer = new Drawer(glyphClient);
+            var drawer = new Drawer(drawClient);
             drawer.GraphicsDevice.Clear(Color.Black);
 
-            foreach (IView view in ViewManager.Main.Views.Where(x => x.Displayed(glyphClient)))
+            foreach (IView view in ViewManager.Main.Views.Where(x => x.Displayed(drawClient)))
             {
                 drawer.CurrentView = view;
                 view.PrepareDraw(drawer);
