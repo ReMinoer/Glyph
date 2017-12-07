@@ -47,6 +47,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base\GlyphComponentBase.cs" />
@@ -75,6 +76,8 @@
     <Compile Include="IGlyphContainer.cs" />
     <Compile Include="Delegates\InitializeDelegate.cs" />
     <Compile Include="Delegates\LoadContentDelegate.cs" />
+    <Compile Include="Modelization\GlyphCreatorBase.cs" />
+    <Compile Include="Modelization\IGlyphCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SinglePerParentAttribute.cs" />
     <Compile Include="Delegates\UpdateDelegate.cs" />
