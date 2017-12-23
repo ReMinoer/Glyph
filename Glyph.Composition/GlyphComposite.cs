@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Diese;
+﻿using System.Collections.Generic;
 using Diese.Collections;
 using Glyph.Composition.Base;
+using Glyph.Composition.Messaging;
 using Stave;
-using IComponent = Stave.IComponent;
 
 namespace Glyph.Composition
 {
@@ -37,8 +34,22 @@ namespace Glyph.Composition
         internal override IEnumerable<TComponent> ReadOnlyComponents => _component.Components;
 
         public IWrappedCollection<TComponent> Components => _component.Components;
-        public virtual void Add(TComponent item) => _component.Add(item);
-        public virtual bool Remove(TComponent item) => _component.Remove(item);
+        
+        public virtual void Add(TComponent item)
+        {
+            _component.Add(item);
+            MainRouter.Send(MessageHelper.BuildGeneric(typeof(CompositionMessage<>), this));
+        }
+
+        public virtual bool Remove(TComponent item)
+        {
+            if (!_component.Remove(item))
+                return false;
+
+            MainRouter.Send(MessageHelper.BuildGeneric(typeof(DecompositionMessage<>), this));
+            return true;
+        }
+
         public virtual void Clear() => _component.Clear();
         public bool Contains(TComponent item) => _component.Contains(item);
     }

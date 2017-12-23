@@ -52,6 +52,10 @@
   <ItemGroup>
     <Compile Include="Base\GlyphComponentBase.cs" />
     <Compile Include="Base\GlyphContainerBase.cs" />
+    <Compile Include="Messaging\CompositionMessage.cs" />
+    <Compile Include="Messaging\DecompositionMessage.cs" />
+    <Compile Include="Messaging\ICompositionMessage.cs" />
+    <Compile Include="Messaging\IDecompositionMessage.cs" />
     <Compile Include="Messaging\IDisposingMessage.cs" />
     <Compile Include="Messaging\IInstantiatingMessage.cs" />
     <Compile Include="Messaging\MessageHelper.cs" />
