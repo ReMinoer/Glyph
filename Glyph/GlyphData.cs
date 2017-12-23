@@ -3,7 +3,7 @@ using Diese.Modelization;
 
 namespace Glyph
 {
-    public abstract class GlyphData<T> : ICreationData<T>, IConfigurationData<T>
+    public abstract class GlyphData<T> : IDataModel<T>, ICreator<T>, IConfigurator<T>
     {
         public IDependencyInjector Injector { protected get; set; }
 

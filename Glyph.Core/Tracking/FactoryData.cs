@@ -6,7 +6,7 @@ using Glyph.Composition;
 
 namespace Glyph.Core.Tracking
 {
-    public class FactoryData<T> : List<T>, IConfigurationData<Factory<T>>
+    public class FactoryData<T> : List<T>, IDataModel<Factory<T>>, IConfigurator<Factory<T>>
         where T : class, IGlyphComponent, new()
     {
         public void From(Factory<T> obj)
@@ -25,7 +25,7 @@ namespace Glyph.Core.Tracking
         }
     }
 
-    public class FactoryData<T, TData> : List<TData>, IConfigurationData<Factory<T>>
+    public class FactoryData<T, TData> : List<TData>, IDataModel<Factory<T>>, IConfigurator<Factory<T>>
         where TData : GlyphData<T>, new()
         where T : class, IGlyphComponent
     {

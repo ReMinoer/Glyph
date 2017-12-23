@@ -3,7 +3,7 @@ using Diese.Modelization;
 
 namespace Glyph.Composition.Modelization
 {
-    public class CompositeData<T, TData> : List<TData>, IConfigurationData<IGlyphComposite<T>>
+    public class CompositeData<T, TData> : List<TData>, IConfigurator<IGlyphComposite<T>>, IDataModel<IGlyphComposite<T>>
         where T : class, IGlyphComponent
         where TData : GlyphData<T>, new()
     {

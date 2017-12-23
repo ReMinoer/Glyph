@@ -39,6 +39,9 @@
     <PackageReference Include="NLog">
       <Version>4.4.12</Version>
     </PackageReference>
+    <PackageReference Include="PropertyChanged.Fody">
+      <Version>2.1.4</Version>
+    </PackageReference>
     <PackageReference Include="System.Reactive">
       <Version>3.1.1</Version>
     </PackageReference>
@@ -53,9 +56,19 @@
   <ItemGroup>
     <Compile Include="Angle.cs" />
     <Compile Include="Axis.cs" />
+    <Compile Include="Binding\BindingCollectionExtension.cs" />
+    <Compile Include="Modelization\BindedData.cs" />
+    <Compile Include="Binding\Binding.cs" />
+    <Compile Include="Binding\BindingCollection.cs" />
+    <Compile Include="Binding\ExpressionExtension.cs" />
+    <Compile Include="Binding\IBinding.cs" />
     <Compile Include="Color.Extension.cs" />
+    <Compile Include="Modelization\IBindedGlyphCreator.cs" />
+    <Compile Include="Reflection\GlyphTypeInfo.cs" />
+    <Compile Include="Modelization\BindedDataBase.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="Axes.cs" />
+    <Compile Include="Injection\IInjectionClient.cs" />
     <Compile Include="IO\FileType.cs" />
     <Compile Include="GlyphData.cs" />
     <Compile Include="IDirtable.cs" />
@@ -85,6 +98,7 @@
     <Compile Include="Math\Shapes\RectangleExtensions.cs" />
     <Compile Include="Math\Shapes\TopLeftRectangle.cs" />
     <Compile Include="Math\Transformation.cs" />
+    <Compile Include="Modelization\IGlyphCreator.cs" />
     <Compile Include="Point.Extension.cs" />
     <Compile Include="Observation\Properties\INotifyPropertyChangedConfiguration.cs" />
     <Compile Include="Observation\Properties\IPropertyChangedObservable.cs" />
@@ -137,6 +151,9 @@
       <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
       <Name>Diese.Modelization</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
