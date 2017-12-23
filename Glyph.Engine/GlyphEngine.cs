@@ -145,7 +145,7 @@ namespace Glyph.Engine
             if (InputClientManager.Current != null)
                 ControlManager.Update(_elapsedTime.UnscaledDelta);
             else
-                InputManager.Instance.InputStates.Ignore();
+                InputManager.Instance.InputStates?.Ignore();
         }
 
         public void Update()
