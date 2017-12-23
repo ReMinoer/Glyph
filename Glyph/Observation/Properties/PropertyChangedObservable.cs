@@ -18,20 +18,22 @@ namespace Glyph.Observation.Properties
 
         public virtual void Dispose()
         {
-            if (_changedPropertiesSubject == null)
-                return;
-
             ReconditionOrDispose();
         }
 
         protected void ReconditionOrDispose()
         {
-            if (_changedProperties == null && !_changedPropertiesSubject.HasObservers)
-                SubjectPool.Instance.Recondition(_changedPropertiesSubject);
-            else
-                _changedPropertiesSubject.Dispose();
-
-            _changedPropertiesSubject = null;
+            if (_changedPropertiesSubject != null)
+            {
+                if (_changedProperties == null && !_changedPropertiesSubject.HasObservers)
+                    SubjectPool.Instance.Recondition(_changedPropertiesSubject);
+                else
+                    _changedPropertiesSubject.Dispose();
+                
+                _changedPropertiesSubject = null;
+            }
+            
+            _changedProperties = null;
         }
 
         protected bool Set<T>(ref T backingField, T value, [CallerMemberName] string propertyName = null)

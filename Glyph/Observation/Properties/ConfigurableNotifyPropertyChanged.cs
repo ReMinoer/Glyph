@@ -25,7 +25,7 @@ namespace Glyph.Observation.Properties
                 
                 if (PrivatePropertyChanged == null)
                 {
-                    _configurationSubscription.Dispose();
+                    _configurationSubscription?.Dispose();
                     _configurationSubscription = null;
 
                     OnCompletedOperation();
