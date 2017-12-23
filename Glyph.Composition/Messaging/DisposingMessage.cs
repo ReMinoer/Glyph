@@ -2,7 +2,7 @@
 
 namespace Glyph.Composition.Messaging
 {
-    public class DisposingMessage<T> : Message
+    public class DisposingMessage<T> : Message, IDisposingMessage<T>
     {
         public T Instance { get; private set; }
 

@@ -1,6 +1,7 @@
 ﻿using Diese.Injection;
+using Glyph.Core.Injection;
+using Glyph.Core.Messaging;
 using Glyph.Messaging;
-using Glyph.Scripting;
 
 namespace Glyph.Application
 {
@@ -8,8 +9,9 @@ namespace Glyph.Application
     {
         public LocalGlyphRegistry()
         {
-            //Register<LocalRouter<OnEnterTrigger>>(Subsistence.Singleton);
-            //Link<IRouter<OnEnterTrigger>, LocalRouter<OnEnterTrigger>>();
+            RegisterSingleton<LocalRouter>();
+            Link<IRouter, LocalRouter>();
+            Link<IRouter, LocalRouter>(serviceKey: InjectionScope.Local);
         }
     }
 }

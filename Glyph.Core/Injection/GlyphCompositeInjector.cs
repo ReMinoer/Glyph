@@ -29,6 +29,9 @@ namespace Glyph.Core.Injection
             _localInjector = new LocalDependencyInjector(context.LocalRegistry, context.LocalInjectorParent);
             
             LocalRegistry.RegisterInstance(_localInjector);
+
+            foreach (Type nestedType in _composite.GetType().GetNestedTypes())
+                LocalRegistry.Register(nestedType);
         }
 
         public override object Resolve(Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, InstanceOrigins instanceOrigins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)

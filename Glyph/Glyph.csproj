@@ -94,6 +94,8 @@
     <Compile Include="Observation\Properties\SubjectPool.cs" />
     <Compile Include="Rectangle.Extension.cs" />
     <Compile Include="Referential.cs" />
+    <Compile Include="Reflection\GlyphTypeInfoProvider.cs" />
+    <Compile Include="Reflection\InjectablePropertyInfo.cs" />
     <Compile Include="Resolution.cs" />
     <Compile Include="SpriteBatchContext.cs" />
     <Compile Include="SpriteBatchStack.cs" />

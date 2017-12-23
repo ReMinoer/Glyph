@@ -5,7 +5,7 @@ using Glyph.Messaging;
 
 namespace Glyph.Core.Tracking
 {
-    public interface IMessagingCollection<T> : IEnumerable<T>, IInterpreter<InstantiatingMessage<T>>, IInterpreter<DisposingMessage<T>>
+    public interface IMessagingCollection<T> : IEnumerable<T>, IInterpreter<IInstantiatingMessage<T>>, IInterpreter<IDisposingMessage<T>>
     {
         IReadOnlyCollection<T> NewInstances { get; }
         Predicate<T> Filter { get; }

@@ -30,35 +30,24 @@ namespace Glyph.Core.Tracking
         public event Action<T> Registered;
         public event Action<T> Unregistered;
 
-        public MessagingSpace(IRouter<InstantiatingMessage<T>> instantiatingRouter,
-                              IRouter<DisposingMessage<T>> disposingRouter,
-                              Func<T, Vector2> getPoint,
-                              IPartitioner partitioner = null)
-            : this(instantiatingRouter, disposingRouter, getPoint, x => new CenteredRectangle(getPoint(x), 0, 0), partitioner)
+        public MessagingSpace(IRouter router, Func<T, Vector2> getPoint, IPartitioner partitioner = null)
+            : this(router, getPoint, x => new CenteredRectangle(getPoint(x), 0, 0), partitioner)
         {
-
         }
-        public MessagingSpace(IRouter<InstantiatingMessage<T>> instantiatingRouter,
-                              IRouter<DisposingMessage<T>> disposingRouter,
-                              Func<T, TopLeftRectangle> getBox,
-                              IPartitioner partitioner = null)
-            : this(instantiatingRouter, disposingRouter, x => getBox(x).Center, getBox, partitioner)
+        
+        public MessagingSpace(IRouter router, Func<T, TopLeftRectangle> getBox, IPartitioner partitioner = null)
+            : this(router, x => getBox(x).Center, getBox, partitioner)
         {
-
         }
 
-        public MessagingSpace(IRouter<InstantiatingMessage<T>> instantiatingRouter,
-                              IRouter<DisposingMessage<T>> disposingRouter,
-                              Func<T, Vector2> getPoint,
-                              Func<T, TopLeftRectangle> getBox,
-                              IPartitioner partitioner = null)
+        public MessagingSpace(IRouter router, Func<T, Vector2> getPoint, Func<T, TopLeftRectangle> getBox, IPartitioner partitioner = null)
         {
             _space = new Space<T>(getPoint, getBox, partitioner);
             _newInstances = new List<T>();
             NewInstances = new ReadOnlyCollection<T>(_newInstances);
 
-            Components.Add(new Receiver<InstantiatingMessage<T>>(instantiatingRouter, this));
-            Components.Add(new Receiver<DisposingMessage<T>>(disposingRouter, this));
+            Components.Add(new Receiver<IInstantiatingMessage<T>>(router, this));
+            Components.Add(new Receiver<IDisposingMessage<T>>(router, this));
         }
 
         public void CleanNewInstances()
@@ -66,7 +55,7 @@ namespace Glyph.Core.Tracking
             _newInstances.Clear();
         }
 
-        void IInterpreter<InstantiatingMessage<T>>.Interpret(InstantiatingMessage<T> message)
+        void IInterpreter<IInstantiatingMessage<T>>.Interpret(IInstantiatingMessage<T> message)
         {
             T instance = message.Instance;
             if (Filter != null && !Filter(message.Instance))
@@ -77,7 +66,7 @@ namespace Glyph.Core.Tracking
             Registered?.Invoke(instance);
         }
 
-        void IInterpreter<DisposingMessage<T>>.Interpret(DisposingMessage<T> message)
+        void IInterpreter<IDisposingMessage<T>>.Interpret(IDisposingMessage<T> message)
         {
             T instance = message.Instance;
             if (!_space.Remove(instance))

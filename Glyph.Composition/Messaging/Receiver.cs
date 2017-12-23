@@ -4,13 +4,13 @@ namespace Glyph.Composition.Messaging
 {
     [SinglePerParent]
     public class Receiver<TMessage> : GlyphComponent, IEnableable
-        where TMessage : Message
+        where TMessage : IMessage
     {
-        private readonly IRouter<TMessage> _router;
+        private readonly IRouter _router;
         private readonly IInterpreter<TMessage> _interpreter;
         public bool Enabled { get; set; }
 
-        public Receiver(IRouter<TMessage> router, IInterpreter<TMessage> interpreter)
+        public Receiver(IRouter router, IInterpreter<TMessage> interpreter)
         {
             _router = router;
             _interpreter = interpreter;

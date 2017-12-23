@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Diese;
+using Glyph.Composition.Messaging;
+using Glyph.Messaging;
 using Glyph.Observation.Properties;
 using Stave;
 
@@ -8,13 +10,15 @@ namespace Glyph.Composition.Base
 {
     public abstract class GlyphComponentBase : ConfigurableNotifyPropertyChanged, IGlyphComponent
     {
+        static public Router MainRouter { get; } = new Router();
+        
         public string Name { get; set; }
         public bool Disposed { get; private set; }
 
         protected GlyphComponentBase()
         {
             Name = GetType().GetDisplayName();
-            InstanceManager.ConstructorProcess(this);
+            MainRouter.Send(MessageHelper.BuildGeneric(typeof(InstantiatingMessage<>), this));
         }
 
         public virtual void Initialize() { }
@@ -22,7 +26,7 @@ namespace Glyph.Composition.Base
 
         public override void Dispose()
         {
-            InstanceManager.DisposeProcess(this);
+            MainRouter.Send(MessageHelper.BuildGeneric(typeof(DisposingMessage<>), this));
             Disposed = true;
             base.Dispose();
         }

@@ -6,6 +6,7 @@ using Glyph.Animation;
 using Glyph.Animation.Motors;
 using Glyph.Audio;
 using Glyph.Composition;
+using Glyph.Composition.Base;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Messaging;
 using Glyph.Core;
@@ -22,6 +23,7 @@ using Glyph.Graphics.Shapes;
 using Glyph.Messaging;
 using Glyph.Particles;
 using Glyph.Physics;
+using Glyph.Reflection;
 using Glyph.Scripting;
 using Glyph.Tools;
 using Glyph.Tools.ShapeRendering;
@@ -69,15 +71,16 @@ namespace Glyph.Application
             RegisterFunc<GlyphObject, DrawDelegate>(x => x.Draw);
 
             Register<GlyphObject>();
+            RegisterSingleton<GlyphTypeInfoProvider>();
 
             #endregion
 
             #region Messaging
 
+            RegisterInstance(GlyphComponentBase.MainRouter);
+            Link(typeof(IRouter), typeof(Router));
+            Link(typeof(IRouter), typeof(Router), null, InjectionScope.Global);
             RegisterGeneric(typeof(Receiver<>));
-            RegisterGenericSingleton(typeof(GlobalRouter<>));
-            LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>));
-            LinkGeneric(typeof(IRouter<>), typeof(GlobalRouter<>), null, InjectionScope.Global);
             RegisterGeneric(typeof(MessagingTracker<>));
 
             #endregion

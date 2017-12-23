@@ -2,9 +2,8 @@
 
 namespace Glyph.Messaging
 {
-    public interface IRouter<TMessage> : ITracker<IInterpreter<TMessage>>
-        where TMessage : Message
+    public interface IRouter : ITracker<IInterpreter>
     {
-        void Send(TMessage message);
+        void Send(IMessage message);
     }
 }

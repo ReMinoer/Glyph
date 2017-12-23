@@ -84,6 +84,10 @@
       <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
       <Name>Glyph.Graphics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
+      <Project>{26405f4b-4532-4f48-a96f-594a70c12b3e}</Project>
+      <Name>Glyph.Messaging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Particles\Glyph.Particles.csproj">
       <Project>{1070485B-D9FE-4AA2-889A-5F809021C447}</Project>
       <Name>Glyph.Particles</Name>

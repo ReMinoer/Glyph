@@ -52,13 +52,13 @@
   <ItemGroup>
     <Compile Include="Base\GlyphComponentBase.cs" />
     <Compile Include="Base\GlyphContainerBase.cs" />
+    <Compile Include="Messaging\IDisposingMessage.cs" />
+    <Compile Include="Messaging\IInstantiatingMessage.cs" />
+    <Compile Include="Messaging\MessageHelper.cs" />
     <Compile Include="Delegates\DrawDelegate.cs" />
     <Compile Include="DrawUtils.cs" />
     <Compile Include="Exceptions\ComponentNotFoundException.cs" />
-    <Compile Include="GlyphTypeInfo.cs" />
     <Compile Include="IGlyphCompositeResolver.cs" />
-    <Compile Include="InjectablePropertyInfo.cs" />
-    <Compile Include="InstanceManager.cs" />
     <Compile Include="IDraw.cs" />
     <Compile Include="IEnableable.cs" />
     <Compile Include="ILoadContent.cs" />

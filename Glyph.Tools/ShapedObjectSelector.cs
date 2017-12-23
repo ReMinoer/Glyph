@@ -62,12 +62,9 @@ namespace Glyph.Tools
 
         public event EventHandler<IBoxedComponent> SelectionChanged;
 
-        public ShapedObjectSelector(InputClientManager inputClientManager, ControlManager controlManager,
-            IRouter<InstantiatingMessage<IBoxedComponent>> instantiatingRouter,
-            IRouter<DisposingMessage<IBoxedComponent>> disposingRouter,
-            IPartitioner partitioner = null)
+        public ShapedObjectSelector(InputClientManager inputClientManager, ControlManager controlManager, IRouter router, IPartitioner partitioner = null)
         {
-            _messagingSpace = new MessagingSpace<IBoxedComponent>(instantiatingRouter, disposingRouter, x => x.Area.BoundingBox, partitioner);
+            _messagingSpace = new MessagingSpace<IBoxedComponent>(router, x => x.Area.BoundingBox, partitioner);
             Components.Add(_messagingSpace);
             
             _inputClientManager = inputClientManager;

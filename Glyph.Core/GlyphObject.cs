@@ -9,17 +9,16 @@ using Diese.Scheduling;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
-using Glyph.Composition.Messaging;
 using Glyph.Core.Injection;
 using Glyph.Core.Scheduler;
 using Glyph.Injection;
 using Glyph.Math;
 using Glyph.Messaging;
-using Stave;
+using Glyph.Reflection;
 
 namespace Glyph.Core
 {
-    public class GlyphObject : GlyphComposite, IGlyphCompositeResolver, IEnableable, ILoadContent, IUpdate, IDraw, IBoxedComponent
+    public class GlyphObject : GlyphComposite, IGlyphCompositeResolver, IEnableable, ILoadContent, IUpdate, IDraw, IBoxedComponent, IInterpreter
     {
         static public readonly WatchTree UpdateWatchTree = new WatchTree();
 
@@ -27,6 +26,7 @@ namespace Glyph.Core
         private bool _contentLoaded;
         public SchedulerHandler Schedulers { get; }
         protected internal readonly GlyphCompositeInjector Injector;
+        protected readonly IRouter Router;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
         public Predicate<IDrawer> DrawPredicate { get; set; }
@@ -39,17 +39,11 @@ namespace Glyph.Core
 
             var compositeInjector = new GlyphCompositeInjector(this, context);
             Injector = compositeInjector;
+            
+            Router = Injector.ResolveLocal<IRouter>();
+            Router.Register(this);
 
             Schedulers = new SchedulerHandler(compositeInjector.Base);
-            
-            foreach (Type type in GetType().GetNestedTypes())
-                Injector.LocalRegistry.Register(type);
-
-            foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ILocalInterpreter<>)))
-                Injector.LocalRegistry.RegisterSingleton(typeof(IRouter<>).MakeGenericType(type.GetGenericArguments()), typeof(LocalRouter<>).MakeGenericType(type.GetGenericArguments()));
-
-            foreach (Type type in GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IInterpreter<>)))
-                Add(typeof(Receiver<>).MakeGenericType(type.GetGenericArguments()));
         }
 
         public T Add<T>()
@@ -80,14 +74,14 @@ namespace Glyph.Core
             base.Add(item);
 
             foreach (IGlyphComponent component in Components.Where(x => x != item))
-                foreach (InjectablePropertyInfo injectable in InstanceManager.GetInfo(component.GetType()).InjectableProperties)
+                foreach (InjectablePropertyInfo injectable in Injector.Resolve<GlyphTypeInfoProvider>()[component.GetType()].InjectableProperties)
                     if ((injectable.Attribute.Targets & GlyphInjectableTargets.Fraternal) != 0 && injectable.Type.IsInstanceOfType(item))
                         injectable.Attribute.Inject(injectable.PropertyInfo, component, item);
 
             if (glyphObject != null)
             {
                 Schedulers.AssignComponent(glyphObject);
-                glyphObject.Injector.Parent = this ?? this.ParentQueue().FirstOrDefault<GlyphObject>();
+                glyphObject.Injector.Parent = this;
             }
             else
                 Schedulers.AssignComponent(item);
@@ -179,13 +173,6 @@ namespace Glyph.Core
 
             foreach (DrawDelegate draw in Schedulers.Draw.Planning.ToArray())
                 draw(drawer);
-        }
-
-        protected void SendMessage<TMessage>(TMessage message)
-            where TMessage : Message
-        {
-            var router = Injector.Resolve<IRouter<TMessage>>();
-            router.Send(message);
         }
         
         IArea IBoxedComponent.Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));

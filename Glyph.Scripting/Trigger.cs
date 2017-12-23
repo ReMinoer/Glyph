@@ -11,8 +11,7 @@ namespace Glyph.Scripting
     public class Trigger : GlyphContainer, IEnableable, IShapedComponent<CenteredRectangle>, IMovableShape
     {
         private readonly TriggerManager _triggerManager;
-        private readonly IRouter<OnEnterTrigger> _onEnterRouter;
-        private readonly IRouter<OnLeaveTrigger> _onLeaveRouter;
+        private readonly IRouter _router;
         private readonly SceneNode _sceneNode;
         public bool Enabled { get; set; }
         public Vector2 Size { get; set; }
@@ -40,11 +39,10 @@ namespace Glyph.Scripting
         public event Action<OnEnterTrigger> OnEnter;
         public event Action<OnLeaveTrigger> OnLeave;
 
-        public Trigger(TriggerManager triggerManager, IRouter<OnEnterTrigger> onEnterRouter = null, IRouter<OnLeaveTrigger> onLeaveRouter = null)
+        public Trigger(TriggerManager triggerManager, IRouter router = null)
         {
             _triggerManager = triggerManager;
-            _onEnterRouter = onEnterRouter;
-            _onLeaveRouter = onLeaveRouter;
+            _router = router;
 
             Components.Add(_sceneNode = new SceneNode());
 
@@ -60,14 +58,14 @@ namespace Glyph.Scripting
         internal void Enter(Actor actor)
         {
             var message = new OnEnterTrigger(this, actor);
-            _onEnterRouter?.Send(message);
+            _router?.Send(message);
             OnEnter?.Invoke(message);
         }
 
         internal void Leave(Actor actor)
         {
             var message = new OnLeaveTrigger(this, actor);
-            _onLeaveRouter?.Send(message);
+            _router?.Send(message);
             OnLeave?.Invoke(message);
         }
 

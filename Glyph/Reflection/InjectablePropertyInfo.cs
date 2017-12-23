@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using Glyph.Injection;
 
-namespace Glyph.Composition
+namespace Glyph.Reflection
 {
     public class InjectablePropertyInfo
     {

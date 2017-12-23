@@ -19,14 +19,14 @@ namespace Glyph.Core.Tracking
         public event Action<T> Registered;
         public event Action<T> Unregistered;
 
-        public MessagingTracker(IRouter<InstantiatingMessage<T>> instantiatingRouter, IRouter<DisposingMessage<T>> disposingRouter)
+        public MessagingTracker(IRouter router)
         {
             _tracker = new List<T>();
             _newInstances = new List<T>();
             NewInstances = new ReadOnlyCollection<T>(_newInstances);
 
-            Components.Add(new Receiver<InstantiatingMessage<T>>(instantiatingRouter, this));
-            Components.Add(new Receiver<DisposingMessage<T>>(disposingRouter, this));
+            Components.Add(new Receiver<InstantiatingMessage<T>>(router, this));
+            Components.Add(new Receiver<DisposingMessage<T>>(router, this));
         }
 
         public void CleanNewInstances()
@@ -34,7 +34,7 @@ namespace Glyph.Core.Tracking
             _newInstances.Clear();
         }
 
-        void IInterpreter<InstantiatingMessage<T>>.Interpret(InstantiatingMessage<T> message)
+        void IInterpreter<IInstantiatingMessage<T>>.Interpret(IInstantiatingMessage<T> message)
         {
             T instance = message.Instance;
             if (Filter != null && !Filter(message.Instance))
@@ -45,7 +45,7 @@ namespace Glyph.Core.Tracking
             Registered?.Invoke(instance);
         }
 
-        void IInterpreter<DisposingMessage<T>>.Interpret(DisposingMessage<T> message)
+        void IInterpreter<IDisposingMessage<T>>.Interpret(IDisposingMessage<T> message)
         {
             T instance = message.Instance;
             if (!_tracker.Remove(instance))
