@@ -5,14 +5,8 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Core
 {
-    public class ViewManager : GlyphContainer, ILoadContent, IUpdate
+    public class ViewManager
     {
-        static private ViewManager _main;
-        static public ViewManager Main
-        {
-            get { return _main ?? (_main = new ViewManager()); }
-        }
-
         private readonly SceneNode _sceneNode;
         private readonly List<IView> _views;
         private readonly IReadOnlyCollection<IView> _readOnlyScreens;
@@ -29,7 +23,7 @@ namespace Glyph.Core
             _readOnlyScreens = _views.AsReadOnly();
         }
 
-        public override void Initialize()
+        public void Initialize()
         {
             _sceneNode.Initialize();
 
@@ -51,9 +45,7 @@ namespace Glyph.Core
 
         public void RegisterView(IView view)
         {
-            Components.Add(view);
             _views.Add(view);
-
             view.Initialize();
         }
 

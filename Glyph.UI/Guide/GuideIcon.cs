@@ -27,7 +27,7 @@ namespace Glyph.UI.Guide
         protected readonly Text Text;
         private readonly Vector2 _keyPadding = new Vector2(20, 50);
         private Fingear.IControl _control;
-        private readonly ReferentialCursorControl _sceneCursor;
+        private readonly SceneCursorControl _sceneCursor;
         private readonly IControl<InputActivity> _clic;
         public SceneNode SceneNode { get; private set; }
         public bool Clickable { get; protected set; }
@@ -63,7 +63,7 @@ namespace Glyph.UI.Guide
         public event EventHandler Clicked;
         public event EventHandler IconChanged;
 
-        public GuideIcon(GlyphInjectionContext context)
+        public GuideIcon(GlyphInjectionContext context, InputClientManager inputClientManager, ViewManager viewManager)
             : base(context)
         {
             SceneNode = Add<SceneNode>();
@@ -97,7 +97,7 @@ namespace Glyph.UI.Guide
             controls.Tags.Add(ControlLayerTag.Ui);
             controls.RegisterMany(new Fingear.IControl[]
             {
-                _sceneCursor = Injector.Resolve<InputClientManager>().CursorControls.ScenePosition,
+                _sceneCursor = new SceneCursorControl("Scene cursor", InputSystem.Instance.Mouse.Cursor, inputClientManager, viewManager),
                 _clic = MenuControls.Instance.Clic
             });
 

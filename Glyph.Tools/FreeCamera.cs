@@ -15,6 +15,7 @@ namespace Glyph.Tools
     public class FreeCamera : GlyphObject
     {
         private readonly InputClientManager _inputClientManager;
+        private readonly ViewManager _viewManager;
         private readonly SceneNode _sceneNode;
         private readonly Camera _camera;
         private View _view;
@@ -23,7 +24,7 @@ namespace Glyph.Tools
         private Vector2 _startCameraScenePosition;
         private System.Numerics.Vector2 _startMouseVirtualPosition;
         private bool _moving;
-        private readonly ReferentialCursorControl _virtualScreenCursor;
+        private readonly VirtualScreenCursorControl _virtualScreenCursor;
         private readonly ActivityControl _moveCamera;
         private readonly Control<float> _zoomCamera;
         public IDrawClient Client { get; set; }
@@ -49,10 +50,11 @@ namespace Glyph.Tools
             set => _camera.Zoom = value;
         }
 
-        public FreeCamera(GlyphInjectionContext context, InputClientManager inputClientManager)
+        public FreeCamera(GlyphInjectionContext context, InputClientManager inputClientManager, ViewManager viewManager)
             : base(context)
         {
             _inputClientManager = inputClientManager;
+            _viewManager = viewManager;
 
             _sceneNode = Add<SceneNode>();
             _camera = Add<Camera>();
@@ -61,7 +63,7 @@ namespace Glyph.Tools
             controls.Tags.Add(ControlLayerTag.Tools);
             controls.RegisterMany(new IControl[]
             {
-                _virtualScreenCursor = _inputClientManager.CursorControls.VirtualScreenPosition,
+                _virtualScreenCursor = new VirtualScreenCursorControl("Virtual cursor", InputSystem.Instance.Mouse.Cursor, _inputClientManager),
                 _moveCamera = new ActivityControl("Move camera", InputSystem.Instance.Mouse[MouseButton.Right]),
                 _zoomCamera = new Control<float>("Zoom camera", InputSystem.Instance.Mouse.Wheel.Force())
             });
@@ -88,21 +90,21 @@ namespace Glyph.Tools
             if (_moveCamera.IsActive(out InputActivity inputActivity))
             {
                 _virtualScreenCursor.IsActive(out System.Numerics.Vector2 virtualPosition);
-                IView view = ViewManager.Main.GetViewAtPoint(virtualPosition.AsMonoGameVector(), Client);
+                IView view = _viewManager.GetViewAtPoint(virtualPosition.AsMonoGameVector(), Client);
                 if (view == _view)
                 {
                     if (inputActivity.IsTriggered())
                     {
                         _moving = true;
                         _startMouseVirtualPosition = virtualPosition;
-                        _startCameraVirtualPosition = ViewManager.Main.GetPositionOnVirtualScreen(_view.SceneToView(_sceneNode.Position), _view);
+                        _startCameraVirtualPosition = _viewManager.GetPositionOnVirtualScreen(_view.SceneToView(_sceneNode.Position), _view);
                         _startCameraScenePosition = _camera.Position;
                         _viewBoundingBox = view.BoundingBox;
                     }
                     else if (inputActivity.IsPressed() && _moving)
                     {
                         System.Numerics.Vector2 delta = virtualPosition - _startMouseVirtualPosition;
-                        ViewManager.Main.GetViewAtPoint(_startCameraVirtualPosition + delta.AsMonoGameVector(), Client, out Vector2 viewPosition);
+                        _viewManager.GetViewAtPoint(_startCameraVirtualPosition + delta.AsMonoGameVector(), Client, out Vector2 viewPosition);
                         _sceneNode.Position = -((viewPosition - _viewBoundingBox.Size / 2) / _camera.Zoom) + _startCameraScenePosition;
                     }
                 }

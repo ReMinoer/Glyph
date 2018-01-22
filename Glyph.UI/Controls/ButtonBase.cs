@@ -14,7 +14,7 @@ namespace Glyph.UI.Controls
     public abstract class ButtonBase : GlyphObject, IButton
     {
         private bool _hover;
-        private readonly ReferentialCursorControl _sceneCursor;
+        private readonly SceneCursorControl _sceneCursor;
         private readonly ActivityControl _clic;
         private readonly IControl<InputActivity> _confirm;
         public SceneNode SceneNode { get; private set; }
@@ -45,7 +45,7 @@ namespace Glyph.UI.Controls
         public event EventHandler Entered;
         public event EventHandler Leaved;
 
-        protected ButtonBase(GlyphInjectionContext context)
+        protected ButtonBase(GlyphInjectionContext context, InputClientManager inputClientManager, ViewManager viewManager)
             : base(context)
         {
             SceneNode = Add<SceneNode>();
@@ -56,7 +56,7 @@ namespace Glyph.UI.Controls
             controls.Tags.Add(ControlLayerTag.Ui);
             controls.RegisterMany(new Fingear.IControl[]
             {
-                _sceneCursor = Injector.Resolve<InputClientManager>().CursorControls.ScenePosition,
+                _sceneCursor = new SceneCursorControl("Scene cursor", InputSystem.Instance.Mouse.Cursor, inputClientManager, viewManager),
                 _clic = new ActivityControl("Clic", InputSystem.Instance.Mouse[MouseButton.Left]),
                 _confirm = MenuControls.Instance.Confirm
             });

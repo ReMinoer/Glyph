@@ -76,7 +76,7 @@ namespace Glyph.Tools
         {
             private readonly SceneNode _sceneNode;
             
-            private readonly ReferentialCursorControl _virtualScreenCursor;
+            private readonly VirtualScreenCursorControl _virtualScreenCursor;
             private readonly ActivityControl _move;
 
             private readonly SceneNodeControl _sceneNodeControl;
@@ -116,7 +116,7 @@ namespace Glyph.Tools
                 controls.Tags.Add(ControlLayerTag.Tools);
                 controls.RegisterMany(new IControl[]
                 {
-                    _virtualScreenCursor = inputClientManager.CursorControls.VirtualScreenPosition,
+                    _virtualScreenCursor = new VirtualScreenCursorControl("Virtual cursor", InputSystem.Instance.Mouse.Cursor, inputClientManager),
                     _move = new ActivityControl("Move handle", InputSystem.Instance.Mouse[MouseButton.Left])
                 });
 
