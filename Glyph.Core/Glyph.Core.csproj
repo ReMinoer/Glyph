@@ -77,7 +77,8 @@
     <Compile Include="Inputs\ControlLayerSchedulerProfile.cs" />
     <Compile Include="Inputs\ControlLayerTag.cs" />
     <Compile Include="Inputs\Controls.cs" />
-    <Compile Include="Inputs\ReferentialCursorControl.cs" />
+    <Compile Include="Inputs\CursorControlBase.cs" />
+    <Compile Include="Inputs\SceneCursorControl.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="IBoxedComponent.cs" />
     <Compile Include="Injection\GlyphCompositeInjector.cs" />
@@ -85,6 +86,8 @@
     <Compile Include="Injection\LocalDependencyInjector.cs" />
     <Compile Include="Inputs\IInputClient.cs" />
     <Compile Include="Inputs\InputClientManager.cs" />
+    <Compile Include="Inputs\ScreenCursorControl.cs" />
+    <Compile Include="Inputs\VirtualScreenCursorControl.cs" />
     <Compile Include="ISceneNode.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="IShapedComponent.cs" />
@@ -109,7 +112,6 @@
     <Compile Include="Scheduler\IGlyphScheduler.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerAssigner.cs" />
     <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
-    <Compile Include="Inputs\CursorControls.cs" />
     <Compile Include="Tracking\Factory.cs" />
     <Compile Include="Tracking\FactoryData.cs" />
     <Compile Include="Tracking\IMessagingCollection.cs" />
