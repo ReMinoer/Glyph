@@ -57,6 +57,7 @@
     <Compile Include="Angle.cs" />
     <Compile Include="Axis.cs" />
     <Compile Include="Binding\BindingCollectionExtension.cs" />
+    <Compile Include="Handlable.cs" />
     <Compile Include="Modelization\BindedData.cs" />
     <Compile Include="Binding\Binding.cs" />
     <Compile Include="Binding\BindingCollection.cs" />

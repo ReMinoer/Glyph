@@ -35,21 +35,8 @@ namespace Glyph.Composition
 
         public IWrappedCollection<TComponent> Components => _component.Components;
         
-        public virtual void Add(TComponent item)
-        {
-            _component.Add(item);
-            MainRouter.Send(MessageHelper.BuildGeneric(typeof(CompositionMessage<>), this));
-        }
-
-        public virtual bool Remove(TComponent item)
-        {
-            if (!_component.Remove(item))
-                return false;
-
-            MainRouter.Send(MessageHelper.BuildGeneric(typeof(DecompositionMessage<>), this));
-            return true;
-        }
-
+        public virtual void Add(TComponent item) => _component.Add(item);
+        public virtual bool Remove(TComponent item) => _component.Remove(item);
         public virtual void Clear() => _component.Clear();
         public bool Contains(TComponent item) => _component.Contains(item);
     }

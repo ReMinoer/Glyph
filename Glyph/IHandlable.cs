@@ -3,6 +3,5 @@
     public interface IHandlable
     {
         bool IsHandled { get; }
-        void Handle();
     }
 }

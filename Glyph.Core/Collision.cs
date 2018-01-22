@@ -1,23 +1,15 @@
 ﻿using Glyph.Core.Colliders;
+using Glyph.Messaging;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Core
 {
-    public struct Collision : IHandlable
+    public class Collision : HandlableMessage
     {
+        static public Collision Empty => new Collision();
+
         public ICollider Sender { get; set; }
         public ICollider OtherCollider { get; set; }
         public Vector2 Correction { get; set; }
-        public bool IsHandled { get; private set; }
-
-        static public Collision Empty
-        {
-            get { return new Collision(); }
-        }
-
-        public void Handle()
-        {
-            IsHandled = true;
-        }
     }
 }

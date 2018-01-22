@@ -2,7 +2,7 @@
 
 namespace Glyph.Composition.Messaging
 {
-    public class InstantiatingMessage<T> : Message, IInstantiatingMessage<T>
+    public class InstantiatingMessage<T> : OpenMessage, IInstantiatingMessage<T>
     {
         public T Instance { get; }
 

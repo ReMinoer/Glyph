@@ -1,5 +1,6 @@
 ﻿using System;
 using Diese.Injection;
+using Diese.Injection.Base;
 using Diese.Injection.Exceptions;
 
 namespace Glyph.Core.Injection

@@ -1,8 +1,6 @@
-﻿using Diese.Collections;
-
-namespace Glyph.Messaging
+﻿namespace Glyph.Messaging
 {
-    public interface IRouter : ITracker<IInterpreter>
+    public interface IRouter
     {
         void Send(IMessage message);
     }

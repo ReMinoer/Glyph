@@ -14,6 +14,7 @@ using Glyph.Core.Colliders;
 using Glyph.Core.Injection;
 using Glyph.Core.Inputs;
 using Glyph.Core.Layers;
+//using Glyph.Core.Messaging;
 using Glyph.Core.Scheduler;
 using Glyph.Core.Tracking;
 using Glyph.Graphics;
@@ -41,10 +42,14 @@ namespace Glyph.Application
 
             RegisterInstance<IDependencyRegistry>(this);
             Link<IDependencyRegistry, IDependencyRegistry>(null, InjectionScope.Global);
+            Register<IDependencyRegistry, LocalGlyphRegistry>(InjectionScope.Local);
+
+            Link<RegistryInjector, RegistryInjector>(null, InjectionScope.Global);
+            Link<IDependencyInjector, RegistryInjector>();
+            Link<IDependencyInjector, RegistryInjector>(null, InjectionScope.Global);
 
             Register<GlyphCompositeInjector>();
             Register<GlyphInjectionContext>();
-            Register<IDependencyRegistry, LocalGlyphRegistry>(InjectionScope.Local);
 
             #endregion
 
@@ -76,12 +81,18 @@ namespace Glyph.Application
             #endregion
 
             #region Messaging
+            
+            RegisterInstance(ComponentRouterSystem.GlobalRouter);
+            Link<ITrackingRouter, TrackingRouter>();
+            Link<ITrackingRouter, TrackingRouter>(serviceKey: InjectionScope.Global);
+            Link<ISubscribableRouter, TrackingRouter>();
+            Link<ISubscribableRouter, TrackingRouter>(serviceKey: InjectionScope.Global);
+            Link<IRouter, TrackingRouter>();
+            Link<IRouter, TrackingRouter>(serviceKey: InjectionScope.Global);
 
-            RegisterInstance(GlyphComponentBase.MainRouter);
-            Link(typeof(IRouter), typeof(Router));
-            Link(typeof(IRouter), typeof(Router), null, InjectionScope.Global);
             RegisterGeneric(typeof(Receiver<>));
             RegisterGeneric(typeof(MessagingTracker<>));
+            RegisterGeneric(typeof(MessagingSpace<>));
 
             #endregion
 

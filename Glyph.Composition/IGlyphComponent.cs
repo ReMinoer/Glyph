@@ -1,4 +1,5 @@
 ﻿using System;
+using Glyph.Composition.Messaging;
 using Stave;
 
 namespace Glyph.Composition
@@ -8,6 +9,7 @@ namespace Glyph.Composition
     {
         Guid Id { get; }
         string Name { get; set; }
+        ComponentRouterSystem Router { get; }
         bool Disposed { get; }
         void Initialize();
     }

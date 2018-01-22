@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using Diese.Collections;
 using Glyph.Composition;
+using Glyph.Composition.Messaging;
 using Glyph.Core;
 using Glyph.Core.Tracking;
 using Glyph.Math.Shapes;
+using Glyph.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -24,12 +26,12 @@ namespace Glyph.Tools.ShapeRendering
         private readonly ContentLibrary _contentLibrary;
         private readonly Dictionary<T, ShapedComponentRendererBase> _colliderObjects;
 
-        public ShapedComponentRendererManager(MessagingTracker<T> tracker, Func<GraphicsDevice> graphicsDeviceFunc, ContentLibrary contentLibrary)
+        public ShapedComponentRendererManager(ISubscribableRouter trackingRouter, Func<GraphicsDevice> graphicsDeviceFunc, ContentLibrary contentLibrary)
         {
             Visible = true;
 
             Add(_sceneNode = new SceneNode());
-            _tracker = tracker;
+            _tracker = new MessagingTracker<T>(trackingRouter);
             _graphicsDeviceFunc = graphicsDeviceFunc;
             _contentLibrary = contentLibrary;
             _colliderObjects = new Dictionary<T, ShapedComponentRendererBase>();

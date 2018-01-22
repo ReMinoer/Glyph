@@ -8,7 +8,6 @@ namespace Glyph.Core.Inputs
     public class InputClientManager
     {
         private IInputClient _current;
-        public CursorControls CursorControls { get; }
 
         public IInputClient Current
         {
@@ -39,11 +38,6 @@ namespace Glyph.Core.Inputs
         }
 
         public event Action<IInputClient> ClientChanged;
-
-        public InputClientManager()
-        {
-            CursorControls = new CursorControls(this);
-        }
 
         private void OnResolutionChanged(Vector2 size)
         {

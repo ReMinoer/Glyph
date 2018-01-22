@@ -7,6 +7,8 @@ namespace Glyph.Core.Colliders.Base
 {
     public abstract class ColliderBase : GlyphContainer, ICollider
     {
+        private const int CollisionDepth = 5;
+
         protected readonly SceneNode SceneNode;
         private readonly ColliderManager _colliderManager;
         public bool Enabled { get; set; }
@@ -62,20 +64,13 @@ namespace Glyph.Core.Colliders.Base
             if (!Enabled || Unphysical || IsFreeze || Parent.IsFreeze)
                 return;
 
-            Collision collision;
-            int count = 0;
-            while (count < 5 && _colliderManager.ResolveOneCollision(this, out collision))
+            int i = 0;
+            while (i < CollisionDepth && _colliderManager.ResolveOneCollision(this, out Collision collision))
             {
                 Colliding?.Invoke(collision);
-
-                if (collision.IsHandled)
-                    break;
-
                 ParentNode.Position += collision.Correction;
-
                 Collided?.Invoke(collision);
-
-                count++;
+                i++;
             }
         }
 

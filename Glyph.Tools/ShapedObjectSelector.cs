@@ -47,6 +47,12 @@ namespace Glyph.Tools
             }
         }
 
+        public Predicate<IBoxedComponent> Filter
+        {
+            get => _messagingSpace.Filter;
+            set => _messagingSpace.Filter = value;
+        }
+
         public IBoxedComponent Selection
         {
             get => _selection;
@@ -62,10 +68,9 @@ namespace Glyph.Tools
 
         public event EventHandler<IBoxedComponent> SelectionChanged;
 
-        public ShapedObjectSelector(InputClientManager inputClientManager, ControlManager controlManager, IRouter router, IPartitioner partitioner = null)
+        public ShapedObjectSelector(InputClientManager inputClientManager, ControlManager controlManager, ISubscribableRouter router, IPartitioner partitioner = null)
         {
             _messagingSpace = new MessagingSpace<IBoxedComponent>(router, x => x.Area.BoundingBox, partitioner);
-            Components.Add(_messagingSpace);
             
             _inputClientManager = inputClientManager;
             _controls = new Controls(controlManager);
@@ -108,6 +113,12 @@ namespace Glyph.Tools
 
             if (HandleInputs)
                 Control.HandleInputs();
+        }
+
+        public override void Dispose()
+        {
+            _messagingSpace.Dispose();
+            base.Dispose();
         }
     }
 }

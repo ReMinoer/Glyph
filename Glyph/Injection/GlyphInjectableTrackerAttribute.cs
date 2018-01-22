@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Diese.Collections;
 using Diese.Injection;
+using Diese.Injection.Base;
 
 namespace Glyph.Injection
 {

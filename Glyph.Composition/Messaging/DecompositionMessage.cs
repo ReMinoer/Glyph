@@ -2,13 +2,16 @@
 
 namespace Glyph.Composition.Messaging
 {
-    public class DecompositionMessage<T> : Message, IDecompositionMessage<T>
+    public class DecompositionMessage<T> : OpenMessage, IDecompositionMessage<T>
+        where T : IGlyphComponent
     {
         public T Instance { get; }
+        public IGlyphContainer PreviousParent { get; }
 
-        public DecompositionMessage(T instance)
+        public DecompositionMessage(T instance, IGlyphContainer previousParent)
         {
             Instance = instance;
+            PreviousParent = previousParent;
         }
     }
 }

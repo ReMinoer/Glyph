@@ -26,7 +26,6 @@ namespace Glyph.Core
         private bool _contentLoaded;
         public SchedulerHandler Schedulers { get; }
         protected internal readonly GlyphCompositeInjector Injector;
-        protected readonly IRouter Router;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
         public Predicate<IDrawer> DrawPredicate { get; set; }
@@ -39,11 +38,10 @@ namespace Glyph.Core
 
             var compositeInjector = new GlyphCompositeInjector(this, context);
             Injector = compositeInjector;
-            
-            Router = Injector.ResolveLocal<IRouter>();
-            Router.Register(this);
 
-            Schedulers = new SchedulerHandler(compositeInjector.Base);
+            Injector.Local.Registry.RegisterInstance(Router.Local);
+
+            Schedulers = new SchedulerHandler(compositeInjector.Global);
         }
 
         public T Add<T>()
