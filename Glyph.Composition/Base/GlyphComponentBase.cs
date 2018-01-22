@@ -12,11 +12,13 @@ namespace Glyph.Composition.Base
     {
         static public Router MainRouter { get; } = new Router();
         
+        public Guid Id { get; }
         public string Name { get; set; }
         public bool Disposed { get; private set; }
 
         protected GlyphComponentBase()
         {
+            Id = Guid.NewGuid();
             Name = GetType().GetDisplayName();
             MainRouter.Send(MessageHelper.BuildGeneric(typeof(InstantiatingMessage<>), this));
         }
