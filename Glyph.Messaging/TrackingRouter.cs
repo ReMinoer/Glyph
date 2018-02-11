@@ -114,10 +114,10 @@ namespace Glyph.Messaging
             if (item?.Target == null)
                 return;
 
-            if (!_subscribersDelegates.TryGetValue(item, out List<Delegate> subscriberDelegates))
+            if (!_subscribersDelegates.TryGetValue(item.Target, out List<Delegate> subscriberDelegates))
             {
                 subscriberDelegates = new List<Delegate>();
-                _subscribersDelegates.Add(item, subscriberDelegates);
+                _subscribersDelegates.Add(item.Target, subscriberDelegates);
             }
 
             subscriberDelegates.Add(item);
@@ -128,11 +128,11 @@ namespace Glyph.Messaging
             if (!base.Remove(item))
                 return false;
 
-            if (item?.Target != null && _subscribersDelegates.TryGetValue(item, out List<Delegate> subscriberDelegates))
+            if (item?.Target != null && _subscribersDelegates.TryGetValue(item.Target, out List<Delegate> subscriberDelegates))
             {
                 subscriberDelegates.Remove(item);
                 if (subscriberDelegates.Count == 0)
-                    _subscribersDelegates[item] = null;
+                    _subscribersDelegates[item.Target] = null;
             }
 
             return true;
