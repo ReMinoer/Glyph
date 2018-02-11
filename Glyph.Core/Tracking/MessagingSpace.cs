@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Diese.Collections;
+using Glyph.Composition;
 using Glyph.Composition.Messaging;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Messaging;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
+using Stave;
 
 namespace Glyph.Core.Tracking
 {
@@ -61,8 +64,14 @@ namespace Glyph.Core.Tracking
 
         private void Interpret(ICompositionMessage<T> message)
         {
-            T instance = message.Instance;
-            if (Filter != null && !Filter(message.Instance))
+            Add(message.Instance);
+            foreach (T child in message.Instance.ChildrenQueue().OfType<T>())
+                Add(child);
+        }
+
+        private void Add(T instance)
+        {
+            if (Filter != null && !Filter(instance))
                 return;
 
             _space.Add(instance);
@@ -72,7 +81,13 @@ namespace Glyph.Core.Tracking
 
         private void Interpret(IDecompositionMessage<T> message)
         {
-            T instance = message.Instance;
+            Remove(message.Instance);
+            foreach (T child in message.Instance.ChildrenQueue().OfType<T>())
+                Remove(child);
+        }
+
+        private void Remove(T instance)
+        {
             if (!_space.Remove(instance))
                 return;
 
