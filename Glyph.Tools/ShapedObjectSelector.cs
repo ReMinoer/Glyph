@@ -6,21 +6,17 @@ using Diese.Collections;
 using Fingear;
 using Fingear.MonoGame;
 using Glyph.Composition;
-using Glyph.Composition.Messaging;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Core.Tracking;
 using Glyph.Math.Shapes;
 using Glyph.Messaging;
 using Glyph.Space;
-using NLog;
 
 namespace Glyph.Tools
 {
     public class ShapedObjectSelector : GlyphContainer, IUpdate, IEnableable
     {
-        static protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
         private readonly InputClientManager _inputClientManager;
         private IBoxedComponent _selection;
@@ -101,15 +97,9 @@ namespace Glyph.Tools
             IBoxedComponent[] array = inRange as IBoxedComponent[] ?? inRange.ToArray();
 
             if (array.Length != 0)
-            {
                 Selection = array.MinBy(x => x.Area.BoundingBox.Width * x.Area.BoundingBox.Height);
-                Logger.Trace($"Shaped component selected: {Selection?.Name}");
-            }
             else
-            {
                 Selection = null;
-                Logger.Trace("Clean selection");
-            }
 
             if (HandleInputs)
                 Control.HandleInputs();
