@@ -130,7 +130,7 @@ namespace Glyph.Core
         public SceneNode()
         {
             _childrenNodes = new ObservableCollection<ISceneNode>();
-            _readOnlyChildrenNodes = new ReadOnlyObservableCollection<ISceneNode>(_childrenNodes);
+            _readOnlyChildrenNodes = new System.Collections.ObjectModel.ReadOnlyObservableCollection<ISceneNode>(_childrenNodes);
 
             Transformation = Transformation.Identity;
         }
