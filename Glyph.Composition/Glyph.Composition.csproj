@@ -72,6 +72,8 @@
     <Compile Include="IUpdate.cs" />
     <Compile Include="Messaging\DisposingMessage.cs" />
     <Compile Include="Messaging\InstantiatingMessage.cs" />
+    <Compile Include="Modelization\BindedData.cs" />
+    <Compile Include="Modelization\BindedDataBase.cs" />
     <Compile Include="Modelization\CompositeData.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
     <Compile Include="GlyphComponent.cs" />
@@ -82,6 +84,10 @@
     <Compile Include="IGlyphContainer.cs" />
     <Compile Include="Delegates\InitializeDelegate.cs" />
     <Compile Include="Delegates\LoadContentDelegate.cs" />
+    <Compile Include="Modelization\FactoryConfigurator.cs" />
+    <Compile Include="Modelization\GlyphCreatorExtension.cs" />
+    <Compile Include="Modelization\IGlyphConfigurator.cs" />
+    <Compile Include="Modelization\IGlyphCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SinglePerParentAttribute.cs" />
     <Compile Include="Delegates\UpdateDelegate.cs" />

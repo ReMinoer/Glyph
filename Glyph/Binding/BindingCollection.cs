@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Diese.Collections;
 
 namespace Glyph.Binding
 {
@@ -11,7 +12,16 @@ namespace Glyph.Binding
         
         public int Count => _keyed.Count + _unkeyed.Count;
         bool ICollection<T>.IsReadOnly => false;
-        
+
+        public IReadOnlyCollection<T> Unkeyed { get; }
+        public IReadOnlyDictionary<TKey, T> Keyed { get; }
+
+        protected KeyableCollection()
+        {
+            Unkeyed = _unkeyed.AsReadOnly();
+            Keyed = _keyed.AsReadOnly();
+        }
+
         public T this[TKey key] => _keyed[key];
         public bool TryGetBinding(TKey key, out T item) => _keyed.TryGetValue(key, out item);
 
@@ -51,8 +61,10 @@ namespace Glyph.Binding
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_unkeyed).GetEnumerator();
     }
 
-    public interface IKeyableCollection<T, in TKey> : IReadOnlyKeyableCollection<T, TKey>, ICollection<T>
+    public interface IKeyableCollection<T, TKey> : IReadOnlyKeyableCollection<T, TKey>, ICollection<T>
     {
+        IReadOnlyCollection<T> Unkeyed { get; }
+        IReadOnlyDictionary<TKey, T> Keyed { get; }
         void Add(T item, TKey key);
     }
 
@@ -79,7 +91,7 @@ namespace Glyph.Binding
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_keyableCollection).GetEnumerator();
     }
 
-    public class OneSideBindingCollection<TModel, TView> : KeyableCollection<IOneSideBinding<TModel, TView>, string>
+    public class OneSideBindingCollection<TModel, TView> : KeyableCollection<IOneWayBinding<TModel, TView>, string>
     {
     }
 }

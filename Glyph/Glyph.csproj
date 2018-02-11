@@ -57,16 +57,14 @@
     <Compile Include="Angle.cs" />
     <Compile Include="Axis.cs" />
     <Compile Include="Binding\BindingCollectionExtension.cs" />
+    <Compile Include="Binding\ITwoWayBinding.cs" />
     <Compile Include="Handlable.cs" />
-    <Compile Include="Modelization\BindedData.cs" />
     <Compile Include="Binding\Binding.cs" />
     <Compile Include="Binding\BindingCollection.cs" />
     <Compile Include="Binding\ExpressionExtension.cs" />
-    <Compile Include="Binding\IBinding.cs" />
+    <Compile Include="Binding\IOneWayBinding.cs" />
     <Compile Include="Color.Extension.cs" />
-    <Compile Include="Modelization\IBindedGlyphCreator.cs" />
     <Compile Include="Reflection\GlyphTypeInfo.cs" />
-    <Compile Include="Modelization\BindedDataBase.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="Axes.cs" />
     <Compile Include="Injection\IInjectionClient.cs" />
@@ -99,7 +97,6 @@
     <Compile Include="Math\Shapes\RectangleExtensions.cs" />
     <Compile Include="Math\Shapes\TopLeftRectangle.cs" />
     <Compile Include="Math\Transformation.cs" />
-    <Compile Include="Modelization\IGlyphCreator.cs" />
     <Compile Include="Point.Extension.cs" />
     <Compile Include="Observation\Properties\INotifyPropertyChangedConfiguration.cs" />
     <Compile Include="Observation\Properties\IPropertyChangedObservable.cs" />
