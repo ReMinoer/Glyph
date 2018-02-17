@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph", "Glyph\Glyph.csproj", "{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}"
 EndProject
@@ -14,13 +14,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Scripting", "Glyph.Scripting\Glyph.Scripting.csproj", "{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F31F1E89-B248-4F40-9C3A-8AF372451E40}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Effects", "Glyph.Effects\Glyph.Effects.csproj", "{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}"
 EndProject
@@ -60,11 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Graph", "External\Fin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Injection", "External\Fingear\External\Stave\External\Diese\Diese.Injection\Diese.Injection.csproj", "{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Linseq", "External\Fingear\External\Stave\External\Diese\Diese.Linseq\Diese.Linseq.csproj", "{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Modelization", "External\Fingear\External\Stave\External\Diese\Diese.Modelization\Diese.Modelization.csproj", "{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Serialization", "External\Fingear\External\Stave\External\Diese\Diese.Serialization\Diese.Serialization.csproj", "{4AE2D764-4161-453D-8B2D-BD66607EC27A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.WpfInterop", "Glyph.WpfInterop\Glyph.WpfInterop.csproj", "{DE8D6CFE-29E2-4B00-A32B-A85A5CA583C6}"
 EndProject
@@ -176,18 +165,10 @@ Global
 		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4AE2D764-4161-453D-8B2D-BD66607EC27A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AE2D764-4161-453D-8B2D-BD66607EC27A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AE2D764-4161-453D-8B2D-BD66607EC27A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4AE2D764-4161-453D-8B2D-BD66607EC27A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DE8D6CFE-29E2-4B00-A32B-A85A5CA583C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DE8D6CFE-29E2-4B00-A32B-A85A5CA583C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE8D6CFE-29E2-4B00-A32B-A85A5CA583C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -217,9 +198,7 @@ Global
 		{CF81F12F-4EFA-4A26-9853-DF86973533CE} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{BBC6C938-95A5-4CBF-AA6B-DA2A9A09C4F1} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
-		{F9D2ED94-6FA3-46FB-A50B-83C486F33EEB} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
-		{4AE2D764-4161-453D-8B2D-BD66607EC27A} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{809F0D79-AEDC-4754-A213-FDBE97CCD6D6} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{ED3283B6-9691-4418-96D0-6E83AEE37540} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 	EndGlobalSection

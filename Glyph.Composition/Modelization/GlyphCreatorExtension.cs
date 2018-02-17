@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Diese.Collections;
 using Stave;
 
@@ -24,17 +22,6 @@ namespace Glyph.Composition.Modelization
                     return data;
 
             return null;
-        }
-
-        static private class Tree
-        {
-            static public IEnumerable<T> BreadthFirst<T>(T root, Func<T, IEnumerable<T>> childrenSelector)
-            {
-                yield return root;
-
-                foreach (T child in childrenSelector(root))
-                    yield return child;
-            }
         }
     }
 }

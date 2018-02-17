@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Diese.Linseq;
+using Diese.Collections;
 
 namespace Glyph.Animation
 {
@@ -32,12 +32,12 @@ namespace Glyph.Animation
         }
 
         public SpriteAnimationBuilder(int begin, int end, float period, bool loop)
-            : this(Sequence.StartWith(begin).ThenGoTo(end), period, loop)
+            : this(Enumerable<int>.New(begin).ThenGoTo(end), period, loop)
         {
         }
 
         public SpriteAnimationBuilder(int begin, int end, IEnumerable<float> intervals, bool loop)
-            : this(Sequence.StartWith(begin).ThenGoTo(end), intervals, loop)
+            : this(Enumerable<int>.New(begin).ThenGoTo(end), intervals, loop)
         {
         }
 
