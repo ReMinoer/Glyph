@@ -13,7 +13,6 @@ namespace Glyph.Composition.Modelization
         where TData : IGlyphCreator
         where TParent : IGlyphComposite<IGlyphComponent>
     {
-        private bool _itemsInitialized;
         private IDependencyInjector _injector;
         private readonly IGlyphCreator<TParent> _parent;
 
