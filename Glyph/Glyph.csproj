@@ -49,6 +49,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
@@ -66,6 +67,8 @@
     <Compile Include="Binding\ExpressionExtension.cs" />
     <Compile Include="Binding\IOneWayBinding.cs" />
     <Compile Include="Color.Extension.cs" />
+    <Compile Include="IO\DataContractSerializationFormat.cs" />
+    <Compile Include="IO\ISerializationFormat.cs" />
     <Compile Include="Reflection\GlyphTypeInfo.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="Axes.cs" />
@@ -86,7 +89,6 @@
     <Compile Include="IO\ISaveFormat.cs" />
     <Compile Include="IO\ISaveLoadFormat.cs" />
     <Compile Include="IO\Base\SaveLoadFormatBase.cs" />
-    <Compile Include="IO\XmlSerializationFormat.cs" />
     <Compile Include="ITimeUnscalable.cs" />
     <Compile Include="Math\IArea.cs" />
     <Compile Include="Math\IShape.cs" />
