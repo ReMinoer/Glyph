@@ -55,9 +55,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Angle.cs" />
+    <Compile Include="Export\AssemblyContainsAttribute.cs" />
     <Compile Include="Axis.cs" />
     <Compile Include="Binding\BindingCollectionExtension.cs" />
     <Compile Include="Binding\ITwoWayBinding.cs" />
+    <Compile Include="Export\TypeImporter.cs" />
     <Compile Include="Handlable.cs" />
     <Compile Include="Binding\Binding.cs" />
     <Compile Include="Binding\BindingCollection.cs" />
