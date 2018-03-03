@@ -7,7 +7,7 @@ using Glyph.IO.Base;
 
 namespace Glyph.IO
 {
-    public class DataContractSerializationFormat<T> : SaveLoadFormatBase<T>, ISerializationFormat<T>
+    public class DataContractSerializationFormat<T> : SerializationFormatBase<T>
     {
         public override FileType FileType => new FileType
         {
@@ -36,15 +36,12 @@ namespace Glyph.IO
             _fileExtensions = fileExtensions;
         }
 
-        public override T Load(Stream stream) => Load(stream, Enumerable.Empty<Type>());
-        public override void Save(T obj, Stream stream) => Save(obj, stream, Enumerable.Empty<Type>());
-
-        public T Load(Stream stream, IEnumerable<Type> knownTypes)
+        public override T Load(Stream stream, IEnumerable<Type> knownTypes)
         {
             return (T)new DataContractSerializer(typeof(T), knownTypes).ReadObject(stream);
         }
 
-        public void Save(T obj, Stream stream, IEnumerable<Type> knownTypes)
+        public override void Save(T obj, Stream stream, IEnumerable<Type> knownTypes)
         {
             new DataContractSerializer(typeof(T), knownTypes).WriteObject(stream, obj);
         }

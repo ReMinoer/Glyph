@@ -69,6 +69,7 @@
     <Compile Include="Color.Extension.cs" />
     <Compile Include="IO\DataContractSerializationFormat.cs" />
     <Compile Include="IO\ISerializationFormat.cs" />
+    <Compile Include="IO\Base\SerializationFormatBase.cs" />
     <Compile Include="Reflection\GlyphTypeInfo.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="Axes.cs" />
