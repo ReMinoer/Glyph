@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Diese.Collections;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 
@@ -7,33 +8,39 @@ namespace Glyph.Core
 {
     static public class SceneNodeExtension
     {
-        static public IEnumerable<ISceneNode> ChildrenNodeQueue(this ISceneNode sceneNode)
-        {
-            foreach (ISceneNode child in sceneNode.Children)
-                yield return child;
+        static private IEnumerable<ISceneNode> GetChildrenNodes(ISceneNode x) => x.Children;
+        static private ISceneNode GetParentNode(ISceneNode x) => x.ParentNode;
 
-            foreach (ISceneNode child in sceneNode.Children.SelectMany(x => x.ChildrenNodeQueue()))
-                yield return child;
+        static public IEnumerable<ISceneNode> ChildrenNodesQueueExclusive(this ISceneNode sceneNode)
+        {
+            if (sceneNode == null)
+                return Enumerable.Empty<ISceneNode>();
+
+            return Tree.BreadthFirstExclusive(sceneNode, GetChildrenNodes);
         }
 
-        static public IEnumerable<ISceneNode> ItselfAndChildrenNodeQueue(this ISceneNode sceneNode)
+        static public IEnumerable<ISceneNode> ChildrenNodesQueue(this ISceneNode sceneNode)
         {
-            yield return sceneNode;
-            foreach (ISceneNode child in sceneNode.ChildrenNodeQueue())
-                yield return child;
+            if (sceneNode == null)
+                return Enumerable.Empty<ISceneNode>();
+
+            return Tree.BreadthFirst(sceneNode, GetChildrenNodes);
+        }
+        
+        static public IEnumerable<ISceneNode> ParentNodeQueueExclusive(this ISceneNode sceneNode)
+        {
+            if (sceneNode == null)
+                return Enumerable.Empty<ISceneNode>();
+
+            return Sequence.AggregateExclusive(sceneNode, GetParentNode);
         }
 
         static public IEnumerable<ISceneNode> ParentNodeQueue(this ISceneNode sceneNode)
         {
-            for (ISceneNode parent = sceneNode.ParentNode; parent != null; parent = parent.ParentNode)
-                yield return parent;
-        }
+            if (sceneNode == null)
+                return Enumerable.Empty<ISceneNode>();
 
-        static public IEnumerable<ISceneNode> ItselfAndParentNodeQueue(this ISceneNode sceneNode)
-        {
-            yield return sceneNode;
-            for (ISceneNode parent = sceneNode.ParentNode; parent != null; parent = parent.ParentNode)
-                yield return parent;
+            return Sequence.Aggregate(sceneNode, GetParentNode);
         }
 
         static public Vector2 Project(this ISceneNode sceneNode, ISceneNode space)
@@ -42,12 +49,12 @@ namespace Glyph.Core
             Stack<ISceneNode> descendants = null;
 
             ISceneNode sharedParent = null;
-            foreach (ISceneNode ascendant in sceneNode.ParentNodeQueue())
+            foreach (ISceneNode ascendant in sceneNode.ParentNodeQueueExclusive())
             {
                 if (descendants == null)
                 {
                     descendants = new Stack<ISceneNode>();
-                    foreach (ISceneNode descendant in space.ItselfAndParentNodeQueue())
+                    foreach (ISceneNode descendant in space.ParentNodeQueue())
                     {
                         if (ascendant.Represent(descendant))
                         {
@@ -70,7 +77,7 @@ namespace Glyph.Core
             }
 
             if (descendants == null)
-                descendants = new Stack<ISceneNode>(space.ItselfAndParentNodeQueue());
+                descendants = new Stack<ISceneNode>(space.ParentNodeQueue());
             else if (sharedParent != null && descendants.Count > 0)
                 while (descendants.Pop() != sharedParent) { }
 
