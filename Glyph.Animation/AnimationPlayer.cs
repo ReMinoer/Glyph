@@ -11,20 +11,20 @@ namespace Glyph.Animation
         private readonly List<AnimationTransition<T>> _stepsToRead;
         private IAnimation<T> _animation;
         public bool UseUnscaledTime { get; set; }
-        public WeakReference<T> Animatable { get; private set; }
+        public WeakReference<T> Animatable { get; }
         public float ElapsedTime { get; private set; }
-
-        public bool Paused { get; private set; }
+        
+        public bool IsPaused { get; private set; }
         public bool IsLooping { get; set; }
 
         public float TimeOffset
         {
-            set { ElapsedTime = value; }
+            set => ElapsedTime = value;
         }
 
         public IAnimation<T> Animation
         {
-            get { return _animation; }
+            get => _animation;
             set
             {
                 Stop();
@@ -42,17 +42,15 @@ namespace Glyph.Animation
             }
         }
 
-        public bool Ended
-        {
-            get { return ElapsedTime > Animation.Duration; }
-        }
+        public bool HasEnded => ElapsedTime > Animation.Duration;
+        public event Action Ended;
 
         public AnimationPlayer(T animatable)
         {
             Animatable = new WeakReference<T>(animatable);
 
             _stepsToRead = new List<AnimationTransition<T>>();
-            Paused = true;
+            IsPaused = true;
         }
 
         public void Update(ElapsedTime elapsedTime)
@@ -60,7 +58,7 @@ namespace Glyph.Animation
             if (Animation == null)
                 return;
 
-            if (Paused)
+            if (IsPaused)
                 return;
 
             if (!_stepsToRead.Any())
@@ -83,8 +81,7 @@ namespace Glyph.Animation
                     if (advance > 1f)
                         advance = 1f;
 
-                    T animatable;
-                    if (Animatable.TryGetTarget(out animatable))
+                    if (Animatable.TryGetTarget(out T animatable))
                         step.Apply(ref animatable, advance);
 
                     if (ElapsedTime > step.End)
@@ -94,35 +91,40 @@ namespace Glyph.Animation
                 foreach (AnimationTransition<T> step in stepsToRemove)
                     _stepsToRead.Remove(step);
 
-                if (IsLooping && !_stepsToRead.Any())
+                if (_stepsToRead.Count == 0)
                 {
-                    _stepsToRead.AddRange(Animation);
-                    ElapsedTime -= Animation.Duration;
-                    endLoop = true;
+                    if (IsLooping)
+                    {
+                        _stepsToRead.AddRange(Animation);
+                        ElapsedTime -= Animation.Duration;
+                        endLoop = true;
+                    }
+
+                    Ended?.Invoke();
                 }
             } while (endLoop && ElapsedTime > 0);
         }
 
         public void Play()
         {
-            Paused = false;
+            IsPaused = false;
             ElapsedTime = 0;
         }
 
         public void Stop()
         {
-            Paused = true;
+            IsPaused = true;
             ElapsedTime = 0;
         }
 
         public void Pause()
         {
-            Paused = true;
+            IsPaused = true;
         }
 
         public void Resume()
         {
-            Paused = false;
+            IsPaused = false;
         }
     }
 }

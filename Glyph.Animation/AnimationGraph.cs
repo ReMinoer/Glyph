@@ -87,7 +87,7 @@ namespace Glyph.Animation
                 _started = true;
             }
 
-            while (vertex.Successors.Any(x => Components.All(y => y.IsLooping || y.Ended) && (x.Predicate == null || x.Predicate(Animatable)) && !x.OnRequest, out Transition transition))
+            while (vertex.Successors.Any(x => Components.All(y => y.IsLooping || y.HasEnded) && (x.Predicate == null || x.Predicate(Animatable)) && !x.OnRequest, out Transition transition))
             {
                 Current = transition.End.InnerStates.First().Key;
 
