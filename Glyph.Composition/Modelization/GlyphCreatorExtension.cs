@@ -8,7 +8,7 @@ namespace Glyph.Composition.Modelization
     {
         static public IGlyphCreator GetData(this IGlyphCreator root, IGlyphComponent component)
         {
-            if (component == null)
+            if (root == null || component == null)
                 return null;
 
             IGlyphCreator[] bindedDataArray = Tree.BreadthFirst(root, x => x.Children).Where(x => x.BindedObject != null).ToArray();
