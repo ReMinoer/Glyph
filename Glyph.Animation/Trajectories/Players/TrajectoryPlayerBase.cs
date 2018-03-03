@@ -9,7 +9,7 @@ namespace Glyph.Animation.Trajectories.Players
     {
         protected Vector2 LastPosition;
         protected float CurrentSpeed;
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
         public bool Playing => !Paused && !Ended;
         public bool Paused { get; private set; }
         public bool Ended { get; private set; }
