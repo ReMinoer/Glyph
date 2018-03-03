@@ -87,6 +87,7 @@
     <Compile Include="Trajectories\TimedTrajectory.cs" />
     <Compile Include="Trajectories\Trajectory.cs" />
     <Compile Include="Trajectories\TrajectoryExtensions.cs" />
+    <Compile Include="TrajectoryAnimationBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
