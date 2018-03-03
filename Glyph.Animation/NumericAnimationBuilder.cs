@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Glyph.Animation
 {
-    public class NumericAnimationBuilder<T> : IAnimationBuilder<T>, IEnumerable<AnimationKeyPoint<T>>
+    public class NumericAnimationBuilder<T> : IAnimationBuilder<T>
     {
         private readonly List<AnimationKeyPoint<T>> _list;
         public T StartValue { get; set; }
@@ -59,16 +58,6 @@ namespace Glyph.Animation
             }
 
             return builder.Create();
-        }
-
-        public IEnumerator<AnimationKeyPoint<T>> GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }
