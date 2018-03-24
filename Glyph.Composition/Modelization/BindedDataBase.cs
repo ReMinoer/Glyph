@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 using Diese;
 using Diese.Collections;
 using Diese.Injection;
@@ -16,7 +15,7 @@ namespace Glyph.Composition.Modelization
     {
         private IDependencyInjector _injector;
 
-        [Category("Creator"), XmlIgnore]
+        [Category("Creator"), IgnoreDataMember]
         public IReadOnlyObservableCollection<IGlyphCreator> Children { get; }
 
         protected ObservableList<IGlyphConfigurator<T>> SubConfigurators { get; }
@@ -26,15 +25,15 @@ namespace Glyph.Composition.Modelization
         [Category("Component")]
         public abstract string Name { get; set; }
 
-        [Category("Creator"), XmlIgnore]
+        [Category("Creator"), IgnoreDataMember]
         public bool IsInstantiated { get; private set; }
 
-        [Category("Creator"), XmlIgnore]
+        [Category("Creator"), IgnoreDataMember]
         public T BindedObject { get; private set; }
         IGlyphComponent IDataBindable<IGlyphComponent>.BindedObject => BindedObject;
         object IDataBindable.BindedObject => BindedObject;
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public IDependencyInjector Injector
         {
             protected get { return _injector; }

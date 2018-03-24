@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 using Diese.Collections;
 using Diese.Injection;
 using Diese.Modelization;
@@ -16,7 +16,7 @@ namespace Glyph.Composition.Modelization
         private IDependencyInjector _injector;
         private readonly IGlyphCreator<TParent> _parent;
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public IDependencyInjector Injector
         {
             protected get { return _injector; }
@@ -47,7 +47,7 @@ namespace Glyph.Composition.Modelization
         IEnumerable<IConfigurator<TParent>> ICompositeConfigurator<TParent>.SubConfigurators => Enumerable.Empty<IGlyphConfigurator<TParent>>();
         IEnumerable<IGlyphConfigurator<TParent>> ICompositeConfigurator<TParent, IGlyphConfigurator<TParent>>.SubConfigurators => Enumerable.Empty<IGlyphConfigurator<TParent>>();
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         public TParent BindedObject => (TParent)_parent.BindedObject;
         IGlyphComponent IDataBindable<IGlyphComponent>.BindedObject => BindedObject;
         object IDataBindable.BindedObject => BindedObject;
