@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections;
-using Glyph.Composition;
 using Glyph.Composition.Messaging;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -95,65 +94,21 @@ namespace Glyph.Core.Tracking
             Unregistered?.Invoke(instance);
         }
 
-        public bool ContainsPoint(Vector2 point)
-        {
-            return _space.ContainsPoint(point);
-        }
-
-        public ISpace<T> GetPartition(Vector2 position)
-        {
-            return ((ISpace<T>)_space).GetPartition(position);
-        }
-
-        public ISpace<T> GetBestPartition(Vector2 position)
-        {
-            return ((ISpace<T>)_space).GetBestPartition(position);
-        }
-
-        public IEnumerable<ISpace<T>> GetAllPartitionsInRange(TopLeftRectangle range)
-        {
-            return ((ISpace<T>)_space).GetAllPartitionsInRange(range);
-        }
-
-        public IEnumerable<T> GetAllItemsInRange(IShape range)
-        {
-            return _space.GetAllItemsInRange(range);
-        }
-
-        public IEnumerable<Vector2> GetAllPointsInRange(IShape range)
-        {
-            return _space.GetAllPointsInRange(range);
-        }
-
-        public IEnumerable<TopLeftRectangle> GetAllBoxesInRange(IShape range)
-        {
-            return _space.GetAllBoxesInRange(range);
-        }
-
-        ISpace ISpace.GetPartition(Vector2 position)
-        {
-            return ((ISpace)_space).GetPartition(position);
-        }
-
-        ISpace ISpace.GetBestPartition(Vector2 position)
-        {
-            return ((ISpace)_space).GetBestPartition(position);
-        }
-
-        IEnumerable<ISpace> ISpace.GetAllPartitionsInRange(TopLeftRectangle range)
-        {
-            return ((ISpace)_space).GetAllPartitionsInRange(range);
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _space.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_space).GetEnumerator();
-        }
+        public bool ContainsPoint(Vector2 point) => _space.ContainsPoint(point);
+        public bool Intersects(Segment segment) => _space.Intersects(segment);
+        public bool Intersects<TShape>(TShape edgedShape) where TShape : IEdgedShape => _space.Intersects(edgedShape);
+        public bool Intersects(Circle circle) => _space.Intersects(circle);
+        public ISpace<T> GetPartition(Vector2 position) => ((ISpace<T>)_space).GetPartition(position);
+        public ISpace<T> GetBestPartition(Vector2 position) => ((ISpace<T>)_space).GetBestPartition(position);
+        public IEnumerable<ISpace<T>> GetAllPartitionsInRange(TopLeftRectangle range) => ((ISpace<T>)_space).GetAllPartitionsInRange(range);
+        public IEnumerable<T> GetAllItemsInRange(IShape range) => _space.GetAllItemsInRange(range);
+        public IEnumerable<Vector2> GetAllPointsInRange(IShape range) => _space.GetAllPointsInRange(range);
+        public IEnumerable<TopLeftRectangle> GetAllBoxesInRange(IShape range) => _space.GetAllBoxesInRange(range);
+        ISpace ISpace.GetPartition(Vector2 position) => ((ISpace)_space).GetPartition(position);
+        ISpace ISpace.GetBestPartition(Vector2 position) => ((ISpace)_space).GetBestPartition(position);
+        IEnumerable<ISpace> ISpace.GetAllPartitionsInRange(TopLeftRectangle range) => ((ISpace)_space).GetAllPartitionsInRange(range);
+        public IEnumerator<T> GetEnumerator() => _space.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_space).GetEnumerator();
 
         public void Dispose()
         {

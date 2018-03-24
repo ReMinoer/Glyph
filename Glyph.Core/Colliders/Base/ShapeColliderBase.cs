@@ -25,15 +25,9 @@ namespace Glyph.Core.Colliders.Base
             return Shape.ContainsPoint(point);
         }
 
-        public override bool Intersects(TopLeftRectangle rectangle)
-        {
-            return Shape.Intersects(rectangle);
-        }
-
-        public override bool Intersects(Circle circle)
-        {
-            return Shape.Intersects(circle);
-        }
+        public override bool Intersects(Segment segment) => Shape.Intersects(segment);
+        public override bool Intersects<T>(T edgedShape) => Shape.Intersects(edgedShape);
+        public override bool Intersects(Circle circle) => Shape.Intersects(circle);
 
         IShape IShapedComponent.Shape
         {

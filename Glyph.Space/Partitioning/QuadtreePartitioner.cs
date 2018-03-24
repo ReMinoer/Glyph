@@ -9,8 +9,11 @@ namespace Glyph.Space.Partitioning
     {
         public TopLeftRectangle BoundingBox { get; }
         public int Capacity { get; }
+
         public Vector2 Center => BoundingBox.Center;
         public bool IsVoid => BoundingBox.IsVoid;
+        public IEnumerable<Vector2> Vertices => BoundingBox.Vertices;
+        public IEnumerable<Segment> Edges => BoundingBox.Edges;
 
         public QuadtreePartitioner(TopLeftRectangle bounds, int capacity)
         {
@@ -18,25 +21,10 @@ namespace Glyph.Space.Partitioning
             Capacity = capacity;
         }
 
-        public bool ContainsPoint(Vector2 position)
-        {
-            return BoundingBox.ContainsPoint(position);
-        }
-
-        public bool Intersects(IShape range)
-        {
-            return range.Intersects(BoundingBox);
-        }
-
-        public bool Intersects(TopLeftRectangle rectangle)
-        {
-            return BoundingBox.Intersects(rectangle);
-        }
-
-        public bool Intersects(Circle circle)
-        {
-            return BoundingBox.Intersects(circle);
-        }
+        public bool ContainsPoint(Vector2 position) => BoundingBox.ContainsPoint(position);
+        public bool Intersects(Segment segment) => BoundingBox.Intersects(segment);
+        public bool Intersects<T>(T edgedShape) where T : IEdgedShape => BoundingBox.Intersects(edgedShape);
+        public bool Intersects(Circle circle) => BoundingBox.Intersects(circle);
 
         public IEnumerable<IPartitioner> Subdivide()
         {

@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public interface IRectangle : IShape
+    public interface IRectangle : ITriangledShape
     {
         Vector2 Position { get; }
         Vector2 P1 { get; }
@@ -15,6 +15,5 @@ namespace Glyph.Math.Shapes
         float Width { get; }
         float Height { get; }
         Vector2 Size { get; }
-        bool Intersects(TopLeftRectangle rectangle, out TopLeftRectangle intersection);
     }
 }

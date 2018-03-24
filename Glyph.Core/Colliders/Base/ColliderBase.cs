@@ -1,5 +1,6 @@
 ﻿using System;
 using Glyph.Composition;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
@@ -100,7 +101,8 @@ namespace Glyph.Core.Colliders.Base
         protected abstract bool IsColliding(RectangleCollider collider, out Collision collision);
         protected abstract bool IsColliding(CircleCollider collider, out Collision collision);
         protected abstract bool IsColliding(IGridCollider collider, out Collision collision);
-        public abstract bool Intersects(TopLeftRectangle rectangle);
+        public abstract bool Intersects(Segment segment);
+        public abstract bool Intersects<T>(T edgedShape) where T : IEdgedShape;
         public abstract bool Intersects(Circle circle);
         public abstract bool ContainsPoint(Vector2 point);
 

@@ -1,6 +1,5 @@
 ﻿using Glyph.Composition;
 using Glyph.Core;
-using Glyph.Core.Injection;
 using Glyph.Injection;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -52,9 +51,9 @@ namespace Glyph.Graphics
             }
         }
 
-        public bool ContainsPoint(Vector2 point)
-        {
-            return BoundingBox.ContainsPoint(point);
-        }
+        public bool ContainsPoint(Vector2 point) => BoundingBox.ContainsPoint(point);
+        public bool Intersects(Segment segment) => BoundingBox.Intersects(segment);
+        public bool Intersects<T>(T edgedShape) where T : IEdgedShape => BoundingBox.Intersects(edgedShape);
+        public bool Intersects(Circle circle) => BoundingBox.Intersects(circle);
     }
 }

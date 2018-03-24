@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
@@ -13,11 +14,10 @@ namespace Glyph.Space
         private readonly List<IGridCase<T>> _dirtiedCases;
         private readonly IReadOnlyList<IGridCase<T>> _readOnlyDirtiedCases;
         private bool _isDirty;
-        public bool IsVoid => _gridImplementation.IsVoid;
 
         public bool IsDirty
         {
-            get { return _isDirty; }
+            get => _isDirty;
             private set
             {
                 _isDirty = value;
@@ -27,54 +27,9 @@ namespace Glyph.Space
             }
         }
 
-        public IEnumerable<IGridCase<T>> DirtiedCases
-        {
-            get { return _readOnlyDirtiedCases; }
-        }
-
-        public TopLeftRectangle BoundingBox
-        {
-            get { return _gridImplementation.BoundingBox; }
-        }
-
-        public Vector2 Center
-        {
-            get { return _gridImplementation.Center; }
-        }
-
-        public GridDimension Dimension
-        {
-            get { return _gridImplementation.Dimension; }
-        }
-
-        public Rectangle Bounds
-        {
-            get { return _gridImplementation.Bounds; }
-        }
-
-        public Vector2 Delta
-        {
-            get { return _gridImplementation.Delta; }
-        }
-
-        public bool HasLowEntropy
-        {
-            get { return _gridImplementation.HasLowEntropy; }
-        }
-
-        public IEnumerable<T> Values
-        {
-            get { return _gridImplementation.Values; }
-        }
-
-        public IEnumerable<IGridCase<T>> SignificantCases
-        {
-            get { return _gridImplementation.SignificantCases; }
-        }
-
         public T this[int i, int j]
         {
-            get { return _gridImplementation[i, j]; }
+            get => _gridImplementation[i, j];
             set
             {
                 _gridImplementation[i, j] = value;
@@ -87,7 +42,7 @@ namespace Glyph.Space
 
         public T this[Point gridPoint]
         {
-            get { return _gridImplementation[gridPoint]; }
+            get => _gridImplementation[gridPoint];
             set
             {
                 _gridImplementation[gridPoint] = value;
@@ -100,7 +55,7 @@ namespace Glyph.Space
 
         public T this[Vector2 worldPoint]
         {
-            get { return _gridImplementation[worldPoint]; }
+            get => _gridImplementation[worldPoint];
             set
             {
                 _gridImplementation[worldPoint] = value;
@@ -113,7 +68,7 @@ namespace Glyph.Space
 
         public T this[IGridPositionable gridPositionable]
         {
-            get { return _gridImplementation[gridPositionable]; }
+            get => _gridImplementation[gridPositionable];
             set
             {
                 _gridImplementation[gridPositionable] = value;
@@ -123,31 +78,21 @@ namespace Glyph.Space
                 IsDirty = true;
             }
         }
+        public bool IsVoid => _gridImplementation.IsVoid;
+        public IEnumerable<IGridCase<T>> DirtiedCases => _readOnlyDirtiedCases;
+        public TopLeftRectangle BoundingBox => _gridImplementation.BoundingBox;
+        public Vector2 Center => _gridImplementation.Center;
+        public GridDimension Dimension => _gridImplementation.Dimension;
+        public Rectangle Bounds => _gridImplementation.Bounds;
+        public Vector2 Delta => _gridImplementation.Delta;
+        public bool HasLowEntropy => _gridImplementation.HasLowEntropy;
+        public IEnumerable<T> Values => _gridImplementation.Values;
+        public IEnumerable<IGridCase<T>> SignificantCases => _gridImplementation.SignificantCases;
 
-        public T[][] ToArray()
-        {
-            return _gridImplementation.ToArray();
-        }
-
-        T IGrid<T>.this[int i, int j]
-        {
-            get { return ((IGrid<T>)_gridImplementation)[i, j]; }
-        }
-
-        T IGrid<T>.this[Point gridPoint]
-        {
-            get { return ((IGrid<T>)_gridImplementation)[gridPoint]; }
-        }
-
-        T IGrid<T>.this[Vector2 worldPoint]
-        {
-            get { return ((IGrid<T>)_gridImplementation)[worldPoint]; }
-        }
-
-        T IGrid<T>.this[IGridPositionable gridPositionable]
-        {
-            get { return ((IGrid<T>)_gridImplementation)[gridPositionable]; }
-        }
+        T IGrid<T>.this[int i, int j] => ((IGrid<T>)_gridImplementation)[i, j];
+        T IGrid<T>.this[Point gridPoint] => ((IGrid<T>)_gridImplementation)[gridPoint];
+        T IGrid<T>.this[Vector2 worldPoint] => ((IGrid<T>)_gridImplementation)[worldPoint];
+        T IGrid<T>.this[IGridPositionable gridPositionable] => ((IGrid<T>)_gridImplementation)[gridPositionable];
 
         public event Action Dirtied;
 
@@ -168,74 +113,21 @@ namespace Glyph.Space
             _dirtiedCases.Clear();
         }
 
-        public bool ContainsPoint(Vector2 point)
-        {
-            return _gridImplementation.ContainsPoint(point);
-        }
-
-        public bool Intersects(TopLeftRectangle rectangle)
-        {
-            return _gridImplementation.Intersects(rectangle);
-        }
-
-        public bool Intersects(Circle circle)
-        {
-            return _gridImplementation.Intersects(circle);
-        }
-
-        public Vector2 ToWorldPoint(int i, int j)
-        {
-            return _gridImplementation.ToWorldPoint(i, j);
-        }
-
-        public Vector2 ToWorldPoint(Point gridPoint)
-        {
-            return _gridImplementation.ToWorldPoint(gridPoint);
-        }
-
-        public Vector2 ToWorldPoint(IGridPositionable gridPoint)
-        {
-            return _gridImplementation.ToWorldPoint(gridPoint);
-        }
-
-        public TopLeftRectangle ToWorldRange(int x, int y, int width, int height)
-        {
-            return _gridImplementation.ToWorldRange(x, y, width, height);
-        }
-
-        public TopLeftRectangle ToWorldRange(Rectangle rectangle)
-        {
-            return _gridImplementation.ToWorldRange(rectangle);
-        }
-
-        public Point ToGridPoint(Vector2 worldPoint)
-        {
-            return _gridImplementation.ToGridPoint(worldPoint);
-        }
-
-        public Rectangle ToGridRange(TopLeftRectangle rectangle)
-        {
-            return _gridImplementation.ToGridRange(rectangle);
-        }
-
-        public bool ContainsPoint(int i, int j)
-        {
-            return _gridImplementation.ContainsPoint(i, j);
-        }
-
-        public bool ContainsPoint(Point gridPoint)
-        {
-            return _gridImplementation.ContainsPoint(gridPoint);
-        }
-
-        public IEnumerator<Point> GetEnumerator()
-        {
-            return _gridImplementation.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_gridImplementation).GetEnumerator();
-        }
+        public bool ContainsPoint(Vector2 point) => _gridImplementation.ContainsPoint(point);
+        public bool Intersects(Segment segment) => _gridImplementation.Intersects(segment);
+        public bool Intersects<T1>(T1 edgedShape) where T1 : IEdgedShape => _gridImplementation.Intersects(edgedShape);
+        public bool Intersects(Circle circle) => _gridImplementation.Intersects(circle);
+        public Vector2 ToWorldPoint(int i, int j) => _gridImplementation.ToWorldPoint(i, j);
+        public Vector2 ToWorldPoint(Point gridPoint) => _gridImplementation.ToWorldPoint(gridPoint);
+        public Vector2 ToWorldPoint(IGridPositionable gridPoint) => _gridImplementation.ToWorldPoint(gridPoint);
+        public TopLeftRectangle ToWorldRange(int x, int y, int width, int height) => _gridImplementation.ToWorldRange(x, y, width, height);
+        public TopLeftRectangle ToWorldRange(Rectangle rectangle) => _gridImplementation.ToWorldRange(rectangle);
+        public Point ToGridPoint(Vector2 worldPoint) => _gridImplementation.ToGridPoint(worldPoint);
+        public Rectangle ToGridRange(TopLeftRectangle rectangle) => _gridImplementation.ToGridRange(rectangle);
+        public bool ContainsPoint(int i, int j) => _gridImplementation.ContainsPoint(i, j);
+        public bool ContainsPoint(Point gridPoint) => _gridImplementation.ContainsPoint(gridPoint);
+        public T[][] ToArray() => _gridImplementation.ToArray();
+        public IEnumerator<Point> GetEnumerator() => _gridImplementation.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_gridImplementation).GetEnumerator();
     }
 }

@@ -34,6 +34,8 @@ namespace Glyph.Math
             }
         }
 
+        static public Matrix3X3 Identity => new Matrix3X3(Vector2.Zero, 0, 1f);
+
         public Matrix3X3(Vector2 translation, float rotation, float scale)
         {
             float cos = (float)System.Math.Cos(rotation);

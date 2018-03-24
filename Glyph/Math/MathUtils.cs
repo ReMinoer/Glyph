@@ -19,24 +19,37 @@ namespace Glyph.Math
 
         static public TopLeftRectangle GetBoundingBox(IEnumerable<Vector2> points)
         {
-            float left = float.MaxValue;
-            float right = float.MinValue;
-            float top = float.MaxValue;
-            float bottom = float.MinValue;
+            if (points == null)
+                return TopLeftRectangle.Void;
 
-            foreach (Vector2 point in points)
+            using (IEnumerator<Vector2> enumerator = points.GetEnumerator())
             {
-                if (point.X < left)
-                    left = point.X;
-                if (point.X > right)
-                    right = point.X;
-                if (point.Y < top)
-                    top = point.Y;
-                if (point.Y > bottom)
-                    bottom = point.Y;
-            }
+                if (!enumerator.MoveNext())
+                    return TopLeftRectangle.Void;
 
-            return new TopLeftRectangle(left, top, right - left, bottom - top);
+                Vector2 point = enumerator.Current;
+
+                float left = point.X;
+                float right = point.X;
+                float top = point.Y;
+                float bottom = point.Y;
+
+                while (enumerator.MoveNext())
+                {
+                    point = enumerator.Current;
+
+                    if (point.X < left)
+                        left = point.X;
+                    if (point.X > right)
+                        right = point.X;
+                    if (point.Y < top)
+                        top = point.Y;
+                    if (point.Y > bottom)
+                        bottom = point.Y;
+                }
+
+                return new TopLeftRectangle(left, top, right - left, bottom - top);
+            }
         }
 
         static public TopLeftRectangle GetBoundingBox(params TopLeftRectangle[] rectangles)
@@ -46,33 +59,42 @@ namespace Glyph.Math
 
         static public TopLeftRectangle GetBoundingBox(IEnumerable<TopLeftRectangle> rectangles)
         {
-            TopLeftRectangle[] topLeftRectangles = rectangles as TopLeftRectangle[] ?? rectangles.ToArray();
-            if (topLeftRectangles.Length == 0)
+            if (rectangles == null)
                 return TopLeftRectangle.Void;
 
-            float left = float.MaxValue;
-            float right = float.MinValue;
-            float top = float.MaxValue;
-            float bottom = float.MinValue;
-
-            foreach (TopLeftRectangle rectangle in topLeftRectangles)
+            using (IEnumerator<TopLeftRectangle> enumerator = rectangles.GetEnumerator())
             {
-                if (rectangle.Left < left)
-                    left = rectangle.Left;
-                if (rectangle.Right > right)
-                    right = rectangle.Right;
-                if (rectangle.Top < top)
-                    top = rectangle.Top;
-                if (rectangle.Bottom > bottom)
-                    bottom = rectangle.Bottom;
-            }
+                if (!enumerator.MoveNext())
+                    return TopLeftRectangle.Void;
 
-            return new TopLeftRectangle(left, top, right - left, bottom - top);
+                TopLeftRectangle rectangle = enumerator.Current;
+
+                float left = rectangle.Left;
+                float right = rectangle.Right;
+                float top = rectangle.Top;
+                float bottom = rectangle.Bottom;
+
+                while (enumerator.MoveNext())
+                {
+                    rectangle = enumerator.Current;
+
+                    if (rectangle.Left < left)
+                        left = rectangle.Left;
+                    if (rectangle.Right > right)
+                        right = rectangle.Right;
+                    if (rectangle.Top < top)
+                        top = rectangle.Top;
+                    if (rectangle.Bottom > bottom)
+                        bottom = rectangle.Bottom;
+                }
+
+                return new TopLeftRectangle(left, top, right - left, bottom - top);
+            }
         }
 
         static public TopLeftRectangle GetBoundingBox(params IArea[] areas)
         {
-            return GetBoundingBox(areas.Select(x => x.BoundingBox));
+            return GetBoundingBox(areas.AsEnumerable());
         }
 
         static public TopLeftRectangle GetBoundingBox(IEnumerable<IArea> areas)

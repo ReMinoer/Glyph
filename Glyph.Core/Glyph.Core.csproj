@@ -61,7 +61,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="ColliderManager.cs" />
     <Compile Include="Colliders\Base\ColliderBase.cs" />
-    <Compile Include="Colliders\Base\ColliderParentImplementation.cs" />
+    <Compile Include="Colliders\Base\ColliderContainerImplementation.cs" />
     <Compile Include="Colliders\Base\ShapeColliderBase.cs" />
     <Compile Include="Colliders\CircleCollider.cs" />
     <Compile Include="Colliders\ColliderComposite.cs" />

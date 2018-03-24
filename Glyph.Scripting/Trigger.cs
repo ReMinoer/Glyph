@@ -74,20 +74,10 @@ namespace Glyph.Scripting
             return !message.IsHandled && (ActorPredicate == null || ActorPredicate(message.Actor));
         }
 
-        public bool Intersects(TopLeftRectangle rectangle)
-        {
-            return Shape.Intersects(rectangle);
-        }
-
-        public bool Intersects(Circle circle)
-        {
-            return Shape.Intersects(circle);
-        }
-
-        public bool ContainsPoint(Vector2 point)
-        {
-            return Shape.ContainsPoint(point);
-        }
+        public bool ContainsPoint(Vector2 point) => Shape.ContainsPoint(point);
+        public bool Intersects(Segment segment) => Shape.Intersects(segment);
+        public bool Intersects<T>(T edgedShape) where T : IEdgedShape => Shape.Intersects(edgedShape);
+        public bool Intersects(Circle circle) => Shape.Intersects(circle);
 
         public override void Dispose()
         {

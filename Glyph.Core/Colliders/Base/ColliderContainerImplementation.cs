@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Core.Colliders.Base
 {
-    internal class ColliderParentImplementation : IMovableShape
+    internal class ColliderContainerImplementation : IMovableShape
     {
         private readonly IGlyphContainer<ICollider> _colliderContainer;
         public bool Enabled { get; set; }
@@ -15,7 +15,7 @@ namespace Glyph.Core.Colliders.Base
         public Predicate<ICollider> IgnoredFilter { get; set; }
         public bool IsVoid => _colliderContainer.Components.All(x => x.IsVoid);
 
-        public ColliderParentImplementation(IGlyphContainer<ICollider> colliderContainer)
+        public ColliderContainerImplementation(IGlyphContainer<ICollider> colliderContainer)
         {
             _colliderContainer = colliderContainer;
         }
@@ -126,9 +126,15 @@ namespace Glyph.Core.Colliders.Base
             return false;
         }
 
-        public bool Intersects(TopLeftRectangle rectangle)
+        public bool Intersects(Segment segment)
         {
-            return _colliderContainer.Components.Any(component => component.Intersects(rectangle));
+            return _colliderContainer.Components.Any(component => component.Intersects(segment));
+        }
+
+        public bool Intersects<T>(T edgedShape)
+            where T : IEdgedShape
+        {
+            return _colliderContainer.Components.Any(component => component.Intersects(edgedShape));
         }
 
         public bool Intersects(Circle circle)

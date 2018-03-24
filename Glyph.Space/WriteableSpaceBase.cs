@@ -136,6 +136,22 @@ namespace Glyph.Space
             return _partitioner == null || _partitioner.ContainsPoint(point);
         }
 
+        public bool Intersects(Segment segment)
+        {
+            return _partitioner == null || _partitioner.Intersects(segment);
+        }
+
+        public bool Intersects<TShape>(TShape edgedShape)
+            where TShape : IEdgedShape
+        {
+            return _partitioner == null || _partitioner.Intersects(edgedShape);
+        }
+
+        public bool Intersects(Circle circle)
+        {
+            return _partitioner == null || _partitioner.Intersects(circle);
+        }
+
         public IWriteableSpace<T> GetPartition(Vector2 position)
         {
             return _partitions.FirstOrDefault(x => x.ContainsPoint(position));
@@ -180,7 +196,7 @@ namespace Glyph.Space
 
         public IEnumerable<T> GetAllItemsInRange(IShape range)
         {
-            if (Items.Count == 0 || _partitioner != null && !_partitioner.Intersects(range))
+            if (Items.Count == 0 || _partitioner != null && !range.Intersects(_partitioner))
                 yield break;
 
             if (_partitions.Count == 0)

@@ -1,4 +1,5 @@
-﻿using Glyph.Math.Shapes;
+﻿using System.Collections.Generic;
+using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Math
@@ -6,8 +7,17 @@ namespace Glyph.Math
     public interface IShape : IArea
     {
         Vector2 Center { get; }
-        bool Intersects(TopLeftRectangle rectangle);
-        bool Intersects(Circle circle);
+    }
+
+    public interface IEdgedShape : IShape
+    {
+        IEnumerable<Vector2> Vertices { get; }
+        IEnumerable<Segment> Edges { get; }
+    }
+
+    public interface ITriangledShape : IEdgedShape
+    {
+        IEnumerable<Triangle> Triangles { get; }
     }
 
     public interface IMovableShape : IShape

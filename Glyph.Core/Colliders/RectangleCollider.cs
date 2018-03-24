@@ -34,17 +34,17 @@ namespace Glyph.Core.Colliders
 
         protected override bool IsColliding(RectangleCollider collider, out Collision collision)
         {
-            return CollisionUtils.IsColliding<TopLeftRectangle, TopLeftRectangle>(IntersectionUtils.RectangleWithRectangle, this, collider, out collision);
+            return CollisionUtils.IsColliding<TopLeftRectangle, TopLeftRectangle>(IntersectionUtils.Collides, this, collider, out collision);
         }
 
         protected override bool IsColliding(CircleCollider collider, out Collision collision)
         {
-            return CollisionUtils.IsColliding<TopLeftRectangle, Circle>(IntersectionUtils.RectangleWithCircle, this, collider, out collision);
+            return CollisionUtils.IsColliding<TopLeftRectangle, Circle>(IntersectionUtils.Collides, this, collider, out collision);
         }
 
         protected override bool IsColliding(IGridCollider collider, out Collision collision)
         {
-            return CollisionUtils.IsShapeCollidingGrid<TopLeftRectangle>(IntersectionUtils.RectangleWithRectangle, this, collider, out collision);
+            return CollisionUtils.IsShapeCollidingGrid<TopLeftRectangle>(IntersectionUtils.Collides, this, collider, out collision);
         }
     }
 }

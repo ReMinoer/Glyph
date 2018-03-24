@@ -32,12 +32,12 @@ namespace Glyph.Core.Colliders
 
         protected override bool IsColliding(RectangleCollider collider, out Collision collision)
         {
-            return CollisionUtils.IsGridCollidingShape<TopLeftRectangle>(IntersectionUtils.RectangleWithRectangle, this, collider, out collision);
+            return CollisionUtils.IsGridCollidingShape<TopLeftRectangle>(IntersectionUtils.Collides, this, collider, out collision);
         }
 
         protected override bool IsColliding(CircleCollider collider, out Collision collision)
         {
-            return CollisionUtils.IsGridCollidingShape(IntersectionUtils.RectangleWithCircle, this, collider, out collision);
+            return CollisionUtils.IsGridCollidingShape(IntersectionUtils.Collides, this, collider, out collision);
         }
 
         protected override bool IsColliding(IGridCollider collider, out Collision collision)
@@ -45,15 +45,9 @@ namespace Glyph.Core.Colliders
             throw new NotImplementedException();
         }
 
-        public override bool Intersects(TopLeftRectangle rectangle)
-        {
-            return Intersects(IntersectionUtils.RectangleWithRectangle, rectangle);
-        }
-
-        public override bool Intersects(Circle circle)
-        {
-            return Intersects(IntersectionUtils.RectangleWithCircle, circle);
-        }
+        public override bool Intersects(Segment segment) => Intersects(IntersectionUtils.Intersects, segment);
+        public override bool Intersects<T>(T edgedShape) => Intersects(IntersectionUtils.Intersects, edgedShape);
+        public override bool Intersects(Circle circle) => Intersects(IntersectionUtils.Intersects, circle);
 
         private bool Intersects<TOther>(IntersectionDelegate<TopLeftRectangle, TOther> intersectionDelegate, TOther other)
             where TOther : IShape

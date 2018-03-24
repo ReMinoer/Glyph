@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Glyph
 {
@@ -23,6 +24,29 @@ namespace Glyph
         static public bool IsNormalizedCoordinates(this Vector2 point)
         {
             return point.X >= 0 && point.X <= 1 && point.Y >= 0 && point.Y <= 1;
+        }
+
+        static public Vector2 Abs(this Vector2 value)
+        {
+            return new Vector2(System.Math.Abs(value.X), System.Math.Abs(value.Y));
+        }
+
+        static public float Coordinate(this Vector2 value, Axis axis)
+        {
+            switch (axis)
+            {
+                case Axis.Horizontal:
+                    return value.X;
+                case Axis.Vertical:
+                    return value.Y;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        static public float Cross(this Vector2 value, Vector2 other)
+        {
+            return value.X * other.Y - value.Y * other.X;
         }
 
         static public Vector2 ClampLength(this Vector2 value, float lengthMax)

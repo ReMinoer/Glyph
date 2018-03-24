@@ -1,5 +1,4 @@
-﻿using Glyph.Observation;
-using Glyph.Observation.Properties;
+﻿using Glyph.Observation.Properties;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Math
@@ -13,7 +12,7 @@ namespace Glyph.Math
 
         public Vector2 Translation
         {
-            get { return _translation; }
+            get => _translation;
             set
             {
                 _translation = value;
@@ -23,7 +22,7 @@ namespace Glyph.Math
 
         public float Rotation
         {
-            get { return _rotation; }
+            get => _rotation;
             set
             {
                 _rotation = MathHelper.WrapAngle(value);
@@ -33,7 +32,7 @@ namespace Glyph.Math
 
         public float Scale
         {
-            get { return _scale; }
+            get => _scale;
             set
             {
                 _scale = value;
@@ -41,9 +40,12 @@ namespace Glyph.Math
             }
         }
 
-        static public Transformation Identity
+        static public Transformation Identity => new Transformation(Vector2.Zero, 0, 1f);
+        
+        public Transformation()
         {
-            get { return new Transformation(Vector2.Zero, 0, 1f); }
+            _scale = 1f;
+            RefreshMatrix();
         }
 
         public Transformation(Vector2 translation, float rotation, float scale)

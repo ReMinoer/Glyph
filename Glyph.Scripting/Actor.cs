@@ -54,9 +54,9 @@ namespace Glyph.Scripting
             _activatedTriggers.AddRange(newActivatedTriggers);
         }
 
-        public bool ContainsPoint(Vector2 point)
-        {
-            return Colliders.Any(x => x.ContainsPoint(point));
-        }
+        public bool ContainsPoint(Vector2 point) => Colliders.Any(x => x.ContainsPoint(point));
+        public bool Intersects(Segment segment) => Colliders.Any(x => x.Intersects(segment));
+        public bool Intersects<T>(T edgedShape) where T : IEdgedShape => Colliders.Any(x => x.Intersects(edgedShape));
+        public bool Intersects(Circle circle) => Colliders.Any(x => x.Intersects(circle));
     }
 }

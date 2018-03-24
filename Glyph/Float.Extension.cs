@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Glyph
+﻿namespace Glyph
 {
     static public class FloatExtension
     {
