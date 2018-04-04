@@ -1,4 +1,4 @@
-﻿using Diese.Injection;
+﻿using Niddle;
 using Glyph.Animation;
 using Glyph.Particles;
 

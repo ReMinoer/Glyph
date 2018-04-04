@@ -6,3 +6,7 @@
 	path = External/MonoGame.Framework.WpfInterop
 	url = https://github.com/ReMinoer/MonoGame.Framework.WpfInterop.git
 	branch = master
+[submodule "External/Niddle"]
+	path = External/Niddle
+	url = https://github.com/ReMinoer/Niddle.git
+	branch = master

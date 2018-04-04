@@ -1,6 +1,6 @@
 using System;
 using Diese.Collections;
-using Diese.Injection;
+using Niddle;
 using Fingear;
 using Fingear.Controls;
 using Fingear.MonoGame;

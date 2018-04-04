@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Linq;
 using Diese.Collections;
-using Diese.Injection;
-using Diese.Injection.Base;
+using Niddle;
+using Niddle.Base;
 using Glyph.Composition;
 using Glyph.Composition.Exceptions;
 using Glyph.Injection;
@@ -42,14 +42,16 @@ namespace Glyph.Core.Injection
             {
                 if ((targets & GlyphInjectableTargets.Parent) != 0 && type.IsInstanceOfType(_composite))
                     return _composite;
-                if ((targets & GlyphInjectableTargets.Fraternal) != 0)
-                    return ResolveManyFamily(type).First();
+
+                if ((targets & GlyphInjectableTargets.Fraternal) != 0 && TryResolveManyFamily(out IEnumerable objs, type))
+                    return objs.First();
             }
 
             if ((targets & GlyphInjectableTargets.Local) != 0 && Local.TryResolve(out object obj, type, injectableAttribute, serviceKey, instanceOrigins, dependencyInjector ?? this))
                 return obj;
+
             if (targets == GlyphInjectableTargets.Local)
-                throw new ComponentNotFoundException(type);
+                throw new InvalidOperationException();
 
             if ((targets & GlyphInjectableTargets.Global) != 0)
                 return Global.Resolve(type, injectableAttribute, serviceKey, instanceOrigins, dependencyInjector ?? this);
@@ -68,6 +70,7 @@ namespace Glyph.Core.Injection
                     obj = _composite;
                     return true;
                 }
+
                 if ((targets & GlyphInjectableTargets.Fraternal) != 0 && TryResolveManyFamily(out IEnumerable objs, type))
                 {
                     obj = objs.FirstOrDefault();
@@ -77,6 +80,7 @@ namespace Glyph.Core.Injection
 
             if ((targets & GlyphInjectableTargets.Local) != 0 && Local.TryResolve(out obj, type, injectableAttribute, serviceKey, instanceOrigins, dependencyInjector ?? this))
                 return true;
+
             if (targets == GlyphInjectableTargets.Local)
             {
                 obj = null;
@@ -145,10 +149,11 @@ namespace Glyph.Core.Injection
         private IEnumerable ResolveManyFamily(Type type)
         {
             bool any = false;
-            
+
             foreach (IGlyphComponent component in _composite.Components.OfType(type))
             {
                 yield return component;
+
                 any = true;
             }
 
@@ -160,7 +165,7 @@ namespace Glyph.Core.Injection
         {
             objs = Enumerable.Empty<object>();
             bool any = false;
-            
+
             foreach (IGlyphComponent component in _composite.Components.OfType(type))
             {
                 objs = objs.Concat(component);

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Diese.Injection;
+using Niddle;
 using Diese.Modelization;
 using Glyph.Composition;
 

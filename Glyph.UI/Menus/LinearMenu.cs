@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Diese.Injection;
 using Fingear.MonoGame;
 using Glyph.UI.Controls;
 using Diese.Collections;

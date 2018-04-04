@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Diese.Collections;
-using Diese.Injection;
+using Niddle;
 using Fingear;
 using Fingear.Controls;
 using Fingear.Controls.Composites;

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Diese.Injection;
-using Diese.Injection.Base;
+using Niddle;
+using Niddle.Base;
 using Glyph.Injection;
 
 namespace Glyph.Reflection

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Diese.Collections;
-using Diese.Injection;
 using Fingear;
 using Fingear.Controls;
 using Fingear.MonoGame;

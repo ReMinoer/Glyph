@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Diese;
-using Diese.Injection;
+using Niddle;
 using Glyph.Composition;
 
 namespace Glyph.Core.Scheduler

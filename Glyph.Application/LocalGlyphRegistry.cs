@@ -1,4 +1,4 @@
-﻿using Diese.Injection;
+﻿using Niddle;
 using Glyph.Core.Injection;
 //using Glyph.Core.Messaging;
 using Glyph.Messaging;

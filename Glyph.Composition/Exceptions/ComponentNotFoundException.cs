@@ -1,5 +1,5 @@
 ﻿using System;
-using Diese.Injection.Exceptions;
+using Niddle.Exceptions;
 
 namespace Glyph.Composition.Exceptions
 {

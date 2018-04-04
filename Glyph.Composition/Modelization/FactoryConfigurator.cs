@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
 using Diese.Collections;
-using Diese.Injection;
+using Niddle;
 using Diese.Modelization;
 
 namespace Glyph.Composition.Modelization

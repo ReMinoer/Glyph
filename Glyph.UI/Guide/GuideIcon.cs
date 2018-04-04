@@ -1,5 +1,4 @@
 ﻿using System;
-using Diese.Injection;
 using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Glyph.Core;

@@ -1,4 +1,4 @@
-﻿using Diese.Injection;
+﻿using Niddle;
 
 namespace Glyph.Injection
 {

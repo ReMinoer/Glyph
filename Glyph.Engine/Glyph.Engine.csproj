@@ -70,10 +70,6 @@
       <Project>{BBC6C938-95A5-4CBF-AA6B-DA2A9A09C4F1}</Project>
       <Name>Diese.Graph</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Injection\Diese.Injection.csproj">
-      <Project>{6ADD41DC-F168-43C4-AD4E-F6B8218D8F7C}</Project>
-      <Name>Diese.Injection</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Scheduling\Diese.Scheduling.csproj">
       <Project>{ED3283B6-9691-4418-96D0-6E83AEE37540}</Project>
       <Name>Diese.Scheduling</Name>
@@ -93,6 +89,10 @@
     <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
       <Project>{7EE0B116-6B49-4073-99D8-827DD68B8AE0}</Project>
       <Name>Fingear</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
+      <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
+      <Name>Niddle</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Application\Glyph.Application.csproj">
       <Project>{5D6CC7F3-0720-4242-A0FB-678E7D76F147}</Project>

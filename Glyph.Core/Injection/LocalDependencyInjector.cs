@@ -1,7 +1,7 @@
 ﻿using System;
-using Diese.Injection;
-using Diese.Injection.Base;
-using Diese.Injection.Exceptions;
+using Niddle;
+using Niddle.Base;
+using Niddle.Exceptions;
 
 namespace Glyph.Core.Injection
 {

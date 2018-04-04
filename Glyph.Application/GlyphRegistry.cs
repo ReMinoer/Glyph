@@ -1,5 +1,5 @@
 ﻿using System;
-using Diese.Injection;
+using Niddle;
 using Diese.Scheduling;
 using Fingear.MonoGame;
 using Glyph.Animation;

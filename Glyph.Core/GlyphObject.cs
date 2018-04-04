@@ -4,7 +4,7 @@ using System.Reflection;
 using Diese;
 using Diese.Collections;
 using Diese.Debug;
-using Diese.Injection;
+using Niddle;
 using Diese.Scheduling;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;

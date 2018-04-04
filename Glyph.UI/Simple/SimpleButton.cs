@@ -1,5 +1,4 @@
 ﻿using System;
-using Diese.Injection;
 using Fingear;
 using Glyph.Core;
 using Glyph.Core.Inputs;
