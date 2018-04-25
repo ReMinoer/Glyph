@@ -1,6 +1,6 @@
 ﻿using Diese.Collections;
-using Diese.Modelization;
 using Glyph.Injection;
+using Simulacra;
 
 namespace Glyph.Composition.Modelization
 {

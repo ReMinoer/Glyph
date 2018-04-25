@@ -1,6 +1,6 @@
 ﻿using System;
-using Diese.Scheduling;
 using Fingear;
+using Taskete;
 
 namespace Glyph.Core.Inputs
 {

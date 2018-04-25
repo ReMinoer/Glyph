@@ -49,6 +49,9 @@
     <PackageReference Include="PropertyChanged.Fody">
       <Version>2.1.4</Version>
     </PackageReference>
+    <PackageReference Include="ReMinoer.Diese.Diagnostics">
+      <Version>0.1.0-alpha</Version>
+    </PackageReference>
     <PackageReference Include="System.Numerics.Vectors">
       <Version>4.4.0</Version>
     </PackageReference>
@@ -119,33 +122,17 @@
     <Compile Include="ViewManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
-      <Project>{8e354191-e8e5-498b-9c24-a6765da86417}</Project>
-      <Name>Diese.Collections</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Debug\Diese.Debug.csproj">
-      <Project>{CF81F12F-4EFA-4A26-9853-DF86973533CE}</Project>
-      <Name>Diese.Debug</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Graph\Diese.Graph.csproj">
-      <Project>{BBC6C938-95A5-4CBF-AA6B-DA2A9A09C4F1}</Project>
-      <Name>Diese.Graph</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
-      <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
-      <Name>Diese.Modelization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Scheduling\Diese.Scheduling.csproj">
-      <Project>{ed3283b6-9691-4418-96d0-6e83aee37540}</Project>
-      <Name>Diese.Scheduling</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese\Diese.csproj">
-      <Project>{F2F3FEB2-8453-409E-B00C-96DC64AC8020}</Project>
-      <Name>Diese</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
       <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
       <Name>Stave</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Taskete\External\OverGraphed\OverGraphed\OverGraphed.csproj">
+      <Project>{fdccff17-1219-4a4f-a674-d989319e5bb4}</Project>
+      <Name>OverGraphed</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Taskete\Taskete.csproj">
+      <Project>{107e0777-d23d-4ebb-8aa5-687e2dbe1d66}</Project>
+      <Name>Taskete</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj">
       <Project>{9eef1863-44be-423e-a29d-088c23aac45e}</Project>
@@ -162,6 +149,9 @@
     <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
       <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
       <Name>Niddle</Name>
+    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
+      <Project>{dfd5170c-d6c2-4815-88ed-6aa011d26d84}</Project>
+      <Name>Simulacra</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>

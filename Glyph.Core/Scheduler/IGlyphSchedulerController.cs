@@ -1,5 +1,5 @@
 using System;
-using Diese.Scheduling.Controllers;
+using Taskete.Controllers;
 
 namespace Glyph.Core.Scheduler
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using Diese.Scheduling;
 using Glyph.Animation;
 using Glyph.Animation.Motors.Base;
 using Glyph.Animation.Trajectories.Players;
@@ -12,6 +11,7 @@ using Glyph.Graphics.Renderer;
 using Glyph.Graphics.Shapes;
 using Glyph.Particles;
 using Glyph.Scripting;
+using Taskete;
 
 namespace Glyph.Application
 {

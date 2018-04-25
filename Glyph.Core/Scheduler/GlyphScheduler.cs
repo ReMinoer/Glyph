@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using Diese.Scheduling;
-using Diese.Scheduling.Controllers;
 using Glyph.Composition;
+using Taskete;
+using Taskete.Controllers;
 
 namespace Glyph.Core.Scheduler
 {

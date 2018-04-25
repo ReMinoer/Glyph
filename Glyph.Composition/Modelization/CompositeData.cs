@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Diese.Modelization;
+using Simulacra;
 
 namespace Glyph.Composition.Modelization
 {

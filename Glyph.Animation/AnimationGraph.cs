@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Diese;
 using Diese.Collections;
-using Diese.Graph;
 using Glyph.Composition;
 using Glyph.Injection;
 using NLog;
+using OverGraphed;
 
 namespace Glyph.Animation
 {

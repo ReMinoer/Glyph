@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Diese.Collections;
 using Niddle;
-using Diese.Modelization;
+using Simulacra;
 
 namespace Glyph.Composition.Modelization
 {

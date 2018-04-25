@@ -44,6 +44,9 @@
     <PackageReference Include="PropertyChanged.Fody">
       <Version>2.1.4</Version>
     </PackageReference>
+    <PackageReference Include="ReMinoer.Diese">
+      <Version>0.1.0-alpha</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -93,18 +96,6 @@
     <Compile Include="Delegates\UpdateDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
-      <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
-      <Name>Diese.Collections</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
-      <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
-      <Name>Diese.Modelization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese\Diese.csproj">
-      <Project>{f2f3feb2-8453-409e-b00c-96dc64ac8020}</Project>
-      <Name>Diese</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
       <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
       <Name>Stave</Name>
@@ -112,6 +103,10 @@
     <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
       <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
       <Name>Niddle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
+      <Project>{dfd5170c-d6c2-4815-88ed-6aa011d26d84}</Project>
+      <Name>Simulacra</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
       <Project>{26405f4b-4532-4f48-a96f-594a70c12b3e}</Project>

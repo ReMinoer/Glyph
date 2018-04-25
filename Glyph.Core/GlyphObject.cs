@@ -5,7 +5,6 @@ using Diese;
 using Diese.Collections;
 using Diese.Debug;
 using Niddle;
-using Diese.Scheduling;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
@@ -15,6 +14,7 @@ using Glyph.Injection;
 using Glyph.Math;
 using Glyph.Messaging;
 using Glyph.Reflection;
+using Taskete;
 
 namespace Glyph.Core
 {

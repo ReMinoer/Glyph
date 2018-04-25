@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Niddle;
-using Diese.Modelization;
 using Glyph.Composition;
+using Simulacra;
 
 namespace Glyph.Core.Tracking
 {

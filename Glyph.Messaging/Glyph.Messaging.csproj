@@ -49,14 +49,15 @@
     <Compile Include="TrackingRouter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
-      <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
-      <Name>Diese.Collections</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
       <Name>Glyph</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ReMinoer.Diese.Collections">
+      <Version>0.1.0-alpha</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

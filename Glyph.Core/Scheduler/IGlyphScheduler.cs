@@ -1,5 +1,5 @@
-using Diese.Scheduling;
 using Glyph.Composition;
+using Taskete;
 
 namespace Glyph.Core.Scheduler
 {

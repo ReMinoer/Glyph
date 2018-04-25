@@ -42,6 +42,9 @@
     <PackageReference Include="PropertyChanged.Fody">
       <Version>2.1.4</Version>
     </PackageReference>
+    <PackageReference Include="ReMinoer.Diese.Collections">
+      <Version>0.1.0-alpha</Version>
+    </PackageReference>
     <PackageReference Include="System.Reactive">
       <Version>3.1.1</Version>
     </PackageReference>
@@ -149,17 +152,13 @@
     <Compile Include="VirtualResolution.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Collections\Diese.Collections.csproj">
-      <Project>{8E354191-E8E5-498B-9C24-A6765DA86417}</Project>
-      <Name>Diese.Collections</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\External\Diese\Diese.Modelization\Diese.Modelization.csproj">
-      <Project>{0781AD0F-EB0F-442E-9A1C-34C2AA9319FD}</Project>
-      <Name>Diese.Modelization</Name>
-    </ProjectReference>
     <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
       <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
       <Name>Niddle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
+      <Project>{dfd5170c-d6c2-4815-88ed-6aa011d26d84}</Project>
+      <Name>Simulacra</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

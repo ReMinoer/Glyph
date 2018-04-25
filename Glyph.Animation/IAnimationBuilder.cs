@@ -1,4 +1,4 @@
-using Diese.Modelization;
+using Simulacra;
 
 namespace Glyph.Animation
 {

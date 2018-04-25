@@ -1,5 +1,5 @@
 ﻿using Niddle;
-using Diese.Modelization;
+using Simulacra;
 
 namespace Glyph
 {
