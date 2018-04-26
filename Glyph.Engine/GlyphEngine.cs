@@ -1,7 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Diese.Collections;
 using Niddle;
 using Fingear;
@@ -13,7 +12,6 @@ using Glyph.Application;
 using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Core;
-using Glyph.Core.Injection;
 using Glyph.Core.Inputs;
 using Glyph.Graphics;
 using Microsoft.Xna.Framework;
@@ -170,7 +168,8 @@ namespace Glyph.Engine
 
             if (GlyphObject.UpdateWatchTree.Enabled)
             {
-                GlyphObject.UpdateWatchTree.Results.First().Value.SaveToCsv("watchtree_" + DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss"));
+                using (var streamWriter = new StreamWriter("watchtree_" + DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss")))
+                    GlyphObject.UpdateWatchTree.Results.First().Value.WriteAsCsv(streamWriter);
                 GlyphObject.UpdateWatchTree.Enabled = false;
             }
         }
