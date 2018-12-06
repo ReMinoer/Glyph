@@ -146,8 +146,7 @@ namespace Glyph.Core
             if (ParentNode != null || Parent == null)
                 return;
 
-            SceneNode parentNode;
-            if (Parent.ParentQueue().SelectMany(x => x.Components).Any(out parentNode))
+            if (Parent.ParentQueue().SelectMany(x => x.Components).AnyOfType(out SceneNode parentNode))
                 SetParent(parentNode, Referential.Local);
         }
 
