@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Diese;
 using Diese.Collections;
-using Diese.Debug;
+using Diese.Diagnostics;
 using Niddle;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
@@ -62,7 +62,7 @@ namespace Glyph.Core
                 throw new ArgumentException("Component provided is already contained by this entity !");
 
             Type type = item.GetType();
-            if (Components.Any(type) && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
+            if (Components.AnyOfType(type) && type.GetCustomAttributes(typeof(SinglePerParentAttribute)).Any())
                 throw new SingleComponentException(type);
 
             var glyphObject = item as GlyphObject;

@@ -56,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ReMinoer.Diese.Collections">
-      <Version>0.1.0-alpha</Version>
+      <Version>0.1.2-alpha</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

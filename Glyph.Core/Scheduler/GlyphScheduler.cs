@@ -20,7 +20,7 @@ namespace Glyph.Core.Scheduler
             _interfaceToDelegate = interfaceToDelegate;
             _glyphObjectToDelegate = glyphObjectToDelegate;
 
-            ApplyProfile(schedulerProfile.GraphData);
+            ApplyProfile(schedulerProfile.Graph);
         }
 
         new public Controller Plan(TDelegate item)

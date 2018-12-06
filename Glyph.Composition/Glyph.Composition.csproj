@@ -45,7 +45,7 @@
       <Version>2.1.4</Version>
     </PackageReference>
     <PackageReference Include="ReMinoer.Diese">
-      <Version>0.1.0-alpha</Version>
+      <Version>0.1.2-alpha</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

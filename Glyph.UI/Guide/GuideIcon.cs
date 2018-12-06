@@ -51,8 +51,7 @@ namespace Glyph.UI.Guide
             {
                 _control = value;
 
-                KeyInput keyInput;
-                if (_control.Inputs.Any(out keyInput))
+                if (_control.Inputs.AnyOfType(out KeyInput keyInput))
                     return;
 
                 Text.Content = Enum.GetName(typeof(Keys), keyInput.DisplayName);
@@ -119,7 +118,7 @@ namespace Glyph.UI.Guide
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
-            bool isGamePadUsed = InputManager.Instance.InputSources.Any<GamePadSource>();
+            bool isGamePadUsed = InputManager.Instance.InputSources.AnyOfType<GamePadSource>();
 
             if (IsGamePadUsed != isGamePadUsed)
             {

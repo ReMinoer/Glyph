@@ -16,7 +16,7 @@ namespace Glyph.Animation
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly Graph<Vertex, Transition> _graph;
+        private readonly AutoGraph<Vertex, Transition> _graph;
         private readonly Dictionary<TState, Vertex> _states;
         private readonly ReadOnlyDictionary<TState, Vertex> _readOnlyStates;
         private bool _useUnscaledTime;
@@ -31,11 +31,64 @@ namespace Glyph.Animation
         public IReadOnlyDictionary<TState, Vertex> States => _readOnlyStates;
         public IEnumerable<Transition> Transitions => _graph.Edges;
 
-        IEnumerable<Vertex> IGraphData<Vertex, Transition>.Vertices => _graph.Vertices;
-        IEnumerable<Transition> IGraphData<Vertex, Transition>.Edges => _graph.Edges;
-        Transition IGraph<Vertex, Transition>.this[Vertex start, Vertex end] => _graph[start, end];
+        IEnumerable<Vertex> IGraph<Vertex, Transition>.Vertices => _graph.Vertices;
+        IEnumerable<Transition> IGraph<Vertex, Transition>.Edges => _graph.Edges;
+        IEnumerable<IVertex> IGraph.Vertices => _graph.Vertices;
+        IEnumerable<IEdge> IGraph.Edges => _graph.Edges;
 
-        public Transition this[TState start, TState end] => _graph[ResolveVertex(start), ResolveVertex(end)];
+        event Event<Vertex> IGraph<Vertex, Transition>.VertexAdded
+        {
+            add => _graph.VertexAdded += value;
+            remove => _graph.VertexAdded -= value;
+        }
+
+        event Event<Vertex> IGraph<Vertex, Transition>.VertexRemoved
+        {
+            add => _graph.VertexRemoved += value;
+            remove => _graph.VertexRemoved -= value;
+        }
+
+        event Event<Transition> IGraph<Vertex, Transition>.EdgeAdded
+        {
+            add => _graph.EdgeAdded += value;
+            remove => _graph.EdgeAdded -= value;
+        }
+
+        event Event<Transition> IGraph<Vertex, Transition>.EdgeRemoved
+        {
+            add => _graph.EdgeRemoved += value;
+            remove => _graph.EdgeRemoved -= value;
+        }
+
+        event Event IGraph.Cleared
+        {
+            add => _graph.Cleared += value;
+            remove => _graph.Cleared -= value;
+        }
+
+        event Event<IVertex> IGraph.VertexAdded
+        {
+            add => ((IGraph)_graph).VertexAdded += value;
+            remove => ((IGraph)_graph).VertexAdded -= value;
+        }
+
+        event Event<IVertex> IGraph.VertexRemoved
+        {
+            add => ((IGraph)_graph).VertexRemoved += value;
+            remove => ((IGraph)_graph).VertexRemoved -= value;
+        }
+
+        event Event<IEdge> IGraph.EdgeAdded
+        {
+            add => ((IGraph)_graph).EdgeAdded += value;
+            remove => ((IGraph)_graph).EdgeAdded -= value;
+        }
+
+        event Event<IEdge> IGraph.EdgeRemoved
+        {
+            add => ((IGraph)_graph).EdgeRemoved += value;
+            remove => ((IGraph)_graph).EdgeRemoved -= value;
+        }
 
         public IAnimation<T> this[TState state]
         {
@@ -58,7 +111,7 @@ namespace Glyph.Animation
         {
             Enabled = true;
 
-            _graph = new Graph<Vertex, Transition>();
+            _graph = new AutoGraph<Vertex, Transition>();
             _states = new Dictionary<TState, Vertex>();
             _readOnlyStates = new ReadOnlyDictionary<TState, Vertex>(_states);
         }
@@ -138,25 +191,31 @@ namespace Glyph.Animation
 
         public void RemoveState(TState state)
         {
-            _graph.RemoveVertex(ResolveVertex(state));
+            Vertex vertex = ResolveVertex(state);
+
+            _graph.UnregisterVertex(vertex);
+            vertex.UnlinkEdges();
+
             _states.Remove(state);
         }
 
         internal Transition AddTransition(Vertex start, Vertex end, Predicate<T> predicate = null)
         {
             var transition = new Transition(predicate);
-            _graph.AddEdge(start, end, transition);
+            transition.Link(start, end);
             return transition;
         }
 
         public void RemoveTransition(TState start, TState end)
         {
-            _graph.RemoveEdge(ResolveVertex(start), ResolveVertex(end));
+            Vertex startVertex = ResolveVertex(start);
+            Vertex endVertex = ResolveVertex(end);
+            startVertex.Successors.First(x => x.End == endVertex).Unlink();
         }
 
         public void ContainsTransition(TState start, TState end)
         {
-            _graph.ContainsEdge(ResolveVertex(start), ResolveVertex(end));
+            _graph.ContainsLink(ResolveVertex(start), ResolveVertex(end));
         }
 
         private void UpdateAnimationPlayer(State state)
@@ -176,7 +235,7 @@ namespace Glyph.Animation
         private Vertex ResolveVertex(TState state)
         {
             if (!_states.TryGetValue(state, out Vertex vertex))
-                _graph.AddVertex(_states[state] = vertex = new SingleStateVertex(state));
+                _graph.RegisterVertex(_states[state] = vertex = new SingleStateVertex(state));
             return vertex;
         }
 
@@ -187,13 +246,8 @@ namespace Glyph.Animation
 
             var newState = new SingleStateVertex(state);
             _states[state] = newState;
-            _graph.AddVertex(newState);
+            _graph.RegisterVertex(newState);
             return newState.Update(Animatable);
-        }
-
-        bool IGraph<Vertex, Transition>.ContainsEdge(Vertex from, Vertex to)
-        {
-            return _graph.ContainsEdge(from, to);
         }
 
         public class State
@@ -207,7 +261,7 @@ namespace Glyph.Animation
             }
         }
 
-        public abstract class Vertex : Vertex<Vertex, Transition>
+        public abstract class Vertex : SimpleDirectedVertex<Vertex, Transition>
         {
             protected internal abstract IReadOnlyDictionary<TState, State> InnerStates { get; }
             public abstract State Update(T animatable);
@@ -347,7 +401,7 @@ namespace Glyph.Animation
                     _graph._states.Add(value, metaState);
                 }
 
-                _graph._graph.AddVertex(metaState);
+                _graph._graph.RegisterVertex(metaState);
 
                 return new StateController(_graph, metaState);
             }

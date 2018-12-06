@@ -66,7 +66,7 @@ namespace Glyph.UI.Controls
         private void HandleInput(ElapsedTime elapsedTime)
         {
             bool hover = Hover;
-            bool isMouseUsed = InputManager.Instance.InputSources.Any<MouseSource>();
+            bool isMouseUsed = InputManager.Instance.InputSources.AnyOfType<MouseSource>();
 
             if (isMouseUsed)
             {

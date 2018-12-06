@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fingear.MonoGame;
 using Glyph.UI.Controls;
 using Diese.Collections;
@@ -88,7 +89,7 @@ namespace Glyph.UI.Menus
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
-            bool isMouseUsed = InputManager.Instance.InputSources.Any<MouseSource>();
+            bool isMouseUsed = InputManager.Instance.InputSources.AnyOfType<MouseSource>();
             
             if (!isMouseUsed)
             {

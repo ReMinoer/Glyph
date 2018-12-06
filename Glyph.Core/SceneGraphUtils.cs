@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections;
 using Glyph.Composition;
@@ -11,7 +10,8 @@ namespace Glyph.Core
     {
         static public SceneNode GetSceneNode(this IGlyphComponent component)
         {
-            return component?.Components.FirstOrDefault<SceneNode>() ?? component?.ParentQueue().SelectMany(x => x.Components).FirstOrDefault<SceneNode>();
+            return component?.Components.FirstOfTypeOrDefault<SceneNode>()
+                   ?? component?.ParentQueue().SelectMany(x => x.Components).FirstOfTypeOrDefault<SceneNode>();
         }
     }
 }
