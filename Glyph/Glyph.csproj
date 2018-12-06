@@ -80,9 +80,11 @@
     <Compile Include="Math\Range.cs" />
     <Compile Include="Math\RangeArea.cs" />
     <Compile Include="Math\RangeUtils.cs" />
+    <Compile Include="Math\Shapes\Base\EdgedShapeBase.cs" />
     <Compile Include="Math\Shapes\Segment.cs" />
     <Compile Include="Math\Shapes\Quad.cs" />
     <Compile Include="Math\Shapes\Triangle.cs" />
+    <Compile Include="Math\Shapes\Base\TriangledShapeBase.cs" />
     <Compile Include="Reflection\GlyphTypeInfo.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="Axes.cs" />

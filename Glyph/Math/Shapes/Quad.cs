@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public struct Quad : ITriangledShape
+    public struct Quad : IRectangle
     {
         public Vector2 P0 { get; set; }
         public Vector2 P1 { get; set; }
@@ -12,9 +12,22 @@ namespace Glyph.Math.Shapes
         public Vector2 P3 => P1 + P2 - P0;
 
         public bool IsVoid => Size.X.EqualsZero() || Size.Y.EqualsZero();
-        public Vector2 Size => new Vector2(System.Math.Abs((P1 - P0).X), System.Math.Abs((P2 - P0).Y));
+        public Vector2 Size => new Vector2(Width, Height);
         public Vector2 Center => (P1 - P0 + P2 - P0) / 2;
-        public TopLeftRectangle BoundingBox => MathUtils.GetBoundingBox(P0, P1, P2, P3);
+        public TopLeftRectangle BoundingBox => MathUtils.GetBoundingBox(Vertices);
+
+        public Vector2 TopLeft => new Vector2(Left, Top);
+        public Vector2 TopRight => new Vector2(Right, Top);
+        public Vector2 BottomLeft => new Vector2(Left, Bottom);
+        public Vector2 BottomRight => new Vector2(Right, Bottom);
+
+        Vector2 IRectangle.Position => TopLeft;
+        public float Left => Vertices.Select(v => v.X).Min();
+        public float Right => Vertices.Select(v => v.X).Max();
+        public float Top => Vertices.Select(v => v.Y).Min();
+        public float Bottom => Vertices.Select(v => v.Y).Max();
+        public float Width => System.Math.Abs((P1 - P0).X);
+        public float Height => System.Math.Abs((P2 - P0).Y);
 
         public IEnumerable<Vector2> Vertices
         {
@@ -22,8 +35,8 @@ namespace Glyph.Math.Shapes
             {
                 yield return P0;
                 yield return P1;
-                yield return P2;
                 yield return P3;
+                yield return P2;
             }
         }
 
@@ -32,9 +45,9 @@ namespace Glyph.Math.Shapes
             get
             {
                 yield return new Segment(P0, P1);
-                yield return new Segment(P1, P2);
-                yield return new Segment(P2, P3);
-                yield return new Segment(P3, P0);
+                yield return new Segment(P1, P3);
+                yield return new Segment(P3, P2);
+                yield return new Segment(P2, P0);
             }
         }
 
@@ -45,6 +58,13 @@ namespace Glyph.Math.Shapes
                 yield return new Triangle(P0, P1, P2);
                 yield return new Triangle(P3, P2, P1);
             }
+        }
+
+        public Quad(Vector2 p0, Vector2 p1, Vector2 p2)
+        {
+            P0 = p0;
+            P1 = p1;
+            P2 = p2;
         }
 
         public bool ContainsPoint(Vector2 point) => Triangles.Any(t => t.ContainsPoint(point));

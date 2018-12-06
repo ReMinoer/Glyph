@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
@@ -10,6 +11,27 @@ namespace Glyph.Math
         static public bool FloatEquals(float a, float b)
         {
             return System.Math.Abs(a - b) < float.Epsilon;
+        }
+
+        static public Vector2 GetCenter(params Vector2[] values)
+        {
+            return GetCenter(values.AsEnumerable());
+        }
+
+        static public Vector2 GetCenter(IEnumerable<Vector2> values)
+        {
+            if (values == null)
+                throw new ArgumentNullException();
+
+            Vector2 center = Vector2.Zero;
+            int i = 0;
+            foreach (Vector2 value in values)
+            {
+                center += value;
+                i++;
+            }
+
+            return center / i;
         }
 
         static public TopLeftRectangle GetBoundingBox(params Vector2[] points)

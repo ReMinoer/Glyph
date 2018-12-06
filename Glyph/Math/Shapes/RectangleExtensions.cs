@@ -4,9 +4,14 @@ namespace Glyph.Math.Shapes
 {
     static public class RectangleExtensions
     {
-        static public Vector2 NormalizedCoordinates(this Vector2 point, TopLeftRectangle rectangle)
+        static public Vector2 NormalizedCoordinates(this Vector2 point, TopLeftRectangle referential)
         {
-            return (point - rectangle.Position) / rectangle.Size;
+            return (point - referential.Position) / referential.Size;
+        }
+
+        static public TopLeftRectangle NormalizedCoordinates(this TopLeftRectangle rectangle, TopLeftRectangle referential)
+        {
+            return new TopLeftRectangle((rectangle.Position - referential.Position) / referential.Size, rectangle.Size / referential.Size);
         }
 
         static public Vector2 Scale(this Vector2 point, TopLeftRectangle rectangle)
@@ -14,9 +19,19 @@ namespace Glyph.Math.Shapes
             return point * rectangle.Size + rectangle.Position;
         }
 
+        static public TopLeftRectangle Scale(this TopLeftRectangle rectangle, TopLeftRectangle referential)
+        {
+            return new TopLeftRectangle(rectangle.Position * referential.Size + referential.Position, rectangle.Size * referential.Size);
+        }
+
         static public Vector2 Rescale(this Vector2 point, TopLeftRectangle oldRectangle, TopLeftRectangle newRectangle)
         {
             return point.NormalizedCoordinates(oldRectangle).Scale(newRectangle);
+        }
+
+        static public TopLeftRectangle Rescale(this TopLeftRectangle rectangle, TopLeftRectangle oldReferential, TopLeftRectangle newReferential)
+        {
+            return rectangle.NormalizedCoordinates(oldReferential).Scale(newReferential);
         }
 
         static public CenteredRectangle Scale(this CenteredRectangle rectangle, float scale)

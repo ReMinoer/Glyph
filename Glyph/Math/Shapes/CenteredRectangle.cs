@@ -11,8 +11,8 @@ namespace Glyph.Math.Shapes
         
         public Vector2 Position => new Vector2(Left, Top);
         public Vector2 P1 => new Vector2(Right, Top);
-        public Vector2 P2 => new Vector2(Right, Bottom);
-        public Vector2 P3 => new Vector2(Left, Bottom);
+        public Vector2 P2 => new Vector2(Left, Bottom);
+        public Vector2 P3 => new Vector2(Right, Bottom);
 
         public float Left => Center.X - Width / 2;
         public float Right => Center.X + Width / 2;
@@ -36,8 +36,8 @@ namespace Glyph.Math.Shapes
             {
                 yield return Position;
                 yield return P1;
-                yield return P2;
                 yield return P3;
+                yield return P2;
             }
         }
 
@@ -46,9 +46,9 @@ namespace Glyph.Math.Shapes
             get
             {
                 yield return new Segment(Position, P1);
-                yield return new Segment(P1, P2);
-                yield return new Segment(P2, P3);
-                yield return new Segment(P3, Position);
+                yield return new Segment(P1, P3);
+                yield return new Segment(P3, P2);
+                yield return new Segment(P2, Position);
             }
         }
 
@@ -102,6 +102,11 @@ namespace Glyph.Math.Shapes
         static public implicit operator TopLeftRectangle(CenteredRectangle rectangle)
         {
             return new TopLeftRectangle(rectangle.Left, rectangle.Top, rectangle.Width, rectangle.Height);
+        }
+
+        static public implicit operator Quad(CenteredRectangle rectangle)
+        {
+            return new Quad(rectangle.Position, rectangle.P1, rectangle.P2);
         }
     }
 }
