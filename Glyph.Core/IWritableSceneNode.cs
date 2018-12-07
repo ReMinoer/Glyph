@@ -13,7 +13,7 @@ namespace Glyph.Core
         new float LocalRotation { get; set; }
         new float LocalScale { get; set; }
         new float LocalDepth { get; set; }
-        new Transformation Transformation { get; set; }
+        new Transformation LocalTransformation { get; set; }
         void SetPosition(Referential referential, Vector2 value);
         void SetRotation(Referential referential, float value);
         void SetScale(Referential referential, float value);

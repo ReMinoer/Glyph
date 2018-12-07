@@ -166,7 +166,7 @@ namespace Glyph.Core
         
         public void Draw(IDrawer drawer)
         {
-            if (Disposed || !this.Displayed(drawer.Client, drawer))
+            if (Disposed || !this.Displayed(drawer, drawer.Client))
                 return;
 
             foreach (DrawDelegate draw in Schedulers.Draw.Planning.ToArray())

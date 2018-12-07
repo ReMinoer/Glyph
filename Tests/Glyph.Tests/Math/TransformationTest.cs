@@ -30,21 +30,22 @@ namespace Glyph.Tests.Math.Shapes
             Assert.AreEqual(translation, result.Translation);
             Assert.AreEqual(rotation, result.Rotation);
             Assert.AreEqual(scale, result.Scale);
-            Assert.AreEqual(new Matrix3X3(translation, rotation, scale), result.Matrix);
+            Assert.AreEqual(new Matrix3X3Trs(translation, rotation, scale), result.Matrix);
 
             result = new Transformation(result);
             Assert.AreEqual(translation, result.Translation);
             Assert.AreEqual(rotation, result.Rotation);
             Assert.AreEqual(scale, result.Scale);
-            Assert.AreEqual(new Matrix3X3(translation, rotation, scale), result.Matrix);
+            Assert.AreEqual(new Matrix3X3Trs(translation, rotation, scale), result.Matrix);
 
             result = new Transformation { Translation = translation, Rotation = rotation, Scale = scale };
             Assert.AreEqual(translation, result.Translation);
             Assert.AreEqual(rotation, result.Rotation);
             Assert.AreEqual(scale, result.Scale);
-            Assert.AreEqual(new Matrix3X3(translation, rotation, scale), result.Matrix);
+            Assert.AreEqual(new Matrix3X3Trs(translation, rotation, scale), result.Matrix);
         }
 
+        [Test]
         static public void RefreshMatrix()
         {
             Transformation result = Transformation.Identity;
@@ -57,7 +58,7 @@ namespace Glyph.Tests.Math.Shapes
             Assert.AreEqual(translation, result.Translation);
             Assert.AreEqual(rotation, result.Rotation);
             Assert.AreEqual(scale, result.Scale);
-            Assert.AreEqual(new Matrix3X3(translation, rotation, scale), result.Matrix);
+            Assert.AreEqual(new Matrix3X3Trs(translation, rotation, scale), result.Matrix);
         }
     }
 }

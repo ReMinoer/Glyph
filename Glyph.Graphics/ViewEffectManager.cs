@@ -97,7 +97,7 @@ namespace Glyph.Graphics
                 drawer.GraphicsDevice.SetRenderTarget(output);
                 drawer.GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.Stencil, Color.Pink, 0, 0);
 
-                drawer.SpriteBatchStack.Current.Begin(SpriteSortMode.Immediate);
+                drawer.SpriteBatchStack.Push(new SpriteBatchContext {SpriteSortMode = SpriteSortMode.Immediate});
                 try
                 {
                     effect.Apply(drawer);
@@ -107,7 +107,7 @@ namespace Glyph.Graphics
                     continue;
                 }
                 drawer.SpriteBatchStack.Current.Draw(input, Vector2.Zero, Color.White);
-                drawer.SpriteBatchStack.Current.End();
+                drawer.SpriteBatchStack.Pop();
 
                 _renderStep++;
             }

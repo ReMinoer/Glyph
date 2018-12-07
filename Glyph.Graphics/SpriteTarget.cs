@@ -13,14 +13,11 @@ namespace Glyph.Graphics
         public RenderTarget2D RenderTarget { get; private set; }
         public override event Action<ISpriteSource> Loaded;
 
-        public override Texture2D Texture
-        {
-            get { return _texture; }
-        }
+        public override Texture2D Texture => _texture;
 
         public Vector2 Size
         {
-            get { return _size; }
+            get => _size;
             set
             {
                 _size = value;
@@ -40,13 +37,25 @@ namespace Glyph.Graphics
 
         private void RefreshRenderTarget()
         {
+            if (Size.X <= 0 || Size.Y <= 0)
+            {
+                RenderTarget = null;
+                _texture = null;
+                Loaded?.Invoke(this);
+                return;
+            }
+
             GraphicsDevice graphicsDevice = _lazyGraphicsDevice();
             if (graphicsDevice == null)
+            {
+                RenderTarget = null;
+                _texture = null;
+                Loaded?.Invoke(this);
                 return;
+            }
 
             RenderTarget = new RenderTarget2D(_lazyGraphicsDevice(), (int)Size.X, (int)Size.Y, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
             _texture = RenderTarget;
-
             Loaded?.Invoke(this);
         }
     }

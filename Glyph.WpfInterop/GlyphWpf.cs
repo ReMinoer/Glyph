@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Fingear.MonoGame;
 using Glyph.Core.Inputs;
 using Glyph.Engine;
@@ -12,11 +13,19 @@ namespace Glyph.WpfInterop
     {
         private GlyphEngine _engine;
         private readonly WpfInputStates _wpfInputStates;
-        public Resolution Resolution { get; }
-        public virtual bool IsFocus => IsFocused;
+
         IInputStates IInputClient.States => _wpfInputStates;
         RenderTarget2D IDrawClient.DefaultRenderTarget => RenderTarget;
-        Matrix IDrawClient.ResolutionMatrix => Resolution.TransformationMatrix;
+
+        private Vector2 GlyphSize => new Vector2((float)ActualWidth, (float)ActualHeight);
+        Vector2 IDrawClient.Size => GlyphSize;
+
+        private event Action<Vector2> GlyphSizeChanged;
+        event Action<Vector2> IDrawClient.SizeChanged
+        {
+            add => GlyphSizeChanged += value;
+            remove => GlyphSizeChanged -= value;
+        }
 
         public GlyphEngine Engine
         {
@@ -40,10 +49,9 @@ namespace Glyph.WpfInterop
         {
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
-            SizeChanged += OnClientSizeChanged;
+            SizeChanged += OnSizeChanged;
 
             _wpfInputStates = new WpfInputStates(this);
-            Resolution = new Resolution();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -54,6 +62,11 @@ namespace Glyph.WpfInterop
         private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
         {
             Engine?.Stop();
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            GlyphSizeChanged?.Invoke(GlyphSize);
         }
 
         protected override void Initialize()
@@ -93,11 +106,6 @@ namespace Glyph.WpfInterop
             Engine.Draw(this);
 
             Engine.EndDraw();
-        }
-
-        private void OnClientSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            Resolution.WindowSize = new Vector2((int)e.NewSize.Width, (int)e.NewSize.Height);
         }
     }
 }

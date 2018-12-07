@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,12 +9,15 @@ namespace Glyph.Effects.Masked
     {
         protected Texture2D[] PatchSprites;
         protected RenderTarget2D MaskRender;
+        private readonly Rectangle _effectTargetRectangle;
         private Texture2D _square;
+
         public float Opacity { get; set; }
         public List<MaskPatch> Patches { get; set; }
 
-        protected MaskedEffect()
+        protected MaskedEffect(Rectangle effectTargetRectangle)
         {
+            _effectTargetRectangle = effectTargetRectangle;
             Patches = new List<MaskPatch>();
         }
 
@@ -23,8 +27,7 @@ namespace Glyph.Effects.Masked
 
         public override void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice)
         {
-            Vector2 virtualSize = VirtualResolution.Size;
-            MaskRender = new RenderTarget2D(graphicsDevice, (int)virtualSize.X, (int)virtualSize.Y);
+            MaskRender = new RenderTarget2D(graphicsDevice, _effectTargetRectangle.Width, _effectTargetRectangle.Height);
 
             _square = contentLibrary.GetTexture("square");
         }
@@ -41,11 +44,8 @@ namespace Glyph.Effects.Masked
             drawer.GraphicsDevice.SetRenderTarget(MaskRender);
             drawer.GraphicsDevice.Clear(Color.Black);
 
-            Vector2 virtualSize = VirtualResolution.Size;
-            var virtualRectangle = new Rectangle(0, 0, (int)virtualSize.X, (int)virtualSize.Y);
-
             drawer.SpriteBatchStack.Current.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            drawer.SpriteBatchStack.Current.Draw(_square, virtualRectangle, Color.White * (1 - Opacity));
+            drawer.SpriteBatchStack.Current.Draw(_square, _effectTargetRectangle, Color.White * (1 - Opacity));
             drawer.SpriteBatchStack.Current.End();
 
             drawer.SpriteBatchStack.Current.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, drawer.ViewMatrix);

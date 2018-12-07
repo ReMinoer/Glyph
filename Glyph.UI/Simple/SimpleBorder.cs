@@ -48,7 +48,7 @@ namespace Glyph.UI.Simple
 
         public void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer.Client, drawer))
+            if (!this.Displayed(drawer, drawer.Client, SceneNode))
                 return;
 
             drawer.SpriteBatchStack.Current.Draw(_rectangleSprite.Texture, Bounds.ToIntegers(), Color);

@@ -75,13 +75,18 @@
     <Compile Include="Colliders\IGridCollider.cs" />
     <Compile Include="Colliders\RectangleCollider.cs" />
     <Compile Include="Collision.cs" />
+    <Compile Include="ICamera.cs" />
+    <Compile Include="ReadOnlySceneNodeDelegate.cs" />
     <Compile Include="Flipper.cs" />
     <Compile Include="GlyphInjectionContext.cs" />
+    <Compile Include="GridComponent.cs" />
     <Compile Include="Inputs\ControlLayerSchedulerProfile.cs" />
     <Compile Include="Inputs\ControlLayerTag.cs" />
     <Compile Include="Inputs\Controls.cs" />
     <Compile Include="Inputs\CursorControlBase.cs" />
-    <Compile Include="Inputs\SceneCursorControl.cs" />
+    <Compile Include="ProjectionManager.cs" />
+    <Compile Include="Projection.cs" />
+    <Compile Include="Inputs\ProjectionCursorControl.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="IBoxedComponent.cs" />
     <Compile Include="Injection\GlyphCompositeInjector.cs" />
@@ -89,9 +94,6 @@
     <Compile Include="Injection\LocalDependencyInjector.cs" />
     <Compile Include="Inputs\IInputClient.cs" />
     <Compile Include="Inputs\InputClientManager.cs" />
-    <Compile Include="Inputs\ScreenCursorControl.cs" />
-    <Compile Include="Inputs\VirtualScreenCursorControl.cs" />
-    <Compile Include="ISceneNode.cs" />
     <Compile Include="IView.cs" />
     <Compile Include="IShapedComponent.cs" />
     <Compile Include="IWritableSceneNode.cs" />
@@ -104,10 +106,11 @@
     <Compile Include="PositionBinding.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlySceneNode.cs" />
+    <Compile Include="Base\ReadOnlySceneNodeBase.cs" />
     <Compile Include="Receiver.cs" />
+    <Compile Include="RootView.cs" />
     <Compile Include="SceneGraphUtils.cs" />
     <Compile Include="SceneNode.cs" />
-    <Compile Include="SceneNodeExtension.cs" />
     <Compile Include="Scheduler\GlyphScheduler.cs" />
     <Compile Include="Scheduler\GlyphSchedulerHandler.cs" />
     <Compile Include="Scheduler\GlyphSchedulerSorter.cs" />
@@ -119,7 +122,7 @@
     <Compile Include="Tracking\IMessagingCollection.cs" />
     <Compile Include="Tracking\MessagingSpace.cs" />
     <Compile Include="Tracking\MessagingTracker.cs" />
-    <Compile Include="ViewManager.cs" />
+    <Compile Include="Base\ViewBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
@@ -146,9 +149,6 @@
       <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
       <Name>Niddle</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
-      <Name>Niddle</Name>
     <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
       <Project>{dfd5170c-d6c2-4815-88ed-6aa011d26d84}</Project>
       <Name>Simulacra</Name>

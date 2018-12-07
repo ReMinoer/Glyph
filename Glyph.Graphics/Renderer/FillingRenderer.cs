@@ -1,4 +1,6 @@
-﻿using Glyph.Core;
+﻿using Glyph.Composition;
+using Glyph.Core;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,11 +11,16 @@ namespace Glyph.Graphics.Renderer
     {
         private readonly FillingRectangle _fillingRectangle;
         private readonly SceneNode _sceneNode;
+        protected override ISceneNode SceneNode => _sceneNode;
 
-        protected override float DepthProtected
+        protected override float DepthProtected => _sceneNode.Depth;
+
+        public Quad Shape => _sceneNode.Transformation.Transform(new CenteredRectangle(Vector2.Zero, _fillingRectangle.Rectangle.Size));
+        public override IArea Area => new TopLeftRectangle
         {
-            get { return _sceneNode.Depth; }
-        }
+            Position = _sceneNode.Position + _fillingRectangle.Rectangle.Position,
+            Size = _fillingRectangle.Rectangle.Size
+        };
 
         public FillingRenderer(FillingRectangle fillingRectangle, ISpriteSource source, SceneNode sceneNode)
             : base(source)

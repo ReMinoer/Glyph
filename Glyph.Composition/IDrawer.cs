@@ -2,19 +2,18 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph
+namespace Glyph.Composition
 {
     public interface IDrawer
     {
         IDrawClient Client { get; }
+        IDraw Root { get; }
         SpriteBatchStack SpriteBatchStack { get; }
         GraphicsDevice GraphicsDevice { get; }
-        TopLeftRectangle ScreenBounds { get; }
         RenderTarget2D DefaultRenderTarget { get; }
-        Texture2D Output { get; }
-        CenteredRectangle DisplayedRectangle { get; }
+        Quad DisplayedRectangle { get; }
+        Vector2 ViewSize { get; }
         Matrix ViewMatrix { get; }
-        Matrix ResolutionMatrix { get; }
-        void ApplyEffects(IDrawer drawer);
+        bool DrawPredicate(ISceneNode sceneNode);
     }
 }

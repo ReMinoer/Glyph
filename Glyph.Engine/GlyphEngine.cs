@@ -14,6 +14,7 @@ using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Graphics;
+using Glyph.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,13 +36,14 @@ namespace Glyph.Engine
         public bool IsPaused { get; private set; }
         public IDependencyRegistry Registry { get; }
         public IDependencyInjector Injector { get; }
-        public ViewManager ViewManager { get; }
+        public RootView RootView { get; private set; }
+        public ProjectionManager ProjectionManager { get; }
         public ContentLibrary ContentLibrary { get; }
         public InputClientManager InputClientManager { get; }
         public ControlManager ControlManager { get; }
         private GlyphObject _root;
-        private IControl _mute;
-        private IControl _xboxQuit;
+        private readonly IControl _mute;
+        private readonly IControl _xboxQuit;
 
         public GlyphObject Root
         {
@@ -51,14 +53,18 @@ namespace Glyph.Engine
 
         public IGlyphClient FocusedClient
         {
-            get { return _focusedClient; }
+            get => _focusedClient;
             set
             {
                 if (_focusedClient == value)
                     return;
 
                 _focusedClient = value;
-                InputClientManager.Current = _focusedClient;
+
+                RootView.DrawClient = _focusedClient;
+                InputClientManager.DrawClient = _focusedClient;
+                InputClientManager.InputClient = _focusedClient;
+
                 FocusChanged?.Invoke(_focusedClient);
             }
         }
@@ -81,13 +87,14 @@ namespace Glyph.Engine
             Registry.RegisterInstance<RegistryInjector>(injector);
             Injector = injector;
 
-            ViewManager = new ViewManager();
+            RootView = new RootView();
+            ProjectionManager = new ProjectionManager(RootView, Injector.Resolve<ISubscribableRouter>());
 
             _contentManager.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
             InputClientManager = new InputClientManager();
             ControlManager = new ControlManager();
-            ControlManager.ApplyProfile(ControlLayerSchedulerProfile.Get().GraphData);
+            ControlManager.ApplyProfile(ControlLayerSchedulerProfile.Get().Graph);
 
             ControlManager.Plan(new ControlLayer("Program controls", ControlLayerTag.Debug)).RegisterMany(new []
             {
@@ -103,7 +110,8 @@ namespace Glyph.Engine
             });
 
             Registry.RegisterInstance<GlyphEngine>(this);
-            Registry.RegisterInstance<ViewManager>(ViewManager);
+            Registry.RegisterInstance<RootView>(RootView);
+            Registry.RegisterInstance<ProjectionManager>(ProjectionManager);
             Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
             Registry.RegisterInstance<InputClientManager>(InputClientManager);
             Registry.RegisterInstance<ControlManager>(ControlManager);
@@ -120,7 +128,7 @@ namespace Glyph.Engine
 
         public void Initialize()
         {
-            ViewManager.Initialize();
+            RootView?.Initialize();
             Root?.Initialize();
 
             IsInitialized = true;
@@ -129,8 +137,6 @@ namespace Glyph.Engine
         public void LoadContent()
         {
             ContentLibrary.LoadContent(_contentManager);
-
-            ViewManager.LoadContent(ContentLibrary);
             SongPlayer.Instance.LoadContent(ContentLibrary);
 
             Root?.LoadContent(ContentLibrary);
@@ -145,7 +151,7 @@ namespace Glyph.Engine
 
         public void HandleInput()
         {
-            if (InputClientManager.Current != null)
+            if (InputClientManager.InputClient != null)
                 ControlManager.Update(_elapsedTime.UnscaledDelta);
             else
                 InputManager.Instance.InputStates?.Ignore();
@@ -162,7 +168,6 @@ namespace Glyph.Engine
             using (GlyphObject.UpdateWatchTree.Start("Root"))
             {
                 Root?.Update(_elapsedTime);
-                ViewManager.Update(_elapsedTime);
                 SongPlayer.Instance.Update(_elapsedTime);
             }
 
@@ -180,15 +185,13 @@ namespace Glyph.Engine
 
         public void Draw(IDrawClient drawClient)
         {
-            var drawer = new Drawer(drawClient);
-            drawer.GraphicsDevice.Clear(Color.Black);
-
-            foreach (IView view in ViewManager.Views.Where(x => x.Displayed(drawClient)))
+            var spriteBatch = new SpriteBatch(drawClient.GraphicsDevice);
+            var drawer = new Drawer(new SpriteBatchStack(spriteBatch), drawClient, Root, RootView.Camera.GetSceneNode().RootNode())
             {
-                drawer.CurrentView = view;
-                view.PrepareDraw(drawer);
-                Root?.Draw(drawer);
-            }
+                CurrentView = RootView
+            };
+
+            RootView.Draw(drawer);
         }
 
         public void EndDraw()

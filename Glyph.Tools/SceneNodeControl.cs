@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
-using Diese.Collections;
+﻿using Diese.Collections;
 using Fingear;
 using Fingear.Controls;
 using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
-using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Graphics;
@@ -13,7 +10,6 @@ using Glyph.Graphics.Renderer;
 using Glyph.Graphics.Shapes;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Tools
 {
@@ -50,32 +46,13 @@ namespace Glyph.Tools
             var yHandle = Add<Handle>();
             yHandle.FixedY = true;
             yHandle.LocalPosition = PositionHandleDistance * Vector2.UnitY;
-
-            Schedulers.Draw.Plan(PrepareDraw).AtStart();
-            Schedulers.Draw.Plan(FinalizeDraw).AtEnd();
-        }
-
-        private void PrepareDraw(IDrawer drawer)
-        {
-            var spriteBatchContext = new SpriteBatchContext
-            {
-                SpriteSortMode = SpriteSortMode.Immediate,
-                TransformMatrix = drawer.ResolutionMatrix  * drawer.ViewMatrix
-            };
-            
-            drawer.SpriteBatchStack.Push(spriteBatchContext);
-        }
-
-        private void FinalizeDraw(IDrawer drawer)
-        {
-            drawer.SpriteBatchStack.Pop();
         }
 
         public class Handle : GlyphObject
         {
             private readonly SceneNode _sceneNode;
             
-            private readonly VirtualScreenCursorControl _virtualScreenCursor;
+            private readonly ProjectionCursorControl _virtualScreenCursor;
             private readonly ActivityControl _move;
 
             private readonly SceneNodeControl _sceneNodeControl;
@@ -92,7 +69,7 @@ namespace Glyph.Tools
             
             public Circle Circle => new Circle(_sceneNode.Position, _filledCircleSprite.Radius);
 
-            public Handle(GlyphInjectionContext context, SceneNodeControl sceneNodeControl, InputClientManager inputClientManager)
+            public Handle(GlyphInjectionContext context, SceneNodeControl sceneNodeControl, RootView rootView, ProjectionManager projectionManager)
                 : base(context)
             {
                 _sceneNodeControl = sceneNodeControl;
@@ -115,7 +92,7 @@ namespace Glyph.Tools
                 controls.Tags.Add(ControlLayerTag.Tools);
                 controls.RegisterMany(new IControl[]
                 {
-                    _virtualScreenCursor = new VirtualScreenCursorControl("Virtual cursor", InputSystem.Instance.Mouse.Cursor, inputClientManager),
+                    _virtualScreenCursor = new ProjectionCursorControl("Virtual cursor", InputSystem.Instance.Mouse.Cursor, rootView, new ReadOnlySceneNodeDelegate(() => _sceneNode), projectionManager),
                     _move = new ActivityControl("Move handle", InputSystem.Instance.Mouse[MouseButton.Left])
                 });
 

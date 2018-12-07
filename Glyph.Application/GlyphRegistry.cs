@@ -101,7 +101,9 @@ namespace Glyph.Application
             LinkGeneric(typeof(ILayerRoot<>), typeof(LayerRoot<>));
 
             Register<Camera>();
-            Register<View>();
+            Register<TargetView>();
+            Register<FillView>();
+            Register<UniformFillTargetView>();
 
             Register<Controls>();
 

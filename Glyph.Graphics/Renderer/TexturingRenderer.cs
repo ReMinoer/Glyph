@@ -1,4 +1,6 @@
-﻿using Glyph.Core;
+﻿using Glyph.Composition;
+using Glyph.Core;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,11 +11,14 @@ namespace Glyph.Graphics.Renderer
     {
         private readonly SceneNode _sceneNode;
         private readonly FillingRectangle _fillingRectangle;
+        protected override ISceneNode SceneNode => _sceneNode;
+        protected override float DepthProtected => _sceneNode.Depth;
 
-        protected override float DepthProtected
+        public override IArea Area => new TopLeftRectangle
         {
-            get { return _sceneNode.Depth; }
-        }
+            Position = _sceneNode.Position + _fillingRectangle.Rectangle.Position,
+            Size = _fillingRectangle.Rectangle.Size
+        };
 
         public TexturingRenderer(SceneNode sceneNode, FillingRectangle fillingRectangle, ISpriteSource source)
             : base(source)
@@ -24,15 +29,14 @@ namespace Glyph.Graphics.Renderer
 
         protected override void Render(IDrawer drawer)
         {
-            TopLeftRectangle cameraRectangle = drawer.DisplayedRectangle;
+            TopLeftRectangle cameraRectangle = drawer.DisplayedRectangle.BoundingBox;
             TopLeftRectangle drawnRectangle = new CenteredRectangle
             {
                 Center = _sceneNode.Position + _fillingRectangle.Rectangle.Center,
                 Size = _fillingRectangle.Rectangle.Size
             };
 
-            TopLeftRectangle visibleRectangle;
-            if (!drawnRectangle.Intersects(cameraRectangle, out visibleRectangle))
+            if (!drawnRectangle.Intersects(cameraRectangle, out TopLeftRectangle visibleRectangle))
                 return;
 
             TopLeftRectangle sourceRectangle = Source.GetDrawnRectagle().ToFloats();

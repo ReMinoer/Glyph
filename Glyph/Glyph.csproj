@@ -76,7 +76,11 @@
     <Compile Include="IO\DataContractSerializationFormat.cs" />
     <Compile Include="IO\ISerializationFormat.cs" />
     <Compile Include="IO\Base\SerializationFormatBase.cs" />
+    <Compile Include="ISceneNode.cs" />
     <Compile Include="Math\IRange.cs" />
+    <Compile Include="Math\ITransformation.cs" />
+    <Compile Include="Math\ITransformer.cs" />
+    <Compile Include="Math\Matrix3X3Trs.cs" />
     <Compile Include="Math\Range.cs" />
     <Compile Include="Math\RangeArea.cs" />
     <Compile Include="Math\RangeUtils.cs" />
@@ -85,6 +89,7 @@
     <Compile Include="Math\Shapes\Quad.cs" />
     <Compile Include="Math\Shapes\Triangle.cs" />
     <Compile Include="Math\Shapes\Base\TriangledShapeBase.cs" />
+    <Compile Include="Math\TransformationExtension.cs" />
     <Compile Include="Reflection\GlyphTypeInfo.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="Axes.cs" />
@@ -93,7 +98,6 @@
     <Compile Include="GlyphData.cs" />
     <Compile Include="IDirtable.cs" />
     <Compile Include="IDrawClient.cs" />
-    <Compile Include="IDrawer.cs" />
     <Compile Include="IFlipable.cs" />
     <Compile Include="IHandlable.cs" />
     <Compile Include="Injection\GlyphInjectableCollectionAttribute.cs" />
@@ -128,7 +132,7 @@
     <Compile Include="Referential.cs" />
     <Compile Include="Reflection\GlyphTypeInfoProvider.cs" />
     <Compile Include="Reflection\InjectablePropertyInfo.cs" />
-    <Compile Include="Resolution.cs" />
+    <Compile Include="SceneNodeExtension.cs" />
     <Compile Include="SpriteBatchContext.cs" />
     <Compile Include="SpriteBatchStack.cs" />
     <Compile Include="InstancePool.cs" />
@@ -154,7 +158,6 @@
     <Compile Include="Transition\TransitionVector2.cs" />
     <Compile Include="Transition\TransitionVector3.cs" />
     <Compile Include="Transition\TransitionVector4.cs" />
-    <Compile Include="VirtualResolution.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">

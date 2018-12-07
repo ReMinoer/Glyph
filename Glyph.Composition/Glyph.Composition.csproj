@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Base\GlyphComponentBase.cs" />
     <Compile Include="Base\GlyphContainerBase.cs" />
+    <Compile Include="IDrawer.cs" />
     <Compile Include="Messaging\ComponentRouterSystem.cs" />
     <Compile Include="Messaging\CompositionMessage.cs" />
     <Compile Include="Messaging\DecompositionMessage.cs" />

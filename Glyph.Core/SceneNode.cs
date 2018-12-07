@@ -22,6 +22,7 @@ namespace Glyph.Core
         private float _scale;
         private float _localDepth;
         private float _depth;
+        private bool _isRoot;
         public ISceneNode ParentNode { get; private set; }
         public Matrix3X3 Matrix { get; private set; }
 
@@ -30,7 +31,7 @@ namespace Glyph.Core
             get { return _readOnlyChildrenNodes; }
         }
 
-        public Transformation Transformation
+        public Transformation LocalTransformation
         {
             get { return _transformation; }
             set
@@ -42,30 +43,30 @@ namespace Glyph.Core
 
         public Vector2 LocalPosition
         {
-            get { return Transformation.Translation; }
+            get { return LocalTransformation.Translation; }
             set
             {
-                Transformation.Translation = value;
+                LocalTransformation.Translation = value;
                 Refresh(Referential.Local);
             }
         }
 
         public float LocalRotation
         {
-            get { return Transformation.Rotation; }
+            get { return LocalTransformation.Rotation; }
             set
             {
-                Transformation.Rotation = value;
+                LocalTransformation.Rotation = value;
                 Refresh(Referential.Local);
             }
         }
 
         public float LocalScale
         {
-            get { return Transformation.Scale; }
+            get { return LocalTransformation.Scale; }
             set
             {
-                Transformation.Scale = value;
+                LocalTransformation.Scale = value;
                 Refresh(Referential.Local);
             }
         }
@@ -82,7 +83,7 @@ namespace Glyph.Core
 
         public Matrix3X3 LocalMatrix
         {
-            get { return Transformation.Matrix; }
+            get { return LocalTransformation.Matrix; }
         }
 
         public Vector2 Position
@@ -125,6 +126,12 @@ namespace Glyph.Core
             }
         }
 
+        public Transformation Transformation
+        {
+            get { return new Transformation(Position, Rotation, Scale); }
+            set { SetValues(value.Translation, value.Rotation, value.Scale, null, Referential.World); }
+        }
+
         public event Action<SceneNode> Refreshed;
 
         public SceneNode()
@@ -132,7 +139,7 @@ namespace Glyph.Core
             _childrenNodes = new ObservableCollection<ISceneNode>();
             _readOnlyChildrenNodes = new System.Collections.ObjectModel.ReadOnlyObservableCollection<ISceneNode>(_childrenNodes);
 
-            Transformation = Transformation.Identity;
+            LocalTransformation = Transformation.Identity;
         }
 
         public SceneNode(ISceneNode parentNode)
@@ -143,7 +150,7 @@ namespace Glyph.Core
 
         public override void Initialize()
         {
-            if (ParentNode != null || Parent == null)
+            if (_isRoot || ParentNode != null || Parent == null)
                 return;
 
             if (Parent.ParentQueue().SelectMany(x => x.Components).AnyOfType(out SceneNode parentNode))
@@ -163,7 +170,7 @@ namespace Glyph.Core
             switch (childStaticReferential)
             {
                 case Referential.Local:
-                    Transformation.RefreshMatrix(position, rotation, scale);
+                    LocalTransformation.RefreshMatrix(position, rotation, scale);
                     if (depth.HasValue)
                         _localDepth = depth.Value;
                     break;
@@ -184,25 +191,25 @@ namespace Glyph.Core
         private void SetWorldPosition(Vector2 value)
         {
             if (ParentNode != null)
-                Transformation.Translation = ParentNode.Matrix.Inverse * value;
+                LocalTransformation.Translation = ParentNode.Matrix.Inverse * value;
             else
-                Transformation.Translation = value;
+                LocalTransformation.Translation = value;
         }
 
         private void SetWorldRotation(float value)
         {
             if (ParentNode != null)
-                Transformation.Rotation = value - ParentNode.Rotation;
+                LocalTransformation.Rotation = value - ParentNode.Rotation;
             else
-                Transformation.Rotation = value;
+                LocalTransformation.Rotation = value;
         }
 
         private void SetWorldScale(float value)
         {
             if (ParentNode != null)
-                Transformation.Scale = value / ParentNode.Scale;
+                LocalTransformation.Scale = value / ParentNode.Scale;
             else
-                Transformation.Scale = value;
+                LocalTransformation.Scale = value;
         }
 
         private void SetWorldDepth(float value)
@@ -217,9 +224,17 @@ namespace Glyph.Core
         {
             ParentNode?.UnlinkChild(this);
             ParentNode = parent;
-            ParentNode?.LinkChild(this, childStaticReferential);
+
+            _isRoot = ParentNode == null;
+            if (!_isRoot)
+                ParentNode?.LinkChild(this, childStaticReferential);
 
             Refresh(childStaticReferential);
+        }
+
+        public void MakesRoot()
+        {
+            SetParent(null, Referential.Local);
         }
 
         public Vector2 GetPosition(Referential referential)
@@ -312,7 +327,7 @@ namespace Glyph.Core
 
         public void Flip(Axes axes)
         {
-            Transformation.Flip(axes);
+            LocalTransformation.Flip(axes);
             Refresh(Referential.Local);
         }
 
@@ -378,5 +393,10 @@ namespace Glyph.Core
         {
             Refresh(Referential.Local);
         }
+
+        public Vector2 Transform(Vector2 position) => new Transformation(Position, Rotation, Scale).Transform(position);
+        public Vector2 InverseTransform(Vector2 position) => new Transformation(Position, Rotation, Scale).InverseTransform(position);
+        public Transformation Transform(Transformation transformation) => new Transformation(Position, Rotation, Scale).Transform(transformation);
+        public Transformation InverseTransform(Transformation transformation) => new Transformation(Position, Rotation, Scale).InverseTransform(transformation);
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Math
 {
-    public class Transformation : ConfigurableNotifyPropertyChanged, IFlipable
+    public class Transformation : ConfigurableNotifyPropertyChanged, ITransformation
     {
         private Vector2 _translation;
         private float _rotation;
@@ -57,13 +57,42 @@ namespace Glyph.Math
             RefreshMatrix();
         }
 
-        public Transformation(Transformation transformation)
+        public Transformation(ITransformation transformation)
         {
-            _translation = transformation._translation;
-            _rotation = transformation._rotation;
-            _scale = transformation._scale;
+            _translation = transformation.Translation;
+            _rotation = transformation.Rotation;
+            _scale = transformation.Scale;
 
             RefreshMatrix();
+        }
+
+        public Vector2 Transform(Vector2 position) => Matrix * position;
+        public Vector2 InverseTransform(Vector2 position) => Matrix.Inverse * position;
+
+        public Transformation Transform(Transformation transformation)
+        {
+            Vector2 translation = transformation.Translation;
+            float rotation = transformation.Rotation;
+            float scale = transformation.Scale;
+
+            translation = Matrix * translation;
+            rotation = MathHelper.WrapAngle(rotation + Rotation);
+            scale *= Scale;
+
+            return new Transformation(translation, rotation, scale);
+        }
+
+        public Transformation InverseTransform(Transformation transformation)
+        {
+            Vector2 translation = transformation.Translation;
+            float rotation = transformation.Rotation;
+            float scale = transformation.Scale;
+
+            translation = Matrix.Inverse * translation;
+            rotation = MathHelper.WrapAngle(rotation - Rotation);
+            scale /= Scale;
+
+            return new Transformation(translation, rotation, scale);
         }
 
         public void Flip(Axes axes)
@@ -98,7 +127,7 @@ namespace Glyph.Math
 
         private void RefreshMatrix()
         {
-            Matrix = new Matrix3X3(Translation, Rotation, Scale);
+            Matrix = new Matrix3X3Trs(Translation, Rotation, Scale);
         }
     }
 }

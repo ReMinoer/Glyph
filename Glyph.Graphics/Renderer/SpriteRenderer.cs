@@ -7,16 +7,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Renderer
 {
-    public class SpriteRenderer : RendererBase, IBoxedComponent
+    public class SpriteRenderer : RendererBase
     {
         private readonly SceneNode _sceneNode;
+        protected override ISceneNode SceneNode => _sceneNode;
 
         protected override float DepthProtected
         {
             get { return _sceneNode.Depth; }
         }
 
-        public IArea Area
+        public override IArea Area
         {
             get
             {

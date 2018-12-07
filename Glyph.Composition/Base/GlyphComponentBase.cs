@@ -53,7 +53,7 @@ namespace Glyph.Composition.Base
         }
 
         public virtual void Initialize() { }
-        public override string ToString() => Name;
+        public override string ToString() => $"{Name} ({Id})";
 
         public override void Dispose()
         {

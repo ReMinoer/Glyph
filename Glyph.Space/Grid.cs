@@ -88,7 +88,7 @@ namespace Glyph.Space
         public Rectangle ToGridRange(TopLeftRectangle rectangle)
         {
             Point position = ToGridPoint(rectangle.Position);
-            return new Rectangle(position, ToGridPoint(rectangle.P2) - position + new Point(1, 1));
+            return new Rectangle(position, ToGridPoint(rectangle.P3) - position + new Point(1, 1));
         }
 
         public IEnumerator<Point> GetEnumerator()

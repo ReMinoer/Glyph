@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="GlyphWpfViewer.cs" />
     <Compile Include="GlyphWpf.cs" />
+    <Compile Include="IWpfGlyphClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WpfInputStates.cs" />
     <Compile Include="GlyphWpfRunner.cs" />

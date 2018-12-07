@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="DepthManager.cs" />
     <Compile Include="Drawer.cs" />
+    <Compile Include="FillView.cs" />
     <Compile Include="Renderer\FillingRectangle.cs" />
     <Compile Include="ISpriteSheet.cs" />
     <Compile Include="ISpriteSheetCarver.cs" />
@@ -59,7 +60,9 @@
     <Compile Include="Renderer\TexturingRenderer.cs" />
     <Compile Include="Shapes\FilledCircleSprite.cs" />
     <Compile Include="SpriteAnimation.cs" />
-    <Compile Include="View.cs" />
+    <Compile Include="TargetView.cs" />
+    <Compile Include="UniformFillTargetView.cs" />
+    <Compile Include="TargetViewBase.cs" />
     <Compile Include="ViewEffectManager.cs" />
     <Compile Include="SpriteAnimatorTransition.cs" />
     <Compile Include="Shapes\CircleSprite.cs" />

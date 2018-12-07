@@ -1,4 +1,6 @@
-﻿using Glyph.Math;
+﻿using Glyph.Composition;
+using Glyph.Core;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
@@ -15,26 +17,25 @@ namespace Glyph.Graphics.Renderer
         public Transformation Transformation { get; set; }
         public float Depth { get; set; }
         public RenderingBehaviour<TData> RenderingBehaviour { get; set; }
+        protected override ISceneNode SceneNode { get; }
 
-        protected override float DepthProtected
-        {
-            get { return Depth; }
-        }
+        protected override float DepthProtected => Depth;
+        public override IArea Area => Grid.BoundingBox;
 
-        public MappingRenderer(ISpriteSheet spriteSheet)
+        public MappingRenderer(ISpriteSheet spriteSheet, SceneNode sceneNode)
             : base(spriteSheet)
         {
             SpriteSheet = spriteSheet;
+            SceneNode = sceneNode;
             Transformation = Transformation.Identity;
         }
 
         protected override void Render(IDrawer drawer)
         {
-            TopLeftRectangle cameraRectangle = drawer.DisplayedRectangle;
+            TopLeftRectangle cameraRectangle = drawer.DisplayedRectangle.BoundingBox;
             TopLeftRectangle drawnRectangle = Grid.BoundingBox;
 
-            TopLeftRectangle visibleRectangle;
-            if (!drawnRectangle.Intersects(cameraRectangle, out visibleRectangle))
+            if (!drawnRectangle.Intersects(cameraRectangle, out TopLeftRectangle visibleRectangle))
                 return;
 
             Rectangle visibleSubGrid = RectangleExtensions.ClampToRectangle(Grid.ToGridRange(visibleRectangle).ToFloats(), Grid.Bounds.ToFloats()).ToIntegers();

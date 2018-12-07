@@ -1,4 +1,6 @@
-﻿using Diese.Collections;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Diese.Collections;
 using Fingear;
 using Fingear.Controls;
 using Fingear.Converters;
@@ -6,8 +8,6 @@ using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Glyph.Core;
 using Glyph.Core.Inputs;
-using Glyph.Graphics;
-using Glyph.Math.Shapes;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Glyph.Tools
@@ -15,25 +15,26 @@ namespace Glyph.Tools
     public class FreeCamera : GlyphObject
     {
         private readonly InputClientManager _inputClientManager;
-        private readonly ViewManager _viewManager;
+        private readonly ProjectionManager _projectionManager;
+        private readonly IView _rootView;
         private readonly SceneNode _sceneNode;
         private readonly Camera _camera;
-        private View _view;
-        private TopLeftRectangle _viewBoundingBox;
-        private Vector2 _startCameraVirtualPosition;
-        private Vector2 _startCameraScenePosition;
-        private System.Numerics.Vector2 _startMouseVirtualPosition;
-        private bool _moving;
-        private readonly VirtualScreenCursorControl _virtualScreenCursor;
+        private IView _view;
+        private Vector2 _startCameraRootViewPosition;
+        private Vector2 _startCursorRootViewPosition;
+        private readonly ProjectionCursorControl _rootViewCursor;
         private readonly ActivityControl _moveCamera;
         private readonly Control<float> _zoomCamera;
         public IDrawClient Client { get; set; }
 
-        public View View
+        public IView View
         {
             get => _view;
             set
             {
+                if (_view == value)
+                    return;
+
                 if (_view != null)
                     _view.Camera = null;
 
@@ -50,11 +51,12 @@ namespace Glyph.Tools
             set => _camera.Zoom = value;
         }
 
-        public FreeCamera(GlyphInjectionContext context, InputClientManager inputClientManager, ViewManager viewManager)
+        public FreeCamera(GlyphInjectionContext context, RootView rootView, InputClientManager inputClientManager, ProjectionManager projectionManager)
             : base(context)
         {
+            _rootView = rootView;
             _inputClientManager = inputClientManager;
-            _viewManager = viewManager;
+            _projectionManager = projectionManager;
 
             _sceneNode = Add<SceneNode>();
             _camera = Add<Camera>();
@@ -63,7 +65,7 @@ namespace Glyph.Tools
             controls.Tags.Add(ControlLayerTag.Tools);
             controls.RegisterMany(new IControl[]
             {
-                _virtualScreenCursor = new VirtualScreenCursorControl("Virtual cursor", InputSystem.Instance.Mouse.Cursor, _inputClientManager),
+                _rootViewCursor = new ProjectionCursorControl("Main view cursor", InputSystem.Instance.Mouse.Cursor, _rootView, _rootView, projectionManager),
                 _moveCamera = new ActivityControl("Move camera", InputSystem.Instance.Mouse[MouseButton.Right]),
                 _zoomCamera = new Control<float>("Zoom camera", InputSystem.Instance.Mouse.Wheel.Force())
             });
@@ -74,7 +76,7 @@ namespace Glyph.Tools
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
-            if (Client != null && _inputClientManager.Current != Client)
+            if (Client != null && _inputClientManager.DrawClient != Client)
                 return;
 
             if (_zoomCamera.IsActive(out float wheelValue))
@@ -86,34 +88,46 @@ namespace Glyph.Tools
                 _camera.Zoom = zoom;
                 _zoomCamera.HandleInputs();
             }
-
+             
             if (_moveCamera.IsActive(out InputActivity inputActivity))
             {
-                _virtualScreenCursor.IsActive(out System.Numerics.Vector2 virtualPosition);
-                IView view = _viewManager.GetViewAtPoint(virtualPosition.AsMonoGameVector(), Client);
-                if (view == _view)
-                {
-                    if (inputActivity.IsTriggered())
-                    {
-                        _moving = true;
-                        _startMouseVirtualPosition = virtualPosition;
-                        _startCameraVirtualPosition = _viewManager.GetPositionOnVirtualScreen(_view.SceneToView(_sceneNode.Position), _view);
-                        _startCameraScenePosition = _camera.Position;
-                        _viewBoundingBox = view.BoundingBox;
-                    }
-                    else if (inputActivity.IsPressed() && _moving)
-                    {
-                        System.Numerics.Vector2 delta = virtualPosition - _startMouseVirtualPosition;
-                        _viewManager.GetViewAtPoint(_startCameraVirtualPosition + delta.AsMonoGameVector(), Client, out Vector2 viewPosition);
-                        _sceneNode.Position = -((viewPosition - _viewBoundingBox.Size / 2) / _camera.Zoom) + _startCameraScenePosition;
-                    }
-                }
+                _rootViewCursor.IsActive(out Vector2 cursorRootViewPosition);
 
-                if (inputActivity.IsTriggered())
-                    _moveCamera.HandleInputs();
+                if (inputActivity.IsPressed())
+                {
+                    if (!inputActivity.IsTriggered())
+                    {
+                        Vector2 cursorRootViewDelta = cursorRootViewPosition - _startCursorRootViewPosition;
+                        Vector2 cameraRootViewPosition = _startCameraRootViewPosition - cursorRootViewDelta;
+                        if (_projectionManager.ProjectPosition(_rootView, cameraRootViewPosition, _sceneNode, new ProjectionOptions { Directions = GraphDirections.Successors })
+                                              .Where(TransformPathContainsCamera)
+                                              .Any(out Projection<Vector2> cameraSceneProjection))
+                        {
+                            _sceneNode.Position = cameraSceneProjection.Value;
+                        }
+                    }
+                
+                    if (_projectionManager.ProjectPosition(_rootView, cursorRootViewPosition, _view, new ProjectionOptions { Directions = GraphDirections.Successors })
+                                          .Any(TransformPathContainsCamera))
+                    {
+                        if (_projectionManager.ProjectPosition(_sceneNode, _rootView, new ProjectionOptions { Directions = GraphDirections.Predecessors })
+                                              .Where(TransformPathContainsCamera)
+                                              .Any(out Projection<Vector2> cameraRootViewProjection))
+                        {
+                            _startCursorRootViewPosition = cursorRootViewPosition;
+                            _startCameraRootViewPosition = cameraRootViewProjection.Value;
+                        }
+                    }
+
+                    if (inputActivity.IsTriggered())
+                        _moveCamera.HandleInputs();
+                }
             }
-            else
-                _moving = false;
+        }
+
+        private bool TransformPathContainsCamera(Projection<Vector2> projection)
+        {
+            return projection.TransformerPath.Any(x => x is IView view && view.Camera == _camera);
         }
     }
 }

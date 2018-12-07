@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections;
-using Glyph.Math;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Core
@@ -41,6 +40,22 @@ namespace Glyph.Core
                 return Enumerable.Empty<ISceneNode>();
 
             return Sequence.Aggregate(sceneNode, GetParentNode);
+        }
+
+        static public ISceneNode RootNode(this ISceneNode sceneNode)
+        {
+            if (sceneNode == null)
+                return null;
+            
+            while (sceneNode.ParentNode != null)
+                sceneNode = sceneNode.ParentNode;
+
+            return sceneNode;
+        }
+
+        static public float DistanceTo(this ISceneNode a, ISceneNode b)
+        {
+            return (a.Position - b.Position).Length();
         }
 
         static public Vector2 Project(this ISceneNode sceneNode, ISceneNode space)
@@ -85,11 +100,6 @@ namespace Glyph.Core
                 result = descendants.Pop().LocalMatrix.Inverse * result;
 
             return result;
-        }
-
-        static public float DistanceTo(this ISceneNode a, ISceneNode b)
-        {
-            return (a.Position - b.Position).Length();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph
@@ -7,23 +6,21 @@ namespace Glyph
     public class SpriteBatchStack
     {
         private readonly Stack<SpriteBatchContext> _contextStack;
-        public SpriteBatch Current { get; private set; }
+        private readonly SpriteBatch _current;
 
-        public SpriteBatchContext Peek
-        {
-            get { return _contextStack.Peek(); }
-        }
+        public SpriteBatch Current => _contextStack.Count > 0 ? _current : null;
+        public SpriteBatchContext Peek => _contextStack.Peek();
 
         public SpriteBatchStack(SpriteBatch spriteBatch)
         {
-            Current = spriteBatch;
+            _current = spriteBatch;
             _contextStack = new Stack<SpriteBatchContext>();
         }
 
         public void Push(SpriteBatchContext context)
         {
-            if (_contextStack.Any())
-                Current.End();
+            if (_contextStack.Count > 0)
+                StopPeek();
 
             _contextStack.Push(context);
             ApplyPeek();
@@ -31,26 +28,30 @@ namespace Glyph
 
         public void Replace(SpriteBatchContext context)
         {
-            Current.End();
             _contextStack.Pop();
-            
+            StopPeek();
             _contextStack.Push(context);
             ApplyPeek();
         }
 
         public void Pop()
         {
-            Current.End();
             _contextStack.Pop();
+            StopPeek();
+            ApplyPeek();
+        }
 
-            if (_contextStack.Any())
-                ApplyPeek();
+        private void StopPeek()
+        {
+            _current.End();
         }
 
         private void ApplyPeek()
         {
-            SpriteBatchContext context = Peek;
-            Current.Begin(context.SpriteSortMode, context.BlendState, context.SamplerState, context.DepthStencilState, context.RasterizerState, context.Effect, context.TransformMatrix);
+            if (_contextStack.Count <= 0)
+                return;
+
+            _current.Begin(Peek.SpriteSortMode, Peek.BlendState, Peek.SamplerState, Peek.DepthStencilState, Peek.RasterizerState, Peek.Effect, Peek.TransformMatrix);
         }
     }
 }

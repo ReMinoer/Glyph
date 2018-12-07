@@ -12,11 +12,15 @@ using Glyph.Core.Tracking;
 using Glyph.Math.Shapes;
 using Glyph.Messaging;
 using Glyph.Space;
+using NLog;
+using Stave;
 
 namespace Glyph.Tools
 {
     public class ShapedObjectSelector : GlyphContainer, IUpdate, IEnableable
     {
+        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
         private readonly InputClientManager _inputClientManager;
         private IBoxedComponent _selection;
@@ -87,22 +91,44 @@ namespace Glyph.Tools
             if (!Enabled)
                 return;
 
-            if (ClientFilter != null && !ClientFilter.Filter(_inputClientManager.Current))
+            if (ClientFilter != null && !ClientFilter.Filter(_inputClientManager.InputClient))
                 return;
             
             if (Control == null || !Control.IsActive(out Vector2 mousePosition))
                 return;
 
+            Logger.Debug($"Pick position: {mousePosition}");
+
             IEnumerable<IBoxedComponent> inRange = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(mousePosition.AsMonoGameVector(), 1, 1));
             IBoxedComponent[] array = inRange as IBoxedComponent[] ?? inRange.ToArray();
 
             if (array.Length != 0)
-                Selection = array.MinBy(x => x.Area.BoundingBox.Width * x.Area.BoundingBox.Height);
+                Selection = array.MaxBy(x => x, CompareBoxedComponentByRelevance);
             else
                 Selection = null;
 
             if (HandleInputs)
                 Control.HandleInputs();
+        }
+
+        private int CompareBoxedComponentByRelevance(IBoxedComponent first, IBoxedComponent second)
+        {
+            TopLeftRectangle firstBoundingBox = first.Area.BoundingBox;
+            TopLeftRectangle secondBoundingBox = second.Area.BoundingBox;
+
+            float firstArea = firstBoundingBox.Height * firstBoundingBox.Width;
+            float secondArea = secondBoundingBox.Height * secondBoundingBox.Width;
+
+            int areaComparison = firstArea.CompareTo(secondArea);
+            if (areaComparison != 0)
+                return -areaComparison;
+
+            if (first.ParentQueue().Contains<IGlyphComponent>(second))
+                return 1;
+            if (second.ParentQueue().Contains<IGlyphComponent>(first))
+                return -1;
+
+            return 0;
         }
 
         public override void Dispose()

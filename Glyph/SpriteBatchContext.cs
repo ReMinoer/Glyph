@@ -14,10 +14,7 @@ namespace Glyph
         public Effect Effect { get; set; }
         public Matrix? TransformMatrix { get; set; }
 
-        static public SpriteBatchContext Default
-        {
-            get { return new SpriteBatchContext(); }
-        }
+        static public SpriteBatchContext Default => new SpriteBatchContext();
 
         public SpriteBatchContext Clone()
         {
@@ -33,9 +30,6 @@ namespace Glyph
             };
         }
 
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => Clone();
     }
 }

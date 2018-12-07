@@ -63,7 +63,7 @@ namespace Glyph.Tools.ShapeRendering
 
         public void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer.Client, drawer) || _boxedComponent.ParentQueue().OfType<IEnableable>().Any(x => !x.Enabled))
+            if (!this.Displayed(drawer, drawer.Client, _sceneNode) || _boxedComponent.ParentQueue().OfType<IEnableable>().Any(x => !x.Enabled))
                 return;
 
             _fillingRenderer.Draw(drawer);

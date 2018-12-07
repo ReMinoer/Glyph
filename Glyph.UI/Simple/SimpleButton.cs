@@ -1,7 +1,5 @@
 ﻿using System;
-using Fingear;
 using Glyph.Core;
-using Glyph.Core.Inputs;
 using Glyph.UI.Controls;
 using Microsoft.Xna.Framework;
 
@@ -19,8 +17,8 @@ namespace Glyph.UI.Simple
             get { return SimpleFrame; }
         }
 
-        public SimpleButton(GlyphInjectionContext context, InputClientManager inputClientManager, ViewManager viewManager)
-            : base(context, inputClientManager, viewManager)
+        public SimpleButton(GlyphInjectionContext context, RootView rootView, ProjectionManager projectionManager)
+            : base(context, rootView, projectionManager)
         {
             SimpleFrame = Add<SimpleFrame>();
 

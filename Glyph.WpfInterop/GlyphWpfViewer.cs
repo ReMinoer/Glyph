@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using Fingear.MonoGame;
-using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Engine;
 using Microsoft.Xna.Framework;
@@ -10,27 +9,34 @@ using MonoGame.Framework.WpfInterop;
 
 namespace Glyph.WpfInterop
 {
-    public class GlyphWpfViewer : D3D11Client, IGlyphClient
+    public class GlyphWpfViewer : D3D11Client, IWpfGlyphClient, IGlyphClient
     {
         private readonly WpfInputStates _wpfInputStates;
-        public Resolution Resolution { get; }
-        Matrix IDrawClient.ResolutionMatrix => Resolution.TransformationMatrix;
         RenderTarget2D IDrawClient.DefaultRenderTarget => RenderTarget;
         GraphicsDevice IDrawClient.GraphicsDevice => GraphicsDevice;
         IInputStates IInputClient.States => _wpfInputStates;
 
-        public GlyphWpfViewer()
-        {
-            Focusable = true;
-            SizeChanged += OnClientSizeChanged;
+        private Vector2 GlyphSize => new Vector2((float)ActualWidth, (float)ActualHeight);
+        Vector2 IDrawClient.Size => GlyphSize;
 
-            _wpfInputStates = new WpfInputStates(this);
-            Resolution = new Resolution();
+        private event Action<Vector2> GlyphSizeChanged;
+        event Action<Vector2> IDrawClient.SizeChanged
+        {
+            add => GlyphSizeChanged += value;
+            remove => GlyphSizeChanged -= value;
         }
 
-        private void OnClientSizeChanged(object sender, SizeChangedEventArgs e)
+        public GlyphWpfViewer()
         {
-            Resolution.WindowSize = new Vector2((int)e.NewSize.Width, (int)e.NewSize.Height);
+            SizeChanged += OnSizeChanged;
+
+            Focusable = true;
+            _wpfInputStates = new WpfInputStates(this);
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            GlyphSizeChanged?.Invoke(GlyphSize);
         }
     }
 }
