@@ -4,19 +4,15 @@ using Niddle;
 namespace Glyph.Core.Layers
 {
     public class LayerRoot<TLayer> : GlyphComponent, ILayerRoot<TLayer>
-        where TLayer : class, ILayer<TLayer>
+        where TLayer : class, ILayer
     {
         private readonly LayerManager<TLayer> _layerManager;
-        public TLayer Layer { get; private set; }
+        public TLayer Layer { get; }
+        ILayer ILayerRoot.Layer => Layer;
 
-        ILayer ILayerRoot.Layer
+        public LayerRoot(LayerManager<TLayer> layerManager)
         {
-            get { return Layer; }
-        }
-
-        public LayerRoot(IDependencyInjector injector)
-        {
-            _layerManager = injector.Resolve<LayerManager<TLayer>>();
+            _layerManager = layerManager;
             Layer = _layerManager.Add(this);
         }
 

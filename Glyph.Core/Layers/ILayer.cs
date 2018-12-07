@@ -4,14 +4,9 @@ namespace Glyph.Core.Layers
 {
     public interface ILayer : IComparable<ILayer>
     {
+        ILayerRoot Root { get; }
         int Index { get; set; }
         void Initialize();
         void Update(ElapsedTime elapsedTime);
-    }
-
-    public interface ILayer<out TLayer> : ILayer
-        where TLayer : class, ILayer<TLayer>
-    {
-        ILayerRoot<TLayer> Root { get; }
     }
 }

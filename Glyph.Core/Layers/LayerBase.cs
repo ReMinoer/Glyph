@@ -1,12 +1,11 @@
 ﻿namespace Glyph.Core.Layers
 {
-    public abstract class LayerBase<TLayer> : ILayer<TLayer>
-        where TLayer : class, ILayer<TLayer>
+    public abstract class LayerBase : ILayer
     {
-        public ILayerRoot<TLayer> Root { get; private set; }
+        public ILayerRoot Root { get; private set; }
         public virtual int Index { get; set; }
 
-        protected LayerBase(ILayerRoot<TLayer> root)
+        protected LayerBase(ILayerRoot root)
         {
             Root = root;
         }

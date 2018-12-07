@@ -8,7 +8,7 @@ namespace Glyph.Core.Layers
     }
 
     public interface ILayerRoot<out TLayer> : ILayerRoot
-        where TLayer : class, ILayer<TLayer>
+        where TLayer : class, ILayer
     {
         new TLayer Layer { get; }
     }

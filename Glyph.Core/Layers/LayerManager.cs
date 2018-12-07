@@ -8,17 +8,13 @@ using Stave;
 namespace Glyph.Core.Layers
 {
     public class LayerManager<TLayer> : GlyphComponent, ILayerManager
-        where TLayer : class, ILayer<TLayer>
+        where TLayer : class, ILayer
     {
         protected readonly Dictionary<ILayerRoot<TLayer>, TLayer> _layers;
 
         [GlyphInjectable]
         public Func<ILayerRoot<TLayer>, TLayer> LayerFactory { get; set; }
-
-        public IReadOnlyCollection<TLayer> Layers
-        {
-            get { return _layers.Values.ToList().AsReadOnly(); }
-        }
+        public IReadOnlyCollection<TLayer> Layers => _layers.Values.ToList().AsReadOnly();
 
         public LayerManager()
         {
