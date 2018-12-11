@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using Diese;
 using Glyph.Core.Tracking;
 using Glyph.Math;
@@ -31,80 +33,40 @@ namespace Glyph.Core
             _views = new MessagingTracker<IView>(subscribableRouter);
         }
 
-        public IEnumerable<Projection<Transformation>> Project(IView view, Transformation transformationOnView, IView targetView, ProjectionOptions options = null)
-        {
-            BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> _);
-            return Visit(new TransformationProjectionVisitor(), viewVertices[view], transformationOnView, viewVertices[targetView], options);
-        }
-
-        public IEnumerable<Projection<Transformation>> Project(IView view, Transformation transformationOnView, ISceneNode targetScene, ProjectionOptions options = null)
+        public IProjectionController<Transformation> ProjectFrom(IView view, Transformation transformationOnView)
         {
             BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> sceneVertices);
-            return Visit(new TransformationProjectionVisitor(), viewVertices[view], transformationOnView, sceneVertices[targetScene.RootNode()], options);
+            return new ProjectionBuilder<Transformation>(viewVertices[view], transformationOnView, new TransformationProjectionVisitor(), viewVertices, sceneVertices);
         }
 
-        public IEnumerable<Projection<Vector2>> ProjectPosition(IView view, Vector2 positionOnView, IView targetView, ProjectionOptions options = null)
-        {
-            BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> _);
-            return Visit(new PositionProjectionVisitor(), viewVertices[view], positionOnView, viewVertices[targetView], options);
-        }
-
-        public IEnumerable<Projection<Vector2>> ProjectPosition(IView view, Vector2 positionOnView, ISceneNode targetScene, ProjectionOptions options = null)
+        public IProjectionController<Transformation> ProjectFrom(ISceneNode sceneNode, Transformation transformation)
         {
             BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> sceneVertices);
-            if (!viewVertices.TryGetValue(view, out ViewVertex viewVertex) || !sceneVertices.TryGetValue(targetScene.RootNode(), out SceneVertex sceneVertex))
-                throw new ArgumentException();
-
-            return Visit(new PositionProjectionVisitor(), viewVertex, positionOnView, sceneVertex, options);
+            return new ProjectionBuilder<Transformation>(sceneVertices[sceneNode.RootNode()], transformation, new TransformationProjectionVisitor(), viewVertices, sceneVertices);
         }
 
-        public IEnumerable<Projection<Transformation>> Project(ISceneNode sceneNode, IView targetView, ProjectionOptions options = null)
+        public IProjectionController<Transformation> ProjectFrom(ISceneNode sceneNode)
         {
             BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> sceneVertices);
-            return Visit(new TransformationProjectionVisitor(), sceneVertices[sceneNode.RootNode()], new Transformation(sceneNode.Position, sceneNode.Rotation, sceneNode.Scale), viewVertices[targetView], options);
+            return new ProjectionBuilder<Transformation>(sceneVertices[sceneNode.RootNode()], sceneNode.Transformation, new TransformationProjectionVisitor(), viewVertices, sceneVertices);
         }
 
-        public IEnumerable<Projection<Transformation>> Project(ISceneNode sceneNode, ISceneNode targetScene, ProjectionOptions options = null)
-        {
-            BuildProjectionGraph(out Dictionary<IView, ViewVertex> _, out Dictionary<ISceneNode, SceneVertex> sceneVertices);
-            return Visit(new TransformationProjectionVisitor(), sceneVertices[sceneNode.RootNode()], new Transformation(sceneNode.Position, sceneNode.Rotation, sceneNode.Scale), sceneVertices[targetScene.RootNode()], options);
-        }
-
-        public IEnumerable<Projection<Vector2>> ProjectPosition(ISceneNode sceneNode, IView targetView, ProjectionOptions options = null)
+        public IProjectionController<Vector2> ProjectFromPosition(IView view, Vector2 positionOnView)
         {
             BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> sceneVertices);
-            return Visit(new PositionProjectionVisitor(), sceneVertices[sceneNode.RootNode()], sceneNode.Position, viewVertices[targetView], options);
+            return new ProjectionBuilder<Vector2>(viewVertices[view], positionOnView, new PositionProjectionVisitor(), viewVertices, sceneVertices);
         }
 
-        public IEnumerable<Projection<Vector2>> ProjectPosition(ISceneNode sceneNode, ISceneNode targetScene, ProjectionOptions options = null)
+        public IProjectionController<Vector2> ProjectFromPosition(ISceneNode sceneNode, Vector2 position)
         {
-            BuildProjectionGraph(out Dictionary<IView, ViewVertex> _, out Dictionary<ISceneNode, SceneVertex> sceneVertices);
-            return Visit(new PositionProjectionVisitor(), sceneVertices[sceneNode.RootNode()], sceneNode.Position, sceneVertices[targetScene.RootNode()], options);
+            BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> sceneVertices);
+            return new ProjectionBuilder<Vector2>(sceneVertices[sceneNode.RootNode()], position, new PositionProjectionVisitor(), viewVertices, sceneVertices);
         }
 
-        public IEnumerable<Projection<Vector2>> GetAllProjectionsFrom(IView view, Vector2 position)
+        public IProjectionController<Vector2> ProjectFromPosition(ISceneNode sceneNode)
         {
-            BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> _);
-            return Visit(new PositionProjectionVisitor(), viewVertices[view], position, null, new ProjectionOptions { Directions = GraphDirections.Successors });
-        }
-
-        public IEnumerable<Projection<Vector2>> GetAllProjectionsFrom(ISceneNode sceneNode, Vector2 position)
-        {
-            BuildProjectionGraph(out Dictionary<IView, ViewVertex> _, out Dictionary<ISceneNode, SceneVertex> sceneVertices);
-            return Visit(new PositionProjectionVisitor(), sceneVertices[sceneNode.RootNode()], position, null, new ProjectionOptions { Directions = GraphDirections.Successors });
-        }
-
-        private class RepresentativeEqualityComparer<T> : IEqualityComparer<IRepresentative<T>>
-        {
-            public bool Equals(IRepresentative<T> x, IRepresentative<T> y)
-            {
-                return (x?.Represent(y) ?? false) || (y?.Represent(x) ?? false);
-            }
-
-            public int GetHashCode(IRepresentative<T> obj)
-            {
-                return obj.GetHashCode();
-            }
+            BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> sceneVertices);
+            return new ProjectionBuilder<Vector2>(sceneVertices[sceneNode.RootNode()], sceneNode.Position, new PositionProjectionVisitor(), viewVertices, sceneVertices);
         }
 
         private void BuildProjectionGraph(out Dictionary<IView, ViewVertex> viewVertices, out Dictionary<ISceneNode, SceneVertex> sceneVertices)
@@ -141,13 +103,99 @@ namespace Glyph.Core
             }
         }
 
-        private IEnumerable<Projection<TValue>> Visit<TValue>(ProjectionVisitor<TValue> visitor, IVertexBase source, TValue value, IVertexBase target, ProjectionOptions options)
+        private class RepresentativeEqualityComparer<T> : IEqualityComparer<IRepresentative<T>>
         {
-            var arguments = new ProjectionVisitor<TValue>.Arguments(target, value, new ProjectionOptions(options));
-            if (source is ViewVertex viewVertex)
-                arguments.ViewDepths[viewVertex] = 1;
+            public bool Equals(IRepresentative<T> x, IRepresentative<T> y)
+            {
+                return (x?.Represent(y) ?? false) || (y?.Represent(x) ?? false);
+            }
 
-            return visitor.Visit(source, arguments);
+            public int GetHashCode(IRepresentative<T> obj)
+            {
+                return obj.GetHashCode();
+            }
+        }
+
+        public interface ITargetController<TValue> : IEnumerable<Projection<TValue>>
+        {
+            IOptionsController<TValue> To(IView targetView);
+            IOptionsController<TValue> To(ISceneNode targetSceneNode);
+        }
+
+        public interface IOptionsController<TValue> : IEnumerable<Projection<TValue>>
+        {
+            IOptionsController<TValue> InDirections(GraphDirections directions);
+            IOptionsController<TValue> WithDepthMax(int depthMax);
+            IOptionsController<TValue> WithViewDepthMax(int viewDepthMax);
+        }
+
+        public interface IProjectionController<TValue> : ITargetController<TValue>, IOptionsController<TValue>
+        {
+        }
+
+        private class ProjectionBuilder<TValue> : IProjectionController<TValue>
+        {
+            private readonly ProjectionVisitor<TValue> _visitor;
+            private readonly Dictionary<IView, ViewVertex> _viewVertices;
+            private readonly Dictionary<ISceneNode, SceneVertex> _sceneVertices;
+            
+            public IVertexBase Source { get; }
+            public TValue Value { get; }
+            public IVertexBase Target { get; private set; }
+            public GraphDirections Directions { get; set; } = GraphDirections.All;
+            public int DepthMax { get; set; } = -1;
+            public int ViewDepthMax { get; set; } = 1;
+
+            public ProjectionBuilder(IVertexBase source, TValue value, ProjectionVisitor<TValue> visitor, Dictionary<IView, ViewVertex> viewVertices, Dictionary<ISceneNode, SceneVertex> sceneVertices)
+            {
+                Source = source;
+                Value = value;
+
+                _visitor = visitor;
+                _viewVertices = viewVertices;
+                _sceneVertices = sceneVertices;
+            }
+
+            IOptionsController<TValue> ITargetController<TValue>.To(IView targetView)
+            {
+                Target = _viewVertices[targetView];
+                return this;
+            }
+
+            IOptionsController<TValue> ITargetController<TValue>.To(ISceneNode targetSceneNode)
+            {
+                Target = _sceneVertices[targetSceneNode.RootNode()];
+                return this;
+            }
+
+            IOptionsController<TValue> IOptionsController<TValue>.InDirections(GraphDirections directions)
+            {
+                Directions = directions;
+                return this;
+            }
+
+            IOptionsController<TValue> IOptionsController<TValue>.WithDepthMax(int depthMax)
+            {
+                DepthMax = depthMax;
+                return this;
+            }
+
+            IOptionsController<TValue> IOptionsController<TValue>.WithViewDepthMax(int viewDepthMax)
+            {
+                ViewDepthMax = viewDepthMax;
+                return this;
+            }
+
+            public IEnumerator<Projection<TValue>> GetEnumerator()
+            {
+                var arguments = new ProjectionVisitor<TValue>.Arguments(Value, Target, Directions, DepthMax, ViewDepthMax);
+                if (Source is ViewVertex viewVertex)
+                    arguments.ViewDepths[viewVertex] = 1;
+
+                return _visitor.Visit(Source, arguments).GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
         public interface IVertexBase : ILinkableVertex<IVertexBase, IEdgeBase>
@@ -328,11 +376,11 @@ namespace Glyph.Core
                     yield break;
                 }
 
-                if ((args.Options.Directions & GraphDirections.Successors) != 0)
+                if ((args.Directions & GraphDirections.Successors) != 0)
                     foreach (Projection<TValue> projection in VisitInternal(vertex, args, false))
                         yield return projection;
 
-                if ((args.Options.Directions & GraphDirections.Predecessors) != 0)
+                if ((args.Directions & GraphDirections.Predecessors) != 0)
                     foreach (Projection<TValue> projection in VisitInternal(vertex, args, true))
                         yield return projection;
 
@@ -386,25 +434,29 @@ namespace Glyph.Core
 
             private bool CheckDepth(Arguments args, ViewVertex view)
             {
-                return args.Options.DepthMax > -1 && args.Depth + 1 >= args.Options.DepthMax
-                       || args.Options.ViewDepthMax > -1 && args.ViewDepths.TryGetValue(view, out int viewCount) && viewCount + 1 > args.Options.ViewDepthMax;
+                return args.DepthMax > -1 && args.Depth + 1 >= args.DepthMax
+                       || args.ViewDepthMax > -1 && args.ViewDepths.TryGetValue(view, out int viewCount) && viewCount + 1 > args.ViewDepthMax;
             }
 
             public class Arguments
             {
-                public IVertexBase Target { get; }
                 public TValue Value { get; set; }
-                public ProjectionOptions Options { get; }
+                public IVertexBase Target { get; }
+                public GraphDirections Directions { get; }
+                public int DepthMax { get; }
+                public int ViewDepthMax { get; }
 
                 public Stack<ITransformer> TransformerPath { get; }
                 public Dictionary<ViewVertex, int> ViewDepths { get; }
                 public int Depth => TransformerPath.Count;
 
-                public Arguments(IVertexBase target, TValue initialValue, ProjectionOptions options)
+                public Arguments(TValue initialValue, IVertexBase target, GraphDirections directions, int depthMax, int viewDepthMax)
                 {
-                    Target = target;
                     Value = initialValue;
-                    Options = new ProjectionOptions(options);
+                    Target = target;
+                    Directions = directions;
+                    DepthMax = depthMax;
+                    ViewDepthMax = viewDepthMax;
 
                     TransformerPath = new Stack<ITransformer>();
                     ViewDepths = new Dictionary<ViewVertex, int>();
@@ -414,30 +466,14 @@ namespace Glyph.Core
                 {
                     Target = arguments.Target;
                     Value = arguments.Value;
-                    Options = arguments.Options;
+                    Directions = arguments.Directions;
+                    DepthMax = arguments.DepthMax;
+                    ViewDepthMax = arguments.ViewDepthMax;
 
                     TransformerPath = arguments.TransformerPath;
                     ViewDepths = arguments.ViewDepths;
                 }
             }
-        }
-    }
-
-    public class ProjectionOptions
-    {
-        public GraphDirections Directions { get; set; } = GraphDirections.All;
-        public int DepthMax { get; set; } = -1;
-        public int ViewDepthMax { get; set; } = 1;
-
-        public ProjectionOptions() {}
-        public ProjectionOptions(ProjectionOptions options)
-        {
-            if (options == null)
-                return;
-
-            Directions = options.Directions;
-            DepthMax = options.DepthMax;
-            ViewDepthMax = options.ViewDepthMax;
         }
     }
 

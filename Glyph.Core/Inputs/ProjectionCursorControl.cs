@@ -29,7 +29,7 @@ namespace Glyph.Core.Inputs
         {
             InputView = inputView;
             Target = projectionView;
-            _projectionAction = position => projectionManager.ProjectPosition(inputView, position, projectionView);
+            _projectionAction = position => projectionManager.ProjectFromPosition(inputView, position).To(projectionView);
         }
 
         public ProjectionCursorControl(IView inputView, ISceneNode projectionSceneNode, ProjectionManager projectionManager)
@@ -47,7 +47,7 @@ namespace Glyph.Core.Inputs
         {
             InputView = inputView;
             Target = projectionSceneNode;
-            _projectionAction = position => projectionManager.ProjectPosition(inputView, position, projectionSceneNode);
+            _projectionAction = position => projectionManager.ProjectFromPosition(inputView, position).To(projectionSceneNode);
         }
 
         protected override bool ComputeCursor(out System.Numerics.Vector2 value)

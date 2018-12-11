@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Diese.Collections;
 using Fingear;
 using Fingear.Controls;
@@ -99,7 +98,7 @@ namespace Glyph.Tools
                     {
                         Vector2 cursorRootViewDelta = cursorRootViewPosition - _startCursorRootViewPosition;
                         Vector2 cameraRootViewPosition = _startCameraRootViewPosition - cursorRootViewDelta;
-                        if (_projectionManager.ProjectPosition(_rootView, cameraRootViewPosition, _sceneNode, new ProjectionOptions { Directions = GraphDirections.Successors })
+                        if (_projectionManager.ProjectFromPosition(_rootView, cameraRootViewPosition).To(_sceneNode).InDirections(GraphDirections.Successors)
                                               .Where(TransformPathContainsCamera)
                                               .Any(out Projection<Vector2> cameraSceneProjection))
                         {
@@ -107,10 +106,10 @@ namespace Glyph.Tools
                         }
                     }
                 
-                    if (_projectionManager.ProjectPosition(_rootView, cursorRootViewPosition, _view, new ProjectionOptions { Directions = GraphDirections.Successors })
+                    if (_projectionManager.ProjectFromPosition(_rootView, cursorRootViewPosition).To(_view).InDirections(GraphDirections.Successors)
                                           .Any(TransformPathContainsCamera))
                     {
-                        if (_projectionManager.ProjectPosition(_sceneNode, _rootView, new ProjectionOptions { Directions = GraphDirections.Predecessors })
+                        if (_projectionManager.ProjectFromPosition(_sceneNode).To(_rootView).InDirections(GraphDirections.Predecessors)
                                               .Where(TransformPathContainsCamera)
                                               .Any(out Projection<Vector2> cameraRootViewProjection))
                         {
