@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using Diese;
 using Glyph.Core.Tracking;
 using Glyph.Math;
@@ -124,6 +123,7 @@ namespace Glyph.Core
 
         public interface IOptionsController<TValue> : IEnumerable<Projection<TValue>>
         {
+            IOptionsController<TValue> ByRaycast();
             IOptionsController<TValue> InDirections(GraphDirections directions);
             IOptionsController<TValue> WithDepthMax(int depthMax);
             IOptionsController<TValue> WithViewDepthMax(int viewDepthMax);
@@ -142,9 +142,10 @@ namespace Glyph.Core
             public IVertexBase Source { get; }
             public TValue Value { get; }
             public IVertexBase Target { get; private set; }
-            public GraphDirections Directions { get; set; } = GraphDirections.All;
-            public int DepthMax { get; set; } = -1;
-            public int ViewDepthMax { get; set; } = 1;
+            public bool Raycasting { get; private set; }
+            public GraphDirections Directions { get; private set; } = GraphDirections.All;
+            public int DepthMax { get; private set; } = -1;
+            public int ViewDepthMax { get; private set; } = 1;
 
             public ProjectionBuilder(IVertexBase source, TValue value, ProjectionVisitor<TValue> visitor, Dictionary<IView, ViewVertex> viewVertices, Dictionary<ISceneNode, SceneVertex> sceneVertices)
             {
@@ -168,6 +169,12 @@ namespace Glyph.Core
                 return this;
             }
 
+            IOptionsController<TValue> IOptionsController<TValue>.ByRaycast()
+            {
+                Raycasting = true;
+                return this;
+            }
+
             IOptionsController<TValue> IOptionsController<TValue>.InDirections(GraphDirections directions)
             {
                 Directions = directions;
@@ -188,11 +195,11 @@ namespace Glyph.Core
 
             public IEnumerator<Projection<TValue>> GetEnumerator()
             {
-                var arguments = new ProjectionVisitor<TValue>.Arguments(Value, Target, Directions, DepthMax, ViewDepthMax);
+                var arguments = new ProjectionVisitor<TValue>.Arguments(Value, Target, Raycasting, Directions, DepthMax, ViewDepthMax);
                 if (Source is ViewVertex viewVertex)
                     arguments.ViewDepths[viewVertex] = 1;
 
-                return _visitor.Visit(Source, arguments).GetEnumerator();
+                return Source.Accept(_visitor, arguments).GetEnumerator();
             }
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -232,13 +239,13 @@ namespace Glyph.Core
 
         public interface IEdgeBase : ILinkableEdge<IVertexBase, IEdgeBase>, ITransformer
         {
-            IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, bool inverseDirection);
+            IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, GraphDirection direction);
         }
 
         public abstract class EdgeBase<TStart, TEnd> : Edge<TStart, TEnd, IVertexBase, IEdgeBase>, IEdgeBase
             where TStart : class, IVertexBase where TEnd : class, IVertexBase
         {
-            public abstract IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, bool inverseDirection);
+            public abstract IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, GraphDirection direction);
             public abstract Vector2 Transform(Vector2 position);
             public abstract Vector2 InverseTransform(Vector2 position);
             public abstract Transformation Transform(Transformation transformation);
@@ -247,7 +254,7 @@ namespace Glyph.Core
 
         public class ViewToSceneEdge : EdgeBase<ViewVertex, SceneVertex>
         {
-            public override IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, bool inverseDirection) => visitor.Visit(this, args, inverseDirection);
+            public override IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, GraphDirection direction) => visitor.Visit(this, args, direction);
 
             public override Vector2 Transform(Vector2 position)
             {
@@ -284,7 +291,7 @@ namespace Glyph.Core
 
         public class SceneToViewEdge : EdgeBase<SceneVertex, ViewVertex>
         {
-            public override IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, bool inverseDirection) => visitor.Visit(this, args, inverseDirection);
+            public override IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, GraphDirection direction) => visitor.Visit(this, args, direction);
 
             public override Vector2 Transform(Vector2 position)
             {
@@ -342,7 +349,7 @@ namespace Glyph.Core
         public class PositionProjectionVisitor : ProjectionVisitor<Vector2>
         {
             public PositionProjectionVisitor()
-                : base((t, x) => t.Transform(x), (t, x) => t.InverseTransform(x))
+                : base((t, x) => t.Transform(x), (t, x) => t.InverseTransform(x), (a, x) => a.ContainsPoint(x))
             {
             }
         }
@@ -350,7 +357,7 @@ namespace Glyph.Core
         public class TransformationProjectionVisitor : ProjectionVisitor<Transformation>
         {
             public TransformationProjectionVisitor()
-                : base((t, x) => t.Transform(x), (t, x) => t.InverseTransform(x))
+                : base((t, x) => t.Transform(x), (t, x) => t.InverseTransform(x), (a, x) => a.ContainsPoint(x.Translation))
             {
             }
         }
@@ -359,14 +366,46 @@ namespace Glyph.Core
         {
             private readonly Func<ITransformer, TValue, TValue> _transform;
             private readonly Func<ITransformer, TValue, TValue> _inverseTransform;
+            private readonly Func<IShape, TValue, bool> _areaContains;
 
-            protected ProjectionVisitor(Func<ITransformer, TValue, TValue> transform, Func<ITransformer, TValue, TValue> inverseTransform)
+            protected ProjectionVisitor(Func<ITransformer, TValue, TValue> transform, Func<ITransformer, TValue, TValue> inverseTransform, Func<IShape, TValue, bool> areaContains)
             {
                 _transform = transform;
                 _inverseTransform = inverseTransform;
+                _areaContains = areaContains;
+            }
+            
+            public IEnumerable<Projection<TValue>> Visit(SceneVertex vertex, Arguments args)
+            {
+                IVertexBase vertexBase = vertex;
+                foreach (Projection<TValue> projection in Visit(vertexBase, args))
+                    yield return projection;
+            }
+            
+            public IEnumerable<Projection<TValue>> Visit(ViewVertex vertex, Arguments args)
+            {
+                if (CheckDepth(args, vertex))
+                    yield break;
+
+                if (args.Raycasting && (!vertex.View.Visible || !_areaContains(vertex.View, args.Value)))
+                    yield break;
+
+                if (!args.ViewDepths.ContainsKey(vertex))
+                    args.ViewDepths[vertex] = 0;
+                args.ViewDepths[vertex]++;
+
+                IVertexBase vertexBase = vertex;
+                foreach (Projection<TValue> projection in Visit(vertexBase, args))
+                {
+                    yield return projection;
+                    if (args.Raycasting)
+                        break;
+                }
+
+                args.ViewDepths[vertex]--;
             }
 
-            public IEnumerable<Projection<TValue>> Visit(IVertexBase vertex, Arguments args)
+            private IEnumerable<Projection<TValue>> Visit(IVertexBase vertex, Arguments args)
             {
                 args.TransformerPath.Push(vertex.Transformer);
 
@@ -377,57 +416,40 @@ namespace Glyph.Core
                 }
 
                 if ((args.Directions & GraphDirections.Successors) != 0)
-                    foreach (Projection<TValue> projection in VisitInternal(vertex, args, false))
+                    foreach (Projection<TValue> projection in VisitDirection(vertex, args, GraphDirection.Successors))
                         yield return projection;
 
                 if ((args.Directions & GraphDirections.Predecessors) != 0)
-                    foreach (Projection<TValue> projection in VisitInternal(vertex, args, true))
+                    foreach (Projection<TValue> projection in VisitDirection(vertex, args, GraphDirection.Predecessors))
                         yield return projection;
 
                 args.TransformerPath.Pop();
             }
 
-            public IEnumerable<Projection<TValue>> VisitInternal(IVertexBase vertex, Arguments args, bool inverseDirection)
+            public IEnumerable<Projection<TValue>> VisitDirection(IVertexBase vertex, Arguments args, GraphDirection direction)
             {
-                IReadOnlyCollection<IEdgeBase> nextVertices = inverseDirection ? vertex.Predecessors : vertex.Successors;
+                IReadOnlyCollection<IEdgeBase> nextEdges = GetNextEdges(vertex, direction);
 
-                if (args.Target == null && nextVertices.Count == 0)
+                if (args.Target == null && nextEdges.Count == 0)
                 {
                     yield return new Projection<TValue> { Value = args.Value, TransformerPath = args.TransformerPath.ToArray() };
                 }
                 else
                 {
-                    foreach (Projection<TValue> value in nextVertices.Where(x => (inverseDirection ? x.Start : x.End) != vertex)
-                                                                     .SelectMany(x => x.Accept(this, args, inverseDirection))
-                                                                     .Where(x => x.TransformerPath[0] == args.Target.Transformer))
+                    foreach (Projection<TValue> value in nextEdges.Where(x => GetNextVertex(x, direction) != vertex)
+                                                                  .OrderBy(x => (GetNextVertex(x, direction) as ViewVertex)?.View.GetSceneNode().Depth ?? 0)
+                                                                  .SelectMany(x => x.Accept(this, args, direction))
+                                                                  .Where(x => args.Target == null || x.TransformerPath[0] == args.Target.Transformer))
                         yield return value;
                 }
             }
-            
-            public IEnumerable<Projection<TValue>> Visit(ViewVertex vertex, Arguments args)
+
+            public IEnumerable<Projection<TValue>> Visit(IEdgeBase edge, Arguments args, GraphDirection direction)
             {
-                if (CheckDepth(args, vertex))
-                    yield break;
-
-                if (!args.ViewDepths.ContainsKey(vertex))
-                    args.ViewDepths[vertex] = 0;
-                args.ViewDepths[vertex]++;
-
-                IVertexBase vertexBase = vertex;
-                foreach (Projection<TValue> projection in Visit(vertexBase, args))
-                    yield return projection;
-
-                args.ViewDepths[vertex]--;
-            }
-
-            public IEnumerable<Projection<TValue>> Visit(IEdgeBase edge, Arguments args, bool inverseDirection)
-            {
-                Func<ITransformer, TValue, TValue> transformFunc = inverseDirection ? _inverseTransform : _transform;
-                IVertexBase nextVertex = inverseDirection ? edge.Start : edge.End;
                 args = new Arguments(args);
+                args.Value = Transform(edge, args.Value, direction);
                 
-                args.Value = transformFunc(edge, args.Value);
-
+                IVertexBase nextVertex = GetNextVertex(edge, direction);
                 foreach (Projection<TValue> projection in nextVertex.Accept(this, args))
                     yield return projection;
             }
@@ -438,10 +460,41 @@ namespace Glyph.Core
                        || args.ViewDepthMax > -1 && args.ViewDepths.TryGetValue(view, out int viewCount) && viewCount + 1 > args.ViewDepthMax;
             }
 
+            private TValue Transform(ITransformer transformer, TValue value, GraphDirection direction)
+            {
+                switch (direction)
+                {
+                    case GraphDirection.Successors: return _transform(transformer, value);
+                    case GraphDirection.Predecessors: return _inverseTransform(transformer, value);
+                    default: throw new NotSupportedException();
+                }
+            }
+
+            static private IReadOnlyCollection<IEdgeBase> GetNextEdges(IVertexBase vertex, GraphDirection direction)
+            {
+                switch (direction)
+                {
+                    case GraphDirection.Successors: return vertex.Successors;
+                    case GraphDirection.Predecessors: return vertex.Predecessors;
+                    default: throw new NotSupportedException();
+                }
+            }
+
+            static private IVertexBase GetNextVertex(IEdgeBase edge, GraphDirection direction)
+            {
+                switch (direction)
+                {
+                    case GraphDirection.Successors: return edge.End;
+                    case GraphDirection.Predecessors: return edge.Start;
+                    default: throw new NotSupportedException();
+                }
+            }
+
             public class Arguments
             {
                 public TValue Value { get; set; }
                 public IVertexBase Target { get; }
+                public bool Raycasting { get; }
                 public GraphDirections Directions { get; }
                 public int DepthMax { get; }
                 public int ViewDepthMax { get; }
@@ -450,10 +503,11 @@ namespace Glyph.Core
                 public Dictionary<ViewVertex, int> ViewDepths { get; }
                 public int Depth => TransformerPath.Count;
 
-                public Arguments(TValue initialValue, IVertexBase target, GraphDirections directions, int depthMax, int viewDepthMax)
+                public Arguments(TValue initialValue, IVertexBase target, bool raycasting, GraphDirections directions, int depthMax, int viewDepthMax)
                 {
                     Value = initialValue;
                     Target = target;
+                    Raycasting = raycasting;
                     Directions = directions;
                     DepthMax = depthMax;
                     ViewDepthMax = viewDepthMax;
@@ -466,6 +520,7 @@ namespace Glyph.Core
                 {
                     Target = arguments.Target;
                     Value = arguments.Value;
+                    Raycasting = arguments.Raycasting;
                     Directions = arguments.Directions;
                     DepthMax = arguments.DepthMax;
                     ViewDepthMax = arguments.ViewDepthMax;
@@ -475,6 +530,12 @@ namespace Glyph.Core
                 }
             }
         }
+    }
+    
+    public enum GraphDirection
+    {
+        Successors,
+        Predecessors
     }
 
     [Flags]
