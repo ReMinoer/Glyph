@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="FreeCamera.cs" />
     <Compile Include="SceneNodeControl.cs" />
+    <Compile Include="IBrush.cs" />
     <Compile Include="ShapedObjectSelector.cs" />
     <Compile Include="ControlLogger.cs" />
     <Compile Include="InputLogger.cs" />
@@ -97,6 +98,10 @@
     <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj">
       <Project>{068202CC-E943-4718-9771-62D72E50623E}</Project>
       <Name>Glyph.Space</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Glyph.UI\Glyph.UI.csproj">
+      <Project>{47e66422-aefc-4b28-92c3-356ffd2e783c}</Project>
+      <Name>Glyph.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph\Glyph.csproj">
       <Project>{457cbbf3-26c7-478b-b4eb-1f85ff3c07f5}</Project>
