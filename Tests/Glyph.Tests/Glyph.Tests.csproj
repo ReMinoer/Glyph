@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.WindowsDX">
-      <Version>3.7.0.1232-develop</Version>
+      <Version>3.7.1.189</Version>
     </PackageReference>
     <PackageReference Include="NUnit">
       <Version>3.9.0</Version>
