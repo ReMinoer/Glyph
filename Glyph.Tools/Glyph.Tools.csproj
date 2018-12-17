@@ -49,8 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FreeCamera.cs" />
-    <Compile Include="SceneNodeControl.cs" />
     <Compile Include="IBrush.cs" />
+    <Compile Include="SceneNodeEditor.cs" />
     <Compile Include="ShapedObjectSelector.cs" />
     <Compile Include="ControlLogger.cs" />
     <Compile Include="InputLogger.cs" />

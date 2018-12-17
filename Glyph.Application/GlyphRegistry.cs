@@ -201,7 +201,7 @@ namespace Glyph.Application
             Register<CircleComponentRenderer>();
 
             Register<FreeCamera>();
-            Register<SceneNodeControl>();
+            Register<SceneNodeEditor>();
             Register<ShapedObjectSelector>();
 
             Register<InputLogger>();
