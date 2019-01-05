@@ -196,9 +196,6 @@ namespace Glyph.Core
             public IEnumerator<Projection<TValue>> GetEnumerator()
             {
                 var arguments = new ProjectionVisitor<TValue>.Arguments(Value, Target, Raycasting, Directions, DepthMax, ViewDepthMax);
-                if (Source is ViewVertex viewVertex)
-                    arguments.ViewDepths[viewVertex] = 1;
-
                 return Source.Accept(_visitor, arguments).GetEnumerator();
             }
 
@@ -437,7 +434,7 @@ namespace Glyph.Core
                 else
                 {
                     foreach (Projection<TValue> value in nextEdges.Where(x => GetNextVertex(x, direction) != vertex)
-                                                                  .OrderBy(x => (GetNextVertex(x, direction) as ViewVertex)?.View.GetSceneNode().Depth ?? 0)
+                                                                  .OrderBy(x => (GetNextVertex(x, direction) as ViewVertex)?.View.GetSceneNode()?.Depth ?? 0)
                                                                   .SelectMany(x => x.Accept(this, args, direction))
                                                                   .Where(x => args.Target == null || x.TransformerPath[0] == args.Target.Transformer))
                         yield return value;
@@ -457,7 +454,7 @@ namespace Glyph.Core
             private bool CheckDepth(Arguments args, ViewVertex view)
             {
                 return args.DepthMax > -1 && args.Depth + 1 >= args.DepthMax
-                       || args.ViewDepthMax > -1 && args.ViewDepths.TryGetValue(view, out int viewCount) && viewCount + 1 > args.ViewDepthMax;
+                       || args.ViewDepthMax > -1 && args.ViewDepths.TryGetValue(view, out int viewCount) && viewCount + 1 >= args.ViewDepthMax;
             }
 
             private TValue Transform(ITransformer transformer, TValue value, GraphDirection direction)
