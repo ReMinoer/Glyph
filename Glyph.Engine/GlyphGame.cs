@@ -15,28 +15,40 @@ namespace Glyph.Engine
     public class GlyphGame : Game, IGlyphClient
     {
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
-        private Vector2 _windowSize = new Vector2(800, 450);
-        private Vector2 _lastWindowSize;
+        private Point _windowSize;
+        private Point _lastWindowSize;
         private bool _resizing;
         private readonly IControl _toggleFullscreen;
         public GlyphEngine Engine { get; }
         public virtual bool IsFocus => IsActive && System.Windows.Forms.Form.ActiveForm?.Handle == Window.Handle;
         IInputStates IInputClient.States { get; } = new InputStates();
-        Vector2 IDrawClient.Size => WindowSize;
+        Vector2 IDrawClient.Size => WindowSize.ToVector2();
         RenderTarget2D IDrawClient.DefaultRenderTarget => null;
         GraphicsDevice IDrawClient.GraphicsDevice => GraphicsDevice;
 
         public event Action<Vector2> SizeChanged;
 
-        public Vector2 WindowSize
+        public Point WindowSize
         {
             get => _windowSize;
             set
             {
                 if (_graphicsDeviceManager.IsFullScreen)
+                {
                     _lastWindowSize = value;
-                else
-                    _windowSize = value;
+                    return;
+                }
+
+                if (_windowSize == value)
+                    return;
+
+                _windowSize = value;
+
+                _graphicsDeviceManager.PreferredBackBufferWidth = value.X;
+                _graphicsDeviceManager.PreferredBackBufferHeight = value.Y;
+                _graphicsDeviceManager.ApplyChanges();
+
+                SizeChanged?.Invoke(_windowSize.ToVector2());
             }
         }
 
@@ -52,6 +64,7 @@ namespace Glyph.Engine
             };
             _graphicsDeviceManager.ApplyChanges();
             
+            _windowSize = new Point(_graphicsDeviceManager.PreferredBackBufferWidth, _graphicsDeviceManager.PreferredBackBufferHeight);
             _lastWindowSize = WindowSize;
 
             Engine = new GlyphEngine(Content, dependencyConfigurator);
@@ -104,9 +117,6 @@ namespace Glyph.Engine
             {
                 _graphicsDeviceManager.IsFullScreen = false;
                 Window.IsBorderless = false;
-                _graphicsDeviceManager.PreferredBackBufferWidth = (int)_lastWindowSize.X;
-                _graphicsDeviceManager.PreferredBackBufferHeight = (int)_lastWindowSize.Y;
-                _graphicsDeviceManager.ApplyChanges();
                 WindowSize = _lastWindowSize;
             }
             else
@@ -125,10 +135,7 @@ namespace Glyph.Engine
                 _graphicsDeviceManager.IsFullScreen = true;
                 Window.IsBorderless = true;
                 Window.Position = new Point(0, 0);
-                _graphicsDeviceManager.PreferredBackBufferWidth = maxWidth;
-                _graphicsDeviceManager.PreferredBackBufferHeight = maxHeight;
-                _graphicsDeviceManager.ApplyChanges();
-                WindowSize = new Vector2(maxWidth, maxHeight);
+                WindowSize = new Point(maxWidth, maxHeight);
             }
 
             _resizing = false;
@@ -175,14 +182,7 @@ namespace Glyph.Engine
                 return;
 
             _resizing = true;
-
-            _graphicsDeviceManager.PreferredBackBufferWidth = Window.ClientBounds.Size.X;
-            _graphicsDeviceManager.PreferredBackBufferHeight = Window.ClientBounds.Size.Y;
-            _graphicsDeviceManager.ApplyChanges();
-            WindowSize = Window.ClientBounds.Size.ToVector2();
-
-            SizeChanged?.Invoke(WindowSize);
-
+            WindowSize = Window.ClientBounds.Size;
             _resizing = false;
         }
     }
