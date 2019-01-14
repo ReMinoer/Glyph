@@ -61,6 +61,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnchoredSceneNode.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="ColliderManager.cs" />
     <Compile Include="Colliders\Base\ColliderBase.cs" />
@@ -76,6 +77,8 @@
     <Compile Include="Colliders\RectangleCollider.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="ICamera.cs" />
+    <Compile Include="ISceneNodeComponent.cs" />
+    <Compile Include="IWritableSceneNodeComponent.cs" />
     <Compile Include="ReadOnlySceneNodeDelegate.cs" />
     <Compile Include="Flipper.cs" />
     <Compile Include="GlyphInjectionContext.cs" />
@@ -111,6 +114,7 @@
     <Compile Include="RootView.cs" />
     <Compile Include="SceneGraphUtils.cs" />
     <Compile Include="SceneNode.cs" />
+    <Compile Include="Base\SceneNodeBase.cs" />
     <Compile Include="Scheduler\GlyphScheduler.cs" />
     <Compile Include="Scheduler\GlyphSchedulerHandler.cs" />
     <Compile Include="Scheduler\GlyphSchedulerSorter.cs" />

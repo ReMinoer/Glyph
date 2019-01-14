@@ -132,6 +132,7 @@
     <Compile Include="Referential.cs" />
     <Compile Include="Reflection\GlyphTypeInfoProvider.cs" />
     <Compile Include="Reflection\InjectablePropertyInfo.cs" />
+    <Compile Include="RepresentativeEqualityComparer.cs" />
     <Compile Include="SceneNodeExtension.cs" />
     <Compile Include="SpriteBatchContext.cs" />
     <Compile Include="SpriteBatchStack.cs" />

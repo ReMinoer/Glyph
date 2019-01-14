@@ -25,17 +25,14 @@ namespace Glyph.Graphics
 
                 if (_parentView != null)
                     _parentView.SizeChanged += ParentViewOnSizeChanged;
+
+                void ParentViewOnSizeChanged(object sender, Vector2 e) => Size = ParentView.Size;
             }
         }
 
         public FillView(Func<GraphicsDevice> graphicsDeviceFunc)
             : base(graphicsDeviceFunc)
         {
-        }
-
-        private void ParentViewOnSizeChanged(object sender, Vector2 e)
-        {
-            Size = ParentView.Size;
         }
     }
 }

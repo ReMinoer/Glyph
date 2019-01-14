@@ -1,9 +1,10 @@
-﻿using Glyph.Observation.Properties;
+﻿using System;
+using Glyph.Observation.Properties;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Math
 {
-    public class Transformation : ConfigurableNotifyPropertyChanged, ITransformation
+    public class Transformation : ConfigurableNotifyPropertyChanged, ITransformation, IEquatable<ITransformation>
     {
         private Vector2 _translation;
         private float _rotation;
@@ -40,6 +41,7 @@ namespace Glyph.Math
             }
         }
 
+        public event EventHandler TransformationChanged;
         static public Transformation Identity => new Transformation(Vector2.Zero, 0, 1f);
         
         public Transformation()
@@ -128,6 +130,37 @@ namespace Glyph.Math
         private void RefreshMatrix()
         {
             Matrix = new Matrix3X3Trs(Translation, Rotation, Scale);
+            TransformationChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            if (GetType() != obj.GetType())
+                return false;
+            
+            return EqualsInternal((Transformation)obj);
+        }
+
+        public bool Equals(ITransformation other)
+        {
+            if (ReferenceEquals(null, other))
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+
+            return EqualsInternal(other);
+        }
+
+        public bool EqualsInternal(ITransformation other)
+        {
+            return _translation.EpsilonEquals(other.Translation)
+                   && _rotation.EpsilonEquals(other.Rotation)
+                   && _scale.EpsilonEquals(other.Scale)
+                   && Matrix.Equals(other.Matrix);
         }
     }
 }

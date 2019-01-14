@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Diese;
+using Diese.Collections;
 using Glyph.Core.Tracking;
 using Glyph.Math;
 using Glyph.Messaging;
@@ -25,6 +25,10 @@ namespace Glyph.Core
                     yield return view;
             }
         }
+
+        public IEnumerable<ISceneNode> SceneRoots => ViewsSceneRoots.Union(CamerasSceneRoots).Distinct();
+        public IEnumerable<ISceneNode> ViewsSceneRoots => Views.Select(x => x.GetSceneNode().RootNode()).NotNulls().Distinct();
+        public IEnumerable<ISceneNode> CamerasSceneRoots => Views.Select(x => x.Camera.GetSceneNode().RootNode()).Distinct();
 
         public ProjectionManager(RootView rootView, ISubscribableRouter subscribableRouter)
         {
@@ -99,19 +103,6 @@ namespace Glyph.Core
                 }
 
                 new ViewToSceneEdge().Link(viewVertex, cameraSceneVertex);
-            }
-        }
-
-        private class RepresentativeEqualityComparer<T> : IEqualityComparer<IRepresentative<T>>
-        {
-            public bool Equals(IRepresentative<T> x, IRepresentative<T> y)
-            {
-                return (x?.Represent(y) ?? false) || (y?.Represent(x) ?? false);
-            }
-
-            public int GetHashCode(IRepresentative<T> obj)
-            {
-                return obj.GetHashCode();
             }
         }
 
@@ -247,6 +238,7 @@ namespace Glyph.Core
             public abstract Vector2 InverseTransform(Vector2 position);
             public abstract Transformation Transform(Transformation transformation);
             public abstract Transformation InverseTransform(Transformation transformation);
+            public event EventHandler TransformationChanged;
         }
 
         public class ViewToSceneEdge : EdgeBase<ViewVertex, SceneVertex>

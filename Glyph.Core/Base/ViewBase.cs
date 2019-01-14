@@ -9,21 +9,60 @@ namespace Glyph.Core.Base
 {
     public abstract class ViewBase : GlyphContainer, IView
     {
+        private ICamera _camera;
+
+        public ICamera Camera
+        {
+            get => _camera;
+            set
+            {
+                if (_camera == value)
+                    return;
+
+                if (_camera != null)
+                    _camera.TransformationChanged -= OnCameraTransformationChanged;
+
+                _camera = value;
+                OnCameraTransformationChanged();
+                
+                if (_camera != null)
+                    _camera.TransformationChanged += OnCameraTransformationChanged;
+
+                void OnCameraTransformationChanged(object sender = null, EventArgs e = null)
+                {
+                    DisplayedRectangle = Camera.Transform(Shape);
+                    RefreshInternal();
+                }
+            }
+        }
+
         public bool Visible { get; set; } = true;
         public Predicate<IDrawer> DrawPredicate { get; set; }
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
-        public ICamera Camera { get; set; }
+        public Matrix RenderMatrix { get; private set; } = Matrix.Identity;
+        public Quad DisplayedRectangle { get; private set; }
+
         public bool IsVoid => Shape.IsVoid;
         public TopLeftRectangle BoundingBox => Shape.BoundingBox;
         public Vector2 Center => Shape.Center;
-        public Quad DisplayedRectangle => Camera.Transform(Shape);
-        public Matrix RenderMatrix => Camera.RenderTransformation.Matrix * Matrix.CreateTranslation((Shape.Size / 2).ToVector3());
 
         protected abstract Quad Shape { get; }
         IArea IBoxedComponent.Area => Shape;
         Vector2 IView.Size => Shape.Size;
 
         public abstract event EventHandler<Vector2> SizeChanged;
+        public event EventHandler TransformationChanged;
+
+        private void RefreshInternal()
+        {
+            RenderMatrix = (Camera?.RenderTransformation.Matrix ?? Matrix.Identity) * Matrix.CreateTranslation((Shape.Size / 2).ToVector3());
+        }
+
+        protected virtual void Refresh()
+        {
+            RefreshInternal();
+            TransformationChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public bool IsVisibleOnView(Vector2 position)
         {

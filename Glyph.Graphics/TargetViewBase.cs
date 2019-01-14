@@ -12,13 +12,15 @@ namespace Glyph.Graphics
 {
     public abstract class TargetViewBase : ViewBase, ILoadContent, IUpdate
     {
+        private Quad _shape;
         protected readonly SceneNode _sceneNode;
         protected readonly FillingRectangle _fillingRectangle;
         protected readonly FillingRenderer _fillingRenderer;
+
         public ViewEffectManager EffectManager { get; }
+        protected override Quad Shape => _shape;
         public Texture2D Output => EffectManager.Texture;
         public ISceneNode SceneNode => new ReadOnlySceneNode(_sceneNode);
-        protected override Quad Shape => _sceneNode.Transformation.Transform(_fillingRenderer.Shape);
 
         public Vector2 Size
         {
@@ -30,6 +32,8 @@ namespace Glyph.Graphics
 
                 EffectManager.Size = value;
                 _fillingRectangle.Rectangle = new CenteredRectangle(Vector2.Zero, value);
+
+                Refresh();
                 SizeChanged?.Invoke(this, value);
             }
         }
@@ -42,6 +46,16 @@ namespace Glyph.Graphics
             Components.Add(EffectManager = new ViewEffectManager(graphicsDeviceFunc));
             Components.Add(_fillingRectangle = new FillingRectangle());
             Components.Add(_fillingRenderer = new FillingRenderer(_fillingRectangle, EffectManager, _sceneNode));
+
+            _sceneNode.Refreshed += OnSceneNodeRefreshed;
+        }
+
+        private void OnSceneNodeRefreshed(SceneNodeBase obj) => Refresh();
+
+        protected override void Refresh()
+        {
+            _shape = _sceneNode.Transformation.Transform(_fillingRenderer.Shape);
+            base.Refresh();
         }
 
         public override void Initialize()

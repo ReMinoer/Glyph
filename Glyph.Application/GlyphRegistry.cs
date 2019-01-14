@@ -95,6 +95,7 @@ namespace Glyph.Application
             #region Core
 
             Register<SceneNode>();
+            Register<AnchoredSceneNode>();
             Register<PositionBinding>();
 
             RegisterGeneric(typeof(LayerRoot<>));
@@ -202,6 +203,7 @@ namespace Glyph.Application
 
             Register<FreeCamera>();
             Register<SceneNodeEditor>();
+            Register<PositionHandle>();
             Register<ShapedObjectSelector>();
 
             Register<InputLogger>();

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Diese;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
@@ -23,6 +24,12 @@ namespace Glyph.Core.Base
         public float LocalDepth => SceneNode.LocalDepth;
         public Matrix3X3 LocalMatrix => SceneNode.LocalMatrix;
         public Transformation LocalTransformation => SceneNode.LocalTransformation;
+
+        public event EventHandler TransformationChanged
+        {
+            add => SceneNode.TransformationChanged += value;
+            remove => SceneNode.TransformationChanged -= value;
+        }
 
         public bool Represent(IRepresentative<ISceneNode> other)
         {

@@ -23,12 +23,16 @@ namespace Glyph.Core
                     _drawClient.SizeChanged -= DrawClientOnSizeChanged;
 
                 _drawClient = value;
-                SizeChanged?.Invoke(this, Size);
+                DrawClientOnSizeChanged();
 
                 if (_drawClient != null)
                     _drawClient.SizeChanged += DrawClientOnSizeChanged;
 
-                void DrawClientOnSizeChanged(Vector2 obj) => SizeChanged?.Invoke(this, Size);
+                void DrawClientOnSizeChanged(Vector2 obj = default)
+                {
+                    Refresh();
+                    SizeChanged?.Invoke(this, Size);
+                }
             }
         }
 

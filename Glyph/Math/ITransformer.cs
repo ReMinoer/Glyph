@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Math
 {
@@ -8,5 +9,6 @@ namespace Glyph.Math
         Vector2 InverseTransform(Vector2 position);
         Transformation Transform(Transformation transformation);
         Transformation InverseTransform(Transformation transformation);
+        event EventHandler TransformationChanged;
     }
 }
