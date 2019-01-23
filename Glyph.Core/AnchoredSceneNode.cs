@@ -30,8 +30,6 @@ namespace Glyph.Core
 
                 if (_anchorNode != null)
                     _anchorNode.TransformationChanged += OnAnchorNodeTransformationChanged;
-
-                void OnAnchorNodeTransformationChanged(object sender, EventArgs e) => Refresh();
             }
         }
 
@@ -93,9 +91,6 @@ namespace Glyph.Core
                 return;
             }
 
-            if (Parent == null)
-                throw new NotSupportedException();
-
             ProjectionManager.IOptionsController<Transformation> projectionController = _projectionManager.ProjectFrom(_anchorNode).To(this);
             if (ProjectionConfiguration != null)
                 projectionController = ProjectionConfiguration(projectionController);
@@ -111,5 +106,14 @@ namespace Glyph.Core
         }
 
         private void Refresh(object sender, EventArgs args) => Refresh();
+        private void OnAnchorNodeTransformationChanged(object sender, EventArgs e) => Refresh();
+
+        public override void Dispose()
+        {
+            if (_anchorNode != null)
+                _anchorNode.TransformationChanged -= OnAnchorNodeTransformationChanged;
+
+            base.Dispose();
+        }
     }
 }
