@@ -13,6 +13,7 @@ namespace Glyph.Core.Inputs
         private readonly Func<Vector2, IEnumerable<Projection<Vector2>>> _projectionAction;
         public IView InputView { get; }
         public ITransformer Target { get; }
+        public IDrawClient RaycastClient { get; set; }
 
         public ProjectionCursorControl(IView inputView, IView projectionView, ProjectionManager projectionManager)
             : this(null, inputView, projectionView, projectionManager)
@@ -29,7 +30,14 @@ namespace Glyph.Core.Inputs
         {
             InputView = inputView;
             Target = projectionView;
-            _projectionAction = position => projectionManager.ProjectFromPosition(inputView, position).To(projectionView);
+            _projectionAction = position =>
+            {
+                ProjectionManager.IOptionsController<Vector2> controller = projectionManager.ProjectFromPosition(inputView, position).To(projectionView);
+                if (RaycastClient != null)
+                    controller = controller.ByRaycast().ForDrawClient(RaycastClient);
+
+                return controller;
+            };
         }
 
         public ProjectionCursorControl(IView inputView, ISceneNode projectionSceneNode, ProjectionManager projectionManager)
@@ -47,7 +55,14 @@ namespace Glyph.Core.Inputs
         {
             InputView = inputView;
             Target = projectionSceneNode;
-            _projectionAction = position => projectionManager.ProjectFromPosition(inputView, position).To(projectionSceneNode);
+            _projectionAction = position =>
+            {
+                ProjectionManager.IOptionsController<Vector2> controller = projectionManager.ProjectFromPosition(inputView, position).To(projectionSceneNode);
+                if (RaycastClient != null)
+                    controller = controller.ByRaycast().ForDrawClient(RaycastClient);
+
+                return controller;
+            };
         }
 
         protected override bool ComputeCursor(out System.Numerics.Vector2 value)

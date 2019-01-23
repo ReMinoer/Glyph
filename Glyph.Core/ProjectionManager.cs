@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections;
+using Glyph.Composition;
 using Glyph.Core.Tracking;
 using Glyph.Math;
 using Glyph.Messaging;
@@ -114,17 +115,22 @@ namespace Glyph.Core
 
         public interface IOptionsController<TValue> : IEnumerable<Projection<TValue>>
         {
-            IOptionsController<TValue> ByRaycast();
+            IRaycastController<TValue> ByRaycast();
             IOptionsController<TValue> InDirections(GraphDirections directions);
             IOptionsController<TValue> WithDepthMax(int depthMax);
             IOptionsController<TValue> WithViewDepthMax(int viewDepthMax);
+        }
+
+        public interface IRaycastController<TValue> : IOptionsController<TValue>
+        {
+            IOptionsController<TValue> ForDrawClient(IDrawClient drawClient);
         }
 
         public interface IProjectionController<TValue> : ITargetController<TValue>, IOptionsController<TValue>
         {
         }
 
-        private class ProjectionBuilder<TValue> : IProjectionController<TValue>
+        private class ProjectionBuilder<TValue> : IProjectionController<TValue>, IRaycastController<TValue>
         {
             private readonly ProjectionVisitor<TValue> _visitor;
             private readonly Dictionary<IView, ViewVertex> _viewVertices;
@@ -134,6 +140,7 @@ namespace Glyph.Core
             public TValue Value { get; }
             public IVertexBase Target { get; private set; }
             public bool Raycasting { get; private set; }
+            public IDrawClient RaycastClient { get; private set; }
             public GraphDirections Directions { get; private set; } = GraphDirections.All;
             public int DepthMax { get; private set; } = -1;
             public int ViewDepthMax { get; private set; } = 1;
@@ -160,9 +167,15 @@ namespace Glyph.Core
                 return this;
             }
 
-            IOptionsController<TValue> IOptionsController<TValue>.ByRaycast()
+            IRaycastController<TValue> IOptionsController<TValue>.ByRaycast()
             {
                 Raycasting = true;
+                return this;
+            }
+
+            IOptionsController<TValue> IRaycastController<TValue>.ForDrawClient(IDrawClient drawClient)
+            {
+                RaycastClient = drawClient;
                 return this;
             }
 
@@ -186,7 +199,7 @@ namespace Glyph.Core
 
             public IEnumerator<Projection<TValue>> GetEnumerator()
             {
-                var arguments = new ProjectionVisitor<TValue>.Arguments(Value, Target, Raycasting, Directions, DepthMax, ViewDepthMax);
+                var arguments = new ProjectionVisitor<TValue>.Arguments(Value, Target, Raycasting, RaycastClient, Directions, DepthMax, ViewDepthMax);
                 return Source.Accept(_visitor, arguments).GetEnumerator();
             }
 
@@ -376,7 +389,7 @@ namespace Glyph.Core
                 if (CheckDepth(args, vertex))
                     yield break;
 
-                if (args.Raycasting && (!vertex.View.Visible || !_areaContains(vertex.View, args.Value)))
+                if (args.Raycasting && (!vertex.View.Displayed(drawClient: args.RaycastClient)))// || !_areaContains(vertex.View, args.Value)))
                     yield break;
 
                 if (!args.ViewDepths.ContainsKey(vertex))
@@ -484,6 +497,7 @@ namespace Glyph.Core
                 public TValue Value { get; set; }
                 public IVertexBase Target { get; }
                 public bool Raycasting { get; }
+                public IDrawClient RaycastClient { get; }
                 public GraphDirections Directions { get; }
                 public int DepthMax { get; }
                 public int ViewDepthMax { get; }
@@ -492,7 +506,7 @@ namespace Glyph.Core
                 public Dictionary<ViewVertex, int> ViewDepths { get; }
                 public int Depth => TransformerPath.Count;
 
-                public Arguments(TValue initialValue, IVertexBase target, bool raycasting, GraphDirections directions, int depthMax, int viewDepthMax)
+                public Arguments(TValue initialValue, IVertexBase target, bool raycasting, IDrawClient raycastClient, GraphDirections directions, int depthMax, int viewDepthMax)
                 {
                     Value = initialValue;
                     Target = target;
@@ -500,6 +514,7 @@ namespace Glyph.Core
                     Directions = directions;
                     DepthMax = depthMax;
                     ViewDepthMax = viewDepthMax;
+                    RaycastClient = raycastClient;
 
                     TransformerPath = new Stack<ITransformer>();
                     ViewDepths = new Dictionary<ViewVertex, int>();
@@ -510,6 +525,7 @@ namespace Glyph.Core
                     Target = arguments.Target;
                     Value = arguments.Value;
                     Raycasting = arguments.Raycasting;
+                    RaycastClient = arguments.RaycastClient;
                     Directions = arguments.Directions;
                     DepthMax = arguments.DepthMax;
                     ViewDepthMax = arguments.ViewDepthMax;
