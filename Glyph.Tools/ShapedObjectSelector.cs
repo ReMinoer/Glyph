@@ -73,7 +73,7 @@ namespace Glyph.Tools
             _messagingSpace = new MessagingSpace<IBoxedComponent>(router, x => x.Area.BoundingBox, partitioner);
             
             _inputClientManager = inputClientManager;
-            _controls = new Controls(controlManager);
+            _controls = new Controls(controlManager, this);
             _controls.Tags.Add(ControlLayerTag.Tools);
             Components.Add(_controls);
             
