@@ -7,8 +7,9 @@ namespace Glyph.Injection
     {
         Parent = 1 << 0,
         Fraternal = 1 << 1,
-        Local = 1 << 2,
-        Global = 1 << 3,
-        All = Parent | Fraternal | Local | Global
+        BrowseAllAncestors = 1 << 2,
+        Local = 1 << 3,
+        Global = 1 << 4,
+        All = Parent | Fraternal | BrowseAllAncestors | Local | Global
     }
 }

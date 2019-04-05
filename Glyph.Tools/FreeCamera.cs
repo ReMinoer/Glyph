@@ -61,14 +61,12 @@ namespace Glyph.Tools
             _camera = Add<Camera>();
 
             var controls = Add<Controls>();
-            controls.Tags.Add(ControlLayerTag.Tools);
-            controls.RegisterMany(new IControl[]
+            controls.AddMany(new IControl[]
             {
                 _rootViewCursor = new ProjectionCursorControl("Main view cursor", InputSystem.Instance.Mouse.Cursor, _rootView, _rootView, projectionManager),
                 _moveCamera = new ActivityControl("Move camera", InputSystem.Instance.Mouse[MouseButton.Right]),
                 _zoomCamera = new Control<float>("Zoom camera", InputSystem.Instance.Mouse.Wheel.Force())
             });
-            controls.Plan().AtStart();
 
             Schedulers.Update.Plan(HandleInput);
         }
@@ -85,7 +83,6 @@ namespace Glyph.Tools
                     zoom = 0;
 
                 _camera.Zoom = zoom;
-                _zoomCamera.HandleInputs();
             }
              
             if (_moveCamera.IsActive(out InputActivity inputActivity))
@@ -117,9 +114,6 @@ namespace Glyph.Tools
                             _startCameraRootViewPosition = cameraRootViewProjection.Value;
                         }
                     }
-
-                    if (inputActivity.IsTriggered())
-                        _moveCamera.HandleInputs();
                 }
             }
         }

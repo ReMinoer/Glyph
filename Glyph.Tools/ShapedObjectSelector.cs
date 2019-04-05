@@ -27,9 +27,8 @@ namespace Glyph.Tools
         public bool Enabled { get; set; } = true;
         public ReadOnlySpace<IBoxedComponent> Space { get; }
         public IFilter<IInputClient> ClientFilter { get; set; }
-        public bool HandleInputs { get; set; }
 
-        private readonly Controls _controls;
+        private readonly Controls _interactiveMode;
         private IControl<Vector2> _control;
 
         public IControl<Vector2> Control
@@ -38,12 +37,12 @@ namespace Glyph.Tools
             set
             {
                 if (_control != null)
-                    _controls.Unregister(_control);
+                    _interactiveMode.Remove(_control);
                 
                 _control = value;
                 
                 if (_control != null)
-                    _controls.Register(_control);
+                    _interactiveMode.Add(_control);
             }
         }
 
@@ -68,14 +67,13 @@ namespace Glyph.Tools
 
         public event EventHandler<IBoxedComponent> SelectionChanged;
 
-        public ShapedObjectSelector(InputClientManager inputClientManager, ControlManager controlManager, ISubscribableRouter router, IPartitioner partitioner = null)
+        public ShapedObjectSelector(InputClientManager inputClientManager, ISubscribableRouter router, IPartitioner partitioner = null)
         {
             _messagingSpace = new MessagingSpace<IBoxedComponent>(router, x => x.Area.BoundingBox, partitioner);
             
             _inputClientManager = inputClientManager;
-            _controls = new Controls(controlManager, this);
-            _controls.Tags.Add(ControlLayerTag.Tools);
-            Components.Add(_controls);
+            _interactiveMode = new Controls(this);
+            Components.Add(_interactiveMode);
             
             Space = new ReadOnlySpace<IBoxedComponent>(_messagingSpace);
         }
@@ -83,7 +81,7 @@ namespace Glyph.Tools
         public override void Initialize()
         {
             base.Initialize();
-            _controls.Initialize();
+            _interactiveMode.Initialize();
         }
 
         public void Update(ElapsedTime elapsedTime)
@@ -106,9 +104,6 @@ namespace Glyph.Tools
                 Selection = array.MaxBy(x => x, CompareBoxedComponentByRelevance);
             else
                 Selection = null;
-
-            if (HandleInputs)
-                Control.HandleInputs();
         }
 
         private int CompareBoxedComponentByRelevance(IBoxedComponent first, IBoxedComponent second)

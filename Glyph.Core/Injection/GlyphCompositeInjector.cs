@@ -5,7 +5,6 @@ using Diese.Collections;
 using Niddle;
 using Niddle.Base;
 using Glyph.Composition;
-using Glyph.Composition.Exceptions;
 using Glyph.Injection;
 
 namespace Glyph.Core.Injection
@@ -28,10 +27,10 @@ namespace Glyph.Core.Injection
 
             Global = context.GlobalInjector;
             Local = new LocalDependencyInjector(context.LocalRegistry, context.LocalInjectorParent);
-            Local.Registry.RegisterInstance(Local);
+            Local.Registry.Add(Dependency.OnType<LocalDependencyInjector>().Using(Local));
 
             foreach (Type nestedType in _composite.GetType().GetNestedTypes())
-                Local.Registry.Register(nestedType);
+                Local.Registry.Add(Dependency.OnType(nestedType));
         }
 
         public override object Resolve(Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, InstanceOrigins instanceOrigins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
@@ -40,11 +39,19 @@ namespace Glyph.Core.Injection
 
             if (serviceKey == null && (instanceOrigins & InstanceOrigins.Registration) != 0)
             {
-                if ((targets & GlyphInjectableTargets.Parent) != 0 && type.IsInstanceOfType(_composite))
-                    return _composite;
+                bool browseAllAncestors = (targets & GlyphInjectableTargets.BrowseAllAncestors) != 0;
 
-                if ((targets & GlyphInjectableTargets.Fraternal) != 0 && TryResolveManyFamily(out IEnumerable objs, type))
-                    return objs.First();
+                for (IGlyphContainer parent = _composite; parent != null; parent = parent.Parent)
+                {
+                    if ((targets & GlyphInjectableTargets.Parent) != 0 && type.IsInstanceOfType(parent))
+                        return _composite;
+
+                    if ((targets & GlyphInjectableTargets.Fraternal) != 0 && TryResolveManyFamily(out IEnumerable objs, parent, type))
+                        return objs.First();
+
+                    if (!browseAllAncestors)
+                        break;
+                }
             }
 
             if ((targets & GlyphInjectableTargets.Local) != 0 && Local.TryResolve(out object obj, type, injectableAttribute, serviceKey, instanceOrigins, dependencyInjector ?? this))
@@ -65,19 +72,27 @@ namespace Glyph.Core.Injection
 
             if (serviceKey == null && (instanceOrigins & InstanceOrigins.Registration) != 0)
             {
-                if ((targets & GlyphInjectableTargets.Parent) != 0 && type.IsInstanceOfType(_composite))
-                {
-                    obj = _composite;
-                    return true;
-                }
+                bool browseAllAncestors = (targets & GlyphInjectableTargets.BrowseAllAncestors) != 0;
 
-                if ((targets & GlyphInjectableTargets.Fraternal) != 0 && TryResolveManyFamily(out IEnumerable objs, type))
+                for (IGlyphContainer parent = _composite; parent != null; parent = parent.Parent)
                 {
-                    obj = objs.FirstOrDefault();
-                    return true;
+                    if ((targets & GlyphInjectableTargets.Parent) != 0 && type.IsInstanceOfType(parent))
+                    {
+                        obj = _composite;
+                        return true;
+                    }
+
+                    if ((targets & GlyphInjectableTargets.Fraternal) != 0 && TryResolveManyFamily(out IEnumerable objs, parent, type))
+                    {
+                        obj = objs.FirstOrDefault();
+                        return true;
+                    }
+
+                    if (!browseAllAncestors)
+                        break;
                 }
             }
-
+            
             if ((targets & GlyphInjectableTargets.Local) != 0 && Local.TryResolve(out obj, type, injectableAttribute, serviceKey, instanceOrigins, dependencyInjector ?? this))
                 return true;
 
@@ -97,16 +112,36 @@ namespace Glyph.Core.Injection
         public override IEnumerable ResolveMany(Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, InstanceOrigins instanceOrigins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
         {
             if (!(injectableAttribute is IGlyphInjectableAttribute glyphInjectableAttribute))
-                return base.ResolveMany(type, injectableAttribute, serviceKey, instanceOrigins, dependencyInjector ?? this);
+            {
+                foreach (object obj in base.ResolveMany(type, injectableAttribute, serviceKey, instanceOrigins, dependencyInjector ?? this))
+                    yield return obj;
+                yield break;
+            }
 
             GlyphInjectableTargets targets = glyphInjectableAttribute.Targets;
             if (targets == 0)
                 throw new InvalidOperationException();
 
             if (serviceKey != null)
-                return Enumerable.Empty<object>();
+                yield break;
+            
+            bool browseAllAncestors = (targets & GlyphInjectableTargets.BrowseAllAncestors) != 0;
+            bool any = false;
 
-            return ResolveManyFamily(type);
+            for (IGlyphContainer parent = _composite; parent != null; parent = parent.Parent)
+            {
+                foreach (object obj in ResolveManyFamily(parent, type))
+                {
+                    yield return obj;
+                    any = true;
+                }
+
+                if (any)
+                    yield break;
+
+                if (browseAllAncestors)
+                    yield break;
+            }
         }
 
         public override bool TryResolveMany(out IEnumerable objs, Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, InstanceOrigins instanceOrigins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
@@ -123,8 +158,20 @@ namespace Glyph.Core.Injection
                 objs = Enumerable.Empty<object>();
                 return false;
             }
+            
+            bool browseAllAncestors = (targets & GlyphInjectableTargets.BrowseAllAncestors) != 0;
 
-            return TryResolveManyFamily(out objs, type);
+            for (IGlyphContainer parent = _composite; parent != null; parent = parent.Parent)
+            {
+                if (TryResolveManyFamily(out objs, parent, type))
+                    return true;
+
+                if (!browseAllAncestors)
+                    break;
+            }
+            
+            objs = Enumerable.Empty<object>();
+            return false;
         }
 
         static private GlyphInjectableTargets GetTargets(Type type, InjectableAttributeBase injectableAttribute)
@@ -146,11 +193,11 @@ namespace Glyph.Core.Injection
             return targets;
         }
 
-        private IEnumerable ResolveManyFamily(Type type)
+        private IEnumerable ResolveManyFamily(IGlyphComponent parent, Type type)
         {
             bool any = false;
 
-            foreach (IGlyphComponent component in _composite.Components.OfType(type))
+            foreach (IGlyphComponent component in parent.Components.OfType(type))
             {
                 yield return component;
 
@@ -161,12 +208,12 @@ namespace Glyph.Core.Injection
                 throw new InvalidOperationException();
         }
 
-        private bool TryResolveManyFamily(out IEnumerable objs, Type type)
+        private bool TryResolveManyFamily(out IEnumerable objs, IGlyphComponent parent, Type type)
         {
             objs = Enumerable.Empty<object>();
             bool any = false;
 
-            foreach (IGlyphComponent component in _composite.Components.OfType(type))
+            foreach (IGlyphComponent component in parent.Components.OfType(type))
             {
                 objs = objs.Concat(component);
                 any = true;

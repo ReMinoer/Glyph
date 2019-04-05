@@ -38,8 +38,8 @@ namespace Glyph.Core
 
             var compositeInjector = new GlyphCompositeInjector(this, context);
             Injector = compositeInjector;
-
-            Injector.Local.Registry.RegisterInstance(Router.Local);
+            
+            Injector.Local.Registry.Add(Dependency.OnType<TrackingRouter>().Using(Router.Local));
 
             Schedulers = new SchedulerHandler(compositeInjector.Global);
         }

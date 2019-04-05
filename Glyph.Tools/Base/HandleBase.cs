@@ -40,14 +40,13 @@ namespace Glyph.Tools.Base
 
             _sceneNode = Add<SceneNode>();
 
-            var controls = Add<Controls>();
-            controls.Tags.Add(ControlLayerTag.Tools);
-            controls.RegisterMany(new IControl[]
+            var interactiveMode = Add<Controls>();
+            interactiveMode.AddMany(new IControl[]
             {
                 _projectedCursor = new ProjectionCursorControl("Virtual cursor", InputSystem.Instance.Mouse.Cursor, rootView, _sceneNode, projectionManager),
                 _grab = new ActivityControl("Grab handle", InputSystem.Instance.Mouse[MouseButton.Left])
             });
-
+            
             Schedulers.Update.Plan(HandleInput).AtEnd();
         }
 
@@ -78,7 +77,6 @@ namespace Glyph.Tools.Base
                                                                        .First();
                     
                     OnDragging(projection.Value - _grabPosition);
-                    _grab.HandleInputs();
                 }
             }
             else

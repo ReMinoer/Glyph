@@ -83,9 +83,8 @@
     <Compile Include="Flipper.cs" />
     <Compile Include="GlyphInjectionContext.cs" />
     <Compile Include="GridComponent.cs" />
-    <Compile Include="Inputs\ControlLayerSchedulerProfile.cs" />
     <Compile Include="Inputs\ControlLayerTag.cs" />
-    <Compile Include="Inputs\Controls.cs" />
+    <Compile Include="Inputs\Interactivity.cs" />
     <Compile Include="Inputs\CursorControlBase.cs" />
     <Compile Include="ProjectionManager.cs" />
     <Compile Include="Projection.cs" />

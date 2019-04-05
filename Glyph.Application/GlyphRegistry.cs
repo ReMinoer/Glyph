@@ -1,4 +1,5 @@
-﻿using Niddle;
+﻿using System;
+using Niddle;
 using Fingear.MonoGame;
 using Glyph.Animation;
 using Glyph.Animation.Motors;
@@ -27,201 +28,226 @@ using Glyph.Tools.ShapeRendering;
 using Glyph.UI;
 using Glyph.UI.Menus;
 using Glyph.UI.Simple;
+using Niddle.Builders;
+using Taskete;
 
 namespace Glyph.Application
 {
-    public class GlyphRegistry : DependencyRegistry
+    static public class GlyphRegistry
     {
-        public GlyphRegistry()
+        static public DependencyRegistry BuildGlobalRegistry()
         {
-            #region Injection
+            var registry = new DependencyRegistry
+            {
+                #region Injection
 
-            RegisterInstance<IDependencyRegistry>(this);
-            Link<IDependencyRegistry, IDependencyRegistry>(null, InjectionScope.Global);
-            Register<IDependencyRegistry, LocalGlyphRegistry>(InjectionScope.Local);
+                Type<IDependencyRegistry>().Keyed(InjectionScope.Global).LinkedTo<IDependencyRegistry>(),
+                Type<IDependencyRegistry>().Keyed(InjectionScope.Local).Creating(BuildLocalRegistry),
 
-            Link<RegistryInjector, RegistryInjector>(null, InjectionScope.Global);
-            Link<IDependencyInjector, RegistryInjector>();
-            Link<IDependencyInjector, RegistryInjector>(null, InjectionScope.Global);
+                Type<RegistryInjector>().Keyed(InjectionScope.Global).LinkedTo<RegistryInjector>(),
+                Type<IDependencyInjector>().LinkedTo<RegistryInjector>(),
+                Type<IDependencyInjector>().Keyed(InjectionScope.Global).LinkedTo<RegistryInjector>(),
 
-            Register<GlyphCompositeInjector>();
-            Register<GlyphInjectionContext>();
+                Type<GlyphCompositeInjector>(),
+                Type<GlyphInjectionContext>(),
 
-            #endregion
+                #endregion
 
-            #region Composition & Scheduling
+                #region Composition & Scheduling
 
-            Register<GlyphScheduler<IGlyphComponent, InitializeDelegate>>();
-            Register<GlyphScheduler<ILoadContent, LoadContentDelegate>>();
-            Register<GlyphScheduler<IUpdate, UpdateDelegate>>();
-            Register<GlyphScheduler<IDraw, DrawDelegate>>();
+                Type<GlyphScheduler<IGlyphComponent, InitializeDelegate>>(),
+                Type<GlyphScheduler<ILoadContent, LoadContentDelegate>>(),
+                Type<GlyphScheduler<IUpdate, UpdateDelegate>>(),
+                Type<GlyphScheduler<IDraw, DrawDelegate>>(),
 
-            RegisterInstance(GlyphSchedulerProfiles.Instance.Initialize, typeof(IGlyphComponent));
-            RegisterInstance(GlyphSchedulerProfiles.Instance.LoadContent, typeof(ILoadContent));
-            RegisterInstance(GlyphSchedulerProfiles.Instance.Update, typeof(IUpdate));
-            RegisterInstance(GlyphSchedulerProfiles.Instance.Draw, typeof(IDraw));
+                Type<IReadOnlyScheduler<Predicate<object>>>().Keyed(typeof(IGlyphComponent)).Using(GlyphSchedulerProfiles.Instance.Initialize),
+                Type<IReadOnlyScheduler<Predicate<object>>>().Keyed(typeof(ILoadContent)).Using(GlyphSchedulerProfiles.Instance.LoadContent),
+                Type<IReadOnlyScheduler<Predicate<object>>>().Keyed(typeof(IUpdate)).Using(GlyphSchedulerProfiles.Instance.Update),
+                Type<IReadOnlyScheduler<Predicate<object>>>().Keyed(typeof(IDraw)).Using(GlyphSchedulerProfiles.Instance.Draw),
 
-            RegisterFunc<IGlyphComponent, InitializeDelegate>(x => x.Initialize);
-            RegisterFunc<ILoadContent, LoadContentDelegate>(x => x.LoadContent);
-            RegisterFunc<IUpdate, UpdateDelegate>(x => x.Update);
-            RegisterFunc<IDraw, DrawDelegate>(x => x.Draw);
+                Type<Func<IGlyphComponent, InitializeDelegate>>().Using(x => x.Initialize),
+                Type<Func<ILoadContent, LoadContentDelegate>>().Using(x => x.LoadContent),
+                Type<Func<IUpdate, UpdateDelegate>>().Using(x => x.Update),
+                Type<Func<IDraw, DrawDelegate>>().Using(x => x.Draw),
 
-            RegisterFunc<GlyphObject, InitializeDelegate>(x => x.Initialize);
-            RegisterFunc<GlyphObject, LoadContentDelegate>(x => x.LoadContent);
-            RegisterFunc<GlyphObject, UpdateDelegate>(x => x.Update);
-            RegisterFunc<GlyphObject, DrawDelegate>(x => x.Draw);
+                Type<Func<GlyphObject, InitializeDelegate>>().Using(x => x.Initialize),
+                Type<Func<GlyphObject, LoadContentDelegate>>().Using(x => x.LoadContent),
+                Type<Func<GlyphObject, UpdateDelegate>>().Using(x => x.Update),
+                Type<Func<GlyphObject, DrawDelegate>>().Using(x => x.Draw),
 
-            Register<GlyphObject>();
-            RegisterSingleton<GlyphTypeInfoProvider>();
+                Type<GlyphObject>(),
+                Type<GlyphTypeInfoProvider>().AsSingleton(),
 
-            #endregion
+                #endregion
 
-            #region Messaging
-            
-            RegisterInstance(ComponentRouterSystem.GlobalRouter);
-            Link<ITrackingRouter, TrackingRouter>();
-            Link<ITrackingRouter, TrackingRouter>(serviceKey: InjectionScope.Global);
-            Link<ISubscribableRouter, TrackingRouter>();
-            Link<ISubscribableRouter, TrackingRouter>(serviceKey: InjectionScope.Global);
-            Link<IRouter, TrackingRouter>();
-            Link<IRouter, TrackingRouter>(serviceKey: InjectionScope.Global);
+                #region Messaging
+                
+                Type<TrackingRouter>().Using(ComponentRouterSystem.GlobalRouter),
+                Type<ITrackingRouter>().LinkedTo<TrackingRouter>(),
+                Type<ITrackingRouter>().Keyed(InjectionScope.Global).LinkedTo<TrackingRouter>(),
+                Type<ISubscribableRouter>().LinkedTo<TrackingRouter>(),
+                Type<ISubscribableRouter>().Keyed(InjectionScope.Global).LinkedTo<TrackingRouter>(),
+                Type<IRouter>().LinkedTo<TrackingRouter>(),
+                Type<IRouter>().Keyed(InjectionScope.Global).LinkedTo<TrackingRouter>(),
 
-            RegisterGeneric(typeof(Receiver<>));
-            RegisterGeneric(typeof(MessagingTracker<>));
-            RegisterGeneric(typeof(MessagingSpace<>));
+                Generic(typeof(Receiver<>)),
+                Generic(typeof(MessagingTracker<>)),
+                Generic(typeof(MessagingSpace<>)),
 
-            #endregion
+                #endregion
 
-            #region Core
+                #region Core
 
-            Register<SceneNode>();
-            Register<AnchoredSceneNode>();
-            Register<PositionBinding>();
+                Type<SceneNode>(),
+                Type<AnchoredSceneNode>(),
+                Type<PositionBinding>(),
 
-            RegisterGeneric(typeof(LayerRoot<>));
-            LinkGeneric(typeof(ILayerRoot<>), typeof(LayerRoot<>));
+                Generic(typeof(LayerRoot<>)),
+                Generic(typeof(ILayerRoot<>)).LinkedTo(typeof(LayerRoot<>)),
 
-            Register<Camera>();
-            Register<TargetView>();
-            Register<FillView>();
-            Register<UniformFillTargetView>();
+                Type<Camera>(),
+                Type<TargetView>(),
+                Type<FillView>(),
+                Type<UniformFillTargetView>(),
 
-            Register<Controls>();
+                Type<InteractiveRoot>(),
+                Type<Controls>(),
 
-            Register<Flipper>();
+                Type<Flipper>(),
 
-            #endregion
+                #endregion
 
-            #region Animation
+                #region Animation
 
-            Register<Motion>();
-            Register<LinearMotor>();
-            Register<SteeringMotor>();
-            Register<SeekingMotor>();
-            Register<TrackMotor>();
-            Register<TimedTrajectoryMotor>();
-            Register<MeasurableTrajectoryMotor>();
-            RegisterGeneric(typeof(AnimationGraph<,>));
-            RegisterGeneric(typeof(AnimationPlayer<>));
+                Type<Motion>(),
+                Type<LinearMotor>(),
+                Type<SteeringMotor>(),
+                Type<SeekingMotor>(),
+                Type<TrackMotor>(),
+                Type<TimedTrajectoryMotor>(),
+                Type<MeasurableTrajectoryMotor>(),
+                Generic(typeof(AnimationGraph<,>)),
+                Generic(typeof(AnimationPlayer<>)),
 
-            #endregion
+                #endregion
 
-            #region Particles
-            
-            Register<ParticleEmitter>();
-            Register<StandardParticle>();
+                #region Particles
+                
+                Type<ParticleEmitter>(),
+                Type<StandardParticle>(),
 
-            #endregion
+                #endregion
 
-            #region Graphics
+                #region Graphics
 
-            Register<SpriteLoader>();
-            Register<SpriteTransformer>();
-            Register<SpriteRenderer>();
+                Type<SpriteLoader>(),
+                Type<SpriteTransformer>(),
+                Type<SpriteRenderer>(),
 
-            Register<SpriteSheet>();
-            Register<SpriteSheetSplit>();
-            Register<SpriteAnimator>();
+                Type<SpriteSheet>(),
+                Type<SpriteSheetSplit>(),
+                Type<SpriteAnimator>(),
 
-            Register<SpriteArea>();
+                Type<SpriteArea>(),
 
-            Register<RectangleSprite>();
-            Register<FilledRectangleSprite>();
-            Register<CircleSprite>();
-            Register<FilledCircleSprite>();
+                Type<RectangleSprite>(),
+                Type<FilledRectangleSprite>(),
+                Type<CircleSprite>(),
+                Type<FilledCircleSprite>(),
 
-            Register<FillingRectangle>();
-            Register<FillingRenderer>();
-            Register<TexturingRenderer>();
+                Type<FillingRectangle>(),
+                Type<FillingRenderer>(),
+                Type<TexturingRenderer>(),
 
-            RegisterGeneric(typeof(MappingRenderer<>));
+                Generic(typeof(MappingRenderer<>)),
 
-            #endregion
+                #endregion
 
-            #region Audio
-            
-            Register<SoundLoader>();
-            Register<SoundEmitter>();
-            Register<SoundListener>();
-            Register<SoundListenerManager>();
+                #region Audio
+                
+                Type<SoundLoader>(),
+                Type<SoundEmitter>(),
+                Type<SoundListener>(),
+                Type<SoundListenerManager>(),
 
-            #endregion
+                #endregion
 
-            #region Physics
+                #region Physics
 
-            RegisterSingleton<PhysicsManager>();
-            RegisterSingleton<ColliderManager>();
+                Type<PhysicsManager>().AsSingleton(),
+                Type<ColliderManager>().AsSingleton(),
 
-            Register<RectangleCollider>();
-            Register<CircleCollider>();
-            RegisterGeneric(typeof(GridCollider<>));
+                Type<RectangleCollider>(),
+                Type<CircleCollider>(),
+                Generic(typeof(GridCollider<>)),
 
-            Register<ColliderComposite>();
+                Type<ColliderComposite>(),
 
-            #endregion
+                #endregion
 
-            #region Scripting
+                #region Scripting
 
-            RegisterSingleton<TriggerManager>();
-            Register<Trigger>();
-            Register<Actor>();
+                Type<TriggerManager>().AsSingleton(),
+                Type<Trigger>(),
+                Type<Actor>(),
 
-            #endregion
+                #endregion
 
-            #region Input
-            
-            RegisterInstance<InputSystem>(InputSystem.Instance);
+                #region Input
+                
+                Type<InputSystem>().Using(InputSystem.Instance),
 
-            #endregion
+                #endregion
 
-            #region Tools
+                #region Tools
 
-            RegisterGeneric(typeof(ShapedComponentRendererManager<>));
+                Generic(typeof(ShapedComponentRendererManager<>)),
 
-            Register<RectangleComponentRenderer>();
-            Register<CircleComponentRenderer>();
+                Type<RectangleComponentRenderer>(),
+                Type<CircleComponentRenderer>(),
 
-            Register<FreeCamera>();
-            Register<SceneNodeEditor>();
-            Register<PositionHandle>();
-            Register<ShapedObjectSelector>();
+                Type<FreeCamera>(),
+                Type<SceneNodeEditor>(),
+                Type<PositionHandle>(),
+                Type<ShapedObjectSelector>(),
 
-            Register<InputLogger>();
-            Register<ControlLogger>();
+                Type<InputLogger>(),
+                Type<ControlLogger>(),
 
-            #endregion
+                #endregion
 
-            #region UI
+                #region UI
 
-            Register<Text>();
+                Type<Text>(),
 
-            Register<SimpleBorder>();
-            Register<SimpleFrame>();
-            Register<SimpleButton>();
+                Type<SimpleBorder>(),
+                Type<SimpleFrame>(),
+                Type<SimpleButton>(),
 
-            Register<LinearMenu>();
+                Type<LinearMenu>()
 
-            #endregion
+                #endregion
+            };
+
+            registry.Add(Type<IDependencyRegistry>().Using(registry));
+            return registry;
         }
+
+        static public DependencyRegistry BuildLocalRegistry()
+        {
+            return new DependencyRegistry
+            {
+                Type<ITrackingRouter>().LinkedTo<TrackingRouter>(),
+                Type<ITrackingRouter>().Keyed(InjectionScope.Local).LinkedTo<TrackingRouter>(),
+                Type<ISubscribableRouter>().LinkedTo<TrackingRouter>(),
+                Type<ISubscribableRouter>().Keyed(InjectionScope.Local).LinkedTo<TrackingRouter>(),
+                Type<IRouter>().LinkedTo<TrackingRouter>(),
+                Type<IRouter>().Keyed(InjectionScope.Local).LinkedTo<TrackingRouter>(),
+            };
+        }
+        
+        static private ITypeDependencyBuilder<T> Type<T>() => Dependency.OnType<T>();
+        static private IGenericDependencyBuilder Generic(Type typeDefinition) => Dependency.OnGeneric(typeDefinition);
     }
+
 }

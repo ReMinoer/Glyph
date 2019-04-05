@@ -53,8 +53,7 @@ namespace Glyph.UI.Menus
             NavigationLoop = true;
 
             var controls = Add<Core.Inputs.Controls>();
-            controls.Tags.Add(ControlLayerTag.Ui);
-            controls.RegisterMany(new []
+            controls.AddMany(new []
             {
                 _up = MenuControls.Instance.Up,
                 _down = MenuControls.Instance.Down,

@@ -52,8 +52,7 @@ namespace Glyph.UI.Controls
             Text = Add<Text>();
 
             var controls = Add<Core.Inputs.Controls>();
-            controls.Tags.Add(ControlLayerTag.Ui);
-            controls.RegisterMany(new Fingear.IControl[]
+            controls.AddMany(new Fingear.IControl[]
             {
                 _sceneCursor = new ProjectionCursorControl("Scene cursor", InputSystem.Instance.Mouse.Cursor, rootView, new ReadOnlySceneNodeDelegate(SceneNode.RootNode), projectionManager),
                 _clic = new ActivityControl("Clic", InputSystem.Instance.Mouse[MouseButton.Left]),

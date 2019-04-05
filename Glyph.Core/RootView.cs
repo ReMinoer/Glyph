@@ -37,7 +37,7 @@ namespace Glyph.Core
         }
 
         public Vector2 Size => DrawClient?.Size ?? Vector2.Zero;
-        protected override Quad Shape => new CenteredRectangle(Vector2.Zero, Size);
+        protected override Quad Shape => new TopLeftRectangle(Vector2.Zero, Size);
 
         public override event EventHandler<Vector2> SizeChanged;
 

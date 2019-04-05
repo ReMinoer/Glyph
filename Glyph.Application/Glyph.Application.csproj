@@ -38,7 +38,6 @@
   <ItemGroup>
     <Compile Include="GlyphRegistry.cs" />
     <Compile Include="GlyphSchedulerProfiles.cs" />
-    <Compile Include="LocalGlyphRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -77,6 +77,7 @@
     <Compile Include="IO\ISerializationFormat.cs" />
     <Compile Include="IO\Base\SerializationFormatBase.cs" />
     <Compile Include="ISceneNode.cs" />
+    <Compile Include="ITag.cs" />
     <Compile Include="Math\IRange.cs" />
     <Compile Include="Math\ITransformation.cs" />
     <Compile Include="Math\ITransformer.cs" />

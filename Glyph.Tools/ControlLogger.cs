@@ -4,22 +4,23 @@ using System.Linq;
 using Fingear;
 using Glyph.Composition;
 using NLog;
+using Stave;
 
 namespace Glyph.Tools
 {
     public class ControlLogger : GlyphComponent, IUpdate, IEnableable
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly ControlManager _controlManager;
+        private readonly InteractionManager _interactionManager;
         private readonly HashSet<IControl> _activateControls;
         public bool Enabled { get; set; }
-        public Predicate<ControlLayer> LayerFilter { get; set; }
+        public Predicate<IInteractive> InteractiveFilter { get; set; }
         public Predicate<IControl> ControlFilter { get; set; }
 
-        public ControlLogger(ControlManager controlManager)
+        public ControlLogger(InteractionManager interactionManager)
         {
             Enabled = true;
-            _controlManager = controlManager;
+            _interactionManager = interactionManager;
             _activateControls = new HashSet<IControl>();
         }
 
@@ -28,12 +29,12 @@ namespace Glyph.Tools
             if (!Enabled)
                 return;
 
-            foreach (ControlLayer layer in _controlManager.Layers.Where(x => x.Enabled))
+            foreach (IInteractive interactive in _interactionManager.Root.ChildrenQueue().Where(x => x.Enabled))
             {
-                if (LayerFilter != null && !LayerFilter(layer))
+                if (InteractiveFilter != null && !InteractiveFilter(interactive))
                     continue;
 
-                foreach (IControl control in layer)
+                foreach (IControl control in interactive.Controls)
                 {
                     if (ControlFilter != null && !ControlFilter(control))
                         continue;
@@ -47,7 +48,7 @@ namespace Glyph.Tools
                     if (!_activateControls.Add(control))
                         continue;
                 
-                    Logger.Debug($"({layer.Name}) {control.Name} is active");
+                    Logger.Debug($"({interactive.Name}) {control.Name} is active");
                 }
             }
         }

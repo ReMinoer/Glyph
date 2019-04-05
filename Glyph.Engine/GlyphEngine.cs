@@ -40,10 +40,8 @@ namespace Glyph.Engine
         public ProjectionManager ProjectionManager { get; }
         public ContentLibrary ContentLibrary { get; }
         public InputClientManager InputClientManager { get; }
-        public ControlManager ControlManager { get; }
+        public InteractionManager InteractionManager { get; }
         private GlyphObject _root;
-        private readonly IControl _mute;
-        private readonly IControl _xboxQuit;
 
         public GlyphObject Root
         {
@@ -80,11 +78,11 @@ namespace Glyph.Engine
 
             _contentManager = contentManager;
 
-            Registry = new GlyphRegistry();
+            Registry = GlyphRegistry.BuildGlobalRegistry();
             dependencyConfigurator?.Invoke(Registry);
 
             var injector = new RegistryInjector(Registry);
-            Registry.RegisterInstance<RegistryInjector>(injector);
+            Registry.Add(Dependency.OnType<RegistryInjector>().Using(injector));
             Injector = injector;
 
             RootView = new RootView();
@@ -93,29 +91,15 @@ namespace Glyph.Engine
             _contentManager.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();
             InputClientManager = new InputClientManager();
-            ControlManager = new ControlManager();
-            ControlManager.ApplyProfile(ControlLayerSchedulerProfile.Get().Graph);
+            InteractionManager = new InteractionManager();
 
-            ControlManager.Plan(new ControlLayer("Program controls", ControlLayerTag.Debug)).RegisterMany(new []
-            {
-                _mute = new Control("Mute", InputSystem.Instance.Keyboard[Keys.F10]),
-                _xboxQuit = new ControlSimultaneous<IControl>("Quit game")
-                {
-                    Components =
-                    {
-                        new Control(InputSystem.Instance[PlayerIndex.One][GamePadButton.Start]),
-                        new Control(InputSystem.Instance[PlayerIndex.One][GamePadButton.Back])
-                    }
-                }
-            });
-
-            Registry.RegisterInstance<GlyphEngine>(this);
-            Registry.RegisterInstance<RootView>(RootView);
-            Registry.RegisterInstance<ProjectionManager>(ProjectionManager);
-            Registry.RegisterInstance<ContentLibrary>(ContentLibrary);
-            Registry.RegisterInstance<InputClientManager>(InputClientManager);
-            Registry.RegisterInstance<ControlManager>(ControlManager);
-            Registry.RegisterFunc(() =>
+            Registry.Add(Dependency.OnType<GlyphEngine>().Using(this));
+            Registry.Add(Dependency.OnType<RootView>().Using(RootView));
+            Registry.Add(Dependency.OnType<ProjectionManager>().Using(ProjectionManager));
+            Registry.Add(Dependency.OnType<ContentLibrary>().Using(ContentLibrary));
+            Registry.Add(Dependency.OnType<InputClientManager>().Using(InputClientManager));
+            Registry.Add(Dependency.OnType<InteractionManager>().Using(InteractionManager));
+            Registry.Add(Dependency.OnType<Func<GraphicsDevice>>().Using(() =>
             {
                 if (FocusedClient != null)
                 {
@@ -123,7 +107,7 @@ namespace Glyph.Engine
                 }
                 
                 return ((IGraphicsDeviceService)contentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
-            });
+            }));
         }
 
         public void Initialize()
@@ -152,19 +136,13 @@ namespace Glyph.Engine
         public void HandleInput()
         {
             if (InputClientManager.InputClient != null)
-                ControlManager.Update(_elapsedTime.UnscaledDelta);
+                InteractionManager.Update(_elapsedTime.UnscaledDelta);
             else
                 InputManager.Instance.InputStates?.Ignore();
         }
 
         public void Update()
         {
-            if (_mute.IsActive())
-                MediaPlayer.IsMuted = !MediaPlayer.IsMuted;
-
-            if (_xboxQuit.IsActive())
-                Stop();
-
             using (GlyphObject.UpdateWatchTree.Start("Root"))
             {
                 Root?.Update(_elapsedTime);

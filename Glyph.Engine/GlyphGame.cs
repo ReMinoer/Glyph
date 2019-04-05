@@ -1,13 +1,10 @@
 using System;
-using Diese.Collections;
 using Niddle;
 using Fingear;
-using Fingear.Controls;
 using Fingear.MonoGame;
 using Glyph.Core.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using IInputStates = Fingear.MonoGame.IInputStates;
 
 namespace Glyph.Engine
@@ -18,7 +15,6 @@ namespace Glyph.Engine
         private Point _windowSize;
         private Point _lastWindowSize;
         private bool _resizing;
-        private readonly IControl _toggleFullscreen;
         public GlyphEngine Engine { get; }
         public virtual bool IsFocus => IsActive && System.Windows.Forms.Form.ActiveForm?.Handle == Window.Handle;
         IInputStates IInputClient.States { get; } = new InputStates();
@@ -70,11 +66,6 @@ namespace Glyph.Engine
             Engine = new GlyphEngine(Content, dependencyConfigurator);
             Engine.Stopped += OnEngineStopped;
             Engine.FocusedClient = this;
-
-            Engine.ControlManager.Plan(new ControlLayer("Window controls", ControlLayerTag.Debug)).RegisterMany(new []
-            {
-                _toggleFullscreen = new Control("Toogle fullscreen", InputSystem.Instance.Keyboard[Keys.F12])
-            });
         }
 
         protected override void Initialize()
@@ -99,9 +90,6 @@ namespace Glyph.Engine
 
             if (!IsActive)
                 return;
-            
-            if (_toggleFullscreen.IsActive())
-                ToggleFullscreen();
 
             Engine.Update();
         }

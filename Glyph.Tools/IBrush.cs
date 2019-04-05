@@ -282,7 +282,7 @@ namespace Glyph.Tools
         {
             SceneNode = Add<SceneNode>();
 
-            Add<Controls>().RegisterMany(new []
+            Add<Controls>().AddMany(new []
             {
                 _cursor = new ProjectionCursorControl("Scene cursor", InputSystem.Instance.Mouse.Cursor, rootView, new ReadOnlySceneNodeDelegate(() => SceneNode), projectionManager),
                 _applyBrush = new Control {DesiredActivity = InputActivity.Pressed},
