@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Glyph.Injection
+namespace Glyph.Resolver
 {
     [Flags]
     public enum ResolveTargets

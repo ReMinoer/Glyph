@@ -2,8 +2,8 @@
 using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
-using Glyph.Injection;
 using Glyph.Math;
+using Glyph.Resolver;
 using Niddle.Attributes;
 
 namespace Glyph.Graphics.Renderer

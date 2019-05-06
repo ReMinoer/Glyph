@@ -50,7 +50,7 @@ namespace Glyph.Tools
             set => _camera.Zoom = value;
         }
 
-        public FreeCamera(GlyphInjectionContext context, RootView rootView, InputClientManager inputClientManager, ProjectionManager projectionManager)
+        public FreeCamera(GlyphResolveContext context, RootView rootView, InputClientManager inputClientManager, ProjectionManager projectionManager)
             : base(context)
         {
             _rootView = rootView;

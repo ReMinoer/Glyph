@@ -31,9 +31,9 @@ namespace Glyph.Core.Tracking
     {
         public Action<TData> DataConfiguration { get; private set; }
 
-        public FactoryData(IDependencyInjector injector)
+        public FactoryData(IDependencyResolver resolver)
         {
-            DataConfiguration = x => x.Injector = injector;
+            DataConfiguration = x => x.Resolver = resolver;
         }
 
         public void From(Factory<T> obj)

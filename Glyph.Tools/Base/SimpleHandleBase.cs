@@ -17,7 +17,7 @@ namespace Glyph.Tools.Base
             set => _spriteTransformer.Color = value;
         }
 
-        protected SimpleHandleBase(GlyphInjectionContext context, RootView rootView, ProjectionManager projectionManager)
+        protected SimpleHandleBase(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
             : base(context, rootView, projectionManager)
         {
             _spriteSource = Add<TSpriteSource>();

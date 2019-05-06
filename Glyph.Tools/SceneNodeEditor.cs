@@ -30,7 +30,7 @@ namespace Glyph.Tools
         
         object IIntegratedEditor.EditedObject => EditedObject;
 
-        public SceneNodeEditor(GlyphInjectionContext context)
+        public SceneNodeEditor(GlyphResolveContext context)
             : base(context)
         {
             _anchoredSceneNode = Add<AnchoredSceneNode>();

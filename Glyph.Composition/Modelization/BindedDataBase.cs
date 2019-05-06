@@ -13,7 +13,7 @@ namespace Glyph.Composition.Modelization
     public abstract class BindedDataBase<T> : IGlyphCreator<T>, INotifyPropertyChanged
         where T : IGlyphComponent
     {
-        private IDependencyInjector _injector;
+        private IDependencyResolver _resolver;
 
         [Category("Creator"), IgnoreDataMember]
         public IReadOnlyObservableCollection<IGlyphCreator> Children { get; }
@@ -34,15 +34,15 @@ namespace Glyph.Composition.Modelization
         object IDataBindable.BindedObject => BindedObject;
 
         [IgnoreDataMember]
-        public IDependencyInjector Injector
+        public IDependencyResolver Resolver
         {
-            protected get { return _injector; }
+            protected get { return _resolver; }
             set
             {
-                _injector = value;
+                _resolver = value;
 
                 foreach (IGlyphConfigurator<T> configurator in SubConfigurators)
-                    configurator.Injector = value;
+                    configurator.Resolver = value;
             }
         }
 
@@ -88,7 +88,7 @@ namespace Glyph.Composition.Modelization
             return obj;
         }
 
-        protected virtual T New() => Injector.Resolve<T>();
+        protected virtual T New() => Resolver.Resolve<T>();
 
         protected virtual void Configure(T obj)
         {

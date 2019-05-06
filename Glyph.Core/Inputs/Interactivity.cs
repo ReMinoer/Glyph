@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Fingear;
 using Fingear.Interactives;
 using Glyph.Composition;
-using Glyph.Injection;
+using Glyph.Resolver;
 using Niddle.Attributes;
 
 namespace Glyph.Core.Inputs

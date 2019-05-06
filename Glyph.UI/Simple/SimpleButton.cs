@@ -17,7 +17,7 @@ namespace Glyph.UI.Simple
             get { return SimpleFrame; }
         }
 
-        public SimpleButton(GlyphInjectionContext context, RootView rootView, ProjectionManager projectionManager)
+        public SimpleButton(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
             : base(context, rootView, projectionManager)
         {
             SimpleFrame = Add<SimpleFrame>();

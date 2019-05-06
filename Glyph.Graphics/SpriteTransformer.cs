@@ -1,5 +1,5 @@
 using Glyph.Composition;
-using Glyph.Injection;
+using Glyph.Resolver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Niddle.Attributes;

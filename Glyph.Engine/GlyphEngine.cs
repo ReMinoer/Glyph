@@ -35,7 +35,7 @@ namespace Glyph.Engine
         public bool IsStarted { get; private set; }
         public bool IsPaused { get; private set; }
         public IDependencyRegistry Registry { get; }
-        public IDependencyInjector Injector { get; }
+        public IDependencyResolver Resolver { get; }
         public RootView RootView { get; private set; }
         public ProjectionManager ProjectionManager { get; }
         public ContentLibrary ContentLibrary { get; }
@@ -45,7 +45,7 @@ namespace Glyph.Engine
 
         public GlyphObject Root
         {
-            get => _root ?? (_root = Injector.Resolve<GlyphObject>());
+            get => _root ?? (_root = Resolver.Resolve<GlyphObject>());
             set => _root = value;
         }
 
@@ -81,12 +81,12 @@ namespace Glyph.Engine
             Registry = GlyphRegistry.BuildGlobalRegistry();
             dependencyConfigurator?.Invoke(Registry);
 
-            var injector = new RegistryInjector(Registry);
-            Registry.Add(Dependency.OnType<RegistryInjector>().Using(injector));
-            Injector = injector;
+            var resolver = new RegistryResolver(Registry);
+            Registry.Add(Dependency.OnType<RegistryResolver>().Using(resolver));
+            Resolver = resolver;
 
             RootView = new RootView();
-            ProjectionManager = new ProjectionManager(RootView, Injector.Resolve<ISubscribableRouter>());
+            ProjectionManager = new ProjectionManager(RootView, Resolver.Resolve<ISubscribableRouter>());
 
             _contentManager.RootDirectory = "Content";
             ContentLibrary = new ContentLibrary();

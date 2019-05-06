@@ -13,25 +13,25 @@ namespace Glyph.Composition.Modelization
         where TData : IGlyphCreator
         where TParent : IGlyphComposite<IGlyphComponent>
     {
-        private IDependencyInjector _injector;
+        private IDependencyResolver _resolver;
         private readonly IGlyphCreator<TParent> _parent;
 
         [IgnoreDataMember]
-        public IDependencyInjector Injector
+        public IDependencyResolver Resolver
         {
-            protected get { return _injector; }
+            protected get { return _resolver; }
             set
             {
-                if (_injector == null && value != null)
+                if (_resolver == null && value != null)
                     CollectionChanged += OnCollectionChanged;
-                else if (_injector != null && value == null)
+                else if (_resolver != null && value == null)
                     CollectionChanged -= OnCollectionChanged;
 
-                _injector = value;
+                _resolver = value;
                 
                 foreach (TData newData in this)
                 {
-                    newData.Injector = Injector;
+                    newData.Resolver = Resolver;
 
                     if (_parent.IsInstantiated)
                     {
@@ -100,7 +100,7 @@ namespace Glyph.Composition.Modelization
             if (e.NewItems != null)
                 foreach (TData newData in e.NewItems)
                 {
-                    newData.Injector = Injector;
+                    newData.Resolver = Resolver;
                     newData.Instantiate();
                     BindedObject.Add(newData.BindedObject);
                 }

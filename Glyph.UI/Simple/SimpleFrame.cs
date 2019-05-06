@@ -41,7 +41,7 @@ namespace Glyph.UI.Simple
             set { _spriteTransformer.Color = value; }
         }
 
-        public SimpleFrame(GlyphInjectionContext context)
+        public SimpleFrame(GlyphResolveContext context)
             : base(context)
         {
             SceneNode = Add<SceneNode>();

@@ -1,8 +1,8 @@
 ﻿using Glyph.Composition;
 using Glyph.Core;
-using Glyph.Injection;
 using Glyph.Math;
 using Glyph.Math.Shapes;
+using Glyph.Resolver;
 using Microsoft.Xna.Framework;
 using Niddle.Attributes;
 

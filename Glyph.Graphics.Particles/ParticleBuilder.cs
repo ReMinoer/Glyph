@@ -6,13 +6,13 @@ namespace Glyph.Graphics.Particles
 {
     public abstract class ParticleBuilder
     {
-        private readonly IDependencyInjector _injector;
+        private readonly IDependencyResolver _resolver;
         protected PropertiesAnimationBuilder<StandardParticle> Animation { get; private set; }
         protected float? LifeTime { get; set; }
 
-        protected ParticleBuilder(IDependencyInjector injector)
+        protected ParticleBuilder(IDependencyResolver resolver)
         {
-            _injector = injector;
+            _resolver = resolver;
             Animation = new PropertiesAnimationBuilder<StandardParticle>();
         }
 
@@ -20,7 +20,7 @@ namespace Glyph.Graphics.Particles
 
         public IParticle Generate()
         {
-            var particle = _injector.Resolve<StandardParticle>();
+            var particle = _resolver.Resolve<StandardParticle>();
             Configure();
 
             IAnimation<StandardParticle> animation = Animation.Create();

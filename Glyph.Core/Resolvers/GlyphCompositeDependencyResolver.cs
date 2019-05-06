@@ -3,38 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections;
+using Glyph.Composition;
+using Glyph.Resolver;
 using Niddle;
 using Niddle.Base;
-using Glyph.Composition;
-using Glyph.Injection;
 
-namespace Glyph.Core.Injection
+namespace Glyph.Core.Resolvers
 {
-    public class GlyphCompositeInjector : DependencyInjectorBase
+    public class GlyphCompositeDependencyResolver : DependencyResolverBase
     {
         private readonly GlyphComposite _composite;
 
-        public RegistryInjector Global { get; }
-        public LocalDependencyInjector Local { get; }
+        public RegistryResolver Global { get; }
+        public LocalDependencyResolver Local { get; }
 
         internal GlyphObject Parent
         {
-            set => Local.Parent = value?.Injector.Local;
+            set => Local.Parent = value?.Resolver.Local;
         }
 
-        public GlyphCompositeInjector(GlyphComposite composite, GlyphInjectionContext context)
+        public GlyphCompositeDependencyResolver(GlyphComposite composite, GlyphResolveContext context)
         {
             _composite = composite;
 
-            Global = context.GlobalInjector;
-            Local = new LocalDependencyInjector(context.LocalRegistry, context.LocalInjectorParent);
-            Local.Registry.Add(Dependency.OnType<LocalDependencyInjector>().Using(Local));
+            Global = context.GlobalResolver;
+            Local = new LocalDependencyResolver(context.LocalRegistry, context.LocalResolverParent);
+            Local.Registry.Add(Dependency.OnType<LocalDependencyResolver>().Using(Local));
 
             foreach (Type nestedType in _composite.GetType().GetNestedTypes())
                 Local.Registry.Add(Dependency.OnType(nestedType));
         }
 
-        public object Resolve(Type type, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
+        public object Resolve(Type type, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null)
         {
             if (key == null && (origins & InstanceOrigins.Registration) != 0)
             {
@@ -53,19 +53,19 @@ namespace Glyph.Core.Injection
                 }
             }
 
-            if ((targets & ResolveTargets.Local) != 0 && Local.TryResolve(out object obj, type, key, origins, dependencyInjector ?? this))
+            if ((targets & ResolveTargets.Local) != 0 && Local.TryResolve(out object obj, type, key, origins, resolver ?? this))
                 return obj;
 
             if (targets == ResolveTargets.Local)
                 throw new InvalidOperationException();
 
             if ((targets & ResolveTargets.Global) != 0)
-                return Global.Resolve(type, key, origins, dependencyInjector ?? this);
+                return Global.Resolve(type, key, origins, resolver ?? this);
 
             throw new InvalidOperationException();
         }
 
-        public bool TryResolve(out object obj, Type type, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
+        public bool TryResolve(out object obj, Type type, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null)
         {
             if (key == null && (origins & InstanceOrigins.Registration) != 0)
             {
@@ -90,7 +90,7 @@ namespace Glyph.Core.Injection
                 }
             }
             
-            if ((targets & ResolveTargets.Local) != 0 && Local.TryResolve(out obj, type, key, origins, dependencyInjector ?? this))
+            if ((targets & ResolveTargets.Local) != 0 && Local.TryResolve(out obj, type, key, origins, resolver ?? this))
                 return true;
 
             if (targets == ResolveTargets.Local)
@@ -100,13 +100,13 @@ namespace Glyph.Core.Injection
             }
 
             if ((targets & ResolveTargets.Global) != 0)
-                return Global.TryResolve(out obj, type, key, origins, dependencyInjector ?? this);
+                return Global.TryResolve(out obj, type, key, origins, resolver ?? this);
 
             obj = null;
             return false;
         }
 
-        public IEnumerable ResolveMany(Type type, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
+        public IEnumerable ResolveMany(Type type, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null)
         {
             if (targets == 0)
                 throw new InvalidOperationException();
@@ -133,7 +133,7 @@ namespace Glyph.Core.Injection
             }
         }
 
-        public bool TryResolveMany(out IEnumerable objs, Type type, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
+        public bool TryResolveMany(out IEnumerable objs, Type type, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null)
         {
             if (targets == 0)
                 throw new InvalidOperationException();
@@ -159,15 +159,15 @@ namespace Glyph.Core.Injection
             return false;
         }
 
-        public T Resolve<T>(ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
-            => (T)Resolve(typeof(T), targets, key, origins, dependencyInjector ?? this);
+        public T Resolve<T>(ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null)
+            => (T)Resolve(typeof(T), targets, key, origins, resolver ?? this);
 
-        public IEnumerable<T> ResolveMany<T>(ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
-            => ResolveMany(typeof(T), targets, key, origins, dependencyInjector ?? this).Cast<T>();
+        public IEnumerable<T> ResolveMany<T>(ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null)
+            => ResolveMany(typeof(T), targets, key, origins, resolver ?? this).Cast<T>();
 
-        public bool TryResolve<T>(out T obj, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
+        public bool TryResolve<T>(out T obj, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null)
         {
-            if (TryResolve(out object temp, typeof(T), targets, key, origins, dependencyInjector ?? this))
+            if (TryResolve(out object temp, typeof(T), targets, key, origins, resolver ?? this))
             {
                 obj = (T)temp;
                 return true;
@@ -177,9 +177,9 @@ namespace Glyph.Core.Injection
             return false;
         }
 
-        public bool TryResolveMany<T>(out IEnumerable<T> objs, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
+        public bool TryResolveMany<T>(out IEnumerable<T> objs, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null)
         {
-            if (TryResolveMany(out IEnumerable enumerable, typeof(T), targets, key, origins, dependencyInjector ?? this))
+            if (TryResolveMany(out IEnumerable enumerable, typeof(T), targets, key, origins, resolver ?? this))
             {
                 objs = enumerable.Cast<T>();
                 return true;
@@ -189,17 +189,17 @@ namespace Glyph.Core.Injection
             return false;
         }
 
-        public override object Resolve(Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null, IEnumerable<object> args = null)
-            => Resolve(type, GetTargets(type, args), key, origins, dependencyInjector);
+        public override object Resolve(Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null, IEnumerable<object> args = null)
+            => Resolve(type, GetTargets(type, args), key, origins, resolver);
 
-        public override bool TryResolve(out object obj, Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null, IEnumerable<object> args = null)
-            => TryResolve(out obj, type, GetTargets(type, args), key, origins, dependencyInjector);
+        public override bool TryResolve(out object obj, Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null, IEnumerable<object> args = null)
+            => TryResolve(out obj, type, GetTargets(type, args), key, origins, resolver);
 
-        public override IEnumerable ResolveMany(Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null, IEnumerable<object> args = null)
-            => ResolveMany(type, GetTargets(type, args), key, origins, dependencyInjector);
+        public override IEnumerable ResolveMany(Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null, IEnumerable<object> args = null)
+            => ResolveMany(type, GetTargets(type, args), key, origins, resolver);
 
-        public override bool TryResolveMany(out IEnumerable objs, Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null, IEnumerable<object> args = null)
-            => TryResolveMany(out objs, type, GetTargets(type, args), key, origins, dependencyInjector);
+        public override bool TryResolveMany(out IEnumerable objs, Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null, IEnumerable<object> args = null)
+            => TryResolveMany(out objs, type, GetTargets(type, args), key, origins, resolver);
 
         static private ResolveTargets GetTargets(Type type, IEnumerable<object> args)
         {

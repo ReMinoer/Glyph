@@ -9,9 +9,9 @@ using Glyph.Composition.Delegates;
 using Glyph.Composition.Messaging;
 using Glyph.Core;
 using Glyph.Core.Colliders;
-using Glyph.Core.Injection;
 using Glyph.Core.Inputs;
 using Glyph.Core.Layers;
+using Glyph.Core.Resolvers;
 using Glyph.Core.Scheduler;
 using Glyph.Core.Tracking;
 using Glyph.Graphics;
@@ -27,7 +27,7 @@ using Glyph.Tools.ShapeRendering;
 using Glyph.UI;
 using Glyph.UI.Menus;
 using Glyph.UI.Simple;
-using Niddle.Builders;
+using Niddle.Dependencies.Builders;
 using Taskete;
 
 namespace Glyph.Application
@@ -38,17 +38,17 @@ namespace Glyph.Application
         {
             var registry = new DependencyRegistry
             {
-                #region Injection
+                #region Resolvers
 
-                Type<IDependencyRegistry>().Keyed(InjectionScope.Global).LinkedTo<IDependencyRegistry>(),
-                Type<IDependencyRegistry>().Keyed(InjectionScope.Local).Creating(BuildLocalRegistry),
+                Type<IDependencyRegistry>().Keyed(ResolverScope.Global).LinkedTo<IDependencyRegistry>(),
+                Type<IDependencyRegistry>().Keyed(ResolverScope.Local).Creating(BuildLocalRegistry),
 
-                Type<RegistryInjector>().Keyed(InjectionScope.Global).LinkedTo<RegistryInjector>(),
-                Type<IDependencyInjector>().LinkedTo<RegistryInjector>(),
-                Type<IDependencyInjector>().Keyed(InjectionScope.Global).LinkedTo<RegistryInjector>(),
+                Type<RegistryResolver>().Keyed(ResolverScope.Global).LinkedTo<RegistryResolver>(),
+                Type<IDependencyResolver>().LinkedTo<RegistryResolver>(),
+                Type<IDependencyResolver>().Keyed(ResolverScope.Global).LinkedTo<RegistryResolver>(),
 
-                Type<GlyphCompositeInjector>(),
-                Type<GlyphInjectionContext>(),
+                Type<GlyphCompositeDependencyResolver>(),
+                Type<GlyphResolveContext>(),
 
                 #endregion
 
@@ -82,11 +82,11 @@ namespace Glyph.Application
                 
                 Type<TrackingRouter>().Using(ComponentRouterSystem.GlobalRouter),
                 Type<ITrackingRouter>().LinkedTo<TrackingRouter>(),
-                Type<ITrackingRouter>().Keyed(InjectionScope.Global).LinkedTo<TrackingRouter>(),
+                Type<ITrackingRouter>().Keyed(ResolverScope.Global).LinkedTo<TrackingRouter>(),
                 Type<ISubscribableRouter>().LinkedTo<TrackingRouter>(),
-                Type<ISubscribableRouter>().Keyed(InjectionScope.Global).LinkedTo<TrackingRouter>(),
+                Type<ISubscribableRouter>().Keyed(ResolverScope.Global).LinkedTo<TrackingRouter>(),
                 Type<IRouter>().LinkedTo<TrackingRouter>(),
-                Type<IRouter>().Keyed(InjectionScope.Global).LinkedTo<TrackingRouter>(),
+                Type<IRouter>().Keyed(ResolverScope.Global).LinkedTo<TrackingRouter>(),
 
                 Generic(typeof(Receiver<>)),
                 Generic(typeof(MessagingTracker<>)),
@@ -236,11 +236,11 @@ namespace Glyph.Application
             return new DependencyRegistry
             {
                 Type<ITrackingRouter>().LinkedTo<TrackingRouter>(),
-                Type<ITrackingRouter>().Keyed(InjectionScope.Local).LinkedTo<TrackingRouter>(),
+                Type<ITrackingRouter>().Keyed(ResolverScope.Local).LinkedTo<TrackingRouter>(),
                 Type<ISubscribableRouter>().LinkedTo<TrackingRouter>(),
-                Type<ISubscribableRouter>().Keyed(InjectionScope.Local).LinkedTo<TrackingRouter>(),
+                Type<ISubscribableRouter>().Keyed(ResolverScope.Local).LinkedTo<TrackingRouter>(),
                 Type<IRouter>().LinkedTo<TrackingRouter>(),
-                Type<IRouter>().Keyed(InjectionScope.Local).LinkedTo<TrackingRouter>(),
+                Type<IRouter>().Keyed(ResolverScope.Local).LinkedTo<TrackingRouter>(),
             };
         }
         

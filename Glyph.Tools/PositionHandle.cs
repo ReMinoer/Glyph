@@ -14,7 +14,7 @@ namespace Glyph.Tools
         public Axes Axes { get; set; } = Axes.Both;
         private Vector2 _startPosition;
 
-        public PositionHandle(GlyphInjectionContext context, RootView rootView, ProjectionManager projectionManager)
+        public PositionHandle(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
             : base(context, rootView, projectionManager)
         {
             _spriteSource.Radius = 50;

@@ -44,7 +44,7 @@ namespace Glyph.UI.Controls
         public event EventHandler Entered;
         public event EventHandler Leaved;
 
-        protected ButtonBase(GlyphInjectionContext context, RootView rootView, ProjectionManager projectionManager)
+        protected ButtonBase(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
             : base(context)
         {
             SceneNode = Add<SceneNode>();

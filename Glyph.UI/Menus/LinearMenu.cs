@@ -42,7 +42,7 @@ namespace Glyph.UI.Menus
         public event EventHandler<SelectionEventArgs> SelectionChanged;
         public event EventHandler<SelectionEventArgs> SelectionTriggered;
 
-        public LinearMenu(GlyphInjectionContext context)
+        public LinearMenu(GlyphResolveContext context)
             : base(context)
         {
             _buttons = new List<IButton>();

@@ -197,7 +197,7 @@ namespace Glyph.Tools
         public event EventHandler ApplyCancelled;
         public event EventHandler ApplyEnded;
 
-        public BrushControllerBase(GlyphInjectionContext context)
+        public BrushControllerBase(GlyphResolveContext context)
             : base(context)
         {
             Schedulers.Update.Plan(UpdateLocal);
@@ -277,7 +277,7 @@ namespace Glyph.Tools
             set => _applyBrush.Input = value;
         }
 
-        protected CursorBrushControllerBase(GlyphInjectionContext context, RootView rootView, ProjectionManager projectionManager)
+        protected CursorBrushControllerBase(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
             : base(context)
         {
             SceneNode = Add<SceneNode>();
@@ -309,8 +309,8 @@ namespace Glyph.Tools
     public class GridBrushController<TCell, TPaint> : CursorBrushControllerBase<IWriteableGrid<TCell>, IGridBrushArgs, TPaint>
         where TPaint : IGridPaint<TCell>
     {
-        public GridBrushController(GlyphInjectionContext glyphInjectionContext, RootView rootView, ProjectionManager projectionManager)
-            : base(glyphInjectionContext, rootView, projectionManager)
+        public GridBrushController(GlyphResolveContext glyphResolveContext, RootView rootView, ProjectionManager projectionManager)
+            : base(glyphResolveContext, rootView, projectionManager)
         {
         }
 
@@ -355,7 +355,7 @@ namespace Glyph.Tools
         object IIntegratedEditor.EditedObject => Grid;
         IWriteableGrid<TCell> IIntegratedEditor<IWriteableGrid<TCell>>.EditedObject => Grid;
 
-        public GridEditor(GlyphInjectionContext context)
+        public GridEditor(GlyphResolveContext context)
             : base(context)
         {
             _brushControllers = new []

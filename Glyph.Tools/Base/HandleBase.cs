@@ -33,7 +33,7 @@ namespace Glyph.Tools.Base
 
         protected abstract IArea Area { get; }
 
-        protected HandleBase(GlyphInjectionContext context, RootView rootView, ProjectionManager projectionManager)
+        protected HandleBase(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
             : base(context)
         {
             _projectionManager = projectionManager;

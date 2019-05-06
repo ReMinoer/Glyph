@@ -17,7 +17,7 @@ namespace Glyph.UI
         public Shadow? Shadow { get; set; }
         public SpriteTransformer SpriteTransformer { get; private set; }
 
-        public Text(GlyphInjectionContext context)
+        public Text(GlyphResolveContext context)
             : base(context)
         {
             SceneNode = Add<SceneNode>();

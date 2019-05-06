@@ -5,7 +5,7 @@ using System.Linq;
 using Diese;
 using Diese.Collections;
 using Glyph.Composition;
-using Glyph.Injection;
+using Glyph.Resolver;
 using Niddle.Attributes;
 using NLog;
 using OverGraphed;

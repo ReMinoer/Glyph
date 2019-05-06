@@ -10,15 +10,15 @@ namespace Glyph.Core.Scheduler
     public class GlyphSchedulerSorter<TInterface, TDelegate> : IGlyphSchedulerAssigner
         where TInterface : class, IGlyphComponent
     {
-        private readonly IDependencyInjector _injector;
+        private readonly IDependencyResolver _resolver;
         private readonly IDictionary<object, IGlyphSchedulerAssigner> _schedulers;
         public object DefaultKey { get; set; }
         public bool IsBatching => _schedulers.Values.Any(x => x.IsBatching);
         int IBatchTree.BatchDepth => _schedulers.Values.Max(x => x.BatchDepth);
 
-        public GlyphSchedulerSorter(IDependencyInjector injector)
+        public GlyphSchedulerSorter(IDependencyResolver resolver)
         {
-            _injector = injector;
+            _resolver = resolver;
             _schedulers = new Dictionary<object, IGlyphSchedulerAssigner>();
         }
 
@@ -29,7 +29,7 @@ namespace Glyph.Core.Scheduler
 
         public GlyphScheduler<TInterface, TDelegate> Add(object key)
         {
-            var scheduler = _injector.Resolve<GlyphScheduler<TInterface, TDelegate>>();
+            var scheduler = _resolver.Resolve<GlyphScheduler<TInterface, TDelegate>>();
             _schedulers.Add(key, scheduler);
 
             if (DefaultKey == null)

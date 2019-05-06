@@ -1,10 +1,10 @@
 ﻿using Diese.Collections;
-using Glyph.Injection;
+using Glyph.Resolver;
 using Simulacra;
 
 namespace Glyph.Composition.Modelization
 {
-    public interface IGlyphConfigurator : IDataBindable<IGlyphComponent>, IInjectionClient
+    public interface IGlyphConfigurator : IDataBindable<IGlyphComponent>, IResolveClient
     {
         IReadOnlyObservableCollection<IGlyphCreator> Children { get; }
     }

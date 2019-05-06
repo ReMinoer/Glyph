@@ -81,7 +81,7 @@
     <Compile Include="IWritableSceneNodeComponent.cs" />
     <Compile Include="ReadOnlySceneNodeDelegate.cs" />
     <Compile Include="Flipper.cs" />
-    <Compile Include="GlyphInjectionContext.cs" />
+    <Compile Include="GlyphResolveContext.cs" />
     <Compile Include="GridComponent.cs" />
     <Compile Include="Inputs\ControlLayerTag.cs" />
     <Compile Include="Inputs\Interactivity.cs" />
@@ -91,9 +91,9 @@
     <Compile Include="Inputs\ProjectionCursorControl.cs" />
     <Compile Include="GlyphObject.cs" />
     <Compile Include="IBoxedComponent.cs" />
-    <Compile Include="Injection\GlyphCompositeInjector.cs" />
-    <Compile Include="Injection\InjectionScope.cs" />
-    <Compile Include="Injection\LocalDependencyInjector.cs" />
+    <Compile Include="Resolvers\GlyphCompositeDependencyResolver.cs" />
+    <Compile Include="Resolvers\ResolverScope.cs" />
+    <Compile Include="Resolvers\LocalDependencyResolver.cs" />
     <Compile Include="Inputs\IInputClient.cs" />
     <Compile Include="Inputs\InputClientManager.cs" />
     <Compile Include="IView.cs" />

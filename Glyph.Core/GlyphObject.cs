@@ -9,11 +9,11 @@ using Niddle;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
-using Glyph.Core.Injection;
+using Glyph.Core.Resolvers;
 using Glyph.Core.Scheduler;
-using Glyph.Injection;
 using Glyph.Math;
 using Glyph.Messaging;
+using Glyph.Resolver;
 using Niddle.Attributes.Base;
 using Taskete;
 
@@ -26,34 +26,34 @@ namespace Glyph.Core
         private bool _initialized;
         private bool _contentLoaded;
         public SchedulerHandler Schedulers { get; }
-        protected internal readonly GlyphCompositeInjector Injector;
+        protected internal readonly GlyphCompositeDependencyResolver Resolver;
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
         public Predicate<IDrawer> DrawPredicate { get; set; }
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
 
-        public GlyphObject(GlyphInjectionContext context)
+        public GlyphObject(GlyphResolveContext context)
         {
             Enabled = true;
             Visible = true;
 
-            var compositeInjector = new GlyphCompositeInjector(this, context);
-            Injector = compositeInjector;
+            var compositeResolver = new GlyphCompositeDependencyResolver(this, context);
+            Resolver = compositeResolver;
             
-            Injector.Local.Registry.Add(Dependency.OnType<TrackingRouter>().Using(Router.Local));
+            Resolver.Local.Registry.Add(Dependency.OnType<TrackingRouter>().Using(Router.Local));
 
-            Schedulers = new SchedulerHandler(compositeInjector.Global);
+            Schedulers = new SchedulerHandler(compositeResolver.Global);
         }
 
         public T Add<T>()
             where T : IGlyphComponent
         {
-            return Injector.Add<T>();
+            return Resolver.Add<T>();
         }
 
         public IGlyphComponent Add(Type componentType)
         {
-            return Injector.Add(componentType) as IGlyphComponent;
+            return Resolver.Add(componentType) as IGlyphComponent;
         }
 
         // TODO : Handle injection on changing children & parents
@@ -68,7 +68,7 @@ namespace Glyph.Core
 
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)
-                glyphObject.Injector.Parent = null;
+                glyphObject.Resolver.Parent = null;
 
             base.Add(item);
 
@@ -79,7 +79,7 @@ namespace Glyph.Core
             if (glyphObject != null)
             {
                 Schedulers.AssignComponent(glyphObject);
-                glyphObject.Injector.Parent = this;
+                glyphObject.Resolver.Parent = this;
             }
             else
                 Schedulers.AssignComponent(item);
@@ -88,7 +88,7 @@ namespace Glyph.Core
                 item.Initialize();
 
             if (_contentLoaded)
-                (item as ILoadContent)?.LoadContent(Injector.Resolve<ContentLibrary>());
+                (item as ILoadContent)?.LoadContent(Resolver.Resolve<ContentLibrary>());
         }
 
         static private IEnumerable<IResolvableInjectable<object, object>> GetFraternalMembers(Type type, Type itemType)
@@ -212,15 +212,15 @@ namespace Glyph.Core
 
         public class SchedulerHandler : GlyphSchedulerHandler
         {
-            private readonly IDependencyInjector _injector;
+            private readonly IDependencyResolver _resolver;
             public GlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; }
             public GlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; }
             public GlyphScheduler<IUpdate, UpdateDelegate> Update { get; }
             public GlyphScheduler<IDraw, DrawDelegate> Draw { get; }
 
-            public SchedulerHandler(IDependencyInjector injector)
+            public SchedulerHandler(IDependencyResolver resolver)
             {
-                _injector = injector;
+                _resolver = resolver;
 
                 Initialize = AddScheduler<IGlyphComponent, InitializeDelegate>();
                 LoadContent = AddScheduler<ILoadContent, LoadContentDelegate>();
@@ -231,7 +231,7 @@ namespace Glyph.Core
             public GlyphScheduler<TInterface, TDelegate> AddScheduler<TInterface, TDelegate>()
                 where TInterface : class, IGlyphComponent
             {
-                var glyphScheduler = _injector
+                var glyphScheduler = _resolver
                     .WithLink<IReadOnlyScheduler<Predicate<object>>, IReadOnlyScheduler<Predicate<object>>>(typeof(TInterface))
                     .Resolve<GlyphScheduler<TInterface, TDelegate>>();
 
