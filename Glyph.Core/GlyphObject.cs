@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Diese;
@@ -13,7 +14,7 @@ using Glyph.Core.Scheduler;
 using Glyph.Injection;
 using Glyph.Math;
 using Glyph.Messaging;
-using Glyph.Reflection;
+using Niddle.Attributes.Base;
 using Taskete;
 
 namespace Glyph.Core
@@ -72,9 +73,8 @@ namespace Glyph.Core
             base.Add(item);
 
             foreach (IGlyphComponent component in Components.Where(x => x != item))
-                foreach (InjectablePropertyInfo injectable in Injector.Resolve<GlyphTypeInfoProvider>()[component.GetType()].InjectableProperties)
-                    if ((injectable.Attribute.Targets & GlyphInjectableTargets.Fraternal) != 0 && injectable.Type.IsInstanceOfType(item))
-                        injectable.Attribute.Inject(injectable.PropertyInfo, component, item);
+                foreach (IResolvableInjectable<object, object> injectable in GetFraternalMembers(component.GetType(), type))
+                    injectable.Inject(component, item);
 
             if (glyphObject != null)
             {
@@ -89,6 +89,41 @@ namespace Glyph.Core
 
             if (_contentLoaded)
                 (item as ILoadContent)?.LoadContent(Injector.Resolve<ContentLibrary>());
+        }
+
+        static private IEnumerable<IResolvableInjectable<object, object>> GetFraternalMembers(Type type, Type itemType)
+        {
+            foreach (FieldInfo fieldInfo in type.GetRuntimeFields())
+            {
+                if (!fieldInfo.IsPublic)
+                    continue;
+                if (!fieldInfo.FieldType.IsAssignableFrom(itemType))
+                    continue;
+                
+                if (FraternalMemberPredicate(fieldInfo))
+                    yield return fieldInfo.AsResolvableInjectable<object>();
+            }
+
+            foreach (PropertyInfo propertyInfo in type.GetRuntimeProperties())
+            {
+                if ((propertyInfo.SetMethod == null || !propertyInfo.SetMethod.IsPublic)
+                    && (propertyInfo.GetMethod == null || !propertyInfo.GetMethod.IsPublic))
+                    continue;
+                if (!propertyInfo.PropertyType.IsAssignableFrom(itemType))
+                    continue;
+
+                if (FraternalMemberPredicate(propertyInfo))
+                    yield return propertyInfo.AsResolvableInjectable<object>();
+            }
+
+            bool FraternalMemberPredicate(MemberInfo memberInfo)
+            {
+                Attribute[] attributes = memberInfo.GetCustomAttributes().ToArray();
+                
+                return attributes.AnyOfType<ResolvableAttributeBase>()
+                    && attributes.AnyOfType(out ResolveTargetsAttribute targetsAttribute)
+                    && (targetsAttribute.Targets & ResolveTargets.Fraternal) != 0;
+            }
         }
 
         public override sealed bool Remove(IGlyphComponent item)

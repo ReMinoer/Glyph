@@ -4,6 +4,7 @@ using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Injection;
 using Glyph.Math;
+using Niddle.Attributes;
 
 namespace Glyph.Graphics.Renderer
 {
@@ -17,11 +18,11 @@ namespace Glyph.Graphics.Renderer
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
         public ISpriteSource Source { get; private set; }
         public abstract IArea Area { get; }
-
-        [GlyphInjectable(GlyphInjectableTargets.Fraternal)]
+        
+        [Resolvable, ResolveTargets(ResolveTargets.Fraternal)]
         public SpriteTransformer SpriteTransformer { get; set; }
-
-        [GlyphInjectable(GlyphInjectableTargets.Parent)]
+        
+        [Resolvable, ResolveTargets(ResolveTargets.Parent)]
         public IDraw DrawableParent { get; set; }
 
         protected RendererBase(ISpriteSource source)

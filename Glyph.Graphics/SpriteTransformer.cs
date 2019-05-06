@@ -2,6 +2,7 @@ using Glyph.Composition;
 using Glyph.Injection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Niddle.Attributes;
 
 namespace Glyph.Graphics
 {
@@ -29,7 +30,7 @@ namespace Glyph.Graphics
             }
         }
 
-        [GlyphInjectable(GlyphInjectableTargets.Fraternal)]
+        [Resolvable, ResolveTargets(ResolveTargets.Fraternal)]
         public ISpriteSource SpriteSource
         {
             get { return _spriteSource; }

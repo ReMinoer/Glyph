@@ -1,6 +1,6 @@
 ﻿using Diese.Collections;
 using Glyph.Composition;
-using Glyph.Injection;
+using Niddle.Attributes;
 
 namespace Glyph.Core
 {
@@ -20,7 +20,7 @@ namespace Glyph.Core
             } 
         }
 
-        [GlyphInjectableTracker]
+        [Populatable(PopulateMethodName = nameof(ITracker<object>.Register))]
         public ITracker<IFlipable> Flipables { get; } = new Tracker<IFlipable>();
 
         public void Flip(Axes axes)

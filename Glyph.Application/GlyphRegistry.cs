@@ -21,7 +21,6 @@ using Glyph.Graphics.Shapes;
 using Glyph.Messaging;
 using Glyph.Particles;
 using Glyph.Physics;
-using Glyph.Reflection;
 using Glyph.Scripting;
 using Glyph.Tools;
 using Glyph.Tools.ShapeRendering;
@@ -76,7 +75,6 @@ namespace Glyph.Application
                 Type<Func<GlyphObject, DrawDelegate>>().Using(x => x.Draw),
 
                 Type<GlyphObject>(),
-                Type<GlyphTypeInfoProvider>().AsSingleton(),
 
                 #endregion
 

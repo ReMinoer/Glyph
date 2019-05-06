@@ -4,6 +4,7 @@ using Glyph.Injection;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
+using Niddle.Attributes;
 
 namespace Glyph.Graphics
 {
@@ -12,8 +13,8 @@ namespace Glyph.Graphics
     {
         private readonly SceneNode _sceneNode;
         private readonly ISpriteSource _spriteSource;
-
-        [GlyphInjectable(GlyphInjectableTargets.Fraternal)]
+        
+        [Resolvable, ResolveTargets(ResolveTargets.Fraternal)]
         public SpriteTransformer SpriteTransformer { get; set; }
 
         public SpriteArea(SceneNode sceneNode, ISpriteSource spriteSource)

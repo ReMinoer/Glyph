@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Glyph.Composition;
-using Glyph.Injection;
+using Niddle.Attributes;
 using Stave;
 
 namespace Glyph.Core.Layers
@@ -12,7 +12,7 @@ namespace Glyph.Core.Layers
     {
         protected readonly Dictionary<ILayerRoot<TLayer>, TLayer> _layers;
 
-        [GlyphInjectable]
+        [Resolvable]
         public Func<ILayerRoot<TLayer>, TLayer> LayerFactory { get; set; }
         public IReadOnlyCollection<TLayer> Layers => _layers.Values.ToList().AsReadOnly();
 

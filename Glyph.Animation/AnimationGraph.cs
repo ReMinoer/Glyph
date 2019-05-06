@@ -6,6 +6,7 @@ using Diese;
 using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Injection;
+using Niddle.Attributes;
 using NLog;
 using OverGraphed;
 
@@ -22,7 +23,7 @@ namespace Glyph.Animation
         private bool _useUnscaledTime;
         private bool _started;
 
-        [GlyphInjectable(GlyphInjectableTargets.Parent | GlyphInjectableTargets.Fraternal)]
+        [Resolvable, ResolveTargets(ResolveTargets.Parent | ResolveTargets.Fraternal)]
         public T Animatable { get; set; }
         public TState Current { get; private set; }
         public TState Start { get; set; }

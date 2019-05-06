@@ -1,5 +1,6 @@
 ﻿using Niddle;
 using Glyph.Core.Injection;
+using Niddle.Attributes;
 
 namespace Glyph.Core
 {
@@ -9,8 +10,8 @@ namespace Glyph.Core
         public IDependencyRegistry LocalRegistry { get; }
         public LocalDependencyInjector LocalInjectorParent { get; }
 
-        public GlyphInjectionContext([Injectable(Key = InjectionScope.Global)] RegistryInjector globalInjector,
-                                     [Injectable(Key = InjectionScope.Local)] IDependencyRegistry localRegistry,
+        public GlyphInjectionContext([Resolvable(Key = InjectionScope.Global)] RegistryInjector globalInjector,
+                                     [Resolvable(Key = InjectionScope.Local)] IDependencyRegistry localRegistry,
                                      LocalDependencyInjector localInjectorParent = null)
         {
             GlobalInjector = globalInjector;

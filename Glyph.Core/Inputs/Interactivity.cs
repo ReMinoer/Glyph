@@ -4,6 +4,7 @@ using Fingear;
 using Fingear.Interactives;
 using Glyph.Composition;
 using Glyph.Injection;
+using Niddle.Attributes;
 
 namespace Glyph.Core.Inputs
 {
@@ -31,7 +32,7 @@ namespace Glyph.Core.Inputs
 
         public IInteractive Interactive => InteractiveComponent;
 
-        public InteractiveRoot([GlyphInjectable(GlyphInjectableTargets.Parent)] IGlyphComponent parent = null)
+        public InteractiveRoot([Resolvable, ResolveTargets(ResolveTargets.Parent)] IGlyphComponent parent = null)
         {
             if (parent?.Name != null)
                 _interactiveComposite.Name = parent.Name + " interactivity";
@@ -60,7 +61,7 @@ namespace Glyph.Core.Inputs
         public Interactive Interactive { get; } = new Interactive();
         protected override sealed IInteractive InteractiveComponent => Interactive;
 
-        [GlyphInjectable(GlyphInjectableTargets.Fraternal | GlyphInjectableTargets.BrowseAllAncestors)]
+        [Resolvable, ResolveTargets(ResolveTargets.Fraternal | ResolveTargets.BrowseAllAncestors)]
         public InteractiveRoot InteractiveRoot
         {
             get => _interactiveRoot;
@@ -77,7 +78,7 @@ namespace Glyph.Core.Inputs
             }
         }
 
-        public Controls([GlyphInjectable(GlyphInjectableTargets.Parent)] IGlyphComponent parent = null)
+        public Controls([Resolvable, ResolveTargets(ResolveTargets.Parent)] IGlyphComponent parent = null)
         {
             if (parent?.Name != null)
                 Interactive.Name = parent.Name + " controls";

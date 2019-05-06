@@ -3,7 +3,7 @@
 namespace Glyph.Injection
 {
     [Flags]
-    public enum GlyphInjectableTargets
+    public enum ResolveTargets
     {
         Parent = 1 << 0,
         Fraternal = 1 << 1,

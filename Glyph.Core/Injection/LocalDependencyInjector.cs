@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using Niddle;
-using Niddle.Base;
 using Niddle.Exceptions;
 
 namespace Glyph.Core.Injection
@@ -15,23 +15,23 @@ namespace Glyph.Core.Injection
             Parent = parent;
         }
 
-        public override object Resolve(Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, InstanceOrigins instanceOrigins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
+        public override object Resolve(Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null, IEnumerable<object> args = null)
         {
-            if (TryResolve(out object obj, type, injectableAttribute, serviceKey, instanceOrigins, dependencyInjector ?? this))
+            if (TryResolve(out object obj, type, key, origins, dependencyInjector ?? this))
                 return obj;
 
-            throw new NotRegisterException(type, serviceKey);
+            throw new NotRegisterException(type, key);
         }
 
-        public override bool TryResolve(out object obj, Type type, InjectableAttributeBase injectableAttribute = null, object serviceKey = null, InstanceOrigins instanceOrigins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null)
+        public override bool TryResolve(out object obj, Type type, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyInjector dependencyInjector = null, IEnumerable<object> args = null)
         {
-            if (Registry.TryGetFactory(out IDependencyFactory factory, type, serviceKey))
+            if (Registry.TryGetFactory(out IDependencyFactory factory, type, key))
             {
                 obj = factory.Get(dependencyInjector ?? this);
                 return true;
             }
 
-            if (Parent != null && Parent.TryResolve(out obj, type, injectableAttribute, serviceKey, instanceOrigins, dependencyInjector ?? this))
+            if (Parent != null && Parent.TryResolve(out obj, type, key, origins, dependencyInjector ?? this))
             {
                 return true;
             }
