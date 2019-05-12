@@ -14,7 +14,6 @@ using Glyph.Core.Scheduler;
 using Glyph.Math;
 using Glyph.Messaging;
 using Glyph.Resolver;
-using Niddle.Attributes.Base;
 using Taskete;
 
 namespace Glyph.Core
@@ -40,7 +39,7 @@ namespace Glyph.Core
             var compositeResolver = new GlyphCompositeDependencyResolver(this, context);
             Resolver = compositeResolver;
             
-            Resolver.Local.Registry.Add(Dependency.OnType<TrackingRouter>().Using(Router.Local));
+            Resolver.Local.Registry.Add(GlyphDependency.OnType<TrackingRouter>().Using(Router.Local));
 
             Schedulers = new SchedulerHandler(compositeResolver.Global);
         }
@@ -72,9 +71,7 @@ namespace Glyph.Core
 
             base.Add(item);
 
-            foreach (IGlyphComponent component in Components.Where(x => x != item))
-                foreach (IResolvableInjectable<object, object> injectable in GetFraternalMembers(component.GetType(), type))
-                    injectable.Inject(component, item);
+            InjectComponentThroughExistingFraternal(item, Components.Where(x => x != item));
 
             if (glyphObject != null)
             {
@@ -91,38 +88,24 @@ namespace Glyph.Core
                 (item as ILoadContent)?.LoadContent(Resolver.Resolve<ContentLibrary>());
         }
 
-        static private IEnumerable<IResolvableInjectable<object, object>> GetFraternalMembers(Type type, Type itemType)
+        static private void InjectComponentThroughExistingFraternal(IGlyphComponent component, IEnumerable<IGlyphComponent> fraternalComponents, bool deepChildren = false)
         {
-            foreach (FieldInfo fieldInfo in type.GetRuntimeFields())
-            {
-                if (!fieldInfo.IsPublic)
-                    continue;
-                if (!fieldInfo.FieldType.IsAssignableFrom(itemType))
-                    continue;
-                
-                if (FraternalMemberPredicate(fieldInfo))
-                    yield return fieldInfo.AsResolvableInjectable<object>();
-            }
+            Type type = component.GetType();
 
-            foreach (PropertyInfo propertyInfo in type.GetRuntimeProperties())
-            {
-                if ((propertyInfo.SetMethod == null || !propertyInfo.SetMethod.IsPublic)
-                    && (propertyInfo.GetMethod == null || !propertyInfo.GetMethod.IsPublic))
-                    continue;
-                if (!propertyInfo.PropertyType.IsAssignableFrom(itemType))
-                    continue;
+            var resolveTargets = ResolveTargets.Fraternal;
+            if (deepChildren)
+                resolveTargets |= ResolveTargets.BrowseAllAncestors;
 
-                if (FraternalMemberPredicate(propertyInfo))
-                    yield return propertyInfo.AsResolvableInjectable<object>();
-            }
-
-            bool FraternalMemberPredicate(MemberInfo memberInfo)
+            foreach (IGlyphComponent child in fraternalComponents)
             {
-                Attribute[] attributes = memberInfo.GetCustomAttributes().ToArray();
-                
-                return attributes.AnyOfType<ResolvableAttributeBase>()
-                    && attributes.AnyOfType(out ResolveTargetsAttribute targetsAttribute)
-                    && (targetsAttribute.Targets & ResolveTargets.Fraternal) != 0;
+                IEnumerable<GlyphResolvableInjectable> fraternalInjectables =
+                    GlyphDependency.ResolvableMembersCache.ForType(child.GetType(), resolveTargets)
+                                   .Where(x => x.ResolvableInjectable.Type.IsAssignableFrom(type));
+
+                foreach (GlyphResolvableInjectable fraternalInjectable in fraternalInjectables)
+                    fraternalInjectable.ResolvableInjectable.Inject(child, component);
+
+                InjectComponentThroughExistingFraternal(component, child.Components, deepChildren: true);
             }
         }
 

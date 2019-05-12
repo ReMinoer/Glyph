@@ -28,10 +28,10 @@ namespace Glyph.Core.Resolvers
 
             Global = context.GlobalResolver;
             Local = new LocalDependencyResolver(context.LocalRegistry, context.LocalResolverParent);
-            Local.Registry.Add(Dependency.OnType<LocalDependencyResolver>().Using(Local));
+            Local.Registry.Add(GlyphDependency.OnType<LocalDependencyResolver>().Using(Local));
 
             foreach (Type nestedType in _composite.GetType().GetNestedTypes())
-                Local.Registry.Add(Dependency.OnType(nestedType));
+                Local.Registry.Add(GlyphDependency.OnType(nestedType));
         }
 
         public object Resolve(Type type, ResolveTargets targets, object key = null, InstanceOrigins origins = InstanceOrigins.All, IDependencyResolver resolver = null)

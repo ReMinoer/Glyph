@@ -21,6 +21,7 @@ using Glyph.Graphics.Shapes;
 using Glyph.Messaging;
 using Glyph.Particles;
 using Glyph.Physics;
+using Glyph.Resolver;
 using Glyph.Scripting;
 using Glyph.Tools;
 using Glyph.Tools.ShapeRendering;
@@ -244,8 +245,8 @@ namespace Glyph.Application
             };
         }
         
-        static private ITypeDependencyBuilder<T> Type<T>() => Dependency.OnType<T>();
-        static private IGenericDependencyBuilder Generic(Type typeDefinition) => Dependency.OnGeneric(typeDefinition);
+        static private ITypeDependencyBuilder<T> Type<T>() => GlyphDependency.OnType<T>();
+        static private IGenericDependencyBuilder Generic(Type typeDefinition) => GlyphDependency.OnGeneric(typeDefinition);
     }
 
 }

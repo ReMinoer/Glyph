@@ -93,6 +93,8 @@
     <Compile Include="Math\TransformationExtension.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="Axes.cs" />
+    <Compile Include="Resolver\GlyphDependency.cs" />
+    <Compile Include="Resolver\GlyphResolvableMemberCache.cs" />
     <Compile Include="Resolver\IResolveClient.cs" />
     <Compile Include="IO\FileType.cs" />
     <Compile Include="GlyphData.cs" />

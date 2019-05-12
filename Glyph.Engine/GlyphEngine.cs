@@ -15,6 +15,7 @@ using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Graphics;
 using Glyph.Messaging;
+using Glyph.Resolver;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -82,7 +83,7 @@ namespace Glyph.Engine
             dependencyConfigurator?.Invoke(Registry);
 
             var resolver = new RegistryResolver(Registry);
-            Registry.Add(Dependency.OnType<RegistryResolver>().Using(resolver));
+            Registry.Add(GlyphDependency.OnType<RegistryResolver>().Using(resolver));
             Resolver = resolver;
 
             RootView = new RootView();
@@ -93,13 +94,13 @@ namespace Glyph.Engine
             InputClientManager = new InputClientManager();
             InteractionManager = new InteractionManager();
 
-            Registry.Add(Dependency.OnType<GlyphEngine>().Using(this));
-            Registry.Add(Dependency.OnType<RootView>().Using(RootView));
-            Registry.Add(Dependency.OnType<ProjectionManager>().Using(ProjectionManager));
-            Registry.Add(Dependency.OnType<ContentLibrary>().Using(ContentLibrary));
-            Registry.Add(Dependency.OnType<InputClientManager>().Using(InputClientManager));
-            Registry.Add(Dependency.OnType<InteractionManager>().Using(InteractionManager));
-            Registry.Add(Dependency.OnType<Func<GraphicsDevice>>().Using(() =>
+            Registry.Add(GlyphDependency.OnType<GlyphEngine>().Using(this));
+            Registry.Add(GlyphDependency.OnType<RootView>().Using(RootView));
+            Registry.Add(GlyphDependency.OnType<ProjectionManager>().Using(ProjectionManager));
+            Registry.Add(GlyphDependency.OnType<ContentLibrary>().Using(ContentLibrary));
+            Registry.Add(GlyphDependency.OnType<InputClientManager>().Using(InputClientManager));
+            Registry.Add(GlyphDependency.OnType<InteractionManager>().Using(InteractionManager));
+            Registry.Add(GlyphDependency.OnType<Func<GraphicsDevice>>().Using(() =>
             {
                 if (FocusedClient != null)
                 {
