@@ -10,6 +10,16 @@ namespace Glyph.Composition
         public GlyphComponent()
         {
             ComponentImplementation = new Component<IGlyphComponent, IGlyphContainer>(this);
+            HierarchyChanged += OnHierarchyChanged;
+            HierarchyComponentAdded += OnHierarchyComponentAdded;
+        }
+
+        public override void Dispose()
+        {
+            HierarchyComponentAdded -= OnHierarchyComponentAdded;
+            HierarchyChanged -= OnHierarchyChanged;
+
+            base.Dispose();
         }
     }
 }

@@ -8,10 +8,10 @@ using Niddle.Attributes.Base;
 
 namespace Glyph.Resolver
 {
-    public struct GlyphResolvableInjectable
+    public class GlyphResolvableInjectable
     {
-        public IResolvableInjectable<object, object, object> ResolvableInjectable;
-        public ResolveTargets Targets;
+        public IResolvableInjectable<object, object, object> ResolvableInjectable { get; set; }
+        public ResolveTargets Targets { get; set; }
     }
 
     public class GlyphResolvableMemberCache : IResolvableMembersProvider<object>

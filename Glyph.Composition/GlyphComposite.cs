@@ -16,10 +16,15 @@ namespace Glyph.Composition
         protected GlyphComposite()
         {
             _component = new Composite<IGlyphComponent, IGlyphContainer, TComponent>(this);
+            HierarchyChanged += OnHierarchyChanged;
+            HierarchyComponentAdded += OnHierarchyComponentAdded;
         }
 
         public override void Dispose()
         {
+            HierarchyComponentAdded -= OnHierarchyComponentAdded;
+            HierarchyChanged -= OnHierarchyChanged;
+
             foreach (TComponent component in ReadOnlyComponents)
                 component.Dispose();
 

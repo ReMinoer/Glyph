@@ -71,8 +71,6 @@ namespace Glyph.Core
 
             base.Add(item);
 
-            InjectComponentThroughExistingFraternal(item, Components.Where(x => x != item));
-
             if (glyphObject != null)
             {
                 Schedulers.AssignComponent(glyphObject);
@@ -86,27 +84,6 @@ namespace Glyph.Core
 
             if (_contentLoaded)
                 (item as ILoadContent)?.LoadContent(Resolver.Resolve<ContentLibrary>());
-        }
-
-        static private void InjectComponentThroughExistingFraternal(IGlyphComponent component, IEnumerable<IGlyphComponent> fraternalComponents, bool deepChildren = false)
-        {
-            Type type = component.GetType();
-
-            var resolveTargets = ResolveTargets.Fraternal;
-            if (deepChildren)
-                resolveTargets |= ResolveTargets.BrowseAllAncestors;
-
-            foreach (IGlyphComponent child in fraternalComponents)
-            {
-                IEnumerable<GlyphResolvableInjectable> fraternalInjectables =
-                    GlyphDependency.ResolvableMembersCache.ForType(child.GetType(), resolveTargets)
-                                   .Where(x => x.ResolvableInjectable.Type.IsAssignableFrom(type));
-
-                foreach (GlyphResolvableInjectable fraternalInjectable in fraternalInjectables)
-                    fraternalInjectable.ResolvableInjectable.Inject(child, component);
-
-                InjectComponentThroughExistingFraternal(component, child.Components, deepChildren: true);
-            }
         }
 
         public override sealed bool Remove(IGlyphComponent item)
