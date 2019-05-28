@@ -20,7 +20,7 @@ namespace Glyph.Core.Inputs
             Input = input;
         }
 
-        protected override sealed bool UpdateControl(float elapsedTime, out System.Numerics.Vector2 value)
+        protected override sealed bool UpdateControlValue(float elapsedTime, out System.Numerics.Vector2 value)
         {
             if (Input == null || !ComputeCursor(out value))
             {

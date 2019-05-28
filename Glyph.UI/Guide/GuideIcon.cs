@@ -27,7 +27,7 @@ namespace Glyph.UI.Guide
         private readonly Vector2 _keyPadding = new Vector2(20, 50);
         private Fingear.IControl _control;
         private readonly ProjectionCursorControl _sceneCursor;
-        private readonly IControl<InputActivity> _clic;
+        private readonly Fingear.IControl _clic;
         public SceneNode SceneNode { get; private set; }
         public bool Clickable { get; protected set; }
         public bool KeyNameVisible { get; set; }
@@ -133,7 +133,7 @@ namespace Glyph.UI.Guide
             {
                 _sceneCursor.IsActive(out System.Numerics.Vector2 mouseInScreen);
                 bool hover = SpriteArea.ContainsPoint(mouseInScreen.AsMonoGameVector());
-                if (hover && _clic.IsActive())
+                if (hover && _clic.IsActive)
                     Clicked?.Invoke(this, EventArgs.Empty);
             }
         }

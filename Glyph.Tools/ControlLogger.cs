@@ -39,7 +39,7 @@ namespace Glyph.Tools
                     if (ControlFilter != null && !ControlFilter(control))
                         continue;
 
-                    if (!control.IsActive())
+                    if (!control.IsActive)
                     {
                         _activateControls.Remove(control);
                         continue;

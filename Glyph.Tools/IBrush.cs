@@ -298,9 +298,9 @@ namespace Glyph.Tools
                 SceneNode.Position = cursorPosition.AsMonoGameVector();
         }
 
-        protected override bool RequestApplyStart() => _applyBrush.IsActive();
-        protected override bool RequestApplyEnd() => !_applyBrush.IsActive();
-        protected override bool RequestCancellation() => _cancel.IsActive();
+        protected override bool RequestApplyStart() => _applyBrush.IsActive;
+        protected override bool RequestApplyEnd() => !_applyBrush.IsActive;
+        protected override bool RequestCancellation() => _cancel.IsActive;
 
         protected override TBrushArgs GetBrushArgs() => GetBrushArgs(SceneNode.Position);
         protected abstract TBrushArgs GetBrushArgs(Vector2 position);

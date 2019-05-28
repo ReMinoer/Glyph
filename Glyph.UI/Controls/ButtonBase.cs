@@ -15,7 +15,7 @@ namespace Glyph.UI.Controls
         private bool _hover;
         private readonly ProjectionCursorControl _sceneCursor;
         private readonly ActivityControl _clic;
-        private readonly IControl<InputActivity> _confirm;
+        private readonly Fingear.IControl _confirm;
         public SceneNode SceneNode { get; private set; }
         public Motion Motion { get; private set; }
         public Text Text { get; private set; }
@@ -90,7 +90,7 @@ namespace Glyph.UI.Controls
                         }
                     }
                 }
-                else if (_confirm.IsActive())
+                else if (_confirm.IsActive)
                 {
                     Trigger();
                     Release();

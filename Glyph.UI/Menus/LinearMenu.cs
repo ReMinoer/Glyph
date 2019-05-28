@@ -14,11 +14,11 @@ namespace Glyph.UI.Menus
     {
         private readonly List<IButton> _buttons;
         private readonly IReadOnlyCollection<IButton> _buttonsReadOnly;
-        private readonly IControl<InputActivity> _up;
-        private readonly IControl<InputActivity> _down;
-        private readonly IControl<InputActivity> _left;
-        private readonly IControl<InputActivity> _right;
-        private readonly IControl<InputActivity> _cancel;
+        private readonly Fingear.IControl _up;
+        private readonly Fingear.IControl _down;
+        private readonly Fingear.IControl _left;
+        private readonly Fingear.IControl _right;
+        private readonly Fingear.IControl _cancel;
         public int SelectedIndex { get; private set; }
         public int DefaultSelection { get; set; }
         public Axis NavigationAxis { get; set; }
@@ -101,15 +101,15 @@ namespace Glyph.UI.Menus
                     switch (NavigationAxis)
                     {
                         case Axis.Vertical:
-                            if (_up.IsActive())
+                            if (_up.IsActive)
                                 SelectedIndex--;
-                            if (_down.IsActive())
+                            if (_down.IsActive)
                                 SelectedIndex++;
                             break;
                         case Axis.Horizontal:
-                            if (_left.IsActive())
+                            if (_left.IsActive)
                                 SelectedIndex--;
-                            if (_right.IsActive())
+                            if (_right.IsActive)
                                 SelectedIndex++;
                             break;
                     }
@@ -126,7 +126,7 @@ namespace Glyph.UI.Menus
                 _buttons[SelectedIndex].Hover = true;
             }
             
-            if (_cancel.IsActive())
+            if (_cancel.IsActive)
                 TriggerSelection(DefaultSelection);
         }
 
