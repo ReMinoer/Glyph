@@ -24,11 +24,11 @@ namespace Glyph.Graphics.Renderer
                 if (Source == null)
                     return null;
 
-                Rectangle rectangle = Source.GetDrawnRectagle();
+                Rectangle rectangle = Source.GetDrawnRectangle();
                 Vector2 origin = SpriteTransformer?.Origin ?? Source.GetDefaultOrigin();
                 Vector2 scale = _sceneNode.Scale * (SpriteTransformer?.Scale ?? Vector2.One);
 
-                return new TopLeftRectangle(_sceneNode.Position + rectangle.Location.ToVector2() - origin * scale, rectangle.Size.ToVector2() * scale);
+                return new TopLeftRectangle(_sceneNode.Position - origin * scale, rectangle.Size.ToVector2() * scale);
             }
         }
 

@@ -81,7 +81,7 @@ namespace Glyph.Graphics
                 spriteSheet.ApplyCarver(carver);
         }
 
-        public Rectangle GetDrawnRectagle()
+        public Rectangle GetDrawnRectangle()
         {
             return Rectangle ?? CurrentTexture.Bounds;
         }

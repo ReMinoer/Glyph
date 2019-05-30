@@ -27,7 +27,7 @@ namespace Glyph.Graphics
         {
             get
             {
-                Rectangle drawnRectangle = _spriteSource.GetDrawnRectagle();
+                Rectangle drawnRectangle = _spriteSource.GetDrawnRectangle();
                 return drawnRectangle.Width == 0 && drawnRectangle.Height == 0;
             }
         }

@@ -26,7 +26,7 @@ namespace Glyph.Graphics
 
         public abstract event Action<ISpriteSource> Loaded;
 
-        public Rectangle GetDrawnRectagle()
+        public Rectangle GetDrawnRectangle()
         {
             return (Rectangle ?? Texture?.Bounds) ?? Microsoft.Xna.Framework.Rectangle.Empty;
         }

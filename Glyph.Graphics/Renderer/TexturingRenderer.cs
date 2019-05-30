@@ -39,7 +39,7 @@ namespace Glyph.Graphics.Renderer
             if (!drawnRectangle.Intersects(cameraRectangle, out TopLeftRectangle visibleRectangle))
                 return;
 
-            TopLeftRectangle sourceRectangle = Source.GetDrawnRectagle().ToFloats();
+            TopLeftRectangle sourceRectangle = Source.GetDrawnRectangle().ToFloats();
             Vector2 sourcePatchInit = visibleRectangle.Position - sourceRectangle.Size.Integrate(sourceRectangle.Size.Discretize(visibleRectangle.Position - drawnRectangle.Position)) + sourceRectangle.Position;
             Vector2 sourcePatchOrigin = sourcePatchInit;
 

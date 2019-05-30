@@ -75,9 +75,9 @@ namespace Glyph.Graphics
             return Frames[frameIndex];
         }
 
-        public Rectangle GetDrawnRectagle()
+        public Rectangle GetDrawnRectangle()
         {
-            return Rectangle ?? _spriteLoader.GetDrawnRectagle();
+            return Rectangle ?? _spriteLoader.GetDrawnRectangle();
         }
 
         Vector2 ISpriteSource.GetDefaultOrigin()
