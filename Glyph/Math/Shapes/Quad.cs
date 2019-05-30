@@ -13,7 +13,7 @@ namespace Glyph.Math.Shapes
 
         public bool IsVoid => Size.X.EqualsZero() || Size.Y.EqualsZero();
         public Vector2 Size => new Vector2(Width, Height);
-        public Vector2 Center => (P1 - P0 + P2 - P0) / 2;
+        public Vector2 Center => (P1 + P2) / 2;
         public TopLeftRectangle BoundingBox => MathUtils.GetBoundingBox(Vertices);
 
         public Vector2 TopLeft => new Vector2(Left, Top);
