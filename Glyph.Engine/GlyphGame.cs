@@ -1,10 +1,14 @@
 using System;
 using Niddle;
 using Fingear;
+using Fingear.Controls;
+using Fingear.Controls.Composites;
+using Fingear.Interactives;
 using Fingear.MonoGame;
 using Glyph.Core.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using IInputStates = Fingear.MonoGame.IInputStates;
 
 namespace Glyph.Engine
@@ -12,11 +16,15 @@ namespace Glyph.Engine
     public class GlyphGame : Game, IGlyphClient
     {
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
+
+        private IControl _fullscreenControl;
         private Point _windowSize;
         private Point _lastWindowSize;
         private bool _resizing;
+
         public GlyphEngine Engine { get; }
         public virtual bool IsFocus => IsActive && System.Windows.Forms.Form.ActiveForm?.Handle == Window.Handle;
+
         IInputStates IInputClient.States { get; } = new InputStates();
         Vector2 IDrawClient.Size => WindowSize.ToVector2();
         RenderTarget2D IDrawClient.DefaultRenderTarget => null;
@@ -66,6 +74,24 @@ namespace Glyph.Engine
             Engine = new GlyphEngine(Content, dependencyConfigurator);
             Engine.Stopped += OnEngineStopped;
             Engine.FocusedClient = this;
+            
+            _fullscreenControl = new ControlSimultaneous<IControl>
+            {
+                Components =
+                {
+                    new Control(InputSystem.Instance.Keyboard[Keys.LeftAlt], InputActivity.Pressed),
+                    new Control(InputSystem.Instance.Keyboard[Keys.Enter])
+                }
+            };
+
+            Engine.InteractionManager.Root.Add(new Interactive
+            {
+                Name = "Window interactive",
+                Controls =
+                {
+                    _fullscreenControl
+                }
+            });
         }
 
         protected override void Initialize()
@@ -86,6 +112,9 @@ namespace Glyph.Engine
 
             base.Update(gameTime);
 
+            if (_fullscreenControl.IsActive)
+                ToggleFullscreen();
+
             Engine.HandleInput();
 
             if (!IsActive)
@@ -101,11 +130,10 @@ namespace Glyph.Engine
 
             _resizing = true;
 
-            if (_graphicsDeviceManager.IsFullScreen)
+            if (Window.IsBorderless)
             {
-                _graphicsDeviceManager.IsFullScreen = false;
-                Window.IsBorderless = false;
                 WindowSize = _lastWindowSize;
+                Window.IsBorderless = false;
             }
             else
             {
@@ -120,7 +148,6 @@ namespace Glyph.Engine
                         maxHeight = dm.Height;
                     }
 
-                _graphicsDeviceManager.IsFullScreen = true;
                 Window.IsBorderless = true;
                 Window.Position = new Point(0, 0);
                 WindowSize = new Point(maxWidth, maxHeight);

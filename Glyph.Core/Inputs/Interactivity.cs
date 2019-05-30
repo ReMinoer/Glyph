@@ -84,15 +84,16 @@ namespace Glyph.Core.Inputs
                 Interactive.Name = parent.Name + " controls";
         }
 
-        public void Add(IControl item) => Interactive.Add(item);
-        public bool Remove(IControl item) => Interactive.Remove(item);
-        public void Clear() => Interactive.Clear();
-        public bool Contains(IControl item) => Interactive.Contains(item);
-        public IEnumerator<IControl> GetEnumerator() => Interactive.GetEnumerator();
+        public void Add(IControl item) => Interactive.Controls.Add(item);
+        public bool Remove(IControl item) => Interactive.Controls.Remove(item);
+        public void Clear() => Interactive.Controls.Clear();
+        public bool Contains(IControl item) => Interactive.Controls.Contains(item);
+        public IEnumerator<IControl> GetEnumerator() => Interactive.Controls.GetEnumerator();
 
-        int ICollection<IControl>.Count => ((ICollection<IControl>)Interactive).Count;
-        bool ICollection<IControl>.IsReadOnly => ((ICollection<IControl>)Interactive).IsReadOnly;
-        void ICollection<IControl>.CopyTo(IControl[] array, int arrayIndex) => ((ICollection<IControl>)Interactive).CopyTo(array, arrayIndex);
+        private ICollection<IControl> InteractiveControlsCollection => Interactive.Controls;
+        int ICollection<IControl>.Count => InteractiveControlsCollection.Count;
+        bool ICollection<IControl>.IsReadOnly => InteractiveControlsCollection.IsReadOnly;
+        void ICollection<IControl>.CopyTo(IControl[] array, int arrayIndex) => InteractiveControlsCollection.CopyTo(array, arrayIndex);
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
