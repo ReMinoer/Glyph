@@ -20,7 +20,7 @@ namespace Glyph.Tools.Base
         private readonly ActivityControl _grab;
 
         private bool _grabbed;
-        private Vector2 _grabPosition;
+        private Vector2 _relativeGrabPosition;
 
         public IWritableSceneNodeComponent EditedObject { get; set; }
         object IIntegratedEditor.EditedObject => EditedObject;
@@ -32,6 +32,12 @@ namespace Glyph.Tools.Base
         }
 
         protected abstract IArea Area { get; }
+
+        public IDrawClient RaycastClient
+        {
+            get => _projectedCursor.RaycastClient;
+            set => _projectedCursor.RaycastClient = value;
+        }
 
         protected HandleBase(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
             : base(context)
@@ -64,25 +70,29 @@ namespace Glyph.Tools.Base
                     if (Area.ContainsPoint(projectedCursorPosition))
                     {
                         _grabbed = true;
-                        _grabPosition = projectedCursorPosition - _sceneNode.Position;
+                        _relativeGrabPosition = ProjectToTargetScene(projectedCursorPosition - _sceneNode.Position);
                         OnGrabbed();
                     }
                 }
 
                 if (_grabbed)
                 {
-                    Projection<Vector2> projection = _projectionManager.ProjectFromPosition(_sceneNode, projectedCursorPosition)
-                                                                       .To(EditedObject)
-                                                                       .ByRaycast()
-                                                                       .First();
-                    
-                    OnDragging(projection.Value - _grabPosition);
+                    Vector2 targetScenePosition = ProjectToTargetScene(projectedCursorPosition);
+                    OnDragging(targetScenePosition - _relativeGrabPosition);
                 }
             }
             else
             {
                 _grabbed = false;
             }
+        }
+
+        private Vector2 ProjectToTargetScene(Vector2 value)
+        {
+            return _projectionManager.ProjectFromPosition(_sceneNode, value)
+                                     .To(EditedObject)
+                                     .ByRaycast()
+                                     .First().Value;
         }
     }
 }

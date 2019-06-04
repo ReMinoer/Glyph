@@ -30,6 +30,20 @@ namespace Glyph.Tools
         
         object IIntegratedEditor.EditedObject => EditedObject;
 
+        private IDrawClient _raycastClient;
+        public IDrawClient RaycastClient
+        {
+            get => _raycastClient;
+            set
+            {
+                _raycastClient = value;
+
+                _centralHandle.RaycastClient = value;
+                _horizontalHandle.RaycastClient = value;
+                _verticalHandle.RaycastClient = value;
+            }
+        }
+
         public SceneNodeEditor(GlyphResolveContext context)
             : base(context)
         {
