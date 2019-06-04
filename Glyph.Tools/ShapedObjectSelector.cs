@@ -98,6 +98,9 @@ namespace Glyph.Tools
             Logger.Debug($"Pick position: {mousePosition}");
 
             IEnumerable<IBoxedComponent> inRange = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(mousePosition.AsMonoGameVector(), 1, 1));
+            if (Filter != null)
+                inRange = inRange.Where(x => Filter(x));
+
             IBoxedComponent[] array = inRange as IBoxedComponent[] ?? inRange.ToArray();
 
             if (array.Length != 0)
