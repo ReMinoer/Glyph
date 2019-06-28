@@ -123,5 +123,45 @@ namespace Glyph.Math
         {
             return GetBoundingBox(areas.Select(x => x.BoundingBox));
         }
+
+        static public Rectangle GetBoundingBox(params Point[] points)
+        {
+            return GetBoundingBox(points.AsEnumerable());
+        }
+
+        static public Rectangle GetBoundingBox(IEnumerable<Point> points)
+        {
+            if (points == null)
+                return Rectangle.Empty;
+
+            using (IEnumerator<Point> enumerator = points.GetEnumerator())
+            {
+                if (!enumerator.MoveNext())
+                    return Rectangle.Empty;
+
+                Point point = enumerator.Current;
+
+                int left = point.X;
+                int right = point.X;
+                int top = point.Y;
+                int bottom = point.Y;
+
+                while (enumerator.MoveNext())
+                {
+                    point = enumerator.Current;
+
+                    if (point.X < left)
+                        left = point.X;
+                    if (point.X > right)
+                        right = point.X;
+                    if (point.Y < top)
+                        top = point.Y;
+                    if (point.Y > bottom)
+                        bottom = point.Y;
+                }
+
+                return new Rectangle(left, top, right - left, bottom - top);
+            }
+        }
     }
 }
