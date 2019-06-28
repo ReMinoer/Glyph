@@ -70,7 +70,7 @@ namespace Glyph.Tools.Base
                     if (Area.ContainsPoint(projectedCursorPosition))
                     {
                         _grabbed = true;
-                        _relativeGrabPosition = ProjectToTargetScene(projectedCursorPosition - _sceneNode.Position);
+                        _relativeGrabPosition = ProjectToTargetScene(projectedCursorPosition - _sceneNode.Position + _sceneNode.LocalPosition);
                         OnGrabbed();
                     }
                 }
