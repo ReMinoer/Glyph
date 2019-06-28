@@ -48,9 +48,29 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Brushing\Generic\ResettableGridBrush.cs" />
+    <Compile Include="IIntegratedEditor.cs" />
+    <Compile Include="Brushing\Base\BrushBase.cs" />
+    <Compile Include="Brushing\Controllers\Base\BrushControllerBase.cs" />
+    <Compile Include="Brushing\BrushExtensions.cs" />
+    <Compile Include="Brushing\Grid\Brushes\ContinuousGridBrush.cs" />
+    <Compile Include="Brushing\Space\SpaceBrushArgs.cs" />
+    <Compile Include="Brushing\Controllers\CursorBrushController.cs" />
+    <Compile Include="Brushing\Controllers\Base\CursorBrushControllerBase.cs" />
+    <Compile Include="Brushing\Grid\Brushes\DraggableGridBrush.cs" />
+    <Compile Include="Brushing\Grid\GridBrushArgs.cs" />
+    <Compile Include="Brushing\Grid\Brushes\Base\GridBrushBase.cs" />
+    <Compile Include="Brushing\Controllers\IBrushController.cs" />
+    <Compile Include="Brushing\Space\ISpaceBrushArgs.cs" />
+    <Compile Include="Brushing\Grid\IGridBrush.cs" />
+    <Compile Include="Brushing\Grid\IGridBrushArgs.cs" />
+    <Compile Include="Brushing\Grid\IGridPaint.cs" />
+    <Compile Include="Brushing\IPaint.cs" />
+    <Compile Include="Brushing\Controllers\MultiBrushEditor.cs" />
+    <Compile Include="Brushing\Grid\Brushes\RectangleGridBrush.cs" />
     <Compile Include="FreeCamera.cs" />
     <Compile Include="Base\HandleBase.cs" />
-    <Compile Include="IBrush.cs" />
+    <Compile Include="Brushing\IBrush.cs" />
     <Compile Include="PositionHandle.cs" />
     <Compile Include="SceneNodeEditor.cs" />
     <Compile Include="ShapedObjectSelector.cs" />

@@ -24,6 +24,7 @@ using Glyph.Physics;
 using Glyph.Resolver;
 using Glyph.Scripting;
 using Glyph.Tools;
+using Glyph.Tools.Brushing.Controllers;
 using Glyph.Tools.ShapeRendering;
 using Glyph.UI;
 using Glyph.UI.Menus;
@@ -212,6 +213,8 @@ namespace Glyph.Application
 
                 Type<InputLogger>(),
                 Type<ControlLogger>(),
+
+                Generic(typeof(CursorBrushController<,>)),
 
                 #endregion
 
