@@ -42,12 +42,6 @@
     <PackageReference Include="PropertyChanged.Fody">
       <Version>2.1.4</Version>
     </PackageReference>
-    <PackageReference Include="ReMinoer.Diese">
-      <Version>0.1.2-alpha</Version>
-    </PackageReference>
-    <PackageReference Include="ReMinoer.Diese.Collections">
-      <Version>0.1.2-alpha</Version>
-    </PackageReference>
     <PackageReference Include="System.Reactive">
       <Version>3.1.1</Version>
     </PackageReference>
@@ -158,6 +152,14 @@
     <Compile Include="Transition\TransitionVector4.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj">
+      <Project>{aa20cdf3-72ed-48da-ae3c-74c6fe9003fb}</Project>
+      <Name>Diese.Collections %28Stave%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
+      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
+      <Name>Diese %28Taskete%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
       <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
       <Name>Niddle</Name>

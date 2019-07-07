@@ -56,6 +56,10 @@
       <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
       <Name>Stave</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
+      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
+      <Name>Diese %28Taskete%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
       <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
       <Name>Niddle</Name>

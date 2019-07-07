@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Diese.Collections;
 using Niddle;
 using Fingear;
 using Fingear.Controls;

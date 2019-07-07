@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard1.0</TargetFramework>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <Compile Include="..\External\Fingear\External\Stave\External\Diese\Diese.Diagnostics\**\*.cs" Exclude="**\obj\**\*.cs" />
+    </ItemGroup>
+
+</Project>

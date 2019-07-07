@@ -83,9 +83,17 @@
     <Compile Include="Carvers\UniformCarver.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj">
+      <Project>{aa20cdf3-72ed-48da-ae3c-74c6fe9003fb}</Project>
+      <Name>Diese.Collections %28Stave%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
       <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
       <Name>Stave</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
+      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
+      <Name>Diese %28Taskete%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
       <Project>{91ef736f-8196-4db7-bdec-9fe05b14c179}</Project>
