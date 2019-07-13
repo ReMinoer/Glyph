@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Diese.Collections;
+using Diese.Collections.ReadOnly;
 using Glyph.Composition;
 using Glyph.Composition.Messaging;
 using Glyph.Messaging;

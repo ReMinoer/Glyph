@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Diese.Collections;
+using Diese.Collections.Observables.ReadOnly;
 using Glyph.Composition.Base;
-using Glyph.Composition.Messaging;
 using Stave;
 
 namespace Glyph.Composition
@@ -38,7 +37,7 @@ namespace Glyph.Composition
         internal override IContainer<IGlyphComponent, IGlyphContainer, TComponent> ContainerImplementation => _component;
         internal override IEnumerable<TComponent> ReadOnlyComponents => _component.Components;
 
-        public IWrappedCollection<TComponent> Components => _component.Components;
+        public IWrappedObservableCollection<TComponent> Components => _component.Components;
         
         public virtual void Add(TComponent item) => _component.Add(item);
         public virtual bool Remove(TComponent item) => _component.Remove(item);

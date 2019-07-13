@@ -4,7 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using Diese;
-using Diese.Collections;
+using Diese.Collections.Observables;
+using Diese.Collections.Observables.ReadOnly;
 using Niddle;
 using Simulacra;
 

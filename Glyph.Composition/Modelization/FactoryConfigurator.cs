@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
-using Diese.Collections;
+using Diese.Collections.Observables;
+using Diese.Collections.Observables.ReadOnly;
 using Niddle;
 using Simulacra;
 
@@ -61,7 +61,7 @@ namespace Glyph.Composition.Modelization
         public FactoryConfigurator(IGlyphCreator<TParent> parent)
         {
             _parent = parent;
-            _children = new Diese.Collections.ReadOnlyObservableCollection<TData>(this);
+            _children = new ReadOnlyObservableCollection<TData>(this);
         }
 
         public void Configure(TParent obj)

@@ -1,4 +1,4 @@
-﻿using Diese.Collections;
+﻿using Diese.Collections.Observables.ReadOnly;
 using Glyph.Resolver;
 using Simulacra;
 
