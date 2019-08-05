@@ -60,7 +60,6 @@
     <Compile Include="Messaging\ICompositionMessage.cs" />
     <Compile Include="Messaging\IDecompositionMessage.cs" />
     <Compile Include="Messaging\IDisposingMessage.cs" />
-    <Compile Include="Messaging\IInstantiatingMessage.cs" />
     <Compile Include="Messaging\ILocalInterpreter.cs" />
     <Compile Include="Messaging\MessageHelper.cs" />
     <Compile Include="Delegates\DrawDelegate.cs" />
@@ -72,7 +71,6 @@
     <Compile Include="ILoadContent.cs" />
     <Compile Include="IUpdate.cs" />
     <Compile Include="Messaging\DisposingMessage.cs" />
-    <Compile Include="Messaging\InstantiatingMessage.cs" />
     <Compile Include="Modelization\BindedData.cs" />
     <Compile Include="Modelization\BindedDataBase.cs" />
     <Compile Include="Modelization\CompositeData.cs" />

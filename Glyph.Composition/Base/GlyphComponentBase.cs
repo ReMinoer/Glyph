@@ -28,18 +28,31 @@ namespace Glyph.Composition.Base
                 if (value == Parent)
                     return;
                 
-                if (Parent != null)
+                if (Parent != null && Router.IsReady)
                 {
                     IMessage decompositionMessage = MessageHelper.BuildGeneric(typeof(DecompositionMessage<>), GetType(), t => t.GetConstructors().First(), this, Parent);
                     Router.Send(decompositionMessage);
+
+                    foreach (IGlyphComponent child in this.ChildrenQueue())
+                    {
+                        decompositionMessage = MessageHelper.BuildGeneric(typeof(DecompositionMessage<>), child.GetType(), t => t.GetConstructors().First(), child, child.Parent);
+                        child.Router.Send(decompositionMessage);
+                    }
                 }
                 
                 ComponentImplementation.Parent = value;
+                Router.Global = Parent?.Router.Global;
 
-                if (value != null)
+                if (value != null && Router.IsReady)
                 {
-                    IMessage compositionMessage = MessageHelper.BuildGeneric(typeof(CompositionMessage<>), GetType(), t => t.GetConstructors().First(), this, value);
+                    IMessage compositionMessage = MessageHelper.BuildGeneric(typeof(CompositionMessage<>), GetType(), t => t.GetConstructors().First(), this, Parent);
                     Router.Send(compositionMessage);
+
+                    foreach (IGlyphComponent child in this.ChildrenQueue())
+                    {
+                        compositionMessage = MessageHelper.BuildGeneric(typeof(CompositionMessage<>), child.GetType(), t => t.GetConstructors().First(), child, child.Parent);
+                        child.Router.Send(compositionMessage);
+                    }
                 }
             }
         }
@@ -51,10 +64,6 @@ namespace Glyph.Composition.Base
             Id = Guid.NewGuid();
             Name = type.GetDisplayName();
             Router = new ComponentRouterSystem(this);
-
-            IMessage instantiatingMessage = MessageHelper.BuildGeneric(typeof(InstantiatingMessage<>), type, t => t.GetConstructors().First(), this);
-            Router.Global.Send(instantiatingMessage);
-            Router.Local.Send(instantiatingMessage);
 
             Injectables = GlyphDependency.ResolvableMembersCache.ForType(type, ResolveTargets.Parent | ResolveTargets.Fraternal).ToList();
         }

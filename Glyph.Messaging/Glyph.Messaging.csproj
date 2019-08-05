@@ -38,6 +38,7 @@
     <Compile Include="ContestMessage.cs" />
     <Compile Include="ISubscribableRouter.cs" />
     <Compile Include="ITrackingRouter.cs" />
+    <Compile Include="TrackingRouterNull.cs" />
     <Compile Include="OpenMessage.cs" />
     <Compile Include="HandlableMessage.cs" />
     <Compile Include="HandlerMessage.cs" />

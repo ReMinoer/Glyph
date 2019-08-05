@@ -45,8 +45,18 @@ namespace Glyph.Engine
 
         public GlyphObject Root
         {
-            get => _root ?? (_root = Resolver.Resolve<GlyphObject>());
-            set => _root = value;
+            get
+            {
+                if (_root == null)
+                    Root = Resolver.Resolve<GlyphObject>();
+
+                return _root;
+            }
+            set
+            {
+                _root = value;
+                _root.Router.Global = Resolver.Resolve<TrackingRouter>();
+            }
         }
 
         public IGlyphClient FocusedClient

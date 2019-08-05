@@ -82,7 +82,7 @@ namespace Glyph.Application
 
                 #region Messaging
                 
-                Type<TrackingRouter>().Using(ComponentRouterSystem.GlobalRouter),
+                Type<TrackingRouter>().AsSingleton(),
                 Type<ITrackingRouter>().LinkedTo<TrackingRouter>(),
                 Type<ITrackingRouter>().Keyed(ResolverScope.Global).LinkedTo<TrackingRouter>(),
                 Type<ISubscribableRouter>().LinkedTo<TrackingRouter>(),

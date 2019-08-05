@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Diese.Collections;
+using Diese.Collections.Observables;
+using Diese.Collections.Observables.ReadOnly;
 using Glyph.Composition;
+using Glyph.Composition.Messaging;
 using Glyph.Core.Tracking;
 using Glyph.Math;
 using Glyph.Messaging;
@@ -16,6 +18,7 @@ namespace Glyph.Core
     {
         private readonly RootView _rootView;
         private readonly MessagingTracker<IView> _views;
+        private readonly ObservableList<ISceneNodeComponent> _sceneRoots;
 
         public IEnumerable<IView> Views
         {
@@ -27,14 +30,49 @@ namespace Glyph.Core
             }
         }
 
-        public IEnumerable<ISceneNode> SceneRoots => ViewsSceneRoots.Union(CamerasSceneRoots).Distinct();
-        public IEnumerable<ISceneNode> ViewsSceneRoots => Views.Select(x => x.GetSceneNode().RootNode()).NotNulls().Distinct();
-        public IEnumerable<ISceneNode> CamerasSceneRoots => Views.Select(x => x.Camera.GetSceneNode().RootNode()).Distinct();
+        public IReadOnlyObservableList<ISceneNodeComponent> SceneRoots { get; }
 
         public ProjectionManager(RootView rootView, ISubscribableRouter subscribableRouter)
         {
             _rootView = rootView;
             _views = new MessagingTracker<IView>(subscribableRouter);
+
+            _sceneRoots = new ObservableList<ISceneNodeComponent>();
+            SceneRoots = new ReadOnlyObservableList<ISceneNodeComponent>(_sceneRoots);
+
+            subscribableRouter.Add<ICompositionMessage<ISceneNodeComponent>>(Interpret);
+            subscribableRouter.Add<IDecompositionMessage<ISceneNodeComponent>>(Interpret);
+        }
+
+        private void Interpret(ICompositionMessage<ISceneNodeComponent> obj)
+        {
+            ISceneNodeComponent sceneNode = obj.Instance;
+
+            if (sceneNode.ParentNode == null && !_sceneRoots.Contains(sceneNode))
+                _sceneRoots.Add(sceneNode);
+
+            sceneNode.ParentNodeChanged += OnParentSceneNodeChanged;
+        }
+
+        private void Interpret(IDecompositionMessage<ISceneNodeComponent> obj)
+        {
+            ISceneNodeComponent sceneNode = obj.Instance;
+
+            sceneNode.ParentNodeChanged -= OnParentSceneNodeChanged;
+            _sceneRoots.Remove(sceneNode);
+        }
+
+        private void OnParentSceneNodeChanged(object sender, ISceneNode parentNode)
+        {
+            var sceneNode = (ISceneNodeComponent)sender;
+
+            if (sceneNode.ParentNode == null)
+            {
+                if (!_sceneRoots.Contains(sceneNode))
+                    _sceneRoots.Add(sceneNode);
+            }
+            else
+                _sceneRoots.Remove(sceneNode);
         }
 
         public IProjectionController<Transformation> ProjectFrom(IView view, Transformation transformationOnView)

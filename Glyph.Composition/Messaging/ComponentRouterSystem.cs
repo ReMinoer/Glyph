@@ -9,17 +9,42 @@ namespace Glyph.Composition.Messaging
 {
     public class ComponentRouterSystem : ITrackingRouter
     {
-        static public TrackingRouter GlobalRouter { get; } = new TrackingRouter();
-        public TrackingRouter Global => GlobalRouter;
+        static private readonly TrackingRouterNull RouterNull = new TrackingRouterNull();
+
+        private readonly IGlyphComponent _component;
+
+        private ITrackingRouter _global = RouterNull;
+        public ITrackingRouter Global
+        {
+            get => _global;
+            set
+            {
+                value = value ?? RouterNull;
+                if (_global == value)
+                    return;
+                
+                _global.Unregister(_component);
+                _global = value;
+                _global.Register(_component);
+
+                foreach (IGlyphComponent component in _component.Components)
+                    component.Router.Global = value;
+            }
+        }
+
+        private ISubscribableRouter GlobalRouter => Global;
+
         public TrackingRouter Local { get; } = new TrackingRouter(typeof(ILocalInterpreter<>), nameof(ILocalInterpreter<IMessage>.Interpret));
         public IRouter Ascending { get; }
         public IRouter Descending { get; }
 
-        public int Count => Global.Count + Local.Count;
+        public bool IsReady => Global != RouterNull;
+        public int Count => GlobalRouter.Count + Local.Count;
 
         public ComponentRouterSystem(IGlyphComponent component)
         {
-            Global.Register(component);
+            _component = component;
+            
             Local.Register(component);
 
             Ascending = new AscendingRouter(component);
@@ -141,23 +166,23 @@ namespace Glyph.Composition.Messaging
         }
 
         bool ICollection<Delegate>.IsReadOnly => false;
-        int ITracker<object>.Count => Global.Count + Local.Count;
+        int ITracker<object>.Count => GlobalRouter.Count + Local.Count;
 
         void ICollection<Delegate>.Clear()
         {
-            Global.Clear();
+            GlobalRouter.Clear();
             Local.Clear();
         }
 
         void ICollection<Delegate>.CopyTo(Delegate[] array, int arrayIndex)
         {
             Global.CopyTo(array, arrayIndex);
-            Local.CopyTo(array, arrayIndex + Global.Count);
+            Local.CopyTo(array, arrayIndex + GlobalRouter.Count);
         }
 
         void ITracker<object>.Clear()
         {
-            Global.Clear();
+            GlobalRouter.Clear();
             Local.Clear();
         }
 

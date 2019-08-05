@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Diese;
+using Diese.Collections.Observables.ReadOnly;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 
@@ -11,7 +11,7 @@ namespace Glyph.Core.Base
         protected abstract ISceneNode SceneNode { get; }
 
         public ISceneNode ParentNode => SceneNode.ParentNode;
-        public IReadOnlyCollection<ISceneNode> Children => SceneNode.Children;
+        public IReadOnlyObservableList<ISceneNode> Children => SceneNode.Children;
         public Vector2 Position => SceneNode.Position;
         public float Rotation => SceneNode.Rotation;
         public float Scale => SceneNode.Scale;
@@ -29,6 +29,12 @@ namespace Glyph.Core.Base
         {
             add => SceneNode.TransformationChanged += value;
             remove => SceneNode.TransformationChanged -= value;
+        }
+
+        public event EventHandler<ISceneNode> ParentNodeChanged
+        {
+            add => SceneNode.ParentNodeChanged += value;
+            remove => SceneNode.ParentNodeChanged -= value;
         }
 
         public bool Represent(IRepresentative<ISceneNode> other)

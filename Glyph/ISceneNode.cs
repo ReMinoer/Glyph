@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Diese;
+using Diese.Collections.Observables.ReadOnly;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 
@@ -8,7 +9,7 @@ namespace Glyph
     public interface ISceneNode : IRepresentative<ISceneNode>, ITransformer
     {
         ISceneNode ParentNode { get; }
-        IReadOnlyCollection<ISceneNode> Children { get; }
+        IReadOnlyObservableList<ISceneNode> Children { get; }
         Vector2 Position { get; }
         float Rotation { get; }
         float Scale { get; }
@@ -29,5 +30,6 @@ namespace Glyph
         void LinkChild(ISceneNode child, Referential childStaticReferential = Referential.World);
         void UnlinkChild(ISceneNode child);
         void Refresh();
+        event EventHandler<ISceneNode> ParentNodeChanged;
     }
 }

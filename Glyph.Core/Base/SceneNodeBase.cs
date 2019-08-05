@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Diese;
 using Diese.Collections;
+using Diese.Collections.Observables;
+using Diese.Collections.Observables.ReadOnly;
 using Glyph.Composition;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
@@ -11,7 +11,7 @@ using Stave;
 
 namespace Glyph.Core.Base
 {
-    public class SceneNodeBase : GlyphComponent, ISceneNode
+    public class SceneNodeBase : GlyphComponent, ISceneNodeComponent
     {
         protected Transformation _transformation;
         protected Vector2 _position;
@@ -22,12 +22,11 @@ namespace Glyph.Core.Base
         protected float _depth;
 
         private bool _isRoot;
-        private readonly ObservableCollection<ISceneNode> _childrenNodes;
-        private readonly IReadOnlyList<ISceneNode> _readOnlyChildrenNodes;
+        private readonly ObservableList<ISceneNode> _childrenNodes;
 
         public ISceneNode ParentNode { get; private set; }
         public Matrix3X3 Matrix { get; private set; } = Matrix3X3.Identity;
-        public IReadOnlyCollection<ISceneNode> Children => _readOnlyChildrenNodes;
+        public IReadOnlyObservableList<ISceneNode> Children { get; }
 
         Transformation ISceneNode.LocalTransformation => _transformation;
         Transformation ISceneNode.Transformation => new Transformation(_position, _rotation, _scale);
@@ -61,7 +60,10 @@ namespace Glyph.Core.Base
             }
         }
 
+        public bool IsInitialized => _isRoot || ParentNode != null;
+
         public event Action<SceneNodeBase> Refreshed;
+        public event EventHandler<ISceneNode> ParentNodeChanged;
         protected event EventHandler TransformationChanged;
 
         event EventHandler ITransformer.TransformationChanged
@@ -72,8 +74,8 @@ namespace Glyph.Core.Base
 
         public SceneNodeBase()
         {
-            _childrenNodes = new ObservableCollection<ISceneNode>();
-            _readOnlyChildrenNodes = new System.Collections.ObjectModel.ReadOnlyObservableCollection<ISceneNode>(_childrenNodes);
+            _childrenNodes = new ObservableList<ISceneNode>();
+            Children = new ReadOnlyObservableList<ISceneNode>(_childrenNodes);
 
             _transformation = Transformation.Identity;
         }
@@ -86,7 +88,7 @@ namespace Glyph.Core.Base
 
         public override void Initialize()
         {
-            if (_isRoot || ParentNode != null || Parent == null)
+            if (IsInitialized || Parent == null)
                 return;
 
             if (Parent.ParentQueue().SelectMany(x => x.Components).AnyOfType(out SceneNodeBase parentNode))
@@ -103,14 +105,17 @@ namespace Glyph.Core.Base
 
         public void SetParent(ISceneNode parent, Referential childStaticReferential = Referential.World)
         {
+            if (IsInitialized && ParentNode == parent)
+                return;
+
             ParentNode?.UnlinkChild(this);
             ParentNode = parent;
+            ParentNode?.LinkChild(this, childStaticReferential);
 
             _isRoot = ParentNode == null;
-            if (!_isRoot)
-                ParentNode?.LinkChild(this, childStaticReferential);
-
             Refresh(childStaticReferential);
+
+            ParentNodeChanged?.Invoke(this, parent);
         }
 
         public void MakesRoot()
