@@ -50,7 +50,7 @@ namespace Glyph.Observation.Properties
 
         private void OnCompletedOperation()
         {
-            _eventSubscription.Dispose();
+            _eventSubscription?.Dispose();
             _eventSubscription = null;
             
             ReconditionOrDispose();
