@@ -69,7 +69,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diese.Collections (Stave)",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diese (Taskete)", "External\Fingear\External\Taskete\Diese (Taskete)\Diese (Taskete).csproj", "{DFDAB89C-1379-4BFA-93C9-75E1E7B16010}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diese.Diagnostics (Glyph)", "Diese.Diagnostics (Glyph)\Diese.Diagnostics (Glyph).csproj", "{9749978A-B0CC-4AD3-926E-323C5D177F0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diese.Diagnostics (Glyph)", "Diese.Diagnostics (Glyph)\Diese.Diagnostics (Glyph).csproj", "{9749978A-B0CC-4AD3-926E-323C5D177F0C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{94F5EA39-C8BB-4637-8A4F-FA6C72580560}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Demos.Default", "Demos\Glyph.Demos.Default\Glyph.Demos.Default.csproj", "{22F7867E-4BA9-4D7C-A3DE-24289CAC2E8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -205,6 +209,10 @@ Global
 		{9749978A-B0CC-4AD3-926E-323C5D177F0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9749978A-B0CC-4AD3-926E-323C5D177F0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9749978A-B0CC-4AD3-926E-323C5D177F0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22F7867E-4BA9-4D7C-A3DE-24289CAC2E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22F7867E-4BA9-4D7C-A3DE-24289CAC2E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22F7867E-4BA9-4D7C-A3DE-24289CAC2E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22F7867E-4BA9-4D7C-A3DE-24289CAC2E8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -224,6 +232,7 @@ Global
 		{AA20CDF3-72ED-48DA-AE3C-74C6FE9003FB} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{DFDAB89C-1379-4BFA-93C9-75E1E7B16010} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{9749978A-B0CC-4AD3-926E-323C5D177F0C} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
+		{22F7867E-4BA9-4D7C-A3DE-24289CAC2E8A} = {94F5EA39-C8BB-4637-8A4F-FA6C72580560}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {484F9B0D-760F-48AD-893C-CCFB7A1CF541}
