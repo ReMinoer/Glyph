@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace Glyph.Composition
 {
     public interface ILoadContent : IGlyphComponent
     {
-        void LoadContent(ContentLibrary contentLibrary);
+        Task LoadContent(IContentLibrary contentLibrary);
     }
 }

@@ -23,10 +23,10 @@ namespace Glyph.Tools.ShapeRendering
         private readonly SceneNode _sceneNode;
         private readonly MessagingTracker<T> _tracker;
         private readonly Func<GraphicsDevice> _graphicsDeviceFunc;
-        private readonly ContentLibrary _contentLibrary;
+        private readonly IContentLibrary _contentLibrary;
         private readonly Dictionary<T, ShapedComponentRendererBase> _colliderObjects;
 
-        public ShapedComponentRendererManager(ISubscribableRouter trackingRouter, Func<GraphicsDevice> graphicsDeviceFunc, ContentLibrary contentLibrary)
+        public ShapedComponentRendererManager(ISubscribableRouter trackingRouter, Func<GraphicsDevice> graphicsDeviceFunc, IContentLibrary contentLibrary)
         {
             Visible = true;
 

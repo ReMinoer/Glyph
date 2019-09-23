@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Glyph.Effects;
 using Microsoft.Xna.Framework;
@@ -45,13 +46,13 @@ namespace Glyph.Graphics
             Effects = new List<IEffectComponent>();
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            foreach (IEffectComponent effectComponent in Effects)
-                effectComponent.LoadContent(contentLibrary, _lazyGraphicsDevice());
-
-            _spriteTargetA.LoadContent(contentLibrary);
-            _spriteTargetB.LoadContent(contentLibrary);
+            await Task.WhenAll(new List<Task>(Effects.Select(x => x.LoadContent(contentLibrary, _lazyGraphicsDevice())))
+            {
+                _spriteTargetA.LoadContent(contentLibrary),
+                _spriteTargetB.LoadContent(contentLibrary)
+            });
 
             Loaded?.Invoke(this);
         }

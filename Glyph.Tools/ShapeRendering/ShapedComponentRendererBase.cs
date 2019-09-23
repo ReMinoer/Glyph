@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
@@ -51,9 +52,9 @@ namespace Glyph.Tools.ShapeRendering
             _sceneNode.Initialize();
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            _shapedSprite.LoadContent(contentLibrary);
+            await _shapedSprite.LoadContent(contentLibrary);
         }
 
         public void Update(ElapsedTime elapsedTime)

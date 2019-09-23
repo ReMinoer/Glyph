@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
@@ -78,9 +79,9 @@ namespace Glyph.Graphics
             UniformView.Initialize();
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            UniformView.LoadContent(contentLibrary);
+            await UniformView.LoadContent(contentLibrary);
         }
 
         public void Draw(IDrawer drawer)

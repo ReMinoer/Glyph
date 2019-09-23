@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Diese;
 using Glyph.Composition.Delegates;
 using NLog;
@@ -24,7 +25,7 @@ namespace Glyph.Tools
 
         static public LoadContentDelegate LoadContent(Predicate predicate = null)
         {
-            return x =>
+            return async x =>
             {
                 if (predicate != null && !predicate())
                     return;

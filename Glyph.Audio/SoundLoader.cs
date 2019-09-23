@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Microsoft.Xna.Framework.Audio;
 
@@ -6,29 +9,20 @@ namespace Glyph.Audio
 {
     public class SoundLoader : GlyphComponent, ILoadContent
     {
-        private readonly Dictionary<object, SoundEffect> _soundEffects;
+        private readonly ConcurrentDictionary<object, SoundEffect> _soundEffects;
         private readonly Dictionary<object, string> _assets;
 
-        public SoundEffect this[object key]
-        {
-            get { return _soundEffects[key]; }
-        }
+        public SoundEffect this[object key] => _soundEffects[key];
 
         public SoundLoader()
         {
-            _soundEffects = new Dictionary<object, SoundEffect>();
+            _soundEffects = new ConcurrentDictionary<object, SoundEffect>();
             _assets = new Dictionary<object, string>();
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            foreach (KeyValuePair<object, string> pair in _assets)
-            {
-                object key = pair.Key;
-                string asset = pair.Value;
-
-                _soundEffects[key] = contentLibrary.GetSound(asset);
-            }
+            await Task.WhenAll(_assets.Select(async x => _soundEffects[x.Key] = await contentLibrary.GetOrLoad<SoundEffect>(x.Value)));
         }
 
         public void Add(object key, string asset)
@@ -38,7 +32,7 @@ namespace Glyph.Audio
 
         public void Remove(object key)
         {
-            _soundEffects.Remove(key);
+            _soundEffects.TryRemove(key, out SoundEffect _);
             _assets.Remove(key);
         }
     }

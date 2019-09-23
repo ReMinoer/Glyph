@@ -1,4 +1,5 @@
-﻿using Glyph.Animation;
+﻿using System.Threading.Tasks;
+using Glyph.Animation;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics;
@@ -28,10 +29,10 @@ namespace Glyph.UI
             Schedulers.Draw.Plan(DrawLocal);
         }
 
-        public void LoadContentLocal(ContentLibrary contentLibrary)
+        public async Task LoadContentLocal(IContentLibrary contentLibrary)
         {
             if (Asset != null)
-                Font = contentLibrary.GetFont(Asset);
+                Font = await contentLibrary.GetOrLoad<SpriteFont>(Asset);
         }
 
         public void DrawLocal(IDrawer drawer)

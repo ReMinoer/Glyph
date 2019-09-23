@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,9 +16,9 @@ namespace Glyph.Graphics
             get { return _texture; }
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            _texture = contentLibrary.GetTexture(Asset);
+            _texture = await contentLibrary.GetOrLoad<Texture2D>(Asset);
 
             Loaded?.Invoke(this);
         }

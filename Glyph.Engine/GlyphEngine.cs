@@ -1,25 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Niddle;
 using Fingear;
-using Fingear.Controls;
-using Fingear.Controls.Composites;
-using Fingear.MonoGame;
-using Fingear.MonoGame.Inputs;
 using Glyph.Application;
 using Glyph.Audio;
-using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Graphics;
 using Glyph.Messaging;
 using Glyph.Resolver;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using NLog;
 
 namespace Glyph.Engine
@@ -27,7 +20,6 @@ namespace Glyph.Engine
     public class GlyphEngine
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly ContentManager _contentManager;
         private readonly ElapsedTime _elapsedTime = new ElapsedTime();
         private IGlyphClient _focusedClient;
         public bool IsInitialized { get; private set; }
@@ -38,7 +30,7 @@ namespace Glyph.Engine
         public IDependencyResolver Resolver { get; }
         public RootView RootView { get; private set; }
         public ProjectionManager ProjectionManager { get; }
-        public ContentLibrary ContentLibrary { get; }
+        public IContentLibrary ContentLibrary { get; }
         public InputClientManager InputClientManager { get; }
         public InteractionManager InteractionManager { get; }
         private GlyphObject _root;
@@ -82,11 +74,9 @@ namespace Glyph.Engine
         public event Action Paused;
         public event Action<IGlyphClient> FocusChanged;
 
-        public GlyphEngine(ContentManager contentManager, Action<IDependencyRegistry> dependencyConfigurator = null, params string[] args)
+        public GlyphEngine(IContentLibrary contentLibrary, Action<IDependencyRegistry> dependencyConfigurator = null, params string[] args)
         {
             Logger.Info("Engine arguments : " + string.Join(" ", args));
-
-            _contentManager = contentManager;
 
             Registry = GlyphRegistry.BuildGlobalRegistry();
             dependencyConfigurator?.Invoke(Registry);
@@ -97,16 +87,15 @@ namespace Glyph.Engine
 
             RootView = new RootView();
             ProjectionManager = new ProjectionManager(RootView, Resolver.Resolve<ISubscribableRouter>());
-
-            _contentManager.RootDirectory = "Content";
-            ContentLibrary = new ContentLibrary();
+            
+            ContentLibrary = contentLibrary;
             InputClientManager = new InputClientManager();
             InteractionManager = new InteractionManager();
 
             Registry.Add(GlyphDependency.OnType<GlyphEngine>().Using(this));
             Registry.Add(GlyphDependency.OnType<RootView>().Using(RootView));
             Registry.Add(GlyphDependency.OnType<ProjectionManager>().Using(ProjectionManager));
-            Registry.Add(GlyphDependency.OnType<ContentLibrary>().Using(ContentLibrary));
+            Registry.Add(GlyphDependency.OnType<IContentLibrary>().Using(ContentLibrary));
             Registry.Add(GlyphDependency.OnType<InputClientManager>().Using(InputClientManager));
             Registry.Add(GlyphDependency.OnType<InteractionManager>().Using(InteractionManager));
             Registry.Add(GlyphDependency.OnType<Func<GraphicsDevice>>().Using(() =>
@@ -116,7 +105,7 @@ namespace Glyph.Engine
                     return FocusedClient.GraphicsDevice;
                 }
                 
-                return ((IGraphicsDeviceService)contentManager.ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
+                return ((IGraphicsDeviceService)ContentLibrary.ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
             }));
         }
 
@@ -130,10 +119,13 @@ namespace Glyph.Engine
 
         public void LoadContent()
         {
-            ContentLibrary.LoadContent(_contentManager);
-            SongPlayer.Instance.LoadContent(ContentLibrary);
-
-            Root?.LoadContent(ContentLibrary);
+            Task.WaitAll(
+                Task.Run(async () => await SongPlayer.Instance.LoadContent(ContentLibrary)),
+                Task.Run(async () =>
+                {
+                    if (Root != null)
+                        await Root.LoadContent(ContentLibrary);
+                }));
 
             IsLoaded = true;
         }

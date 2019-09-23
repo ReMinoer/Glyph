@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Diese.Collections;
 using Glyph.Animation;
 using Glyph.Composition;
@@ -41,9 +42,9 @@ namespace Glyph.UI.Simple
             Thickness = 1;
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            _rectangleSprite.LoadContent(contentLibrary);
+            await _rectangleSprite.LoadContent(contentLibrary);
         }
 
         public void Draw(IDrawer drawer)

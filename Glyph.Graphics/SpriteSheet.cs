@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -48,9 +49,9 @@ namespace Glyph.Graphics
             Frames = new List<Rectangle>();
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            _spriteLoader.LoadContent(contentLibrary);
+            await _spriteLoader.LoadContent(contentLibrary);
 
             if (Carver != null)
                 ApplyCarver(Carver);

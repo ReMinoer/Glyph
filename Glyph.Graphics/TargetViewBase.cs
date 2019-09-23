@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Base;
@@ -64,9 +65,9 @@ namespace Glyph.Graphics
             EffectManager.Initialize();
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            EffectManager.LoadContent(contentLibrary);
+            await EffectManager.LoadContent(contentLibrary);
         }
 
         public void Update(ElapsedTime elapsedTime)

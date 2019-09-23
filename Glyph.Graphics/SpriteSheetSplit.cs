@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,15 +48,13 @@ namespace Glyph.Graphics
             Add(new SpriteSheet { Asset = asset });
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            foreach (SpriteSheet spriteSheet in Components)
-            {
-                spriteSheet.LoadContent(contentLibrary);
-
-                if (Carver != null)
+            await Task.WhenAll(Components.Select(async x => await x.LoadContent(contentLibrary)));
+            
+            if (Carver != null)
+                foreach (SpriteSheet spriteSheet in Components)
                     spriteSheet.ApplyCarver(Carver);
-            }
 
             Refresh();
             _loadedContent = true;

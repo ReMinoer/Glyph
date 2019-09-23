@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -26,14 +27,18 @@ namespace Glyph.Graphics.Shapes
             Height = 100;
         }
 
-        protected override void GenerateTexture()
+        protected override Task<Texture2D> GenerateTexture()
         {
-            var data = new Color[Width * Height];
-            for (int i = 0; i < data.Length; i++)
-                data[i] = Color;
+            return Task.Run(() =>
+            {
+                var data = new Color[Width * Height];
+                for (int i = 0; i < data.Length; i++)
+                    data[i] = Color;
 
-            _texture = new Texture2D(GraphicsDeviceFunc(), Width, Height);
-            Texture.SetData(data);
+                var texture = new Texture2D(GraphicsDeviceFunc(), Width, Height);
+                texture.SetData(data);
+                return texture;
+            });
         }
     }
 }

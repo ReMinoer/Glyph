@@ -67,6 +67,7 @@
     <Compile Include="Binding\ExpressionExtension.cs" />
     <Compile Include="Binding\IOneWayBinding.cs" />
     <Compile Include="Color.Extension.cs" />
+    <Compile Include="IContentLibrary.cs" />
     <Compile Include="IO\DataContractSerializationFormat.cs" />
     <Compile Include="IO\ISerializationFormat.cs" />
     <Compile Include="IO\Base\SerializationFormatBase.cs" />
@@ -131,10 +132,10 @@
     <Compile Include="Texture2D.Extension.cs" />
     <Compile Include="ElapsedTime.cs" />
     <Compile Include="Float.Extension.cs" />
+    <Compile Include="UnusedContentLibrary.cs" />
     <Compile Include="Vector2.Extension.cs" />
     <Compile Include="Vector3.Extension.cs" />
     <Compile Include="ContentLibrary.cs" />
-    <Compile Include="Texture2DSplit.cs" />
     <Compile Include="Orientation.cs" />
     <Compile Include="Period.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

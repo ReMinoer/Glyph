@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Glyph.Core;
@@ -98,7 +99,7 @@ namespace Glyph.UI.Guide
                 _clic = MenuControls.Instance.Clic
             });
 
-            Schedulers.Initialize.Plan(InitializeLocal);
+            Schedulers.Initialize.Plan(InitializeLocal).AtEnd();
             Schedulers.LoadContent.Plan(LoadContentLocal);
             Schedulers.Update.Plan(HandleInput);
             Schedulers.Update.Plan(UpdateLocal).After(HandleInput);
@@ -110,7 +111,7 @@ namespace Glyph.UI.Guide
             TransitionOpacity.Reset();
         }
 
-        private void LoadContentLocal(ContentLibrary content)
+        private async Task LoadContentLocal(IContentLibrary content)
         {
             IconChanged?.Invoke(this, EventArgs.Empty);
         }

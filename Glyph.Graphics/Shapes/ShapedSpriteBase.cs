@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,15 +8,12 @@ namespace Glyph.Graphics.Shapes
 {
     public abstract class ShapedSpriteBase : SpriteSourceBase, ILoadContent
     {
-        protected Texture2D _texture;
+        private Texture2D _texture;
         protected readonly Func<GraphicsDevice> GraphicsDeviceFunc;
         public Color Color { get; set; }
         public override event Action<ISpriteSource> Loaded;
 
-        public override sealed Texture2D Texture
-        {
-            get { return _texture; }
-        }
+        public override sealed Texture2D Texture => _texture;
 
         protected ShapedSpriteBase(Func<GraphicsDevice> graphicsDeviceFunc)
         {
@@ -23,14 +21,14 @@ namespace Glyph.Graphics.Shapes
             Color = Color.White;
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            GenerateTexture();
+            _texture = await GenerateTexture();
 
             Loaded?.Invoke(this);
         }
 
-        protected abstract void GenerateTexture();
+        protected abstract Task<Texture2D> GenerateTexture();
 
         public override void Dispose()
         {

@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
+
 namespace Glyph.Composition.Delegates
 {
-    public delegate void LoadContentDelegate(ContentLibrary contentLibrary);
+    public delegate Task LoadContentDelegate(IContentLibrary contentLibrary);
 }

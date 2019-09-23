@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,7 +22,7 @@ namespace Glyph.Graphics
             set
             {
                 _size = value;
-                RefreshRenderTarget();
+                Task.Run(RefreshRenderTarget).Wait();
             }
         }
 
@@ -30,12 +31,12 @@ namespace Glyph.Graphics
             _lazyGraphicsDevice = lazyGraphicsDevice;
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            RefreshRenderTarget();
+            await RefreshRenderTarget();
         }
 
-        private void RefreshRenderTarget()
+        private async Task RefreshRenderTarget()
         {
             if (Size.X <= 0 || Size.Y <= 0)
             {
@@ -54,7 +55,7 @@ namespace Glyph.Graphics
                 return;
             }
 
-            RenderTarget = new RenderTarget2D(_lazyGraphicsDevice(), (int)Size.X, (int)Size.Y, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+            RenderTarget = await Task.Run(() => new RenderTarget2D(_lazyGraphicsDevice(), (int)Size.X, (int)Size.Y, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8));
             _texture = RenderTarget;
             Loaded?.Invoke(this);
         }

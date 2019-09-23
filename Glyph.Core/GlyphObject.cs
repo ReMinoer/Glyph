@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Diese;
 using Diese.Collections;
 using Diese.Diagnostics;
@@ -82,8 +82,8 @@ namespace Glyph.Core
             if (_initialized)
                 item.Initialize();
 
-            if (_contentLoaded)
-                (item as ILoadContent)?.LoadContent(Resolver.Resolve<ContentLibrary>());
+            if (_contentLoaded && item is ILoadContent loadingItem)
+                Task.Run(async () => await loadingItem.LoadContent(Resolver.Resolve<IContentLibrary>())).Wait();
         }
 
         public override sealed bool Remove(IGlyphComponent item)
@@ -128,19 +128,12 @@ namespace Glyph.Core
             _initialized = true;
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
             if (Disposed)
                 return;
-
-            foreach (LoadContentDelegate loadContent in Schedulers.LoadContent.Planning.ToArray())
-            {
-                if (Disposed)
-                    return;
-
-                loadContent(contentLibrary);
-            }
-
+            
+            await Task.WhenAll(Schedulers.LoadContent.Planning.Select(async x => await x(contentLibrary)).ToArray());
             _contentLoaded = true;
         }
 

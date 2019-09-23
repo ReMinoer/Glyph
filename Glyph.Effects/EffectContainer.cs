@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Diese;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
@@ -31,10 +33,9 @@ namespace Glyph.Effects
                 component.Initialize();
         }
 
-        public void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice)
+        public async Task LoadContent(IContentLibrary contentLibrary, GraphicsDevice graphicsDevice)
         {
-            foreach (TComponent component in Components)
-                component.LoadContent(contentLibrary, graphicsDevice);
+            await Task.WhenAll(Components.Select(x => x.LoadContent(contentLibrary, graphicsDevice)));
         }
 
         public void Update(GameTime gameTime)

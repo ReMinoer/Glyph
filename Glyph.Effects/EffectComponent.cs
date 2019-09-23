@@ -1,4 +1,5 @@
-﻿using Diese;
+﻿using System.Threading.Tasks;
+using Diese;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,7 +18,7 @@ namespace Glyph.Effects
         }
 
         public abstract void Initialize();
-        public abstract void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice);
+        public abstract Task LoadContent(IContentLibrary contentLibrary, GraphicsDevice graphicsDevice);
         public abstract void Update(GameTime gameTime);
         public abstract void Prepare(IDrawer drawer);
         public abstract void Apply(IDrawer drawer);

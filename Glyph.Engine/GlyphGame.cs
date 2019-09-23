@@ -56,7 +56,7 @@ namespace Glyph.Engine
             }
         }
 
-        public GlyphGame(Action<IDependencyRegistry> dependencyConfigurator = null)
+        public GlyphGame(string contentRootPath = null, Action<IDependencyRegistry> dependencyConfigurator = null)
         {
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnClientSizeChanged;
@@ -71,7 +71,7 @@ namespace Glyph.Engine
             _windowSize = new Point(_graphicsDeviceManager.PreferredBackBufferWidth, _graphicsDeviceManager.PreferredBackBufferHeight);
             _lastWindowSize = WindowSize;
 
-            Engine = new GlyphEngine(Content, dependencyConfigurator);
+            Engine = new GlyphEngine(new ContentLibrary(Content.ServiceProvider, contentRootPath), dependencyConfigurator);
             Engine.Stopped += OnEngineStopped;
             Engine.FocusedClient = this;
             

@@ -1,162 +1,135 @@
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 using NLog;
 
 namespace Glyph
 {
-    public class ContentLibrary
+    public class ContentLibrary : IContentLibrary
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        // TODO : Etudier le chargement asynchrone
-        private readonly Dictionary<string, Effect> _effects;
-        private readonly Dictionary<string, SpriteFont> _fonts;
-        private readonly Dictionary<string, Song> _musics;
-        private readonly Dictionary<string, SoundEffect> _sounds;
-        private readonly Dictionary<string, Texture2D> _textures;
 
-        public Dictionary<string, Texture2D>.KeyCollection Assets
+        private readonly ConcurrentBag<ContentManager> _contentManagers = new ConcurrentBag<ContentManager>();
+        private readonly ConcurrentDictionary<string, Task> _loadingTasks = new ConcurrentDictionary<string, Task>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, string> _assetPathByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, string> _effectPathByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        
+        public IServiceProvider ServiceProvider { get; }
+
+        private string _rootPath;
+        public string RootPath
         {
-            get { return _textures.Keys; }
-        }
-
-        public ContentLibrary()
-        {
-            _textures = new Dictionary<string, Texture2D>();
-            _fonts = new Dictionary<string, SpriteFont>();
-            _sounds = new Dictionary<string, SoundEffect>();
-            _musics = new Dictionary<string, Song>();
-            _effects = new Dictionary<string, Effect>();
-        }
-
-        public void LoadContent(ContentManager content)
-        {
-            _textures.Clear();
-            _fonts.Clear();
-            _sounds.Clear();
-            _musics.Clear();
-            _effects.Clear();
-
-            const string path = "Content";
-
-            var files = new List<string>();
-            
-            if (Directory.Exists(path))
-                files.AddRange(Directory.GetFiles(path, "*.xnb", SearchOption.AllDirectories));
-            
-            foreach (string filename in files)
+            get => _rootPath;
+            set
             {
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
+                if (string.Equals(_rootPath, value, StringComparison.OrdinalIgnoreCase))
+                    return;
 
-                string file = filename.Replace("Content\\", "");
-
-                if (file.Contains("Font"))
-                    AddFont(file, content);
-                else if (file.Contains("Sound"))
-                    AddSound(file, content);
-                else if (file.Contains("Music"))
-                    AddMusic(file, content);
-                else if (file.Contains("Effect"))
-                    AddEffect(file, content);
-                else
-                    AddTexture(file, content);
-
-                stopwatch.Stop();
-                lock (Logger)
-                    Logger.Info("Loaded {0} ({1:s\\.fff}s)", file, stopwatch.Elapsed);
-                stopwatch.Reset();
+                _rootPath = value;
+                RegeneratePathsDictionaries();
             }
         }
 
-        public void AddTexture(string path, ContentManager content)
+        public ContentLibrary(IServiceProvider serviceProvider, string rootPath = null)
         {
-            string asset = path.Replace(".xnb", "");
-            var texture = content.Load<Texture2D>(asset);
-
-            lock (_textures)
-                _textures.Add(asset.Substring(asset.LastIndexOf('\\') + 1), texture);
+            ServiceProvider = serviceProvider;
+            RootPath = rootPath;
         }
 
-        public Texture2D GetTexture(string asset)
+        public Task<T> GetOrLoad<T>(string assetName)
         {
-            return _textures[asset];
+            return (Task<T>)_loadingTasks.GetOrAdd(_assetPathByName[assetName], x => Task.Run(() => Load<T>(x)));
         }
 
-        public void AddFont(string path, ContentManager content)
+        public Task<T> GetOrLoadLocalized<T>(string assetName)
         {
-            string asset = path.Replace(".xnb", "");
-            var font = content.Load<SpriteFont>(asset);
-
-            lock (_fonts)
-                _fonts.Add(asset.Substring(asset.LastIndexOf('\\') + 1), font);
+            return (Task<T>)_loadingTasks.GetOrAdd(_assetPathByName[assetName], x => Task.Run(() => LoadLocalized<T>(x)));
         }
 
-        public SpriteFont GetFont(string asset)
+        public Task<Effect> GetOrLoadEffect(string assetName)
         {
-            return _fonts[asset];
+            return (Task<Effect>)_loadingTasks.GetOrAdd(_effectPathByName[assetName], x => Task.Run(() => LoadEffect(x)));
         }
 
-        public void AddSound(string path, ContentManager content)
+        private T Load<T>(string assetRelativePath)
         {
-            string asset = path.Replace(".xnb", "");
-            var sound = content.Load<SoundEffect>(asset);
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            ContentManager contentManager = GetContentManager();
 
-            lock (_sounds)
-                _sounds.Add(asset.Substring(asset.LastIndexOf('\\') + 1), sound);
+            var content = contentManager.Load<T>(assetRelativePath);
+
+            ReleaseContentManager(contentManager);
+            LogLoadingTime(assetRelativePath, stopwatch);
+
+            return content;
         }
 
-        public SoundEffect GetSound(string asset)
+        private T LoadLocalized<T>(string assetRelativePath)
         {
-            return _sounds[asset];
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            ContentManager contentManager = GetContentManager();
+
+            var content = contentManager.LoadLocalized<T>(assetRelativePath);
+
+            ReleaseContentManager(contentManager);
+            LogLoadingTime(assetRelativePath, stopwatch);
+
+            return content;
         }
 
-        public void AddMusic(string path, ContentManager content)
+        private Effect LoadEffect(string assetRelativePath)
         {
-            string asset = path.Replace(".xnb", "");
-            var song = content.Load<Song>(asset);
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
-            lock (_musics)
-                _musics.Add(asset.Substring(asset.LastIndexOf('\\') + 1), song);
+            GraphicsDevice graphicsDevice = ((IGraphicsDeviceService)ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
+            var effect = new Effect(graphicsDevice, File.ReadAllBytes(Path.Combine(_rootPath, assetRelativePath + ".mgfx")));
+
+            LogLoadingTime(assetRelativePath, stopwatch);
+
+            return effect;
         }
 
-        public Song GetMusic(string asset)
+        private void LogLoadingTime(string assetRelativePath, Stopwatch stopwatch)
         {
-            return _musics[asset];
+            stopwatch.Stop();
+            Logger.Info($"Loaded {assetRelativePath} ({stopwatch.ElapsedMilliseconds} ms)");
         }
 
-        public void AddEffect(string path, ContentManager content)
+        private ContentManager GetContentManager()
         {
-            string asset = path.Replace(".xnb", "");
-            var effect = content.Load<Effect>(asset);
-
-            lock (_effects)
-                _effects.Add(asset.Substring(asset.LastIndexOf('\\') + 1), effect);
+            if (!_contentManagers.TryTake(out ContentManager contentManager))
+                contentManager = new ContentManager(ServiceProvider, _rootPath);
+            return contentManager;
         }
 
-        public Effect GetEffect(string asset)
+        private void ReleaseContentManager(ContentManager contentManager)
         {
-            return _effects[asset];
+            _contentManagers.Add(contentManager);
         }
 
-        public Dictionary<string, SoundEffect> GetAllSound()
+        private void RegeneratePathsDictionaries()
         {
-            return _sounds;
+            RegeneratePathDictionary(_assetPathByName, "xnb");
+            RegeneratePathDictionary(_effectPathByName, "mgfx");
         }
 
-        public Dictionary<string, Song> GetAllMusic()
+        private void RegeneratePathDictionary(Dictionary<string, string> dictionary, string extension)
         {
-            return _musics;
-        }
+            dictionary.Clear();
+            if (RootPath == null)
+                return;
 
-        public bool Contains(string search)
-        {
-            return _textures.ContainsKey(search) || _fonts.ContainsKey(search);
+            IEnumerable<string> filePaths = Directory.GetFiles(RootPath, $"*.{extension}", SearchOption.AllDirectories)
+                                                     .Select(x => x.Substring(RootPath.Length + 1, x.Length - $".{extension}".Length - RootPath.Length - 1).Replace('\\', '/'));
+
+            foreach (string filePath in filePaths)
+                dictionary.Add(Path.GetFileName(filePath), filePath);
         }
     }
 }

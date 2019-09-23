@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Microsoft.Xna.Framework.Media;
 using NLog;
@@ -49,9 +50,10 @@ namespace Glyph.Audio
             
         }
 
-        public void LoadContent(ContentLibrary contentLibrary)
+        public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            Musics = contentLibrary.GetAllMusic();
+            // TODO: Refactor music loading
+            Musics = new Dictionary<string, Song>();
 
             ActualSong = "";
             NextSong = "";
@@ -100,7 +102,7 @@ namespace Glyph.Audio
                     break;
             }
 
-            MediaPlayer.Volume = MediaPlayer.Volume.Transition(Volume * _volumeFondu, VolumeSpeed, elapsedTime.GameTime);
+            //MediaPlayer.Volume = MediaPlayer.Volume.Transition(Volume * _volumeFondu, VolumeSpeed, elapsedTime.GameTime);
             _transitionRequire = false;
         }
 

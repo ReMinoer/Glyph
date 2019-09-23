@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,11 +26,11 @@ namespace Glyph.Effects.Masked
         {
         }
 
-        public override void LoadContent(ContentLibrary contentLibrary, GraphicsDevice graphicsDevice)
+        public override async Task LoadContent(IContentLibrary contentLibrary, GraphicsDevice graphicsDevice)
         {
             MaskRender = new RenderTarget2D(graphicsDevice, _effectTargetRectangle.Width, _effectTargetRectangle.Height);
 
-            _square = contentLibrary.GetTexture("square");
+            _square = await contentLibrary.GetOrLoad<Texture2D>("square");
         }
 
         public override void Update(GameTime gameTime)
