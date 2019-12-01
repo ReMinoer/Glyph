@@ -60,8 +60,8 @@
       <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
       <Name>Diese %28Taskete%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
+      <Project>{cb5183d5-f68e-4129-a716-7f9eb33ce223}</Project>
       <Name>Niddle</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">

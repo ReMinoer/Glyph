@@ -65,8 +65,8 @@
       <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
       <Name>Fingear</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
+      <Project>{cb5183d5-f68e-4129-a716-7f9eb33ce223}</Project>
       <Name>Niddle</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">

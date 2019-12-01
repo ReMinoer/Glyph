@@ -1,17 +1,14 @@
-﻿using System;
-using Simulacra;
+﻿using Simulacra;
 
 namespace Glyph.Composition.Modelization
 {
-    public interface IGlyphCreator : IGlyphConfigurator, IDisposable
+    public interface IGlyphCreator : IGlyphData, IInstantiatingData
     {
-        string Name { get; }
-        bool IsInstantiated { get; }
-        void Instantiate();
     }
 
-    public interface IGlyphCreator<T> : IGlyphCreator, IGlyphConfigurator<T>, ICreator<T>
+    public interface IGlyphCreator<out T> : IGlyphCreator, ICreator<T>, IInstantiatingData<T>
         where T : IGlyphComponent
     {
+        new T BindedObject { get; }
     }
 }

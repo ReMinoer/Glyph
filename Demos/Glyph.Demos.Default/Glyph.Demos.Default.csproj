@@ -41,10 +41,6 @@
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{91ef736f-8196-4db7-bdec-9fe05b14c179}</Project>
-      <Name>Niddle</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Glyph.Core\Glyph.Core.csproj">
       <Project>{bc40e833-0eaa-4bbc-97d8-1541276bba54}</Project>
       <Name>Glyph.Core</Name>

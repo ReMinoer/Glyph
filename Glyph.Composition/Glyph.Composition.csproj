@@ -72,8 +72,7 @@
     <Compile Include="IUpdate.cs" />
     <Compile Include="Messaging\DisposingMessage.cs" />
     <Compile Include="Modelization\BindedData.cs" />
-    <Compile Include="Modelization\BindedDataBase.cs" />
-    <Compile Include="Modelization\CompositeData.cs" />
+    <Compile Include="Modelization\BindingCollectionExtension.cs" />
     <Compile Include="Exceptions\SingleComponentException.cs" />
     <Compile Include="GlyphComponent.cs" />
     <Compile Include="GlyphComposite.cs" />
@@ -83,10 +82,14 @@
     <Compile Include="IGlyphContainer.cs" />
     <Compile Include="Delegates\InitializeDelegate.cs" />
     <Compile Include="Delegates\LoadContentDelegate.cs" />
-    <Compile Include="Modelization\FactoryConfigurator.cs" />
+    <Compile Include="Modelization\GlyphCategoryAttribute.cs" />
     <Compile Include="Modelization\GlyphCreatorExtension.cs" />
     <Compile Include="Modelization\IGlyphConfigurator.cs" />
     <Compile Include="Modelization\IGlyphCreator.cs" />
+    <Compile Include="Modelization\IGlyphData.cs" />
+    <Compile Include="Modelization\OneWayFactoryBinding.cs" />
+    <Compile Include="Modelization\Base\SubDataCollection.cs" />
+    <Compile Include="Modelization\SimulacraCategoryAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SinglePerParentAttribute.cs" />
     <Compile Include="Delegates\UpdateDelegate.cs" />
@@ -104,9 +107,13 @@
       <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
       <Name>Diese %28Taskete%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{91EF736F-8196-4DB7-BDEC-9FE05B14C179}</Project>
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
+      <Project>{cb5183d5-f68e-4129-a716-7f9eb33ce223}</Project>
       <Name>Niddle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Simulacra\Simulacra.Injection\Simulacra.Injection.csproj">
+      <Project>{9C7A9012-5536-43BE-8055-2C3FF297C902}</Project>
+      <Name>Simulacra.Injection</Name>
     </ProjectReference>
     <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
       <Project>{dfd5170c-d6c2-4815-88ed-6aa011d26d84}</Project>

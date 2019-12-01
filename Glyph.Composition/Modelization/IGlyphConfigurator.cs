@@ -1,16 +1,10 @@
-﻿using Diese.Collections.Observables.ReadOnly;
-using Glyph.Resolver;
-using Simulacra;
+﻿using Simulacra;
 
 namespace Glyph.Composition.Modelization
 {
-    public interface IGlyphConfigurator : IDataBindable<IGlyphComponent>, IResolveClient
-    {
-        IReadOnlyObservableCollection<IGlyphCreator> Children { get; }
-    }
-
-    public interface IGlyphConfigurator<in T> : IGlyphConfigurator, ICompositeConfigurator<T, IGlyphConfigurator<T>>
+    public interface IGlyphConfigurator<T> : IGlyphData, IBindableData<T>, IConfigurator<T>
         where T : IGlyphComponent
     {
+        new T BindedObject { get; }
     }
 }
