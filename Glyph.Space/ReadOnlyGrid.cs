@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Space
 {
@@ -20,14 +22,22 @@ namespace Glyph.Space
         public IEnumerable<T> Values => _grid.Values;
         public IEnumerable<IGridCase<T>> SignificantCases => _grid.SignificantCases;
 
-        T IGrid<T>.this[int i, int j] => _grid[i, j];
-        T IGrid<T>.this[Point gridPoint] => _grid[gridPoint];
-        T IGrid<T>.this[Vector2 worldPoint] => _grid[worldPoint];
-        T IGrid<T>.this[IGridPositionable gridPositionable] => _grid[gridPositionable];
+        public T this[int i, int j] => _grid[i, j];
+        public T this[Point gridPoint] => _grid[gridPoint];
+        public T this[Vector2 worldPoint] => _grid[worldPoint];
+        public T this[IGridPositionable gridPositionable] => _grid[gridPositionable];
+
+        public event EventHandler<ArrayChangedEventArgs> ArrayChanged;
 
         public ReadOnlyGrid(IGrid<T> grid)
         {
             _grid = grid;
+            _grid.ArrayChanged += OnArrayChanged;
+        }
+
+        private void OnArrayChanged(object sender, ArrayChangedEventArgs e)
+        {
+            ArrayChanged?.Invoke(this, e);
         }
 
         public bool ContainsPoint(Vector2 point) => _grid.ContainsPoint(point);
@@ -44,7 +54,11 @@ namespace Glyph.Space
         public bool ContainsPoint(int i, int j) => _grid.ContainsPoint(i, j);
         public bool ContainsPoint(Point gridPoint) => _grid.ContainsPoint(gridPoint);
         public T[][] ToArray() => _grid.ToArray();
-        public IEnumerator<Point> GetEnumerator() => _grid.GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => _grid.GetEnumerator();
+        
+        int IArray.Rank => _grid.Rank;
+        int IArray.GetLength(int dimension) => _grid.GetLength(dimension);
+        T IArray<T>.this[params int[] indexes] => this[indexes[0], indexes[1]];
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_grid).GetEnumerator();
     }
 }

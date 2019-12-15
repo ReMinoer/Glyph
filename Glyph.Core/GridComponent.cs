@@ -1,17 +1,34 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Glyph.Composition;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Core
 {
     public class SpatialGrid<T> : GlyphComponent, IGrid<T>
     {
         private readonly SceneNode _sceneNode;
-        public IGrid<T> LocalGrid { get; set; }
+        private IGrid<T> _localGrid;
+
+        public IGrid<T> LocalGrid
+        {
+            get => _localGrid;
+            set
+            {
+                if (_localGrid != null)
+                    _localGrid.ArrayChanged -= OnArrayChanged;
+
+                _localGrid = value;
+
+                if (_localGrid != null)
+                    _localGrid.ArrayChanged += OnArrayChanged;
+            }
+        }
 
         public bool IsVoid => LocalGrid.IsVoid;
         public TopLeftRectangle BoundingBox => LocalGrid.BoundingBox;
@@ -23,9 +40,16 @@ namespace Glyph.Core
         public IEnumerable<T> Values => LocalGrid.Values;
         public IEnumerable<IGridCase<T>> SignificantCases => LocalGrid.SignificantCases;
 
+        public event EventHandler<ArrayChangedEventArgs> ArrayChanged;
+
         public SpatialGrid(SceneNode sceneNode)
         {
             _sceneNode = sceneNode;
+        }
+
+        private void OnArrayChanged(object sender, ArrayChangedEventArgs e)
+        {
+            ArrayChanged?.Invoke(this, e);
         }
 
         public T this[int i, int j] => LocalGrid[i, j];
@@ -51,7 +75,10 @@ namespace Glyph.Core
 
         public T[][] ToArray() => LocalGrid.ToArray();
 
-        public IEnumerator<Point> GetEnumerator() => LocalGrid.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)LocalGrid).GetEnumerator();
+        int IArray.Rank => LocalGrid.Rank;
+        int IArray.GetLength(int dimension) => LocalGrid.GetLength(dimension);
+        T IArray<T>.this[params int[] indexes] => LocalGrid[indexes];
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => LocalGrid.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => LocalGrid.GetEnumerator();
     }
 }

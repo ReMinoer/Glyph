@@ -1,21 +1,25 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Diese.Collections;
+using Simulacra.Utils;
 
 namespace Glyph.Space
 {
     public abstract class GridBase<T> : Grid, IWriteableGrid<T>
     {
-        protected abstract IEnumerable<IGridCase<T>> SignificantCasesProtected { get; }
-        protected abstract bool HasLowEntropyProtected { get; }
+        public IEnumerable<T> Values => new Enumerable<T>(new ValueEnumerator(this));
 
+        protected abstract IEnumerable<IGridCase<T>> SignificantCasesProtected { get; }
         IEnumerable<IGridCase<T>> IGrid<T>.SignificantCases => SignificantCasesProtected;
+
+        protected abstract bool HasLowEntropyProtected { get; }
         bool IGrid<T>.HasLowEntropy => HasLowEntropyProtected;
 
-        public IEnumerable<T> Values => new Enumerable<T>(new ValueEnumerator(this));
+        public event EventHandler<ArrayChangedEventArgs> ArrayChanged;
 
         protected GridBase(TopLeftRectangle rectangle, int columns, int rows)
             : base(rectangle, columns, rows)
@@ -27,7 +31,39 @@ namespace Glyph.Space
         {
         }
 
-        public abstract T this[int i, int j] { get; set; }
+        protected abstract T GetValue(int i, int j);
+        protected abstract void SetValue(int i, int j, T value);
+
+        public T this[int i, int j]
+        {
+            get => GetValue(i, j);
+            set
+            {
+                if (ArrayChanged == null)
+                {
+                    SetValue(i, j, value);
+                }
+                else
+                {
+                    if (EqualityComparer<T>.Default.Equals(GetValue(i, j), value))
+                        return;
+
+                    SetValue(i, j, value);
+                    ArrayChanged.Invoke(this, new ArrayChangedEventArgs
+                    {
+                        StartingIndexes = new []{i, j},
+                        NewValues = new []{value}
+                    });
+                }
+            }
+        }
+
+        T IArray<T>.this[params int[] indexes] => this[indexes[0], indexes[1]];
+        T IWriteableArray<T>.this[params int[] indexes]
+        {
+            get => this[indexes[0], indexes[1]];
+            set => this[indexes[0], indexes[1]] = value;
+        }
 
         public T this[Point gridPoint]
         {
@@ -54,14 +90,38 @@ namespace Glyph.Space
 
         public void Fill(Func<T> valueFactory, Point minPoint, Point maxPoint)
         {
-            for (int i = minPoint.Y; i < maxPoint.Y; i++)
-                for (int j = minPoint.X; j < maxPoint.X; j++)
-                    this[i, j] = valueFactory();
+            if (ArrayChanged == null)
+            {
+                for (int i = minPoint.Y; i < maxPoint.Y; i++)
+                    for (int j = minPoint.X; j < maxPoint.X; j++)
+                        SetValue(i, j, valueFactory());
+            }
+            else
+            {
+                Point counts = maxPoint - minPoint;
+                var newValues = new T[counts.Y, counts.X];
+
+                for (int i = 0; i < counts.Y; i++)
+                    for (int j = 0; j < counts.X; j++)
+                    {
+                        T value = valueFactory();
+
+                        SetValue(i + minPoint.Y, j + minPoint.X, value);
+                        newValues[i, j] = value;
+                    }
+
+                ArrayChanged.Invoke(this, new ArrayChangedEventArgs
+                {
+                    StartingIndexes = new []{minPoint.Y, minPoint.X},
+                    NewValues = newValues
+                });
+            }
         }
 
         T[][] IGrid<T>.ToArray() => ToArrayProtected();
         protected abstract T[][] ToArrayProtected();
 
+        public IEnumerator<T> GetEnumerator() => new ValueEnumerator(this);
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         private sealed class ValueEnumerator : IEnumerator<T>

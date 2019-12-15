@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Space
 {
-    public interface IWriteableGrid<T> : IGrid<T>
+    public interface IWriteableGrid<T> : IGrid<T>, IWriteableArray<T>
     {
         new T this[int i, int j] { get; set; }
         new T this[Point gridPoint] { get; set; }

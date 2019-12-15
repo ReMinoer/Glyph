@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Space
 {
@@ -22,6 +24,17 @@ namespace Glyph.Space
         {
             get => Rectangle.Center;
             set => Rectangle = new TopLeftRectangle { Center = value, Size = Rectangle.Size };
+        }
+
+        int IArray.Rank => 2;
+        int IArray.GetLength(int dimension)
+        {
+            switch (dimension)
+            {
+                case 0: return Dimension.Rows;
+                case 1: return Dimension.Columns;
+                default: throw new NotSupportedException();
+            }
         }
 
         public Grid(TopLeftRectangle rectangle, int columns, int rows)
@@ -90,45 +103,6 @@ namespace Glyph.Space
             Point position = ToGridPoint(rectangle.Position);
             return new Rectangle(position, ToGridPoint(rectangle.P3) - position + new Point(1, 1));
         }
-
-        public IEnumerator<Point> GetEnumerator()
-        {
-            return new PointEnumerator(this);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        private sealed class PointEnumerator : IEnumerator<Point>
-        {
-            private readonly IGrid _grid;
-            private int _position = -1;
-
-            public Point Current => new Point(_position % _grid.Dimension.Columns, _position / _grid.Dimension.Columns);
-            object IEnumerator.Current => Current;
-
-            public PointEnumerator(IGrid grid)
-            {
-                _grid = grid;
-            }
-
-            public bool MoveNext()
-            {
-                _position++;
-                return _position < _grid.Dimension.Rows * _grid.Dimension.Columns;
-            }
-
-            public void Reset()
-            {
-                _position = -1;
-            }
-
-            public void Dispose()
-            {
-            }
-        }
     }
 
     public class Grid<T> : GridBase<T>
@@ -154,11 +128,8 @@ namespace Glyph.Space
                 _data[i] = new T[Dimension.Columns];
         }
 
-        public override T this[int i, int j]
-        {
-            get => _data[i][j];
-            set => _data[i][j] = value;
-        }
+        protected override T GetValue(int i, int j) => _data[i][j];
+        protected override void SetValue(int i, int j, T value) => _data[i][j] = value;
 
         protected override T[][] ToArrayProtected() => _data.ToArray();
 

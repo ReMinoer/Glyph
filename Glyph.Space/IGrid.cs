@@ -2,10 +2,11 @@
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Space
 {
-    public interface IGrid : IShape, IEnumerable<Point>
+    public interface IGrid : IArray, IShape
     {
         GridDimension Dimension { get; }
         Rectangle Bounds { get; }
@@ -21,7 +22,7 @@ namespace Glyph.Space
         bool ContainsPoint(Point gridPoint);
     }
 
-    public interface IGrid<out T> : IGrid
+    public interface IGrid<out T> : IGrid, IArray<T>, INotifyArrayChanged
     {
         bool HasLowEntropy { get; }
         IEnumerable<T> Values { get; }

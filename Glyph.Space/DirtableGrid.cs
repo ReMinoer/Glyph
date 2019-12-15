@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Space
 {
@@ -88,23 +89,29 @@ namespace Glyph.Space
         public bool HasLowEntropy => _gridImplementation.HasLowEntropy;
         public IEnumerable<T> Values => _gridImplementation.Values;
         public IEnumerable<IGridCase<T>> SignificantCases => _gridImplementation.SignificantCases;
-
-        T IGrid<T>.this[int i, int j] => ((IGrid<T>)_gridImplementation)[i, j];
+        
         T IGrid<T>.this[Point gridPoint] => ((IGrid<T>)_gridImplementation)[gridPoint];
         T IGrid<T>.this[Vector2 worldPoint] => ((IGrid<T>)_gridImplementation)[worldPoint];
         T IGrid<T>.this[IGridPositionable gridPositionable] => ((IGrid<T>)_gridImplementation)[gridPositionable];
-
+        
         public event Action Dirtied;
+        public event EventHandler<ArrayChangedEventArgs> ArrayChanged;
 
         public DirtableGrid(IWriteableGrid<T> gridImplementation)
         {
             _gridImplementation = gridImplementation;
+            _gridImplementation.ArrayChanged += OnArrayChanged;
 
-            foreach (Point point in _gridImplementation)
-                _gridImplementation[point].Dirtied += () => IsDirty = true;
+            foreach (int[] indexes in _gridImplementation.Indexes())
+                _gridImplementation[indexes[0], indexes[1]].Dirtied += () => IsDirty = true;
 
             _dirtiedCases = new List<IGridCase<T>>();
             _readOnlyDirtiedCases = _dirtiedCases.AsReadOnly();
+        }
+
+        private void OnArrayChanged(object sender, ArrayChangedEventArgs e)
+        {
+            ArrayChanged?.Invoke(this, e);
         }
 
         public void Clean()
@@ -127,7 +134,16 @@ namespace Glyph.Space
         public bool ContainsPoint(int i, int j) => _gridImplementation.ContainsPoint(i, j);
         public bool ContainsPoint(Point gridPoint) => _gridImplementation.ContainsPoint(gridPoint);
         public T[][] ToArray() => _gridImplementation.ToArray();
-        public IEnumerator<Point> GetEnumerator() => _gridImplementation.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_gridImplementation).GetEnumerator();
+        public IEnumerator<T> GetEnumerator() => _gridImplementation.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _gridImplementation.GetEnumerator();
+
+        int IArray.Rank => _gridImplementation.Rank;
+        int IArray.GetLength(int dimension) => _gridImplementation.GetLength(dimension);
+        T IArray<T>.this[params int[] indexes] => _gridImplementation[indexes];
+        T IWriteableArray<T>.this[params int[] indexes]
+        {
+            get => _gridImplementation[indexes];
+            set => _gridImplementation[indexes] = value;
+        }
     }
 }

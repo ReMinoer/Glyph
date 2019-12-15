@@ -14,7 +14,7 @@ namespace Glyph.Space
 
         public Func<T> DefaultValueFactory
         {
-            get { return _defaultValueFactory; }
+            get => _defaultValueFactory;
             set
             {
                 _defaultValueFactory = value;
@@ -22,19 +22,11 @@ namespace Glyph.Space
             }
         }
 
-        protected override bool HasLowEntropyProtected
-        {
-            get { return true; }
-        }
-
+        protected override bool HasLowEntropyProtected => true;
+        public IEnumerable<IGridCase<T>> SignificantCases => SignificantCasesProtected;
         protected override IEnumerable<IGridCase<T>> SignificantCasesProtected
         {
             get { return _items.Select<KeyValuePair<Point, T>, IGridCase<T>>(x => new GridCase<T>(x.Key, x.Value)); }
-        }
-
-        public IEnumerable<IGridCase<T>> SignificantCases
-        {
-            get { return SignificantCasesProtected; }
         }
 
         public PoorGrid(TopLeftRectangle rectangle, int columns, int rows)
@@ -49,33 +41,31 @@ namespace Glyph.Space
             _items = new Dictionary<Point, T>();
         }
 
-        public override T this[int i, int j]
+        protected override T GetValue(int i, int j)
         {
-            get
+            if (i < 0 || i >= Dimension.Rows || j < 0 || j >= Dimension.Columns)
+                throw new IndexOutOfRangeException();
+
+            if (!_items.TryGetValue(new Point(j, i), out T value))
+                value = DefaultValueFactory();
+
+            return value;
+        }
+
+        protected override void SetValue(int i, int j, T value)
+        {
+            if (i < 0 || i >= Dimension.Rows || j < 0 || j >= Dimension.Columns)
+                throw new IndexOutOfRangeException();
+
+            if (value.Equals(_defaultValue))
             {
-                if (i < 0 || i >= Dimension.Rows || j < 0 || j >= Dimension.Columns)
-                    throw new IndexOutOfRangeException();
-
-                T value;
-                if (!_items.TryGetValue(new Point(j, i), out value))
-                    value = DefaultValueFactory();
-                return value;
+                var point = new Point(i, j);
+                if (_items.ContainsKey(point))
+                    _items.Remove(point);
+                return;
             }
-            set
-            {
-                if (i < 0 || i >= Dimension.Rows || j < 0 || j >= Dimension.Columns)
-                    throw new IndexOutOfRangeException();
 
-                if (value.Equals(_defaultValue))
-                {
-                    var point = new Point(i, j);
-                    if (_items.ContainsKey(point))
-                        _items.Remove(point);
-                    return;
-                }
-
-                _items[new Point(j, i)] = value;
-            }
+            _items[new Point(j, i)] = value;
         }
 
         public void RemoveSignificantCase(Point point)

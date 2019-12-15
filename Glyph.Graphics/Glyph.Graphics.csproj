@@ -99,6 +99,10 @@
       <Project>{cb5183d5-f68e-4129-a716-7f9eb33ce223}</Project>
       <Name>Niddle</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
+      <Project>{8ba795fc-e007-40bb-bd70-90d970c99369}</Project>
+      <Name>Simulacra</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
       <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
       <Name>Glyph.Composition</Name>
