@@ -2,6 +2,7 @@
 using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
 using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Tools.Brushing.Grid.Brushes
 {
@@ -10,12 +11,12 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
     {
         private Point _startPoint;
 
-        public override void StartApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override void StartApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
             _startPoint = args.Point;
         }
 
-        public override bool CanEndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override bool CanEndApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
             if (!base.CanEndApply(canvas, args, paint))
                 return false;
@@ -33,7 +34,7 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
             return true;
         }
 
-        public override void EndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override void EndApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
             Rectangle rectangle = MathUtils.GetBoundingBox(args.Point, _startPoint);
 

@@ -1,6 +1,7 @@
 ﻿using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
 using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Tools.Brushing.Grid.Brushes
 {
@@ -9,18 +10,18 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
     {
         private Point _currentPoint;
 
-        public override void StartApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override void StartApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
             TryApply(canvas, args, paint);
         }
 
-        public override void UpdateApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override void UpdateApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
             if (_currentPoint != args.Point)
                 TryApply(canvas, args, paint);
         }
 
-        private void TryApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        private void TryApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
             if (!paint.CanApply(canvas, args))
                 return;
@@ -29,6 +30,6 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
             _currentPoint = args.Point;
         }
         
-        public override bool CanEndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint) => true;
+        public override bool CanEndApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint) => true;
     }
 }
