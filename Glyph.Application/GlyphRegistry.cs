@@ -214,7 +214,8 @@ namespace Glyph.Application
                 Type<InputLogger>(),
                 Type<ControlLogger>(),
 
-                Generic(typeof(CursorBrushController<,>)),
+                Type<EngineCursorBrushController>(),
+                Type<DataCursorBrushController>(),
 
                 #endregion
 
