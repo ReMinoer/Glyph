@@ -102,8 +102,8 @@ namespace Glyph.Space
             _gridImplementation = gridImplementation;
             _gridImplementation.ArrayChanged += OnArrayChanged;
 
-            foreach (int[] indexes in _gridImplementation.Indexes())
-                _gridImplementation[indexes[0], indexes[1]].Dirtied += () => IsDirty = true;
+            foreach (T item in _gridImplementation)
+                item.Dirtied += () => IsDirty = true;
 
             _dirtiedCases = new List<IGridCase<T>>();
             _readOnlyDirtiedCases = _dirtiedCases.AsReadOnly();
