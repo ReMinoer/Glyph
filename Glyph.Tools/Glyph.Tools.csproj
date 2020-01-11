@@ -48,7 +48,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Brushing\Generic\ResettableGridBrush.cs" />
+    <Compile Include="Brushing\Decorators\ResettableBrush.cs" />
+    <Compile Include="Brushing\Decorators\RetargetedBrush.cs" />
     <Compile Include="IIntegratedEditor.cs" />
     <Compile Include="Brushing\Base\BrushBase.cs" />
     <Compile Include="Brushing\Controllers\Base\BrushControllerBase.cs" />

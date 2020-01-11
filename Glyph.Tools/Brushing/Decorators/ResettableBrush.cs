@@ -1,26 +1,26 @@
 ﻿using System;
 
-namespace Glyph.Tools.Brushing.Generic
+namespace Glyph.Tools.Brushing.Decorators
 {
-    public class ResettableGridBrush<TCanvas, TArgs, TPaint> : IBrush<TCanvas, TArgs, TPaint>
+    public class ResettableBrush<TCanvas, TArgs, TPaint> : IBrush<TCanvas, TArgs, TPaint>
         where TPaint : IPaint
     {
         private readonly IBrush<TCanvas, TArgs, TPaint> _brush;
-        private readonly TPaint _revertPaint;
-        private readonly Func<TCanvas, TArgs, TPaint, bool> _revertPredicate;
+        private readonly TPaint _resetPaint;
+        private readonly Func<TCanvas, TArgs, TPaint, bool> _resetPredicate;
 
         private TPaint _currentPaint;
 
-        public ResettableGridBrush(IBrush<TCanvas, TArgs, TPaint> brush, TPaint revertPaint, Func<TCanvas, TArgs, TPaint, bool> revertPredicate)
+        public ResettableBrush(IBrush<TCanvas, TArgs, TPaint> brush, TPaint resetPaint, Func<TCanvas, TArgs, TPaint, bool> resetPredicate)
         {
             _brush = brush;
-            _revertPaint = revertPaint;
-            _revertPredicate = revertPredicate;
+            _resetPaint = resetPaint;
+            _resetPredicate = resetPredicate;
         }
 
         private TPaint GetPaint(TCanvas canvas, TArgs args, TPaint paint)
         {
-            return _revertPredicate(canvas, args, paint) ? _revertPaint : paint;
+            return _resetPredicate(canvas, args, paint) ? _resetPaint : paint;
         }
 
         public bool CanStartApply(TCanvas canvas, TArgs args, TPaint paint) => _brush.CanStartApply(canvas, args, GetPaint(canvas, args, GetPaint(canvas, args, paint)));
