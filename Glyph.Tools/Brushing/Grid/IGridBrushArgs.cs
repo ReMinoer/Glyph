@@ -4,6 +4,7 @@ namespace Glyph.Tools.Brushing.Grid
 {
     public interface IGridBrushArgs
     {
-        Point Point { get; }
+        Point GridPoint { get; }
+        Vector2 WorldPoint { get; }
     }
 }

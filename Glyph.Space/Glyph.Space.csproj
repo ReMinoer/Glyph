@@ -52,6 +52,7 @@
     <Compile Include="GridBase.cs" />
     <Compile Include="GridCase.cs" />
     <Compile Include="GridDimension.cs" />
+    <Compile Include="GridExtension.cs" />
     <Compile Include="IDirtableGrid.cs" />
     <Compile Include="IGrid.cs" />
     <Compile Include="IGridCase.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="IWriteableGrid.cs" />
     <Compile Include="IWriteableSpace.cs" />
     <Compile Include="IPartitioner.cs" />
+    <Compile Include="RetypedGrid.cs" />
     <Compile Include="Space.cs" />
     <Compile Include="Partitioning\QuadtreePartitioner.cs" />
     <Compile Include="PoorGrid.cs" />

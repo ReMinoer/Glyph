@@ -1,35 +1,53 @@
-﻿using Glyph.Space;
+﻿using Glyph.Math;
+using Glyph.Math.Shapes;
+using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
 using Microsoft.Xna.Framework;
-using Simulacra.Utils;
 
 namespace Glyph.Tools.Brushing.Grid.Brushes
 {
     public class ContinuousGridBrush<TCell, TPaint> : GridBrushBase<TCell, TPaint>
         where TPaint : IGridPaint<TCell>
     {
-        private Point _currentPoint;
+        private Point _previousGridPoint;
+        private Vector2 _previousWorldPoint;
 
-        public override void StartApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override void StartApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
+            _previousGridPoint = args.GridPoint;
+            _previousWorldPoint = args.WorldPoint;
+
             TryApply(canvas, args, paint);
         }
 
-        public override void UpdateApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override void UpdateApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
-            if (_currentPoint != args.Point)
+            if (_previousGridPoint != args.GridPoint)
                 TryApply(canvas, args, paint);
+
+            _previousGridPoint = args.GridPoint;
+            _previousWorldPoint = args.WorldPoint;
         }
 
-        private void TryApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        private void TryApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
-            if (!paint.CanApply(canvas, args))
-                return;
+            // TODO: Use better grid cell-segment intersection algorithm
+            var segment = new Segment(args.WorldPoint, _previousWorldPoint);
+            TopLeftRectangle segmentBox = MathUtils.GetBoundingBox(args.WorldPoint, _previousWorldPoint);
+            Rectangle gridRectangle = canvas.ToGridRange(segmentBox);
 
-            paint.Apply(canvas, args);
-            _currentPoint = args.Point;
+            for (int i = 0; i < gridRectangle.Height; i++)
+                for (int j = 0; j < gridRectangle.Width; j++)
+                {
+                    TopLeftRectangle cellRectangle = canvas.ToWorldRange(j + gridRectangle.X, i + gridRectangle.Y, 1, 1);
+                    if (!cellRectangle.Intersects(segment))
+                        continue;
+
+                    if (paint.CanApply(canvas, args))
+                        paint.Apply(canvas, args);
+                }
         }
         
-        public override bool CanEndApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint) => true;
+        public override bool CanEndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint) => true;
     }
 }

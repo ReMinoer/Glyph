@@ -107,7 +107,7 @@ namespace Glyph.Space
 
     public class Grid<T> : GridBase<T>
     {
-        private readonly T[][] _data;
+        private readonly ITwoDimensionWriteableArray<T> _data;
 
         protected override bool HasLowEntropyProtected => false;
         protected override IEnumerable<IGridCase<T>> SignificantCasesProtected => new Enumerable<IGridCase<T>>(new Enumerator(this));
@@ -115,23 +115,41 @@ namespace Glyph.Space
         public Grid(TopLeftRectangle rectangle, int columns, int rows)
             : base(rectangle, columns, rows)
         {
-            _data = new T[Dimension.Rows][];
-            for (int i = 0; i < _data.Length; i++)
-                _data[i] = new T[Dimension.Columns];
+            _data = new TwoDimensionArray<T>(new T[Dimension.Rows, Dimension.Columns]);
         }
 
         public Grid(int columns, int rows, Vector2 origin, Vector2 delta)
             : base(columns, rows, origin, delta)
         {
-            _data = new T[Dimension.Rows][];
-            for (int i = 0; i < _data.Length; i++)
-                _data[i] = new T[Dimension.Columns];
+            _data = new TwoDimensionArray<T>(new T[Dimension.Rows, Dimension.Columns]);
         }
 
-        protected override T GetValue(int i, int j) => _data[i][j];
-        protected override void SetValue(int i, int j, T value) => _data[i][j] = value;
+        public Grid(TopLeftRectangle rectangle, ITwoDimensionWriteableArray<T> data)
+            : base(rectangle, data.GetLength(1), data.GetLength(0))
+        {
+            _data = data;
+        }
 
-        protected override T[][] ToArrayProtected() => _data.ToArray();
+        public Grid(ITwoDimensionWriteableArray<T> data, Vector2 origin, Vector2 delta)
+            : base(data.GetLength(1), data.GetLength(0), origin, delta)
+        {
+            _data = data;
+        }
+
+        protected override T GetValue(int i, int j) => _data[i, j];
+        protected override void SetValue(int i, int j, T value) => _data[i, j] = value;
+
+        protected override T[][] ToArrayProtected()
+        {
+            var array = new T[_data.GetLength(0)][];
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                array[i] = new T[_data.GetLength(1)];
+                for (int j = 0; j < array.GetLength(1); j++)
+                    array[i][j] = _data[i, j];
+            }
+            return array;
+        }
 
         public class Enumerator : IEnumerator<IGridCase<T>>
         {

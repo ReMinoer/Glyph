@@ -11,38 +11,38 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
     {
         private Point _startPoint;
 
-        public override void StartApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override void StartApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
-            _startPoint = args.Point;
+            _startPoint = args.GridPoint;
         }
 
-        public override bool CanEndApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override bool CanEndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
             if (!base.CanEndApply(canvas, args, paint))
                 return false;
 
-            Rectangle rectangle = MathUtils.GetBoundingBox(args.Point, _startPoint);
+            Rectangle rectangle = MathUtils.GetBoundingBox(args.GridPoint, _startPoint);
 
-            for (int i = rectangle.Top; i <= rectangle.Bottom; i += 1)
-                for (int j = rectangle.Left; j <= rectangle.Right; j += 1)
+            for (int i = rectangle.Top; i <= rectangle.Bottom; i++)
+                for (int j = rectangle.Left; j <= rectangle.Right; j++)
                 {
                     var point = new Point(j, i);
-                    if (!paint.CanApply(canvas, new GridBrushArgs(point)))
+                    if (!paint.CanApply(canvas, new GridBrushArgs(point, canvas.ToWorldPoint(point))))
                         return false;
                 }
 
             return true;
         }
 
-        public override void EndApply(IWriteableArray<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override void EndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
-            Rectangle rectangle = MathUtils.GetBoundingBox(args.Point, _startPoint);
+            Rectangle rectangle = MathUtils.GetBoundingBox(args.GridPoint, _startPoint);
 
-            for (int i = rectangle.Top; i <= rectangle.Bottom; i += 1)
-                for (int j = rectangle.Left; j <= rectangle.Right; j += 1)
+            for (int i = rectangle.Top; i <= rectangle.Bottom; i++)
+                for (int j = rectangle.Left; j <= rectangle.Right; j++)
                 {
                     var point = new Point(j, i);
-                    paint.Apply(canvas, new GridBrushArgs(point));
+                    paint.Apply(canvas, new GridBrushArgs(point, canvas.ToWorldPoint(point)));
                 }
         }
     }

@@ -2,10 +2,15 @@
 
 namespace Glyph.Tools.Brushing.Grid
 {
-    public class GridBrushArgs : IGridBrushArgs
+    public struct GridBrushArgs : IGridBrushArgs
     {
-        public Point Point { get; set; }
-        public GridBrushArgs() {}
-        public GridBrushArgs(Point point) => Point = point;
+        public Point GridPoint { get; set; }
+        public Vector2 WorldPoint { get; set; }
+        
+        public GridBrushArgs(Point gridPoint, Vector2 worldPoint)
+        {
+            GridPoint = gridPoint;
+            WorldPoint = worldPoint;
+        }
     }
 }
