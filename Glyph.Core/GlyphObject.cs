@@ -50,6 +50,12 @@ namespace Glyph.Core
             return Resolver.Add<T>();
         }
 
+        public T Add<T>(Action<T> beforeAdding)
+            where T : IGlyphComponent
+        {
+            return Resolver.Add(beforeAdding);
+        }
+
         public IGlyphComponent Add(Type componentType)
         {
             return Resolver.Add(componentType) as IGlyphComponent;

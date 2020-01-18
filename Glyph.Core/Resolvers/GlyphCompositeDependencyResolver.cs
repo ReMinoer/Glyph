@@ -250,6 +250,16 @@ namespace Glyph.Core.Resolvers
             return component;
         }
 
+        internal T Add<T>(Action<T> beforeAdding)
+            where T : IGlyphComponent
+        {
+            var component = this.WithInstance(Local).Resolve<T>(origins: InstanceOrigins.Instantiation);
+            beforeAdding(component);
+            _composite.Add(component);
+
+            return component;
+        }
+
         internal object Add(Type type)
         {
             if (!typeof(IGlyphComponent).IsAssignableFrom(type))
