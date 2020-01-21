@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,6 +21,8 @@ namespace Glyph
         private readonly Dictionary<string, string> _assetPathByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, string> _effectPathByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         
+        private SemaphoreSlim _effectLock = new SemaphoreSlim(1);
+
         public IServiceProvider ServiceProvider { get; }
 
         private string _rootPath;
@@ -54,7 +57,7 @@ namespace Glyph
 
         public Task<Effect> GetOrLoadEffect(string assetName)
         {
-            return (Task<Effect>)_loadingTasks.GetOrAdd(_effectPathByName[assetName], x => Task.Run(() => LoadEffect(x)));
+            return (Task<Effect>)_loadingTasks.GetOrAdd(_effectPathByName[assetName], LoadEffect);
         }
 
         private T Load<T>(string assetRelativePath)
@@ -83,12 +86,22 @@ namespace Glyph
             return content;
         }
 
-        private Effect LoadEffect(string assetRelativePath)
+        private async Task<Effect> LoadEffect(string assetRelativePath)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             GraphicsDevice graphicsDevice = ((IGraphicsDeviceService)ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
-            var effect = new Effect(graphicsDevice, File.ReadAllBytes(Path.Combine(_rootPath, assetRelativePath + ".mgfx")));
+
+            Effect effect;
+            await _effectLock.WaitAsync();
+            try
+            {
+                effect = new Effect(graphicsDevice, File.ReadAllBytes(Path.Combine(_rootPath, assetRelativePath + ".mgfx")));
+            }
+            finally
+            {
+                _effectLock.Release();
+            }
 
             LogLoadingTime(assetRelativePath, stopwatch);
 
