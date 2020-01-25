@@ -78,7 +78,7 @@ namespace Glyph.Tools
 
             if (_zoomCamera.IsActive(out float wheelValue))
             {
-                float zoom = _camera.Zoom + wheelValue * 0.1f;
+                float zoom = _camera.Zoom + wheelValue * (_camera.Zoom / 2);
                 if (zoom < 0)
                     zoom = 0;
 
