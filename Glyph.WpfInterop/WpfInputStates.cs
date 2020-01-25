@@ -67,6 +67,11 @@ namespace Glyph.WpfInterop
             Ignored = false;
         }
 
+        public void Reset()
+        {
+            _mouse.Reset();
+        }
+
         public void Ignore()
         {
             Ignored = true;

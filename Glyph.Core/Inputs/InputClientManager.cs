@@ -1,6 +1,7 @@
 ﻿using System;
 using Fingear;
 using Fingear.MonoGame;
+using IInputStates = Fingear.MonoGame.IInputStates;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Glyph.Core.Inputs
@@ -20,10 +21,14 @@ namespace Glyph.Core.Inputs
                 
                 _current = value;
 
-                _current?.States.Clean();
-                InputSystem.Instance.InputStates = _current?.States;
-                InputManager.Instance.InputStates = _current?.States;
+                IInputStates inputStates = _current?.States;
+                inputStates?.Clean();
 
+                InputSystem.Instance.InputStates = inputStates;
+
+                InputManager.Instance.InputStates = inputStates;
+                InputManager.Instance.Reset();
+                     
                 InputClientChanged?.Invoke(_current);
             }
         }

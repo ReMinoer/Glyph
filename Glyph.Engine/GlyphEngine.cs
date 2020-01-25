@@ -64,6 +64,7 @@ namespace Glyph.Engine
                 RootView.DrawClient = _focusedClient;
                 InputClientManager.DrawClient = _focusedClient;
                 InputClientManager.InputClient = _focusedClient;
+                InteractionManager.Reset();
 
                 FocusChanged?.Invoke(_focusedClient);
             }
