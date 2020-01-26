@@ -7,6 +7,8 @@ using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Glyph.Core;
 using Glyph.Core.Inputs;
+using Glyph.Math.Shapes;
+using Microsoft.Xna.Framework;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Glyph.Tools
@@ -44,12 +46,6 @@ namespace Glyph.Tools
             }
         }
 
-        public float Zoom
-        {
-            get => _camera.Zoom;
-            set => _camera.Zoom = value;
-        }
-
         public FreeCamera(GlyphResolveContext context, RootView rootView, InputClientManager inputClientManager, ProjectionManager projectionManager)
             : base(context)
         {
@@ -69,6 +65,19 @@ namespace Glyph.Tools
             });
 
             Schedulers.Update.Plan(HandleInput);
+        }
+
+        public void ShowTarget(IBoxedComponent boxedComponent)
+        {
+            TopLeftRectangle boudingBox = boxedComponent.Area.BoundingBox;
+            const float marginScale = 1.1f;
+
+            float widthZoom = View.DisplayedRectangle.Width / (boudingBox.Width * marginScale) * _camera.Zoom;
+            float heightZoom = View.DisplayedRectangle.Height / (boudingBox.Height * marginScale) * _camera.Zoom;
+            float wantedZoom = MathHelper.Min(widthZoom, heightZoom);
+
+            _sceneNode.Position = boudingBox.Center;
+            _camera.Zoom = wantedZoom;
         }
 
         private void HandleInput(ElapsedTime elapsedTime)
