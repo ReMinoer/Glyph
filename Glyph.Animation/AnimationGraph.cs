@@ -12,7 +12,16 @@ using OverGraphed;
 
 namespace Glyph.Animation
 {
-    public class AnimationGraph<T, TState> : GlyphContainer<IAnimationPlayer>, IGraph<AnimationGraph<T, TState>.Vertex, AnimationGraph<T, TState>.Transition>, IUpdate, ITimeUnscalable, IEnableable
+    public interface IAnimationGraph : IGraph, IUpdate, ITimeUnscalable, IEnableable
+    {
+    }
+
+    public interface IAnimationGraph<T, TState> : IAnimationGraph, IGraph<AnimationGraph<T, TState>.Vertex, AnimationGraph<T, TState>.Transition>
+        where T : class
+    {
+    }
+
+    public class AnimationGraph<T, TState> : GlyphContainer<IAnimationPlayer>, IAnimationGraph<T, TState>
         where T : class
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
