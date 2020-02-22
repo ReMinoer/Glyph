@@ -107,7 +107,7 @@ namespace Glyph.Composition.Base
                 if ((injectable.Targets & ResolveTargets.Fraternal) == 0)
                     return false;
 
-                foreach (IGlyphComponent parentComponent in parent.Components.Where(injectable.ResolvableInjectable.Type.IsInstanceOfType))
+                foreach (IGlyphComponent parentComponent in parent.Components.Where(x => x != this && injectable.ResolvableInjectable.Type.IsInstanceOfType(x)))
                 {
                     injectable.ResolvableInjectable.Inject(this, parentComponent);
                     return true;
@@ -129,6 +129,8 @@ namespace Glyph.Composition.Base
                 if ((injectable.Targets & ResolveTargets.Fraternal) == 0)
                     continue;
                 if ((injectable.Targets & ResolveTargets.BrowseAllAncestors) == 0 && e.Parent != Parent)
+                    continue;
+                if (e.NewComponent == this)
                     continue;
                 if (!injectable.ResolvableInjectable.Type.IsInstanceOfType(e.NewComponent))
                     continue;
