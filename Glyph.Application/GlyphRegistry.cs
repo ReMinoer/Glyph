@@ -221,6 +221,9 @@ namespace Glyph.Application
 
                 #region UI
 
+                Type<InterfaceRoot>(),
+                Type<UserInterface>(),
+
                 Type<Text>(),
 
                 Type<SimpleBorder>(),

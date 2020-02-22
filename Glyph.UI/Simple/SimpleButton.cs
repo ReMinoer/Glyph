@@ -12,13 +12,10 @@ namespace Glyph.UI.Simple
         public StatesColor BorderColors { get; set; }
         public StatesColor TextColors { get; set; }
 
-        public override IFrame Frame
-        {
-            get { return SimpleFrame; }
-        }
+        public override IFrame Frame => SimpleFrame;
 
-        public SimpleButton(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
-            : base(context, rootView, projectionManager)
+        public SimpleButton(GlyphResolveContext context)
+            : base(context)
         {
             SimpleFrame = Add<SimpleFrame>();
 

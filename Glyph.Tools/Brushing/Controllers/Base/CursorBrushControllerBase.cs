@@ -40,7 +40,7 @@ namespace Glyph.Tools.Brushing.Controllers.Base
             {
                 _cursor = new ProjectionCursorControl("Scene cursor", InputSystem.Instance.Mouse.Cursor, rootView, rootView, projectionManager),
                 _applyBrush = new Control {DesiredActivity = InputActivity.Pressed},
-                _cancel = MenuControls.Instance.Cancel
+                _cancel = UserInterfaceControls.Instance.Cancel
             });
 
             Schedulers.Update.Plan(UpdateBrushPosition).AtStart();

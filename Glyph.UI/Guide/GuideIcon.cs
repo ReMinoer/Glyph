@@ -11,7 +11,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Diese.Collections;
 using Fingear;
-using Glyph.Core.Inputs;
 
 namespace Glyph.UI.Guide
 {
@@ -26,28 +25,27 @@ namespace Glyph.UI.Guide
         protected readonly SpriteTransformer SpriteTransformer;
         protected readonly Text Text;
         private readonly Vector2 _keyPadding = new Vector2(20, 50);
-        private Fingear.IControl _control;
-        private readonly ProjectionCursorControl _sceneCursor;
-        private readonly Fingear.IControl _clic;
-        public SceneNode SceneNode { get; private set; }
-        public bool Clickable { get; protected set; }
+
+        public SceneNode SceneNode { get; }
+        public bool Clickable { get; set; }
         public bool KeyNameVisible { get; set; }
 
         public string ComputerIconAsset
         {
-            get { return ComputerIcon.Asset; }
-            set { ComputerIcon.Asset = value; }
+            get => ComputerIcon.Asset;
+            set => ComputerIcon.Asset = value;
         }
 
         public string GamePadIconAsset
         {
-            get { return GamePadIcon.Asset; }
-            set { GamePadIcon.Asset = value; }
+            get => GamePadIcon.Asset;
+            set => GamePadIcon.Asset = value;
         }
 
+        private Fingear.IControl _control;
         public Fingear.IControl Control
         {
-            get { return _control; }
+            get => _control;
             set
             {
                 _control = value;
@@ -92,12 +90,8 @@ namespace Glyph.UI.Guide
 
             Add<SpriteRenderer>();
 
-            var controls = Add<Core.Inputs.Controls>();
-            controls.AddMany(new Fingear.IControl[]
-            {
-                _sceneCursor = new ProjectionCursorControl("Scene cursor", InputSystem.Instance.Mouse.Cursor, rootView, new ReadOnlySceneNodeDelegate(SceneNode.RootNode), projectionManager),
-                _clic = MenuControls.Instance.Clic
-            });
+            var userInterface = Add<UserInterface>();
+            userInterface.TouchStarted += OnTouchStarted;
 
             Schedulers.Initialize.Plan(InitializeLocal).AtEnd();
             Schedulers.LoadContent.Plan(LoadContentLocal);
@@ -119,24 +113,25 @@ namespace Glyph.UI.Guide
         private void HandleInput(ElapsedTime elapsedTime)
         {
             bool isGamePadUsed = InputManager.Instance.InputSources.AnyOfType<GamePadSource>();
+            if (IsGamePadUsed == isGamePadUsed)
+                return;
 
-            if (IsGamePadUsed != isGamePadUsed)
-            {
-                IsGamePadUsed = isGamePadUsed;
+            IsGamePadUsed = isGamePadUsed;
+            SpriteSheetSplit.CurrentFrame = IsGamePadUsed ? 1 : 0;
+            TransitionOpacity.Reset();
 
-                SpriteSheetSplit.CurrentFrame = IsGamePadUsed ? 1 : 0;
-                TransitionOpacity.Reset();
+            IconChanged?.Invoke(this, EventArgs.Empty);
+        }
 
-                IconChanged?.Invoke(this, EventArgs.Empty);
-            }
+        private void OnTouchStarted(object sender, HandlableTouchEventArgs e)
+        {
+            if (!Clickable)
+                return;
+            if (!SpriteArea.ContainsPoint(e.CursorPosition))
+                return;
 
-            if (Clickable)
-            {
-                _sceneCursor.IsActive(out System.Numerics.Vector2 mouseInScreen);
-                bool hover = SpriteArea.ContainsPoint(mouseInScreen.AsMonoGameVector());
-                if (hover && _clic.IsActive)
-                    Clicked?.Invoke(this, EventArgs.Empty);
-            }
+            e.Handle();
+            Clicked?.Invoke(this, EventArgs.Empty);
         }
 
         private void UpdateLocal(ElapsedTime elapsedTime)

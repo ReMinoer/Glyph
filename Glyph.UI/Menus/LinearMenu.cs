@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Fingear.MonoGame;
 using Glyph.UI.Controls;
-using Diese.Collections;
 using Diese.Collections.ReadOnly;
-using Fingear;
 using Glyph.Core;
-using Glyph.Core.Inputs;
 
 namespace Glyph.UI.Menus
 {
@@ -15,30 +10,16 @@ namespace Glyph.UI.Menus
     {
         private readonly List<IButton> _buttons;
         private readonly IReadOnlyCollection<IButton> _buttonsReadOnly;
-        private readonly Fingear.IControl _up;
-        private readonly Fingear.IControl _down;
-        private readonly Fingear.IControl _left;
-        private readonly Fingear.IControl _right;
-        private readonly Fingear.IControl _cancel;
         public int SelectedIndex { get; private set; }
         public int DefaultSelection { get; set; }
         public Axis NavigationAxis { get; set; }
         public bool NavigationLoop { get; set; }
 
-        public IEnumerable<IButton> Buttons
-        {
-            get { return _buttonsReadOnly; }
-        }
-
-        public IButton SelectedControl
-        {
-            get
-            {
-                return SelectedIndex >= 0 && SelectedIndex < _buttons.Count
-                    ? _buttons[SelectedIndex]
-                    : null;
-            }
-        }
+        public IEnumerable<IButton> Buttons => _buttonsReadOnly;
+        public IButton SelectedControl =>
+            SelectedIndex >= 0 && SelectedIndex < _buttons.Count
+                ? _buttons[SelectedIndex]
+                : null;
 
         public event EventHandler<SelectionEventArgs> SelectionChanged;
         public event EventHandler<SelectionEventArgs> SelectionTriggered;
@@ -53,18 +34,11 @@ namespace Glyph.UI.Menus
             SelectedIndex = -1;
             NavigationLoop = true;
 
-            var controls = Add<Core.Inputs.Controls>();
-            controls.AddMany(new []
-            {
-                _up = MenuControls.Instance.Up,
-                _down = MenuControls.Instance.Down,
-                _left = MenuControls.Instance.Left,
-                _right = MenuControls.Instance.Right,
-                _cancel = MenuControls.Instance.Cancel
-            });
+            var userInterface = Add<UserInterface>();
+            userInterface.DirectionChanged += OnDirectionChanged;
+            userInterface.Cancelled += OnCancelled;
 
             Schedulers.Initialize.Plan(InitializeLocal).AtStart();
-            Schedulers.Update.Plan(HandleInput).AtStart();
         }
 
         public void Add(IButton component)
@@ -87,48 +61,57 @@ namespace Glyph.UI.Menus
             SelectedIndex = -1;
         }
 
-        private void HandleInput(ElapsedTime elapsedTime)
+        private void OnDirectionChanged(object sender, HandlableDirectionEventArgs e)
         {
-            bool isMouseUsed = InputManager.Instance.InputSources.AnyOfType<MouseSource>();
-            
-            if (!isMouseUsed)
+            switch (NavigationAxis)
             {
-                if (_buttons.Count == 0)
-                    SelectedIndex = -1;
-                else if (SelectedIndex == -1)
-                    SelectedIndex = DefaultSelection;
-                else
-                {
-                    switch (NavigationAxis)
+                case Axis.Vertical:
+                    switch (e.Direction.ToVertical())
                     {
-                        case Axis.Vertical:
-                            if (_up.IsActive)
-                                SelectedIndex--;
-                            if (_down.IsActive)
-                                SelectedIndex++;
+                        case Vertical.Up:
+                            e.Handle();
+                            SelectedIndex--;
                             break;
-                        case Axis.Horizontal:
-                            if (_left.IsActive)
-                                SelectedIndex--;
-                            if (_right.IsActive)
-                                SelectedIndex++;
+                        case Vertical.Down:
+                            e.Handle();
+                            SelectedIndex++;
                             break;
                     }
-
-                    if (SelectedIndex < 0)
-                        SelectedIndex = NavigationLoop ? _buttons.Count - 1 : 0;
-                    else if (SelectedIndex >= _buttons.Count)
-                        SelectedIndex = NavigationLoop ? 0 : _buttons.Count - 1;
-                }
-
-                foreach (IButton button in _buttons)
-                    button.Hover = false;
-
-                _buttons[SelectedIndex].Hover = true;
+                    break;
+                case Axis.Horizontal:
+                    switch (e.Direction.ToHorizontal())
+                    {
+                        case Horizontal.Left:
+                            e.Handle();
+                            SelectedIndex--;
+                            break;
+                        case Horizontal.Right:
+                            e.Handle();
+                            SelectedIndex++;
+                            break;
+                    }
+                    break;
+                default:
+                    throw new NotSupportedException();
             }
-            
-            if (_cancel.IsActive)
-                TriggerSelection(DefaultSelection);
+
+            if (!e.IsHandled)
+                return;
+
+            if (SelectedIndex < 0)
+                SelectedIndex = NavigationLoop ? _buttons.Count - 1 : 0;
+            else if (SelectedIndex >= _buttons.Count)
+                SelectedIndex = NavigationLoop ? 0 : _buttons.Count - 1;
+
+            foreach (IButton button in _buttons)
+                button.Hover = false;
+            _buttons[SelectedIndex].Hover = true;
+        }
+
+        private void OnCancelled(object sender, HandlableEventArgs e)
+        {
+            e.Handle();
+            TriggerSelection(DefaultSelection);
         }
 
         private void ButtonOnEntered(object sender, EventArgs eventArgs)

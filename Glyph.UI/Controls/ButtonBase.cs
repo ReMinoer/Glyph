@@ -1,9 +1,5 @@
 ﻿using System;
-using Diese.Collections;
-using Fingear;
 using Fingear.Controls;
-using Fingear.MonoGame;
-using Fingear.MonoGame.Inputs;
 using Glyph.Animation;
 using Glyph.Core;
 using Glyph.Core.Inputs;
@@ -12,16 +8,14 @@ namespace Glyph.UI.Controls
 {
     public abstract class ButtonBase : GlyphObject, IButton
     {
-        private bool _hover;
-        private readonly ProjectionCursorControl _sceneCursor;
-        private readonly ActivityControl _clic;
-        private readonly Fingear.IControl _confirm;
-        public SceneNode SceneNode { get; private set; }
-        public Motion Motion { get; private set; }
-        public Text Text { get; private set; }
+        public SceneNode SceneNode { get; }
+        public Motion Motion { get; }
+        public Text Text { get; }
         public bool Pressed { get; private set; }
-        public abstract IFrame Frame { get; }
 
+        public abstract IFrame Frame { get; }
+        
+        private bool _hover;
         public bool Hover
         {
             get => _hover;
@@ -44,62 +38,50 @@ namespace Glyph.UI.Controls
         public event EventHandler Entered;
         public event EventHandler Leaved;
 
-        protected ButtonBase(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
+        protected ButtonBase(GlyphResolveContext context)
             : base(context)
         {
             SceneNode = Add<SceneNode>();
             Motion = Add<Motion>();
             Text = Add<Text>();
 
-            var controls = Add<Core.Inputs.Controls>();
-            controls.AddMany(new Fingear.IControl[]
-            {
-                _sceneCursor = new ProjectionCursorControl("Scene cursor", InputSystem.Instance.Mouse.Cursor, rootView, new ReadOnlySceneNodeDelegate(SceneNode.RootNode), projectionManager),
-                _clic = new ActivityControl("Clic", InputSystem.Instance.Mouse[MouseButton.Left]),
-                _confirm = MenuControls.Instance.Confirm
-            });
-
-            Schedulers.Update.Plan(HandleInput);
+            var userInterface = Add<UserInterface>();
+            userInterface.CursorMoved += OnCursorMoved;
+            userInterface.TouchStarted += OnTouchStarted;
+            userInterface.TouchEnded += OnTouchEnded;
+            userInterface.Confirmed += OnConfirmed;
         }
 
-        private void HandleInput(ElapsedTime elapsedTime)
+        private void OnCursorMoved(object sender, CursorEventArgs e)
         {
-            bool hover = Hover;
-            bool isMouseUsed = InputManager.Instance.InputSources.AnyOfType<MouseSource>();
+            Hover = Frame.Bounds.ContainsPoint(e.CursorPosition);
+        }
 
-            if (isMouseUsed)
-            {
-                if (_sceneCursor.IsActive(out System.Numerics.Vector2 mousePosition))
-                    hover = Frame.Bounds.ContainsPoint(mousePosition.AsMonoGameVector());
-            }
+        private void OnTouchStarted(object sender, HandlableTouchEventArgs e)
+        {
+            if (!Hover)
+                return;
 
-            if (hover)
-            {
-                if (isMouseUsed)
-                {
-                    if (_clic.IsActive(out InputActivity inputActivity))
-                    {
-                        switch (inputActivity)
-                        {
-                            case InputActivity.Triggered:
-                                Trigger();
-                                break;
-                            case InputActivity.Released:
-                                Release();
-                                break;
-                        }
-                    }
-                }
-                else if (_confirm.IsActive)
-                {
-                    Trigger();
-                    Release();
-                }
-            }
-            else if (Pressed)
+            e.Handle();
+            Trigger();
+        }
+
+        private void OnTouchEnded(object sender, CursorEventArgs e)
+        {
+            if (Hover)
+                Release();
+            else
                 Pressed = false;
+        }
 
-            Hover = hover;
+        private void OnConfirmed(object sender, HandlableEventArgs e)
+        {
+            if (!Hover)
+                return;
+
+            e.Handle();
+            Trigger();
+            Release();
         }
 
         private void Trigger()

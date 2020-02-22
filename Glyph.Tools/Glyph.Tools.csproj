@@ -111,6 +111,10 @@
       <Project>{7EE0B116-6B49-4073-99D8-827DD68B8AE0}</Project>
       <Name>Fingear</Name>
     </ProjectReference>
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
+      <Project>{B7380777-AC7C-4185-B58F-6C3B12301147}</Project>
+      <Name>Niddle</Name>
+    </ProjectReference>
     <ProjectReference Include="..\External\Simulacra\Simulacra.Injection\Simulacra.Injection.csproj">
       <Project>{9c7a9012-5536-43be-8055-2c3ff297c902}</Project>
       <Name>Simulacra.Injection</Name>

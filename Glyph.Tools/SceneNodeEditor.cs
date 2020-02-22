@@ -1,4 +1,5 @@
 ﻿using Glyph.Core;
+using Glyph.UI;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools
@@ -49,6 +50,8 @@ namespace Glyph.Tools
         {
             _anchoredSceneNode = Add<AnchoredSceneNode>();
             _anchoredSceneNode.ProjectionConfiguration = x => x.WithViewDepthMax(1);
+
+            Add<UserInterface>();
 
             _centralHandle = Add<PositionHandle>();
 

@@ -58,7 +58,8 @@
     <Compile Include="IBorder.cs" />
     <Compile Include="IControl.cs" />
     <Compile Include="IFrame.cs" />
-    <Compile Include="MenuControls.cs" />
+    <Compile Include="InterfaceRoot.cs" />
+    <Compile Include="UserInterfaceControls.cs" />
     <Compile Include="Menus\IMenu.cs" />
     <Compile Include="Menus\LinearMenu.cs" />
     <Compile Include="Menus\SelectionEventArgs.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Simple\SimpleButton.cs" />
     <Compile Include="Simple\SimpleFrame.cs" />
     <Compile Include="Text.cs" />
+    <Compile Include="UserInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj">
@@ -95,6 +97,10 @@
     <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
       <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
       <Name>Fingear</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
+      <Project>{B7380777-AC7C-4185-B58F-6C3B12301147}</Project>
+      <Name>Niddle</Name>
     </ProjectReference>
     <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
       <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>

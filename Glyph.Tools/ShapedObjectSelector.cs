@@ -1,51 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using Diese.Collections;
-using Fingear;
-using Fingear.MonoGame;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Core.Tracking;
 using Glyph.Math.Shapes;
 using Glyph.Messaging;
+using Glyph.Resolver;
 using Glyph.Space;
+using Glyph.UI;
+using Niddle.Attributes;
 using NLog;
 using Stave;
 
 namespace Glyph.Tools
 {
-    public class ShapedObjectSelector : GlyphContainer, IUpdate, IEnableable
+    public class ShapedObjectSelector : GlyphContainer, IEnableable
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
         private readonly InputClientManager _inputClientManager;
         private IBoxedComponent _selection;
+        private UserInterface _userInterface;
+
         public bool Enabled { get; set; } = true;
         public ReadOnlySpace<IBoxedComponent> Space { get; }
         public IFilter<IInputClient> ClientFilter { get; set; }
-
-        private readonly Controls _interactiveMode;
-        private IControl<Vector2> _control;
-
-        public IControl<Vector2> Control
-        {
-            get => _control;
-            set
-            {
-                if (_control != null)
-                    _interactiveMode.Remove(_control);
-                
-                _control = value;
-                
-                if (_control != null)
-                    _interactiveMode.Add(_control);
-            }
-        }
-
+        
         public Predicate<IBoxedComponent> Filter
         {
             get => _messagingSpace.Filter;
@@ -64,40 +48,45 @@ namespace Glyph.Tools
                 SelectionChanged?.Invoke(this, _selection);
             }
         }
+        
+        [Resolvable, ResolveTargets(ResolveTargets.Fraternal | ResolveTargets.BrowseAllAncestors)]
+        public UserInterface UserInterface
+        {
+            get => _userInterface;
+            set
+            {
+                if (_userInterface != null)
+                    _userInterface.TouchStarted -= OnTouchStarted;
+
+                _userInterface = value;
+
+                if (_userInterface != null)
+                    _userInterface.TouchStarted += OnTouchStarted;
+            }
+        }
 
         public event EventHandler<IBoxedComponent> SelectionChanged;
 
         public ShapedObjectSelector(InputClientManager inputClientManager, ISubscribableRouter router, IPartitioner partitioner = null)
         {
-            _messagingSpace = new MessagingSpace<IBoxedComponent>(router, x => x.Area.BoundingBox, partitioner);
-            
             _inputClientManager = inputClientManager;
-            _interactiveMode = new Controls(this);
-            Components.Add(_interactiveMode);
-            
+
+            _messagingSpace = new MessagingSpace<IBoxedComponent>(router, x => x.Area.BoundingBox, partitioner);
             Space = new ReadOnlySpace<IBoxedComponent>(_messagingSpace);
         }
 
-        public override void Initialize()
-        {
-            base.Initialize();
-            _interactiveMode.Initialize();
-        }
-
-        public void Update(ElapsedTime elapsedTime)
+        private void OnTouchStarted(object sender, HandlableTouchEventArgs e)
         {
             if (!Enabled)
                 return;
 
             if (ClientFilter != null && !ClientFilter.Filter(_inputClientManager.InputClient))
                 return;
-            
-            if (Control == null || !Control.IsActive(out Vector2 mousePosition))
-                return;
 
-            Logger.Debug($"Pick position: {mousePosition}");
+            e.Handle();
+            //Logger.Debug($"Pick position: {e.CursorPosition}");
 
-            IEnumerable<IBoxedComponent> inRange = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(mousePosition.AsMonoGameVector(), 1, 1));
+            IEnumerable<IBoxedComponent> inRange = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(e.CursorPosition, 1, 1));
             if (Filter != null)
                 inRange = inRange.Where(x => Filter(x));
 

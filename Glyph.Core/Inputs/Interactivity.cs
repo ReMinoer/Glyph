@@ -8,75 +8,72 @@ using Niddle.Attributes;
 
 namespace Glyph.Core.Inputs
 {
-    public abstract class InteractiveComponentBase : GlyphComponent, IEnableable
+    public interface IInteractiveComponent : IEnableable
     {
-        protected abstract IInteractive InteractiveComponent { get; }
+        IInteractive Interactive { get; }
+    }
+
+    public interface IInteractiveComponent<out TInteractive> : IInteractiveComponent
+        where TInteractive : IInteractive
+    {
+        new TInteractive Interactive { get; }
+    }
+
+    public abstract class InteractiveComponentBase<TInteractive> : GlyphComponent, IInteractiveComponent<TInteractive>
+        where TInteractive : class, IInteractive
+    {
+        public abstract TInteractive Interactive { get; }
+        IInteractive IInteractiveComponent.Interactive => Interactive;
 
         public bool Enabled
         {
-            get => InteractiveComponent.Enabled;
-            set => InteractiveComponent.Enabled = value;
+            get => Interactive.Enabled;
+            set => Interactive.Enabled = value;
         }
 
         public override void Dispose()
         {
-            InteractiveComponent.Parent = null;
+            Interactive.Parent = null;
             base.Dispose();
         }
     }
 
-    public class InteractiveRoot : InteractiveComponentBase
+    public abstract class InteractiveChildComponentBase<TInteractive, TInteractiveBase> : InteractiveComponentBase<TInteractive>
+        where TInteractive : class, TInteractiveBase
+        where TInteractiveBase : class, IInteractive
     {
-        private readonly InteractiveComposite _interactiveComposite = new InteractiveComposite();
-        protected override sealed IInteractive InteractiveComponent => _interactiveComposite;
+        private IInteractiveComponent<IInteractiveComposite<TInteractiveBase>> _interactiveParent;
+        [Resolvable, ResolveTargets(ResolveTargets.Fraternal | ResolveTargets.BrowseAllAncestors)]
+        public IInteractiveComponent<IInteractiveComposite<TInteractiveBase>> InteractiveParent
+        {
+            get => _interactiveParent;
+            set
+            {
+                if (_interactiveParent == value)
+                    return;
+                
+                _interactiveParent?.Interactive.Remove(Interactive);
+                _interactiveParent = value;
+                if (_interactiveParent != null && !_interactiveParent.Interactive.Contains(Interactive))
+                    _interactiveParent.Interactive.Add(Interactive);
+            }
+        }
+    }
 
-        public IInteractive Interactive => InteractiveComponent;
+    public class InteractiveRoot : InteractiveComponentBase<InteractiveComposite>
+    {
+        public override sealed InteractiveComposite Interactive { get; } = new InteractiveComposite();
 
         public InteractiveRoot([Resolvable, ResolveTargets(ResolveTargets.Parent)] IGlyphComponent parent = null)
         {
             if (parent?.Name != null)
-                _interactiveComposite.Name = parent.Name + " interactivity";
-        }
-
-        public void Register(Controls controls)
-        {
-            if (_interactiveComposite.Contains(controls.Interactive))
-                return;
-
-            controls.InteractiveRoot = this;
-            _interactiveComposite.Add(controls.Interactive);
-        }
-
-        public void Unregister(Controls controls)
-        {
-            if (_interactiveComposite.Remove(controls.Interactive))
-                controls.InteractiveRoot = null;
+                Interactive.Name = parent.Name + " interactivity";
         }
     }
 
-    public class Controls : InteractiveComponentBase, ICollection<IControl>
+    public class Controls : InteractiveChildComponentBase<Interactive, IInteractive>, ICollection<IControl>
     {
-        private InteractiveRoot _interactiveRoot;
-
-        public Interactive Interactive { get; } = new Interactive();
-        protected override sealed IInteractive InteractiveComponent => Interactive;
-
-        [Resolvable, ResolveTargets(ResolveTargets.Fraternal | ResolveTargets.BrowseAllAncestors)]
-        public InteractiveRoot InteractiveRoot
-        {
-            get => _interactiveRoot;
-            set
-            {
-                if (_interactiveRoot == value)
-                    return;
-                
-                InteractiveRoot previousRoot = _interactiveRoot;
-                _interactiveRoot = null;
-                previousRoot?.Unregister(this);
-                _interactiveRoot = value;
-                _interactiveRoot?.Register(this);
-            }
-        }
+        public override sealed Interactive Interactive { get; } = new Interactive();
 
         public Controls([Resolvable, ResolveTargets(ResolveTargets.Parent)] IGlyphComponent parent = null)
         {

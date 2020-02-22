@@ -1,29 +1,25 @@
 ﻿using System.Linq;
-using Diese.Collections;
-using Fingear;
-using Fingear.Controls;
-using Fingear.MonoGame;
-using Fingear.MonoGame.Inputs;
 using Glyph.Core;
-using Glyph.Core.Inputs;
 using Glyph.Math;
+using Glyph.UI;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Base
 {
     public abstract class HandleBase : GlyphObject, IIntegratedEditor<IWritableSceneNodeComponent>
     {
-        protected readonly ProjectionManager _projectionManager;
+        private readonly ProjectionManager _projectionManager;
         protected readonly SceneNode _sceneNode;
         
-        private readonly ProjectionCursorControl _projectedCursor;
-        private readonly ActivityControl _grab;
-
-        private bool _grabbed;
         private Vector2 _relativeGrabPosition;
+        private bool _grabbed;
+
+        public IDrawClient RaycastClient { get; set; }
 
         public IWritableSceneNodeComponent EditedObject { get; set; }
         object IIntegratedEditor.EditedObject => EditedObject;
+
+        protected abstract IArea Area { get; }
 
         public Vector2 LocalPosition
         {
@@ -31,61 +27,49 @@ namespace Glyph.Tools.Base
             set => _sceneNode.LocalPosition = value;
         }
 
-        protected abstract IArea Area { get; }
-
-        public IDrawClient RaycastClient
-        {
-            get => _projectedCursor.RaycastClient;
-            set => _projectedCursor.RaycastClient = value;
-        }
-
-        protected HandleBase(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
+        protected HandleBase(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context)
         {
             _projectionManager = projectionManager;
 
             _sceneNode = Add<SceneNode>();
 
-            var interactiveMode = Add<Controls>();
-            interactiveMode.AddMany(new IControl[]
-            {
-                _projectedCursor = new ProjectionCursorControl("Virtual cursor", InputSystem.Instance.Mouse.Cursor, rootView, _sceneNode, projectionManager),
-                _grab = new ActivityControl("Grab handle", InputSystem.Instance.Mouse[MouseButton.Left])
-            });
+            var userInterface = Add<UserInterface>();
+            userInterface.TouchStarted += OnTouchStarted;
+            userInterface.Touching += OnTouching;
+            userInterface.TouchEnded += OnTouchEnded;
+        }
+        
+        private void OnTouchStarted(object sender, HandlableTouchEventArgs e)
+        {
+            _grabbed = false;
             
-            Schedulers.Update.Plan(HandleInput).AtEnd();
+            if (!Area.ContainsPoint(e.CursorPosition))
+                return;
+            
+            e.Handle();
+
+            _grabbed = true;
+            _relativeGrabPosition = ProjectToTargetScene(e.CursorPosition - _sceneNode.Position + _sceneNode.LocalPosition);
+            OnGrabbed();
+        }
+        
+        private void OnTouching(object sender, CursorEventArgs e)
+        {
+            if (!_grabbed)
+                return;
+            
+            Vector2 targetScenePosition = ProjectToTargetScene(e.CursorPosition);
+            OnDragging(targetScenePosition - _relativeGrabPosition);
+        }
+        
+        private void OnTouchEnded(object sender, CursorEventArgs args)
+        {
+            _grabbed = false;
         }
 
         protected abstract void OnGrabbed();
         protected abstract void OnDragging(Vector2 projectedCursorPosition);
-
-        private void HandleInput(ElapsedTime elapsedTime)
-        {
-            if (_grab.IsActive(out InputActivity grabActivity) && (_grabbed || grabActivity.IsTriggered()))
-            {
-                _projectedCursor.IsActive(out Vector2 projectedCursorPosition);
-
-                if (grabActivity.IsTriggered())
-                {
-                    if (Area.ContainsPoint(projectedCursorPosition))
-                    {
-                        _grabbed = true;
-                        _relativeGrabPosition = ProjectToTargetScene(projectedCursorPosition - _sceneNode.Position + _sceneNode.LocalPosition);
-                        OnGrabbed();
-                    }
-                }
-
-                if (_grabbed)
-                {
-                    Vector2 targetScenePosition = ProjectToTargetScene(projectedCursorPosition);
-                    OnDragging(targetScenePosition - _relativeGrabPosition);
-                }
-            }
-            else
-            {
-                _grabbed = false;
-            }
-        }
 
         private Vector2 ProjectToTargetScene(Vector2 value)
         {
