@@ -10,7 +10,7 @@ using Glyph.Transition;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Diese.Collections;
-using Fingear;
+using Fingear.Inputs;
 
 namespace Glyph.UI.Guide
 {
@@ -42,8 +42,8 @@ namespace Glyph.UI.Guide
             set => GamePadIcon.Asset = value;
         }
 
-        private Fingear.IControl _control;
-        public Fingear.IControl Control
+        private Fingear.Controls.IControl _control;
+        public Fingear.Controls.IControl Control
         {
             get => _control;
             set

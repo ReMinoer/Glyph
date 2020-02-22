@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using Diese.Collections;
-using Fingear;
 using Fingear.Controls;
+using Fingear.Inputs;
 using Fingear.MonoGame;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
-using IControl = Fingear.IControl;
+using IControl = Fingear.Controls.IControl;
 
 namespace Glyph.Tools.Brushing.Controllers.Base
 {

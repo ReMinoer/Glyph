@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Fingear;
+using Fingear.Controls;
 using Fingear.Interactives;
+using Fingear.Interactives.Containers;
 using Glyph.Composition;
 using Glyph.Resolver;
 using Niddle.Attributes;

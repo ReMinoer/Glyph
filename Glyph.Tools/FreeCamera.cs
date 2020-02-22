@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using Diese.Collections;
-using Fingear;
 using Fingear.Controls;
-using Fingear.Converters;
+using Fingear.Inputs;
+using Fingear.Inputs.Converters;
 using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Glyph.Core;

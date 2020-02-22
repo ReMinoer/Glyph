@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Diese.Collections;
-using Fingear;
+using Fingear.Inputs;
 using Fingear.MonoGame;
 using Glyph.Math;
 using Vector2 = Microsoft.Xna.Framework.Vector2;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Fingear;
+using Fingear.Inputs;
 using Fingear.MonoGame;
 using Glyph.Composition;
 using NLog;

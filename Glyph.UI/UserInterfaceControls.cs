@@ -1,8 +1,8 @@
-﻿using Fingear;
-using Fingear.Controls;
+﻿using Fingear.Controls;
 using Fingear.Controls.Composites;
 using Fingear.Controls.Containers;
-using Fingear.Converters;
+using Fingear.Inputs;
+using Fingear.Inputs.Converters;
 using Fingear.MonoGame;
 using Fingear.MonoGame.Inputs;
 using Fingear.Utils;

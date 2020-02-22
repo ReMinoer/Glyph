@@ -1,8 +1,8 @@
 using System;
 using Niddle;
-using Fingear;
 using Fingear.Controls;
 using Fingear.Controls.Composites;
+using Fingear.Inputs;
 using Fingear.Interactives;
 using Fingear.MonoGame;
 using Glyph.Core.Inputs;

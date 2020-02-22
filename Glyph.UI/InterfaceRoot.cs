@@ -1,4 +1,4 @@
-﻿using Fingear;
+﻿using Fingear.Interactives;
 using Fingear.Interactives.Interfaces;
 using Fingear.MonoGame;
 using Glyph.Composition;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Fingear;
 using Fingear.Controls.Base;
+using Fingear.Inputs;
 
 namespace Glyph.Core.Inputs
 {

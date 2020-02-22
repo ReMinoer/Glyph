@@ -1,5 +1,5 @@
 ﻿using System;
-using Fingear;
+using Fingear.Inputs;
 using Fingear.MonoGame;
 using IInputStates = Fingear.MonoGame.IInputStates;
 using Vector2 = Microsoft.Xna.Framework.Vector2;

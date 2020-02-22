@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Niddle;
 using Fingear;
+using Fingear.Inputs;
 using Glyph.Application;
 using Glyph.Audio;
 using Glyph.Core;
