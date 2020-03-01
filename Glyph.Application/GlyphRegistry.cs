@@ -27,6 +27,7 @@ using Glyph.Scripting;
 using Glyph.Tools;
 using Glyph.Tools.Brushing.Controllers;
 using Glyph.Tools.ShapeRendering;
+using Glyph.Tools.Transforming;
 using Glyph.UI;
 using Glyph.UI.Menus;
 using Glyph.UI.Simple;
@@ -210,8 +211,13 @@ namespace Glyph.Application
                 Type<CircleComponentRenderer>(),
 
                 Type<FreeCamera>(),
+
                 Type<SceneNodeEditor>(),
-                Type<PositionHandle>(),
+                Type<AdvancedPositionHandle>(),
+                Type<AdvancedRotationHandle>(),
+                Type<AdvancedScaleHandle>(),
+                Type<SimplePositionHandle>(),
+
                 Type<ShapedObjectSelector>(),
 
                 Type<InputLogger>(),

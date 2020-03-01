@@ -72,8 +72,10 @@
     <Compile Include="FreeCamera.cs" />
     <Compile Include="Base\HandleBase.cs" />
     <Compile Include="Brushing\IBrush.cs" />
-    <Compile Include="PositionHandle.cs" />
-    <Compile Include="SceneNodeEditor.cs" />
+    <Compile Include="Transforming\Base\AdvancedHandleBase.cs" />
+    <Compile Include="Transforming\AdvancedPositionHandle.cs" />
+    <Compile Include="Transforming\SimplePositionHandle.cs" />
+    <Compile Include="Transforming\SceneNodeEditor.cs" />
     <Compile Include="ShapedObjectSelector.cs" />
     <Compile Include="ControlLogger.cs" />
     <Compile Include="InputLogger.cs" />

@@ -5,16 +5,16 @@ using Glyph.Math.Shapes;
 using Glyph.Tools.Base;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Tools
+namespace Glyph.Tools.Transforming
 {
-    public class PositionHandle : SimpleHandleBase<FilledCircleSprite>
+    public class SimplePositionHandle : SimpleHandleBase<FilledCircleSprite>
     {
         protected override IArea Area => new Circle(_sceneNode.Position, _spriteSource.Radius);
         
         public Axes Axes { get; set; } = Axes.Both;
         private Vector2 _startPosition;
 
-        public PositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
+        public SimplePositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context, projectionManager)
         {
             _spriteSource.Radius = 50;

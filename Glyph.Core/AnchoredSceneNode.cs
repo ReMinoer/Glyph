@@ -14,6 +14,28 @@ namespace Glyph.Core
         private ISceneNodeComponent _anchorNode;
         private ITransformer[] _projectionPath;
 
+        private bool _ignoreRotation;
+        public bool IgnoreRotation
+        {
+            get => _ignoreRotation;
+            set
+            {
+                _ignoreRotation = value;
+                Refresh();
+            }
+        }
+
+        private bool _ignoreScale;
+        public bool IgnoreScale
+        {
+            get => _ignoreScale;
+            set
+            {
+                _ignoreScale = value;
+                Refresh();
+            }
+        }
+
         public ISceneNodeComponent AnchorNode
         {
             get => _anchorNode;
@@ -87,7 +109,7 @@ namespace Glyph.Core
             if (_anchorNode == null || !_projectionManager.SceneRoots.Contains(_anchorNode.RootNode(), new RepresentativeEqualityComparer<ISceneNode>()))
             {
                 _transformation = Transformation.Identity;
-                Refresh(Referential.Local);
+                RefreshFrom(Referential.Local);
                 return;
             }
 
@@ -99,10 +121,10 @@ namespace Glyph.Core
             //Transformation worldTransformation = projectionController.First(x => x.TransformerPath.SequenceEqual(TransformerPath)).Value;
 
             _position = worldTransformation.Translation;
-            _rotation = worldTransformation.Rotation;
-            _scale = worldTransformation.Scale;
+            _rotation = IgnoreRotation ? ParentNode?.Rotation ?? 0 : worldTransformation.Rotation;
+            _scale = IgnoreScale ? ParentNode?.Scale ?? 1 : worldTransformation.Scale;
 
-            Refresh(Referential.World);
+            RefreshFrom(Referential.World);
         }
 
         private void Refresh(object sender, EventArgs args) => Refresh();

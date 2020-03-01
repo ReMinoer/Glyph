@@ -107,13 +107,13 @@ namespace Glyph.Core
             : base(parentNode)
         {
         }
-
+        
         public void SetValues(Vector2? position, float? rotation, float? scale, float? depth, Referential childStaticReferential)
         {
             switch (childStaticReferential)
             {
                 case Referential.Local:
-                    LocalTransformation.RefreshMatrix(position, rotation, scale);
+                    _transformation.RefreshMatrix(position, rotation, scale);
                     if (depth.HasValue)
                         _localDepth = depth.Value;
                     break;
@@ -131,37 +131,37 @@ namespace Glyph.Core
             Refresh();
         }
 
-        private void SetWorldPosition(Vector2 value)
+        protected void SetWorldPosition(Vector2 value)
         {
             if (ParentNode != null)
                 value = ParentNode.Matrix.Inverse * value;
 
-            if (LocalTransformation.Translation.Equals(value))
+            if (_transformation.Translation.Equals(value))
                 return;
 
-            LocalTransformation.Translation = value;
+            _transformation.Translation = value;
         }
 
-        private void SetWorldRotation(float value)
+        protected void SetWorldRotation(float value)
         {
             if (ParentNode != null)
                 value = value - ParentNode.Rotation;
 
-            if (LocalTransformation.Rotation.Equals(value))
+            if (_transformation.Rotation.Equals(value))
                 return;
 
-            LocalTransformation.Rotation = value;
+            _transformation.Rotation = value;
         }
 
-        private void SetWorldScale(float value)
+        protected void SetWorldScale(float value)
         {
             if (ParentNode != null)
                 value = value / ParentNode.Scale;
 
-            if (LocalTransformation.Scale.Equals(value))
+            if (_transformation.Scale.Equals(value))
                 return;
 
-            LocalTransformation.Scale = value;
+            _transformation.Scale = value;
         }
 
         public void SetPosition(Referential referential, Vector2 value)

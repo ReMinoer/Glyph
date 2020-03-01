@@ -113,7 +113,7 @@ namespace Glyph.Core.Base
             ParentNode?.LinkChild(this, childStaticReferential);
 
             _isRoot = ParentNode == null;
-            Refresh(childStaticReferential);
+            RefreshFrom(childStaticReferential);
 
             ParentNodeChanged?.Invoke(this, parent);
         }
@@ -167,6 +167,14 @@ namespace Glyph.Core.Base
             }
         }
 
+        protected void SetWorldDepth(float value)
+        {
+            if (ParentNode != null)
+                _localDepth = value - ParentNode.Depth;
+            else
+                _localDepth = value;
+        }
+
         public void SetDepth(Referential referential, float value)
         {
             switch (referential)
@@ -178,23 +186,15 @@ namespace Glyph.Core.Base
             }
         }
 
-        protected void SetWorldDepth(float value)
-        {
-            if (ParentNode != null)
-                _localDepth = value - ParentNode.Depth;
-            else
-                _localDepth = value;
-        }
-
         public bool Represent(IRepresentative<ISceneNode> other)
         {
             return this == other;
         }
         
         void ISceneNode.Refresh() => Refresh();
-        protected virtual void Refresh() => Refresh(Referential.Local);
+        protected virtual void Refresh() => RefreshFrom(Referential.Local);
 
-        protected void Refresh(Referential childStaticReferential)
+        protected void RefreshFrom(Referential childStaticReferential)
         {
             if (ParentNode == null)
             {
