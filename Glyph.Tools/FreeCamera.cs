@@ -69,14 +69,14 @@ namespace Glyph.Tools
 
         public void ShowTarget(IBoxedComponent boxedComponent)
         {
-            TopLeftRectangle boudingBox = boxedComponent.Area.BoundingBox;
+            TopLeftRectangle boundingBox = boxedComponent.Area.BoundingBox;
             const float marginScale = 1.1f;
 
-            float widthZoom = View.DisplayedRectangle.Width / (boudingBox.Width * marginScale) * _camera.Zoom;
-            float heightZoom = View.DisplayedRectangle.Height / (boudingBox.Height * marginScale) * _camera.Zoom;
+            float widthZoom = View.DisplayedRectangle.Width / (boundingBox.Width * marginScale) * _camera.Zoom;
+            float heightZoom = View.DisplayedRectangle.Height / (boundingBox.Height * marginScale) * _camera.Zoom;
             float wantedZoom = MathHelper.Min(widthZoom, heightZoom);
 
-            _sceneNode.Position = boudingBox.Center;
+            _sceneNode.Position = boundingBox.Center;
             _camera.Zoom = wantedZoom;
         }
 
