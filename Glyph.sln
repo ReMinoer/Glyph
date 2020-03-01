@@ -79,6 +79,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Niddle", "External\Simulacr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Niddle.Test", "External\Simulacra\External\Niddle\Tests\Niddle.Test\Niddle.Test.csproj", "{6EE7C895-2329-48C8-A6FD-AD53F896277A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Demos.PrimitiveRendering", "Demos\Glyph.Demos.PrimitiveRendering\Glyph.Demos.PrimitiveRendering.csproj", "{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +227,10 @@ Global
 		{6EE7C895-2329-48C8-A6FD-AD53F896277A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EE7C895-2329-48C8-A6FD-AD53F896277A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EE7C895-2329-48C8-A6FD-AD53F896277A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -247,6 +253,7 @@ Global
 		{01B3AFE3-B750-455E-BBAA-61C90DD82CD1} = {7C9C9D34-8CD9-4F17-93DE-0F4A9E0698D6}
 		{CB5183D5-F68E-4129-A716-7F9EB33CE223} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{6EE7C895-2329-48C8-A6FD-AD53F896277A} = {7C9C9D34-8CD9-4F17-93DE-0F4A9E0698D6}
+		{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112} = {94F5EA39-C8BB-4637-8A4F-FA6C72580560}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {484F9B0D-760F-48AD-893C-CCFB7A1CF541}

@@ -8,8 +8,8 @@ namespace Glyph
         private readonly Stack<SpriteBatchContext> _contextStack;
         private readonly SpriteBatch _current;
 
-        public SpriteBatch Current => _contextStack.Count > 0 ? _current : null;
-        public SpriteBatchContext Peek => _contextStack.Peek();
+        public SpriteBatch Current => _contextStack.Count > 0 && Peek != null ? _current : null;
+        public SpriteBatchContext Peek => _contextStack.Count > 0 ? _contextStack.Peek() : null;
 
         public SpriteBatchStack(SpriteBatch spriteBatch)
         {
@@ -19,36 +19,37 @@ namespace Glyph
 
         public void Push(SpriteBatchContext context)
         {
-            if (_contextStack.Count > 0)
-                StopPeek();
-
+            StopPeek();
             _contextStack.Push(context);
             ApplyPeek();
         }
 
         public void Replace(SpriteBatchContext context)
         {
-            _contextStack.Pop();
             StopPeek();
+            _contextStack.Pop();
             _contextStack.Push(context);
             ApplyPeek();
         }
 
         public void Pop()
         {
-            _contextStack.Pop();
             StopPeek();
+            _contextStack.Pop();
             ApplyPeek();
         }
 
         private void StopPeek()
         {
+            if (Peek == null)
+                return;
+
             _current.End();
         }
 
         private void ApplyPeek()
         {
-            if (_contextStack.Count <= 0)
+            if (Peek == null)
                 return;
 
             _current.Begin(Peek.SpriteSortMode, Peek.BlendState, Peek.SamplerState, Peek.DepthStencilState, Peek.RasterizerState, Peek.Effect, Peek.TransformMatrix);

@@ -55,8 +55,10 @@
     <Compile Include="ISpriteSheet.cs" />
     <Compile Include="ISpriteSheetCarver.cs" />
     <Compile Include="ISpriteSource.cs" />
+    <Compile Include="Renderer\Primitives\LineRenderer.cs" />
     <Compile Include="Renderer\MappingRenderer.cs" />
-    <Compile Include="Renderer\RendererBase.cs" />
+    <Compile Include="Renderer\Base\RendererBase.cs" />
+    <Compile Include="Renderer\Base\SpriteRendererBase.cs" />
     <Compile Include="Renderer\TexturingRenderer.cs" />
     <Compile Include="Shapes\FilledCircleSprite.cs" />
     <Compile Include="SpriteAnimation.cs" />

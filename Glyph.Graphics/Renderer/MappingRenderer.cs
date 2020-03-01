@@ -10,7 +10,7 @@ namespace Glyph.Graphics.Renderer
 {
     public delegate bool RenderingBehaviour<TData>(TData caseData, MappingRenderer<TData> mappingRenderer);
 
-    public class MappingRenderer<TData> : RendererBase
+    public class MappingRenderer<TData> : SpriteRendererBase
     {
         public ISpriteSheet SpriteSheet { get; }
         public IGrid<TData> Grid { get; set; }

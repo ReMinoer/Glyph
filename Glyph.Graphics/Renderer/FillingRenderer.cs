@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Renderer
 {
-    public class FillingRenderer : RendererBase
+    public class FillingRenderer : SpriteRendererBase
     {
         private readonly FillingRectangle _fillingRectangle;
         private readonly SceneNode _sceneNode;

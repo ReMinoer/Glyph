@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Renderer
 {
-    public class SpriteRenderer : RendererBase
+    public class SpriteRenderer : SpriteRendererBase
     {
         private readonly SceneNode _sceneNode;
         protected override ISceneNode SceneNode => _sceneNode;
