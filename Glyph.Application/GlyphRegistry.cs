@@ -17,7 +17,6 @@ using Glyph.Core.Tracking;
 using Glyph.Graphics;
 using Glyph.Graphics.Particles;
 using Glyph.Graphics.Renderer;
-using Glyph.Graphics.Renderer.Primitives;
 using Glyph.Graphics.Shapes;
 using Glyph.Messaging;
 using Glyph.Particles;
@@ -161,7 +160,9 @@ namespace Glyph.Application
                 Type<FillingRenderer>(),
                 Type<TexturingRenderer>(),
 
-                Type<LineRenderer>(),
+                Type<PrimitiveRenderer>(),
+                Type<PrimitiveComponent>(),
+                Generic(typeof(PrimitiveComponent<>)),
 
                 Generic(typeof(MappingRenderer<>)),
 

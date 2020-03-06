@@ -6,7 +6,7 @@ using Glyph.Math;
 using Glyph.Resolver;
 using Niddle.Attributes;
 
-namespace Glyph.Graphics.Renderer
+namespace Glyph.Graphics.Renderer.Base
 {
     public abstract class RendererBase : GlyphComponent, IDraw, IBoxedComponent
     {

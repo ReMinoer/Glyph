@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using Glyph.Core;
-using Glyph.Graphics.Renderer.Primitives;
+using Glyph.Graphics;
+using Glyph.Graphics.Primitives;
+using Glyph.Graphics.Renderer;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
 
@@ -8,7 +11,7 @@ namespace Glyph.Tools.Transforming
 {
     public class SceneNodeEditor : GlyphObject, IIntegratedEditor<IWritableSceneNodeComponent>
     {
-        static public readonly Vector2 Unit = new Vector2(100, 100);
+        static public readonly float Unit = 100;
 
         private readonly AnchoredSceneNode _anchoredSceneNode;
 
@@ -65,33 +68,35 @@ namespace Glyph.Tools.Transforming
             Add<UserInterface>();
 
             _scaleHandle = Add<AdvancedScaleHandle>();
-            _scaleHandle.LocalPosition = Unit.Multiply(2, 2);
-            _scaleHandle.Size = Unit.Multiply(1, 1); 
+            _scaleHandle.Visible = false;
+            _scaleHandle.LocalPosition = new Vector2(2, 2) * Unit;
+            _scaleHandle.Size = new Vector2(1, 1) * Unit; 
             _scaleHandle.Color = Color.Black;
 
             _horizontalHandle = Add<AdvancedPositionHandle>();
             _horizontalHandle.Visible = false;
-            _horizontalHandle.LocalPosition = Unit.Multiply(2.5f, 0);
-            _horizontalHandle.Size = Unit.Multiply(2, 1);
+            _horizontalHandle.LocalPosition = new Vector2(2.5f, 0) * Unit;
+            _horizontalHandle.Size = new Vector2(2, 1) * Unit;
             _horizontalHandle.Axes = Axes.Horizontal;
             _horizontalHandle.Color = Color.Red;
 
             _verticalHandle = Add<AdvancedPositionHandle>();
             _verticalHandle.Visible = false;
-            _verticalHandle.LocalPosition = Unit.Multiply(0, 2.5f);
-            _verticalHandle.Size = Unit.Multiply(1, 2);
+            _verticalHandle.LocalPosition = new Vector2(0, 2.5f) * Unit;
+            _verticalHandle.Size = new Vector2(1, 2) * Unit;
             _verticalHandle.Axes = Axes.Vertical;
             _verticalHandle.Color = Color.Blue;
 
             _positionHandle = Add<AdvancedPositionHandle>();
             _positionHandle.Visible = false;
-            _positionHandle.LocalPosition = Unit.Multiply(1, 1);
-            _positionHandle.Size = Unit.Multiply(3, 3);
+            _positionHandle.LocalPosition = new Vector2(1, 1) * Unit;
+            _positionHandle.Size = new Vector2(3, 3) * Unit;
             _positionHandle.Color = Color.White;
 
             _rotationHandle = Add<AdvancedRotationHandle>();
-            _rotationHandle.LocalPosition = Unit.Multiply(2, 2);
-            _rotationHandle.Size = Unit.Multiply(3, 3); 
+            _rotationHandle.Visible = false;
+            _rotationHandle.LocalPosition = new Vector2(2, 2) * Unit;
+            _rotationHandle.Size = new Vector2(3, 3) * Unit; 
             _rotationHandle.Color = Color.Green;
 
             Schedulers.Draw.Plan(_horizontalHandle).After(_positionHandle);
@@ -101,14 +106,13 @@ namespace Glyph.Tools.Transforming
             
             var lineObject = Add<GlyphObject>();
             lineObject.Add<SceneNode>();
-
-            var horizontalLine = lineObject.Add<LineRenderer>();
-            horizontalLine.Vertices = new[] { Vector2.Zero, Unit.Multiply(3, 0) };
-            horizontalLine.Color = Color.Red;
-
-            var verticalLine = lineObject.Add<LineRenderer>();
-            verticalLine.Vertices = new[] { Vector2.Zero, Unit.Multiply(0, 3) };
-            verticalLine.Color = Color.Blue;
+            lineObject.Add<PrimitiveRenderer>().Primitives.AddRange(new IPrimitive[]
+            {
+                new LinePrimitive(Color.Red, Vector2.Zero, new Vector2(3, 0) * Unit),
+                new LinePrimitive(Color.Blue, Vector2.Zero, new Vector2(0, 3) * Unit),
+                new LinePrimitive(Color.Black, new Vector2(1.5f, 2) * Unit, new Vector2(2, 2) * Unit, new Vector2(2, 1.5f) * Unit),
+                new CircleOutlinePrimitive(Color.Green, Vector2.Zero, (new Vector2(2.5f, 2.5f) * Unit).Length(), MathHelper.ToRadians(15), MathHelper.ToRadians(60))
+            });
         }
     }
 }

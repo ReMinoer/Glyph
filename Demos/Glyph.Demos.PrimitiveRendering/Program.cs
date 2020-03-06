@@ -1,8 +1,9 @@
-﻿using System.Linq;
-using Glyph.Core;
+﻿using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Engine;
-using Glyph.Graphics.Renderer.Primitives;
+using Glyph.Graphics;
+using Glyph.Graphics.Primitives;
+using Glyph.Graphics.Renderer;
 using Glyph.Tools;
 using Microsoft.Xna.Framework;
 
@@ -24,33 +25,21 @@ namespace Glyph.Demos.PrimitiveRendering
                 freeCamera.View = engine.RootView;
                 freeCamera.Client = game;
 
-                const float unit = 100;
+                const float radius = 100;
 
                 var scene = root.Add<GlyphObject>();
                 scene.Add<SceneNode>().RootNode();
-
-                var horizontalLine = scene.Add<LineRenderer>();
-                horizontalLine.Color = Color.Red;
-                horizontalLine.Vertices = new[] { Vector2.Zero, Vector2.UnitX * unit };
-
-                var verticalLine = scene.Add<LineRenderer>();
-                verticalLine.Color = Color.Blue;
-                verticalLine.Vertices = new[] { Vector2.Zero, Vector2.UnitY * unit };
-
-                var diagonalLine = scene.Add<LineRenderer>();
-                diagonalLine.Color = Color.Green;
-                diagonalLine.Vertices = new[] { Vector2.Zero, Vector2.One.Normalized() * unit };
-                
-                var lineStrip = scene.Add<LineRenderer>();
-                lineStrip.Color = Color.Yellow;
-                lineStrip.Vertices = new[] { Vector2.UnitX * unit, Vector2.One.Normalized() * unit, Vector2.UnitY * unit };
-
-                const int circleLineSampling = 64;
-                var circleLine = scene.Add<LineRenderer>();
-                circleLine.Color = Color.White;
-                circleLine.Vertices = Enumerable.Range(0, circleLineSampling + 1)
-                                                .Select(x => x * MathHelper.TwoPi / circleLineSampling)
-                                                .Select(x => new Vector2((float)System.Math.Cos(x), (float)System.Math.Sin(x)) * unit).ToArray();
+                scene.Add<PrimitiveRenderer>().Primitives.AddRange(new IPrimitive[]
+                {
+                    new LinePrimitive(Color.Red, Vector2.Zero, Vector2.UnitX * radius),
+                    new LinePrimitive(Color.Blue, Vector2.Zero, Vector2.UnitY * radius),
+                    new LinePrimitive(Color.Green, Vector2.Zero, Vector2.One.Normalized() * radius),
+                    new LinePrimitive(Color.Yellow, Vector2.UnitX * radius, Vector2.One.Normalized() * radius, Vector2.UnitY * radius),
+                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, radius),
+                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, radius * 1.1f, angleSize: MathHelper.PiOver2),
+                    new EllipseOutlinePrimitive(Vector2.Zero, radius * 2, radius / 2, rotation: MathHelper.ToRadians(26.7f)) {Colors = new [] {Color.Red, Color.Yellow}},
+                    new EllipseOutlinePrimitive(Vector2.UnitY * radius / 10, radius * 2, radius / 2, rotation: MathHelper.ToRadians(26.7f), angleSize: MathHelper.Pi) {Colors = new [] {Color.Red, Color.Yellow}}
+                });
 
                 game.Run();
             }

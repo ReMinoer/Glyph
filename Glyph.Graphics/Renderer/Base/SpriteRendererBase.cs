@@ -2,7 +2,7 @@
 using Glyph.Resolver;
 using Niddle.Attributes;
 
-namespace Glyph.Graphics.Renderer
+namespace Glyph.Graphics.Renderer.Base
 {
     [SinglePerParent]
     public abstract class SpriteRendererBase : RendererBase
