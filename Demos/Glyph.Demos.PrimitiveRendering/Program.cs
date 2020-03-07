@@ -25,27 +25,33 @@ namespace Glyph.Demos.PrimitiveRendering
                 freeCamera.View = engine.RootView;
                 freeCamera.Client = game;
 
-                const float radius = 100;
+                const float r = 100;
+                const float pi = MathHelper.Pi;
+                const float piOver2 = MathHelper.PiOver2;
+                float tilt = MathHelper.ToRadians(26.7f);
 
                 var scene = root.Add<GlyphObject>();
                 scene.Add<SceneNode>().RootNode();
                 scene.Add<PrimitiveRenderer>().Primitives.AddRange(new IPrimitive[]
                 {
-                    new EllipsePrimitive(Color.Yellow, Color.Red, Vector2.Zero, radius / 3, radius / 8, rotation: MathHelper.ToRadians(26.7f), angleStart: MathHelper.Pi, angleSize: MathHelper.Pi),
-                    new CirclePrimitive(Color.White, Vector2.Zero, radius / 4),
-                    new EllipsePrimitive(Color.Yellow, Color.Red, Vector2.Zero, radius / 3, radius / 8, rotation: MathHelper.ToRadians(26.7f), angleSize: MathHelper.Pi),
-                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, radius),
-                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, radius * 1.1f, angleSize: MathHelper.PiOver2),
-                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, radius * 1.125f, angleSize: MathHelper.PiOver2 - 0.025f),
-                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, radius * 1.15f, angleSize: MathHelper.PiOver2 - 0.05f),
-                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, radius * 1.175f, angleSize: MathHelper.PiOver2 - 0.075f),
-                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, radius * 1.2f, angleSize: MathHelper.PiOver2 - 0.1f),
-                    new EllipseOutlinePrimitive(Vector2.Zero, radius * 2, radius / 2, rotation: MathHelper.ToRadians(26.7f)) {Colors = new [] {Color.Red, Color.Yellow}},
-                    new EllipseOutlinePrimitive(Vector2.UnitY * radius / 10, radius * 2, radius / 2, rotation: MathHelper.ToRadians(26.7f), angleSize: MathHelper.Pi) {Colors = new [] {Color.Red, Color.Yellow}},
-                    new LinePrimitive(Color.Red, Vector2.Zero, Vector2.UnitX * radius),
-                    new LinePrimitive(Color.Blue, Vector2.Zero, Vector2.UnitY * radius),
-                    new LinePrimitive(Color.Green, Vector2.Zero, Vector2.One.Normalized() * radius),
-                    new LinePrimitive(Color.Yellow, Vector2.UnitX * radius, Vector2.One.Normalized() * radius, Vector2.UnitY * radius),
+                    new EllipsePrimitive(Color.Yellow, Color.Red, Vector2.Zero, r / 3, r / 8, thickness: r / 20, rotation: tilt, angleStart: pi, angleSize: pi),
+                    new CirclePrimitive(Color.Purple, Color.White, Vector2.Zero, r / 4 - r / 10),
+                    new CirclePrimitive(Color.White, Vector2.Zero, r / 4, thickness: r / 20),
+                    new CirclePrimitive(Color.LightGray, Vector2.Zero, r / 4, thickness: r / 20, angleSize: pi),
+                    new CirclePrimitive(Color.Gray, Vector2.Zero, r / 4 - r / 20, thickness: r / 20, angleSize: piOver2),
+                    new EllipsePrimitive(Color.Yellow, Color.Red, Vector2.Zero, r / 3, r / 8, thickness: r / 20, rotation: tilt, angleSize: pi),
+                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, r),
+                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, r * 1.1f, angleSize: piOver2),
+                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, r * 1.125f, angleSize: piOver2 - 0.025f),
+                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, r * 1.15f, angleSize: piOver2 - 0.05f),
+                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, r * 1.175f, angleSize: piOver2 - 0.075f),
+                    new CircleOutlinePrimitive(Color.White, Vector2.Zero, r * 1.2f, angleSize: piOver2 - 0.1f),
+                    new EllipseOutlinePrimitive(Vector2.Zero, r * 2, r / 2, rotation: tilt) {Colors = new [] {Color.Red, Color.Yellow}},
+                    new EllipseOutlinePrimitive(Vector2.UnitY * r / 10, r * 2, r / 2, rotation: tilt, angleSize: pi) {Colors = new [] {Color.Red, Color.Yellow}},
+                    new LinePrimitive(Color.Red, Vector2.Zero, Vector2.UnitX * r),
+                    new LinePrimitive(Color.Blue, Vector2.Zero, Vector2.UnitY * r),
+                    new LinePrimitive(Color.Green, Vector2.Zero, Vector2.One.Normalized() * r),
+                    new LinePrimitive(Color.Yellow, Vector2.UnitX * r, Vector2.One.Normalized() * r, Vector2.UnitY * r),
                 });
 
                 game.Run();

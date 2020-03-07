@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Graphics.Primitives
+namespace Glyph.Graphics.Primitives.Utils
 {
     static public class PrimitiveHelpers
     {
-        static public int GetEllipseOutlinePointsCount(float angleSize, int sampling, out bool completed, out bool additionalPoint)
+        static public int GetEllipseOutlinePointsCount(float angleSize, int sampling, out bool completed)
         {
             double count = sampling * angleSize / MathHelper.TwoPi;
             
-            additionalPoint = count > System.Math.Floor(count);
+            bool additionalPoint = count > System.Math.Floor(count);
             completed = angleSize >= MathHelper.TwoPi;
             
             if (additionalPoint || !completed)
@@ -27,7 +27,7 @@ namespace Glyph.Graphics.Primitives
             if (!rotation.EqualsZero())
                 rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Backward, rotation);
             
-            int stepCount = GetEllipseOutlinePointsCount(angleSize, sampling, out bool completed, out _);
+            int stepCount = GetEllipseOutlinePointsCount(angleSize, sampling, out bool completed);
             float stepSize = angleSize / (!completed ? stepCount - 1 : stepCount);
             
             for (int i = 0; i < stepCount; i++)

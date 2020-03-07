@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Graphics.Primitives
+namespace Glyph.Graphics.Primitives.Base
 {
     public abstract class PrimitiveBase : IPrimitive
     {
