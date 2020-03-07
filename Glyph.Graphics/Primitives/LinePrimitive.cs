@@ -12,6 +12,7 @@ namespace Glyph.Graphics.Primitives
         public VertexBufferType BufferType { get; set; } = VertexBufferType.Strip;
 
         IReadOnlyCollection<Vector2> IPrimitive.Vertices => Vertices;
+        IReadOnlyCollection<ushort> IPrimitive.Indices => null;
 
         public LinePrimitive()
         {
@@ -34,21 +35,21 @@ namespace Glyph.Graphics.Primitives
             BufferType = bufferType;
         }
 
-        public void CopyToArray(VertexPositionColor[] vertexArray, int startIndex)
+        public void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex)
         {
             for (int i = 0; i < Vertices.Length; i++)
                 vertexArray[startIndex + i] = new VertexPositionColor(Vertices[i].ToVector3(), Colors[i % Colors.Length]);
         }
 
-        public void DrawPrimitives(GraphicsDevice graphicsDevice, int startIndex)
+        public void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex)
         {
             switch (BufferType)
             {
                 case VertexBufferType.List:
-                    graphicsDevice.DrawPrimitives(PrimitiveType.LineList, startIndex, Vertices.Length / 2);
+                    graphicsDevice.DrawPrimitives(PrimitiveType.LineList, verticesIndex, Vertices.Length / 2);
                     break;
                 case VertexBufferType.Strip:
-                    graphicsDevice.DrawPrimitives(PrimitiveType.LineStrip, startIndex, Vertices.Length - 1);
+                    graphicsDevice.DrawPrimitives(PrimitiveType.LineStrip, verticesIndex, Vertices.Length - 1);
                     break;
                 default:
                     throw new NotSupportedException();

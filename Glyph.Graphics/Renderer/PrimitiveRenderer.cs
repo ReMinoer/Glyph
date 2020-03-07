@@ -34,22 +34,48 @@ namespace Glyph.Graphics.Renderer
             int totalVertexCount = Primitives.Sum(x => x.Vertices.Count);
             if (totalVertexCount == 0)
                 return;
-
+            
             drawer.SpriteBatchStack.Push(null);
 
+            // Fill vertex buffer
             var vertexArray = new VertexPositionColor[totalVertexCount];
 
-            int startIndex = 0;
+            int i = 0;
             foreach (IPrimitive primitive in Primitives)
             {
-                primitive.CopyToArray(vertexArray, startIndex);
-                startIndex += primitive.Vertices.Count;
+                primitive.CopyToVertexArray(vertexArray, i);
+                i += primitive.Vertices.Count;
             }
             
             var vertexBuffer = new VertexBuffer(drawer.GraphicsDevice, typeof(VertexPositionColor), totalVertexCount, BufferUsage.WriteOnly);
             vertexBuffer.SetData(vertexArray);
             drawer.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+            
+            // Fill index buffer
+            int totalIndexCount = Primitives.Sum(x => x.Indices?.Count ?? 0);
+            if (totalIndexCount > 0)
+            {
+                var indexArray = new ushort[totalIndexCount];
 
+                i = 0;
+                foreach (IPrimitive primitive in Primitives)
+                {
+                    if (primitive.Indices == null)
+                        continue;
+
+                    foreach (ushort index in primitive.Indices)
+                    {
+                        indexArray[i] = index;
+                        i++;
+                    }
+                }
+            
+                var indexBuffer = new IndexBuffer(drawer.GraphicsDevice, typeof(short), totalIndexCount, BufferUsage.WriteOnly);
+                indexBuffer.SetData(indexArray);
+                drawer.GraphicsDevice.Indices = indexBuffer;
+            }
+
+            // Create basic effect
             Quad rect = drawer.DisplayedRectangle;
             var basicEffect = new BasicEffect(drawer.GraphicsDevice)
             {
@@ -58,19 +84,24 @@ namespace Glyph.Graphics.Renderer
                 Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, 0, float.MaxValue),
                 VertexColorEnabled = true
             };
-
-            startIndex = 0;
+            
+            // Draw primitives
+            int verticesIndex = 0;
+            int indicesIndex = 0;
             foreach (IPrimitive primitive in Primitives)
             {
                 foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    primitive.DrawPrimitives(drawer.GraphicsDevice, startIndex);
+                    primitive.DrawPrimitives(drawer.GraphicsDevice, verticesIndex, indicesIndex);
                 }
-                startIndex += primitive.Vertices.Count;
+
+                verticesIndex += primitive.Vertices.Count;
+                indicesIndex += primitive.Indices?.Count ?? 0;
             }
 
             drawer.GraphicsDevice.SetVertexBuffer(null);
+            drawer.GraphicsDevice.Indices = null;
             drawer.SpriteBatchStack.Pop();
         }
     }

@@ -13,8 +13,9 @@ namespace Glyph.Graphics
         public IArea Area => MathUtils.GetBoundingBox(Primitive.Vertices);
 
         public IReadOnlyCollection<Vector2> Vertices => Primitive?.Vertices ?? new Vector2[0];
-        public void CopyToArray(VertexPositionColor[] vertexArray, int startIndex) => Primitive?.CopyToArray(vertexArray, startIndex);
-        public void DrawPrimitives(GraphicsDevice graphicsDevice, int startIndex) => Primitive?.DrawPrimitives(graphicsDevice, startIndex);
+        public IReadOnlyCollection<ushort> Indices => Primitive?.Indices;
+        public void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex) => Primitive?.CopyToVertexArray(vertexArray, startIndex);
+        public void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex) => Primitive?.DrawPrimitives(graphicsDevice, verticesIndex, indicesIndex);
     }
 
     public class PrimitiveComponent<TPrimitive> : PrimitiveComponent

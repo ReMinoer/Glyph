@@ -5,37 +5,29 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Primitives
 {
-    public class EllipseOutlinePrimitive : IPrimitive
+    public class EllipseOutlinePrimitive : PrimitiveBase
     {
         public const int DefaultSampling = 64;
-        public Color[] Colors { get; set; }
-
-        private readonly IReadOnlyList<Vector2> _readOnlyVertices;
-        IReadOnlyCollection<Vector2> IPrimitive.Vertices => _readOnlyVertices;
+        
+        public override IReadOnlyCollection<Vector2> Vertices { get; }
+        public override IReadOnlyCollection<ushort> Indices => null;
+        public override sealed Color[] Colors { get; set; }
 
         public EllipseOutlinePrimitive(Vector2 center, float width, float height, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
         {
-            rotation = MathHelper.WrapAngle(rotation);
-            angleStart = MathHelper.WrapAngle(angleStart);
+            int i = 0;
+            int outlinePointsCount = PrimitiveHelpers.GetEllipseOutlinePointsCount(angleSize, sampling, out bool completed, out _);
 
-            Matrix? rotationMatrix = null;
-            if (!rotation.EqualsZero())
-                rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Backward, rotation);
-            
-            int stepCount = (int)System.Math.Ceiling(sampling * angleSize / MathHelper.TwoPi);
-            float stepSize = angleSize / stepCount;
+            if (completed)
+                outlinePointsCount++;
 
-            var vertices = new Vector2[stepCount + 1];
-            for (int i = 0; i < stepCount + 1; i++)
-            {
-                float step = angleStart + i * stepSize;
-                vertices[i] = center + new Vector2((float)System.Math.Cos(step) * width, (float)System.Math.Sin(step) * height);
-                
-                if (rotationMatrix.HasValue)
-                    vertices[i] = Vector2.Transform(vertices[i], rotationMatrix.Value);
-            }
-            
-            _readOnlyVertices = new ReadOnlyCollection<Vector2>(vertices);
+            var vertices = new Vector2[outlinePointsCount];
+            foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(center, width, height, rotation, angleStart, angleSize, sampling))
+                vertices[i++] = point;
+            if (completed)
+                vertices[i] = vertices[0];
+
+            Vertices = new ReadOnlyCollection<Vector2>(vertices);
         }
 
         public EllipseOutlinePrimitive(Color color, Vector2 center, float width, float height, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
@@ -44,15 +36,9 @@ namespace Glyph.Graphics.Primitives
             Colors = new[] { color };
         }
 
-        public void CopyToArray(VertexPositionColor[] vertexArray, int startIndex)
+        public override void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex)
         {
-            for (int i = 0; i < _readOnlyVertices.Count; i++)
-                vertexArray[startIndex + i] = new VertexPositionColor(_readOnlyVertices[i].ToVector3(), Colors[i % Colors.Length]);
-        }
-
-        public void DrawPrimitives(GraphicsDevice graphicsDevice, int startIndex)
-        {
-            graphicsDevice.DrawPrimitives(PrimitiveType.LineStrip, startIndex, _readOnlyVertices.Count - 1);
+            graphicsDevice.DrawPrimitives(PrimitiveType.LineStrip, verticesIndex, Vertices.Count - 1);
         }
     }
 }
