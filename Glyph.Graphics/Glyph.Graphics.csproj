@@ -52,8 +52,11 @@
     <Compile Include="Drawer.cs" />
     <Compile Include="FillView.cs" />
     <Compile Include="Primitives\CirclePrimitive.cs" />
+    <Compile Include="Primitives\EdgedShapeOutlinePrimitive.cs" />
     <Compile Include="Primitives\EllipsePrimitive.cs" />
     <Compile Include="Primitives\Base\PrimitiveBase.cs" />
+    <Compile Include="Primitives\IndexedShapePrimitive.cs" />
+    <Compile Include="Primitives\PrimitiveExtension.cs" />
     <Compile Include="Primitives\Utils\PrimitiveHelpers.cs" />
     <Compile Include="Renderer\FillingRectangle.cs" />
     <Compile Include="ISpriteSheet.cs" />

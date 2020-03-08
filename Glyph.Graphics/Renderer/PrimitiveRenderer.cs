@@ -31,7 +31,7 @@ namespace Glyph.Graphics.Renderer
             if (Primitives.Count == 0)
                 return;
 
-            int totalVertexCount = Primitives.Sum(x => x.Vertices.Count);
+            int totalVertexCount = Primitives.Sum(x => x.VertexCount);
             if (totalVertexCount == 0)
                 return;
             
@@ -44,7 +44,7 @@ namespace Glyph.Graphics.Renderer
             foreach (IPrimitive primitive in Primitives)
             {
                 primitive.CopyToVertexArray(vertexArray, i);
-                i += primitive.Vertices.Count;
+                i += primitive.VertexCount;
             }
             
             var vertexBuffer = new VertexBuffer(drawer.GraphicsDevice, typeof(VertexPositionColor), totalVertexCount, BufferUsage.WriteOnly);
@@ -52,7 +52,7 @@ namespace Glyph.Graphics.Renderer
             drawer.GraphicsDevice.SetVertexBuffer(vertexBuffer);
             
             // Fill index buffer
-            int totalIndexCount = Primitives.Sum(x => x.Indices?.Count ?? 0);
+            int totalIndexCount = Primitives.Sum(x => x.IndexCount);
             if (totalIndexCount > 0)
             {
                 var indexArray = new ushort[totalIndexCount];
@@ -96,8 +96,8 @@ namespace Glyph.Graphics.Renderer
                     primitive.DrawPrimitives(drawer.GraphicsDevice, verticesIndex, indicesIndex);
                 }
 
-                verticesIndex += primitive.Vertices.Count;
-                indicesIndex += primitive.Indices?.Count ?? 0;
+                verticesIndex += primitive.VertexCount;
+                indicesIndex += primitive.IndexCount;
             }
 
             drawer.GraphicsDevice.SetVertexBuffer(null);

@@ -12,8 +12,10 @@ namespace Glyph.Space.Partitioning
 
         public Vector2 Center => BoundingBox.Center;
         public bool IsVoid => BoundingBox.IsVoid;
-        public IEnumerable<Vector2> Vertices => BoundingBox.Vertices;
-        public IEnumerable<Segment> Edges => BoundingBox.Edges;
+        IEnumerable<Vector2> IEdgedShape.Vertices => BoundingBox.Vertices;
+        IEnumerable<Segment> IEdgedShape.Edges => BoundingBox.Edges;
+        int IEdgedShape.VertexCount => BoundingBox.VertexCount;
+        int IEdgedShape.EdgeCount => BoundingBox.EdgeCount;
 
         public QuadtreePartitioner(TopLeftRectangle bounds, int capacity)
         {

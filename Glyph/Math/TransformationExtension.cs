@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections;
 using Glyph.Math.Shapes;
@@ -19,12 +20,11 @@ namespace Glyph.Math
             return new TransformedEdgedShape(shape, transformation);
         }
 
-        static public ITriangledShape Transform(this ITransformation transformation, ITriangledShape shape)
+        static public ITriangulableShape Transform(this ITransformation transformation, ITriangulableShape shape)
         {
-            IEnumerable<Vector2> vertices = shape.Vertices.Select(transformation.Transform);
-            IEnumerable<Segment> edges = shape.Edges.Select(transformation.Transform);
-            IEnumerable<Triangle> triangles = shape.Triangles.Select(transformation.Transform);
-            return new TriangledShape(vertices, edges, triangles);
+            Vector2[] vertices = shape.Vertices.Select(transformation.Transform).ToArray();
+            Segment[] edges = shape.Edges.Select(transformation.Transform).ToArray();
+            return new IndexedShape(vertices, edges, shape.TriangulationIndices.ToArray(), shape.StripTriangulation);
         }
 
         static public Segment Transform(this ITransformation transformation, Segment segment)
@@ -67,12 +67,11 @@ namespace Glyph.Math
             return new TransformedEdgedShape(shape, transformation.Inverse());
         }
 
-        static public ITriangledShape InverseTransform(this ITransformation transformation, ITriangledShape shape)
+        static public ITriangulableShape InverseTransform(this ITransformation transformation, ITriangulableShape shape)
         {
-            IEnumerable<Vector2> vertices = shape.Vertices.Select(transformation.InverseTransform);
-            IEnumerable<Segment> edges = shape.Edges.Select(transformation.InverseTransform);
-            IEnumerable<Triangle> triangles = shape.Triangles.Select(transformation.InverseTransform);
-            return new TriangledShape(vertices, edges, triangles);
+            Vector2[] vertices = shape.Vertices.Select(transformation.InverseTransform).ToArray();
+            Segment[] edges = shape.Edges.Select(transformation.InverseTransform).ToArray();
+            return new IndexedShape(vertices, edges, shape.TriangulationIndices.ToArray(), shape.StripTriangulation);
         }
 
         static public Segment InverseTransform(this ITransformation transformation, Segment segment)
@@ -117,6 +116,8 @@ namespace Glyph.Math
 
             public IEnumerable<Vector2> Vertices => _shape.Vertices.Select(_transformation.Transform);
             public IEnumerable<Segment> Edges => _shape.Edges.Select(_transformation.Transform);
+            public int VertexCount => _shape.VertexCount;
+            public int EdgeCount => _shape.EdgeCount;
 
             public bool IsVoid => Vertices.Distinct().AtLeast(2);
             public Vector2 Center => MathUtils.GetCenter(Vertices);
@@ -134,17 +135,30 @@ namespace Glyph.Math
             public bool Intersects(Circle circle) => _shape.Intersects(_transformation.InverseTransform(circle));
         }
 
-        private class TriangledShape : TriangledShapeBase
+        private class IndexedShape : IndexedShapeBase
         {
+            private readonly Vector2[] _vertices;
             public override IEnumerable<Vector2> Vertices { get; }
             public override IEnumerable<Segment> Edges { get; }
-            public override IEnumerable<Triangle> Triangles { get; }
+            public override IEnumerable<ushort> TriangulationIndices { get; }
+            public override int VertexCount { get; }
+            public override int EdgeCount { get; }
+            public override int TriangleCount { get; }
+            public override bool StripTriangulation { get; }
 
-            public TriangledShape(IEnumerable<Vector2> vertices, IEnumerable<Segment> edges, IEnumerable<Triangle> triangles)
+            public override Vector2 GetIndexedVertex(ushort index) => _vertices[index];
+
+            public IndexedShape(Vector2[] vertices, Segment[] edges, ushort[] triangulationIndices, bool stripTriangulation)
             {
-                Vertices = vertices;
-                Edges = edges;
-                Triangles = triangles;
+                _vertices = vertices;
+
+                Vertices = vertices.AsReadOnly();
+                Edges = edges.AsReadOnly();
+                TriangulationIndices = triangulationIndices.AsReadOnly();
+                VertexCount = vertices.Length;
+                EdgeCount = edges.Length;
+                TriangleCount = stripTriangulation ? triangulationIndices.Length - 2 : triangulationIndices.Length / 3;
+                StripTriangulation = stripTriangulation;
             }
         }
     }

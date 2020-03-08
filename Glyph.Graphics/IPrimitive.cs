@@ -6,8 +6,10 @@ namespace Glyph.Graphics
 {
     public interface IPrimitive
     {
-        IReadOnlyCollection<Vector2> Vertices { get; }
-        IReadOnlyCollection<ushort> Indices { get; }
+        IEnumerable<Vector2> Vertices { get; }
+        IEnumerable<ushort> Indices { get; }
+        int VertexCount { get; }
+        int IndexCount { get; }
         void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex);
         void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex);
     }

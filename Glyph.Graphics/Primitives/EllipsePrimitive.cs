@@ -10,16 +10,20 @@ namespace Glyph.Graphics.Primitives
     public class EllipsePrimitive : PrimitiveBase
     {
         public const int DefaultSampling = 64;
+
+        public override PrimitiveType PrimitiveType => PrimitiveType.TriangleList;
         
-        public override IReadOnlyCollection<Vector2> Vertices { get; }
-        public override IReadOnlyCollection<ushort> Indices { get; }
+        public override IEnumerable<Vector2> Vertices { get; }
+        public override IEnumerable<ushort> Indices { get; }
+        public override int VertexCount { get; }
+        public override int IndexCount { get; }
         public override sealed Color[] Colors { get; set; }
-        private bool _hasInnerSize;
+        private readonly bool _hasInnerSize;
 
         public EllipsePrimitive(Vector2 center, float width, float height, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
         {
             Vector2[] vertices;
-            ushort[] indexes;
+            ushort[] indices;
             
             int vertexIndex = 0;
             int pointsCount = PrimitiveHelpers.GetEllipseOutlinePointsCount(angleSize, sampling, out bool completed);
@@ -31,25 +35,25 @@ namespace Glyph.Graphics.Primitives
                 foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(center, width - thickness, height - thickness, rotation, angleStart, angleSize, sampling))
                     vertices[vertexIndex++] = point;
 
-                indexes = new ushort[(pointsCount - 1) * 6];
+                indices = new ushort[(pointsCount - 1) * 6];
 
                 for (int i = 0; i < pointsCount - 1; i++)
                 {
                     int j = i * 6;
-                    indexes[j] = (ushort)i;
-                    indexes[j + 1] = (ushort)(pointsCount + i);
-                    indexes[j + 2] = (ushort)(pointsCount + i + 1);
-                    indexes[j + 3] = (ushort)i;
-                    indexes[j + 4] = (ushort)(pointsCount + i + 1);
-                    indexes[j + 5] = (ushort)(i + 1);
+                    indices[j] = (ushort)i;
+                    indices[j + 1] = (ushort)(pointsCount + i);
+                    indices[j + 2] = (ushort)(pointsCount + i + 1);
+                    indices[j + 3] = (ushort)i;
+                    indices[j + 4] = (ushort)(pointsCount + i + 1);
+                    indices[j + 5] = (ushort)(i + 1);
                 }
 
                 if (completed)
                 {
                     int j = (pointsCount - 2) * 6;
-                    indexes[j + 2] = (ushort)pointsCount;
-                    indexes[j + 4] = (ushort)pointsCount;
-                    indexes[j + 5] = 0;
+                    indices[j + 2] = (ushort)pointsCount;
+                    indices[j + 4] = (ushort)pointsCount;
+                    indices[j + 5] = 0;
                 }
             }
             else
@@ -57,25 +61,27 @@ namespace Glyph.Graphics.Primitives
                 vertices = new Vector2[pointsCount + 1];
                 vertices[vertexIndex++] = center;
 
-                indexes = new ushort[pointsCount * 3];
+                indices = new ushort[pointsCount * 3];
 
                 for (int i = 0; i < pointsCount - 1; i++)
                 {
                     int j = i * 3;
-                    indexes[j] = 0;
-                    indexes[j + 1] = (ushort)(i + 1);
-                    indexes[j + 2] = (ushort)(i + 2);
+                    indices[j] = 0;
+                    indices[j + 1] = (ushort)(i + 1);
+                    indices[j + 2] = (ushort)(i + 2);
                 }
 
                 if (completed)
-                    indexes[(pointsCount - 2) * 3 + 2] = 1;
+                    indices[(pointsCount - 2) * 3 + 2] = 1;
             }
 
             foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(center, width, height, rotation, angleStart, angleSize, sampling))
                 vertices[vertexIndex++] = point;
             
             Vertices = new ReadOnlyCollection<Vector2>(vertices);
-            Indices = new ReadOnlyCollection<ushort>(indexes);
+            Indices = new ReadOnlyCollection<ushort>(indices);
+            VertexCount = vertices.Length;
+            IndexCount = indices.Length;
         }
 
         public EllipsePrimitive(Color color, Vector2 center, float width, float height, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
@@ -93,14 +99,9 @@ namespace Glyph.Graphics.Primitives
         protected override Color GetVertexColor(int i)
         {
             if (_hasInnerSize)
-                return i < Vertices.Count / 2 ? Colors[0] : Colors[1];
+                return i < VertexCount / 2 ? Colors[0] : Colors[1];
             
             return i == 0 ? Colors[0] : Colors[1];
-        }
-
-        public override void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex)
-        {
-            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, verticesIndex, indicesIndex, Indices.Count / 3);
         }
     }
 }

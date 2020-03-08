@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
@@ -11,6 +12,48 @@ namespace Glyph.Math.Shapes
 
     static public class IntersectionUtils
     {
+        static public IEnumerable<Triangle> Triangles(this ITriangulableShape shape)
+        {
+            using (IEnumerator<ushort> enumerator = shape.TriangulationIndices.GetEnumerator())
+            {
+                if (!enumerator.MoveNext())
+                    yield break;
+
+                var triangle = new Triangle();
+                triangle.P0 = shape.GetIndexedVertex(enumerator.Current);
+                enumerator.MoveNext();
+                triangle.P1 = shape.GetIndexedVertex(enumerator.Current);
+                enumerator.MoveNext();
+                triangle.P2 = shape.GetIndexedVertex(enumerator.Current);
+                yield return triangle;
+
+                if (shape.StripTriangulation)
+                {
+                    while (enumerator.MoveNext())
+                    {
+                        triangle = new Triangle
+                        {
+                            P0 = triangle.P2,
+                            P1 = triangle.P1,
+                            P2 = shape.GetIndexedVertex(enumerator.Current)
+                        };
+                        yield return triangle;
+                    }
+                }
+
+                while (enumerator.MoveNext())
+                {
+                    triangle = new Triangle();
+                    triangle.P0 = shape.GetIndexedVertex(enumerator.Current);
+                    enumerator.MoveNext();
+                    triangle.P1 = shape.GetIndexedVertex(enumerator.Current);
+                    enumerator.MoveNext();
+                    triangle.P2 = shape.GetIndexedVertex(enumerator.Current);
+                    yield return triangle;
+                }
+            }
+        }
+
         static public bool Intersects(this Segment segmentA, Segment segmentB) => Intersects(segmentA, segmentB, out _);
 
         // https://stackoverflow.com/a/565282/3333753

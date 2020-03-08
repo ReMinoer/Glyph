@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public struct Segment : ITriangledShape
+    public struct Segment : IEdgedShape
     {
         public Vector2 P0 { get; set; }
         public Vector2 P1 { get; set; }
@@ -31,13 +32,8 @@ namespace Glyph.Math.Shapes
             }
         }
 
-        IEnumerable<Triangle> ITriangledShape.Triangles
-        {
-            get
-            {
-                yield break;
-            }
-        }
+        int IEdgedShape.VertexCount => 2;
+        int IEdgedShape.EdgeCount => 1;
 
         public Segment(Vector2 p0, Vector2 p1)
         {

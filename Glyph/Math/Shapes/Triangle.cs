@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public struct Triangle : ITriangledShape
+    public struct Triangle : ITriangulableShape
     {
         public Vector2 P0 { get; set; }
         public Vector2 P1 { get; set; }
@@ -22,6 +23,17 @@ namespace Glyph.Math.Shapes
             }
         }
 
+        public Vector2 GetIndexedVertex(ushort index)
+        {
+            switch (index)
+            {
+                case 0: return P0;
+                case 1: return P1;
+                case 2: return P2;
+                default: throw new IndexOutOfRangeException();
+            }
+        }
+
         public IEnumerable<Segment> Edges
         {
             get
@@ -32,13 +44,12 @@ namespace Glyph.Math.Shapes
             }
         }
 
-        IEnumerable<Triangle> ITriangledShape.Triangles
-        {
-            get
-            {
-                yield return this;
-            }
-        }
+        bool ITriangulableShape.StripTriangulation => false;
+        IEnumerable<ushort> ITriangulableShape.TriangulationIndices => null;
+        
+        public int VertexCount => 3;
+        public int EdgeCount => 3;
+        public int TriangleCount => 1;
 
         public Triangle(Vector2 p0, Vector2 p1, Vector2 p2)
         {

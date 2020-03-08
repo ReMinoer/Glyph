@@ -11,13 +11,18 @@ namespace Glyph.Math
 
     public interface IEdgedShape : IShape
     {
+        int VertexCount { get; }
+        int EdgeCount { get; }
         IEnumerable<Vector2> Vertices { get; }
         IEnumerable<Segment> Edges { get; }
     }
 
-    public interface ITriangledShape : IEdgedShape
+    public interface ITriangulableShape : IEdgedShape
     {
-        IEnumerable<Triangle> Triangles { get; }
+        int TriangleCount { get; }
+        IEnumerable<ushort> TriangulationIndices { get; }
+        Vector2 GetIndexedVertex(ushort index);
+        bool StripTriangulation { get; }
     }
 
     public interface IMovableShape : IShape

@@ -13,6 +13,8 @@ namespace Glyph.Math.Shapes.Base
 
         public abstract IEnumerable<Vector2> Vertices { get; }
         public abstract IEnumerable<Segment> Edges { get; }
+        public abstract int VertexCount { get; }
+        public abstract int EdgeCount { get; }
 
         public abstract bool ContainsPoint(Vector2 point);
         public bool Intersects(Segment segment) => IntersectionUtils.Intersects(this, segment);

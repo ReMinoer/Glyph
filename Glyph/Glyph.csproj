@@ -78,7 +78,7 @@
     <Compile Include="Math\Shapes\Segment.cs" />
     <Compile Include="Math\Shapes\Quad.cs" />
     <Compile Include="Math\Shapes\Triangle.cs" />
-    <Compile Include="Math\Shapes\Base\TriangledShapeBase.cs" />
+    <Compile Include="Math\Shapes\Base\IndexedShapeBase.cs" />
     <Compile Include="Math\TransformationExtension.cs" />
     <Compile Include="Exceptions\GlyphException.cs" />
     <Compile Include="Axes.cs" />

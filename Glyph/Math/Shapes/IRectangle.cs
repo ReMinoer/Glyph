@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
 {
-    public interface IRectangle : ITriangledShape
+    public interface IRectangle : ITriangulableShape
     {
         Vector2 Position { get; }
         Vector2 P1 { get; }

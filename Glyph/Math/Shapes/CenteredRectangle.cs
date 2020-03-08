@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Math.Shapes
@@ -36,8 +37,20 @@ namespace Glyph.Math.Shapes
             {
                 yield return Position;
                 yield return P1;
-                yield return P3;
                 yield return P2;
+                yield return P3;
+            }
+        }
+
+        public Vector2 GetIndexedVertex(ushort index)
+        {
+            switch (index)
+            {
+                case 0: return Position;
+                case 1: return P1;
+                case 2: return P2;
+                case 3: return P3;
+                default: throw new IndexOutOfRangeException();
             }
         }
 
@@ -52,14 +65,12 @@ namespace Glyph.Math.Shapes
             }
         }
 
-        public IEnumerable<Triangle> Triangles
-        {
-            get
-            {
-                yield return new Triangle(Position, P1, P2);
-                yield return new Triangle(P3, P2, P1);
-            }
-        }
+        bool ITriangulableShape.StripTriangulation => true;
+        IEnumerable<ushort> ITriangulableShape.TriangulationIndices => null;
+        
+        public int VertexCount => 4;
+        public int EdgeCount => 4;
+        public int TriangleCount => 2;
 
         TopLeftRectangle IArea.BoundingBox => this;
 

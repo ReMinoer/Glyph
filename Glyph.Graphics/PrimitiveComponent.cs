@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Math;
@@ -12,8 +13,10 @@ namespace Glyph.Graphics
         public IPrimitive Primitive { get; set; }
         public IArea Area => MathUtils.GetBoundingBox(Primitive.Vertices);
 
-        public IReadOnlyCollection<Vector2> Vertices => Primitive?.Vertices ?? new Vector2[0];
-        public IReadOnlyCollection<ushort> Indices => Primitive?.Indices;
+        public IEnumerable<Vector2> Vertices => Primitive?.Vertices ?? Enumerable.Empty<Vector2>();
+        public IEnumerable<ushort> Indices => Primitive?.Indices ?? Enumerable.Empty<ushort>();
+        public int VertexCount => Primitive?.VertexCount ?? 0;
+        public int IndexCount => Primitive?.IndexCount ?? 0;
         public void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex) => Primitive?.CopyToVertexArray(vertexArray, startIndex);
         public void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex) => Primitive?.DrawPrimitives(graphicsDevice, verticesIndex, indicesIndex);
     }

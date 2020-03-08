@@ -11,8 +11,10 @@ namespace Glyph.Graphics.Primitives
         public Color[] Colors { get; set; }
         public VertexBufferType BufferType { get; set; } = VertexBufferType.Strip;
 
-        IReadOnlyCollection<Vector2> IPrimitive.Vertices => Vertices;
-        IReadOnlyCollection<ushort> IPrimitive.Indices => null;
+        IEnumerable<Vector2> IPrimitive.Vertices => Vertices;
+        IEnumerable<ushort> IPrimitive.Indices => null;
+        int IPrimitive.VertexCount => Vertices.Length;
+        int IPrimitive.IndexCount => 0;
 
         public LinePrimitive()
         {
