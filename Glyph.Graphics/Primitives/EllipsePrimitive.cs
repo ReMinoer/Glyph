@@ -63,7 +63,7 @@ namespace Glyph.Graphics.Primitives
 
                 indices = new ushort[pointsCount * 3];
 
-                for (int i = 0; i < pointsCount - 1; i++)
+                for (int i = 0; i < pointsCount; i++)
                 {
                     int j = i * 3;
                     indices[j] = 0;
@@ -72,7 +72,7 @@ namespace Glyph.Graphics.Primitives
                 }
 
                 if (completed)
-                    indices[(pointsCount - 2) * 3 + 2] = 1;
+                    indices[(pointsCount - 1) * 3 + 2] = 1;
             }
 
             foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(center, width, height, rotation, angleStart, angleSize, sampling))
