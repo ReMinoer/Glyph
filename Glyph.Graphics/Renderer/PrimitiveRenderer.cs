@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics.Renderer.Base;
