@@ -33,12 +33,12 @@ namespace Glyph.Graphics.Primitives.Utils
             for (int i = 0; i < stepCount; i++)
             {
                 float step = angleStart + i * stepSize;
-                Vector2 vertex = center + new Vector2((float)System.Math.Cos(step) * width, (float)System.Math.Sin(step) * height);
+                var vertex = new Vector2((float)System.Math.Cos(step) * width, (float)System.Math.Sin(step) * height);
                 
                 if (rotationMatrix.HasValue)
                     vertex = Vector2.Transform(vertex, rotationMatrix.Value);
 
-                yield return vertex;
+                yield return center + vertex;
             }
         }
     }
