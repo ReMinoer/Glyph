@@ -10,6 +10,7 @@ namespace Glyph.Graphics
 {
     public class PrimitiveComponent : GlyphComponent, IBoxedComponent, IPrimitive
     {
+        public bool Visible { get; set; } = true;
         public IPrimitive Primitive { get; set; }
         public IArea Area => MathUtils.GetBoundingBox(Primitive.Vertices);
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics.Renderer.Base;
@@ -25,13 +26,11 @@ namespace Glyph.Graphics.Renderer
         {
             SceneNode = sceneNode;
         }
-
+        
         protected override void Render(IDrawer drawer)
         {
-            if (Primitives.Count == 0)
-                return;
-
-            int totalVertexCount = Primitives.Sum(x => x.VertexCount);
+            IEnumerable<IPrimitive> visiblePrimitives = Primitives.Where(x => x.Visible);
+            int totalVertexCount = visiblePrimitives.Sum(x => x.VertexCount);
             if (totalVertexCount == 0)
                 return;
             
@@ -41,7 +40,7 @@ namespace Glyph.Graphics.Renderer
             var vertexArray = new VertexPositionColor[totalVertexCount];
 
             int i = 0;
-            foreach (IPrimitive primitive in Primitives)
+            foreach (IPrimitive primitive in visiblePrimitives)
             {
                 primitive.CopyToVertexArray(vertexArray, i);
                 i += primitive.VertexCount;
@@ -52,15 +51,15 @@ namespace Glyph.Graphics.Renderer
             drawer.GraphicsDevice.SetVertexBuffer(vertexBuffer);
             
             // Fill index buffer
-            int totalIndexCount = Primitives.Sum(x => x.IndexCount);
+            int totalIndexCount = visiblePrimitives.Sum(x => x.IndexCount);
             if (totalIndexCount > 0)
             {
                 var indexArray = new ushort[totalIndexCount];
 
                 i = 0;
-                foreach (IPrimitive primitive in Primitives)
+                foreach (IPrimitive primitive in visiblePrimitives)
                 {
-                    if (primitive.Indices == null)
+                    if (primitive.IndexCount == 0 || primitive.Indices == null)
                         continue;
 
                     foreach (ushort index in primitive.Indices)
@@ -86,18 +85,18 @@ namespace Glyph.Graphics.Renderer
             };
             
             // Draw primitives
-            int verticesIndex = 0;
-            int indicesIndex = 0;
-            foreach (IPrimitive primitive in Primitives)
+            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
-                foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    primitive.DrawPrimitives(drawer.GraphicsDevice, verticesIndex, indicesIndex);
-                }
+                pass.Apply();
 
-                verticesIndex += primitive.VertexCount;
-                indicesIndex += primitive.IndexCount;
+                int verticesIndex = 0;
+                int indicesIndex = 0;
+                foreach (IPrimitive primitive in visiblePrimitives)
+                {
+                    primitive.DrawPrimitives(drawer.GraphicsDevice, verticesIndex, indicesIndex);
+                    verticesIndex += primitive.VertexCount;
+                    indicesIndex += primitive.IndexCount;
+                }
             }
 
             drawer.GraphicsDevice.SetVertexBuffer(null);

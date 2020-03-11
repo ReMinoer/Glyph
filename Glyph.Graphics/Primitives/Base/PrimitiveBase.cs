@@ -7,6 +7,7 @@ namespace Glyph.Graphics.Primitives.Base
 {
     public abstract class PrimitiveBase : IPrimitive
     {
+        public bool Visible { get; set; } = true;
         public abstract PrimitiveType PrimitiveType { get; }
         public abstract IEnumerable<Vector2> Vertices { get; }
         public abstract IEnumerable<ushort> Indices { get; }

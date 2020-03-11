@@ -7,6 +7,7 @@ namespace Glyph.Graphics.Primitives
 {
     public class LinePrimitive : IPrimitive
     {
+        public bool Visible { get; set; } = true;
         public Vector2[] Vertices { get; set; }
         public Color[] Colors { get; set; }
         public VertexBufferType BufferType { get; set; } = VertexBufferType.Strip;

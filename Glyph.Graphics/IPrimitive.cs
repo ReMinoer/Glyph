@@ -6,6 +6,7 @@ namespace Glyph.Graphics
 {
     public interface IPrimitive
     {
+        bool Visible { get; }
         IEnumerable<Vector2> Vertices { get; }
         IEnumerable<ushort> Indices { get; }
         int VertexCount { get; }
