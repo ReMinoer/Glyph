@@ -1,44 +1,53 @@
 ﻿using Glyph.Core;
-using Glyph.Graphics;
+using Glyph.Graphics.Primitives;
 using Glyph.Graphics.Renderer;
-using Glyph.Graphics.Shapes;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Tools.Base;
+using Glyph.UI;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming.Base
 {
     public abstract class AdvancedHandleBase : HandleBase
     {
-        private FilledRectangleSprite _rectangleSprite;
-        private readonly SpriteTransformer _spriteTransformer;
+        public PrimitiveCollection HoverPrimitives = new PrimitiveCollection();
+        public PrimitiveCollection GrabbedPrimitives = new PrimitiveCollection();
 
-        protected override IArea Area => new CenteredRectangle(_sceneNode.Position, Size);
-
-        private Vector2 _size;
-        public Vector2 Size
-        {
-            get => _size;
-            set
-            {
-                _size = value;
-                _spriteTransformer.Scale = value.Divide(_rectangleSprite.Size.X, _rectangleSprite.Size.Y);
-            }
-        }
-
-        public Color Color
-        {
-            get => _spriteTransformer.Color;
-            set => _spriteTransformer.Color = value;
-        }
+        public CenteredRectangle Rectangle { get; set; }
+        protected override IArea Area => new CenteredRectangle(_sceneNode.Position + Rectangle.Center, Rectangle.Size);
 
         public AdvancedHandleBase(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context, projectionManager)
         {
-            _rectangleSprite = Add<FilledRectangleSprite>();
-            _spriteTransformer = Add<SpriteTransformer>();
-            Add<SpriteRenderer>();
+            _userInterface.CursorMoved += OnCursorMoved;
+
+            var primitiveRenderer = Add<PrimitiveRenderer>();
+            primitiveRenderer.Primitives.Add(HoverPrimitives);
+            primitiveRenderer.Primitives.Add(GrabbedPrimitives);
+
+            HoverPrimitives.Visible = false;
+            GrabbedPrimitives.Visible = false;
+        }
+
+        private void OnCursorMoved(object sender, CursorEventArgs e)
+        {
+            HoverPrimitives.Visible = Grabbed || Area.ContainsPoint(e.CursorPosition);
+        }
+
+        protected override void OnGrabbed(Vector2 cursorPosition)
+        {
+            GrabbedPrimitives.Visible = true;
+        }
+
+        protected override void OnReleased()
+        {
+            GrabbedPrimitives.Visible = false;
+        }
+
+        protected override void OnCancelled()
+        {
+            GrabbedPrimitives.Visible = false;
         }
     }
 }

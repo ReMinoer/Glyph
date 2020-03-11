@@ -10,9 +10,9 @@ namespace Glyph.Tools.Base
     {
         private readonly ProjectionManager _projectionManager;
         protected readonly SceneNode _sceneNode;
+        protected readonly UserInterface _userInterface;
         
-        private Vector2 _relativeGrabPosition;
-        private bool _grabbed;
+        protected bool Grabbed { get; private set; }
 
         public IDrawClient RaycastClient { get; set; }
 
@@ -34,44 +34,59 @@ namespace Glyph.Tools.Base
 
             _sceneNode = Add<SceneNode>();
 
-            var userInterface = Add<UserInterface>();
-            userInterface.TouchStarted += OnTouchStarted;
-            userInterface.Touching += OnTouching;
-            userInterface.TouchEnded += OnTouchEnded;
+            _userInterface = Add<UserInterface>();
+            _userInterface.TouchStarted += OnTouchStarted;
+            _userInterface.Touching += OnTouching;
+            _userInterface.TouchEnded += OnTouchEnded;
+            _userInterface.Cancelled += OnCancelled;
         }
-        
+
         private void OnTouchStarted(object sender, HandlableTouchEventArgs e)
         {
-            _grabbed = false;
+            Grabbed = false;
             
             if (!Area.ContainsPoint(e.CursorPosition))
                 return;
             
             e.Handle();
 
-            _grabbed = true;
-            _relativeGrabPosition = ProjectToTargetScene(e.CursorPosition - _sceneNode.Position + _sceneNode.LocalPosition);
-            OnGrabbed();
+            Grabbed = true;
+            OnGrabbed(e.CursorPosition);
         }
         
         private void OnTouching(object sender, CursorEventArgs e)
         {
-            if (!_grabbed)
+            if (!Grabbed)
                 return;
             
             Vector2 targetScenePosition = ProjectToTargetScene(e.CursorPosition);
-            OnDragging(targetScenePosition - _relativeGrabPosition);
+            OnDragging(targetScenePosition);
         }
         
         private void OnTouchEnded(object sender, CursorEventArgs args)
         {
-            _grabbed = false;
+            if (!Grabbed)
+                return;
+
+            Grabbed = false;
+            OnReleased();
         }
 
-        protected abstract void OnGrabbed();
-        protected abstract void OnDragging(Vector2 projectedCursorPosition);
+        private void OnCancelled(object sender, HandlableEventArgs e)
+        {
+            if (!Grabbed)
+                return;
+            
+            Grabbed = false;
+            OnCancelled();
+        }
 
-        private Vector2 ProjectToTargetScene(Vector2 value)
+        protected abstract void OnGrabbed(Vector2 cursorPosition);
+        protected abstract void OnDragging(Vector2 projectedCursorPosition);
+        protected abstract void OnReleased();
+        protected abstract void OnCancelled();
+
+        protected Vector2 ProjectToTargetScene(Vector2 value)
         {
             return _projectionManager.ProjectFromPosition(_sceneNode, value)
                                      .To(EditedObject)

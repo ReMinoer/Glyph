@@ -9,10 +9,11 @@ namespace Glyph.Tools.Transforming
 {
     public class SimplePositionHandle : SimpleHandleBase<FilledCircleSprite>
     {
-        protected override IArea Area => new Circle(_sceneNode.Position, _spriteSource.Radius);
+        private Vector2 _startPosition;
+        private Vector2 _relativeGrabPosition;
         
         public Axes Axes { get; set; } = Axes.Both;
-        private Vector2 _startPosition;
+        protected override IArea Area => new Circle(_sceneNode.Position, _spriteSource.Radius);
 
         public SimplePositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context, projectionManager)
@@ -20,13 +21,16 @@ namespace Glyph.Tools.Transforming
             _spriteSource.Radius = 50;
         }
 
-        protected override void OnGrabbed()
+        protected override void OnGrabbed(Vector2 cursorPosition)
         {
             _startPosition = EditedObject.Position;
+            _relativeGrabPosition = ProjectToTargetScene(cursorPosition - _sceneNode.Position + _sceneNode.LocalPosition);
         }
 
         protected override void OnDragging(Vector2 projectedCursorPosition)
         {
+            projectedCursorPosition -= _relativeGrabPosition;
+
             switch (Axes)
             {
                 case Axes.Both:
@@ -39,6 +43,14 @@ namespace Glyph.Tools.Transforming
                     EditedObject.Position = _startPosition.SetY(projectedCursorPosition.Y);
                     break;
             }
+        }
+
+        protected override void OnReleased()
+        {
+        }
+
+        protected override void OnCancelled()
+        {
         }
     }
 }

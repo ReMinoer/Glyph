@@ -72,6 +72,8 @@
     <Compile Include="FreeCamera.cs" />
     <Compile Include="Base\HandleBase.cs" />
     <Compile Include="Brushing\IBrush.cs" />
+    <Compile Include="Transforming\AdvancedRotationHandle.cs" />
+    <Compile Include="Transforming\AdvancedScaleHandle.cs" />
     <Compile Include="Transforming\Base\AdvancedHandleBase.cs" />
     <Compile Include="Transforming\AdvancedPositionHandle.cs" />
     <Compile Include="Transforming\SimplePositionHandle.cs" />
