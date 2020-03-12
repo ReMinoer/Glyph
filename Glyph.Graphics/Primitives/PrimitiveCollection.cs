@@ -32,6 +32,15 @@ namespace Glyph.Graphics.Primitives
             }
         }
 
+        public void CopyToIndexArray(ushort[] indexArray, int startIndex)
+        {
+            foreach (IPrimitive primitive in _list)
+            {
+                primitive.CopyToIndexArray(indexArray, startIndex);
+                startIndex += primitive.IndexCount;
+            }
+        }
+
         public void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex)
         {
             foreach (IPrimitive primitive in _list)

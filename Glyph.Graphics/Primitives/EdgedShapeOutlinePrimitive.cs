@@ -7,43 +7,55 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Primitives
 {
-    public class EdgedShapeOutlinePrimitive : PrimitiveBase
+    public class EdgedShapeOutlinePrimitive<TEdgedShape> : OutlinePrimitiveBase
+        where TEdgedShape : IEdgedShape
     {
-        private readonly IEdgedShape _shape;
-
-        public override PrimitiveType PrimitiveType => PrimitiveType.LineStrip;
-
-        public override IEnumerable<Vector2> Vertices
+        private TEdgedShape _shape;
+        public TEdgedShape Shape
         {
-            get
+            get => _shape;
+            set
             {
-                using (IEnumerator<Segment> enumerator = _shape.Edges.GetEnumerator())
-                {
-                    if (!enumerator.MoveNext())
-                        yield break;
-
-                    yield return enumerator.Current.P0;
-                    yield return enumerator.Current.P1;
-                    while (enumerator.MoveNext())
-                        yield return enumerator.Current.P1;
-                }
+                _shape = value;
+                DirtyVertices();
+                DirtyIndices();
             }
         }
 
-        public override IEnumerable<ushort> Indices => null;
-        public override int VertexCount => _shape.VertexCount + 1;
-        public override int IndexCount => 0;
-        public override sealed Color[] Colors { get; set; }
+        protected override PrimitiveType PrimitiveType => PrimitiveType.LineStrip;
 
-        public EdgedShapeOutlinePrimitive(IEdgedShape shape)
+        public EdgedShapeOutlinePrimitive()
         {
-            _shape = shape;
         }
 
-        public EdgedShapeOutlinePrimitive(Color color, IEdgedShape shape)
+        public EdgedShapeOutlinePrimitive(TEdgedShape shape)
+        {
+            Shape = shape;
+        }
+
+        public EdgedShapeOutlinePrimitive(Color color, TEdgedShape shape)
             : this(shape)
         {
             Colors = new[] { color };
         }
+
+        protected override IEnumerable<Vector2> GetRefreshedVertices()
+        {
+            using (IEnumerator<Segment> enumerator = _shape.Edges.GetEnumerator())
+            {
+                if (!enumerator.MoveNext())
+                    yield break;
+
+                yield return enumerator.Current.P0;
+                yield return enumerator.Current.P1;
+                while (enumerator.MoveNext())
+                    yield return enumerator.Current.P1;
+            }
+        }
+        
+        protected override int GetRefreshedVertexCount() => _shape.VertexCount + 1;
+
+        protected override IEnumerable<ushort> GetRefreshedIndices() => null;
+        protected override int GetRefreshedIndexCount() => 0;
     }
 }

@@ -58,14 +58,8 @@ namespace Glyph.Graphics.Renderer
                 i = 0;
                 foreach (IPrimitive primitive in visiblePrimitives)
                 {
-                    if (primitive.IndexCount == 0 || primitive.Indices == null)
-                        continue;
-
-                    foreach (ushort index in primitive.Indices)
-                    {
-                        indexArray[i] = index;
-                        i++;
-                    }
+                    primitive.CopyToIndexArray(indexArray, i);
+                    i += primitive.IndexCount;
                 }
             
                 var indexBuffer = new IndexBuffer(drawer.GraphicsDevice, typeof(short), totalIndexCount, BufferUsage.WriteOnly);

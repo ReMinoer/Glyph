@@ -1,62 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
+using Glyph.Graphics.Primitives.Base;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Primitives
 {
-    public class LinePrimitive : IPrimitive
+    public class LinePrimitive : OutlinePrimitiveBase
     {
-        public bool Visible { get; set; } = true;
-        public Vector2[] Vertices { get; set; }
-        public Color[] Colors { get; set; }
-        public VertexBufferType BufferType { get; set; } = VertexBufferType.Strip;
+        private Vector2[] _points;
+        public Vector2[] Points
+        {
+            get => _points;
+            set
+            {
+                if (_points == value)
+                    return;
 
-        IEnumerable<Vector2> IPrimitive.Vertices => Vertices;
-        IEnumerable<ushort> IPrimitive.Indices => null;
-        int IPrimitive.VertexCount => Vertices.Length;
-        int IPrimitive.IndexCount => 0;
+                _points = value;
+                DirtyVertices();
+            }
+        }
+
+        public VertexBufferType BufferType { get; set; } = VertexBufferType.Strip;
+        protected override PrimitiveType PrimitiveType => BufferType == VertexBufferType.Strip ? PrimitiveType.LineStrip : PrimitiveType.LineList;
 
         public LinePrimitive()
         {
         }
 
-        public LinePrimitive(params Vector2[] vertices)
+        public LinePrimitive(params Vector2[] points)
         {
-            Vertices = vertices;
+            Points = points;
         }
 
-        public LinePrimitive(Color color, params Vector2[] vertices)
-            : this(vertices)
+        public LinePrimitive(Color color, params Vector2[] points)
+            : this(points)
         {
             Colors = new[] { color };
         }
 
-        public LinePrimitive(Color color, VertexBufferType bufferType, params Vector2[] vertices)
-            : this(color, vertices)
+        public LinePrimitive(Color color, VertexBufferType bufferType, params Vector2[] points)
+            : this(color, points)
         {
             BufferType = bufferType;
         }
 
-        public void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex)
-        {
-            for (int i = 0; i < Vertices.Length; i++)
-                vertexArray[startIndex + i] = new VertexPositionColor(Vertices[i].ToVector3(), Colors[i % Colors.Length]);
-        }
-
-        public void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex)
-        {
-            switch (BufferType)
-            {
-                case VertexBufferType.List:
-                    graphicsDevice.DrawPrimitives(PrimitiveType.LineList, verticesIndex, Vertices.Length / 2);
-                    break;
-                case VertexBufferType.Strip:
-                    graphicsDevice.DrawPrimitives(PrimitiveType.LineStrip, verticesIndex, Vertices.Length - 1);
-                    break;
-                default:
-                    throw new NotSupportedException();
-            }
-        }
+        protected override int GetRefreshedVertexCount() => Points.Length;
+        protected override IEnumerable<Vector2> GetRefreshedVertices() => Points;
+        protected override int GetRefreshedIndexCount() => 0;
+        protected override IEnumerable<ushort> GetRefreshedIndices() => null;
     }
 }

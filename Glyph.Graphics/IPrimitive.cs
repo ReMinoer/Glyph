@@ -12,6 +12,7 @@ namespace Glyph.Graphics
         int VertexCount { get; }
         int IndexCount { get; }
         void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex);
+        void CopyToIndexArray(ushort[] indexArray, int startIndex);
         void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex);
     }
 }

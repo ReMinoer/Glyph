@@ -19,6 +19,7 @@ namespace Glyph.Graphics
         public int VertexCount => Primitive?.VertexCount ?? 0;
         public int IndexCount => Primitive?.IndexCount ?? 0;
         public void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex) => Primitive?.CopyToVertexArray(vertexArray, startIndex);
+        public void CopyToIndexArray(ushort[] indexArray, int startIndex) => Primitive?.CopyToIndexArray(indexArray, startIndex);
         public void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex) => Primitive?.DrawPrimitives(graphicsDevice, verticesIndex, indicesIndex);
     }
 

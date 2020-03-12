@@ -5,12 +5,12 @@ namespace Glyph.Graphics.Primitives.Utils
 {
     static public class PrimitiveHelpers
     {
-        static public int GetEllipseOutlinePointsCount(float angleSize, int sampling, out bool completed)
+        static public int GetEllipseOutlinePointsCount(float angleSize, int sampling)
         {
             double count = sampling * angleSize / MathHelper.TwoPi;
             
             bool additionalPoint = count > System.Math.Floor(count);
-            completed = angleSize >= MathHelper.TwoPi;
+            bool completed = angleSize >= MathHelper.TwoPi;
             
             if (additionalPoint || !completed)
                 count++;
@@ -23,11 +23,13 @@ namespace Glyph.Graphics.Primitives.Utils
             rotation = MathHelper.WrapAngle(rotation);
             angleStart = MathHelper.WrapAngle(angleStart);
 
+            bool completed = angleSize >= MathHelper.TwoPi;
+
             Matrix? rotationMatrix = null;
             if (!rotation.EqualsZero())
                 rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Backward, rotation);
             
-            int stepCount = GetEllipseOutlinePointsCount(angleSize, sampling, out bool completed);
+            int stepCount = GetEllipseOutlinePointsCount(angleSize, sampling);
             float stepSize = angleSize / (!completed ? stepCount - 1 : stepCount);
             
             for (int i = 0; i < stepCount; i++)

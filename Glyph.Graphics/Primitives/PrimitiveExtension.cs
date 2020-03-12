@@ -12,24 +12,26 @@ namespace Glyph.Graphics.Primitives
             return new LinePrimitive(segment.Vertices.ToArray()) { Colors = colors };
         }
 
-        static public IndexedShapePrimitive ToPrimitive(this ITriangulableShape triangulableShape, params Color[] colors)
+        static public TriangulableShapePrimitive<TTriangulableShape> ToPrimitive<TTriangulableShape>(this TTriangulableShape triangulableShape, Color color)
+            where TTriangulableShape : ITriangulableShape
         {
-            return new IndexedShapePrimitive(triangulableShape) { Colors = colors };
+            return new TriangulableShapePrimitive<TTriangulableShape>(color, triangulableShape);
         }
 
-        static public EdgedShapeOutlinePrimitive ToOutlinePrimitive(this IEdgedShape edgedShape, params Color[] colors)
+        static public EdgedShapeOutlinePrimitive<TEdgedShape> ToOutlinePrimitive<TEdgedShape>(this TEdgedShape edgedShape, params Color[] colors)
+            where TEdgedShape : IEdgedShape
         {
-            return new EdgedShapeOutlinePrimitive(edgedShape) { Colors = colors };
+            return new EdgedShapeOutlinePrimitive<TEdgedShape>(edgedShape) { Colors = colors };
         }
 
-        static public CirclePrimitive ToPrimitive(this Circle circle, Color color, float thickness = float.MaxValue)
+        static public EllipsePrimitive ToPrimitive(this Circle circle, Color color, float thickness = float.MaxValue)
         {
-            return new CirclePrimitive(color, circle.Center, circle.Radius, thickness);
+            return new EllipsePrimitive(color, circle.Center, circle.Radius, thickness: thickness);
         }
 
-        static public CircleOutlinePrimitive ToOutlinePrimitive(this Circle circle, Color color)
+        static public EllipseOutlinePrimitive ToOutlinePrimitive(this Circle circle, Color color)
         {
-            return new CircleOutlinePrimitive(color, circle.Center, circle.Radius);
+            return new EllipseOutlinePrimitive(color, circle.Center, circle.Radius);
         }
     }
 }
