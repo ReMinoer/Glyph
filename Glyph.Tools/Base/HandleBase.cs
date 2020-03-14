@@ -27,6 +27,12 @@ namespace Glyph.Tools.Base
             set => _sceneNode.LocalPosition = value;
         }
 
+        public float LocalRotation
+        {
+            get => _sceneNode.LocalRotation;
+            set => _sceneNode.LocalRotation = value;
+        }
+
         protected HandleBase(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context)
         {

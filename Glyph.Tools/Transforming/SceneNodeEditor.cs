@@ -1,8 +1,8 @@
-﻿using Glyph.Core;
-using Glyph.Graphics;
+﻿using System.Collections.Generic;
+using Glyph.Core;
 using Glyph.Graphics.Primitives;
-using Glyph.Graphics.Renderer;
 using Glyph.Math.Shapes;
+using Glyph.Tools.Transforming.Base;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
 
@@ -11,12 +11,7 @@ namespace Glyph.Tools.Transforming
     public class SceneNodeEditor : GlyphObject, IIntegratedEditor<IWritableSceneNodeComponent>
     {
         private readonly AnchoredSceneNode _anchoredSceneNode;
-
-        private readonly AdvancedPositionHandle _positionHandle;
-        private readonly AdvancedPositionHandle _horizontalHandle;
-        private readonly AdvancedPositionHandle _verticalHandle;
-        private readonly AdvancedScaleHandle _scaleHandle;
-        private readonly AdvancedRotationHandle _rotationHandle;
+        private readonly List<AdvancedHandleBase> _handles;
         
         private IWritableSceneNodeComponent _editedObject;
         public IWritableSceneNodeComponent EditedObject
@@ -27,18 +22,14 @@ namespace Glyph.Tools.Transforming
                 _editedObject = value;
                 _anchoredSceneNode.AnchorNode = value;
 
-                _positionHandle.EditedObject = value;
-                _horizontalHandle.EditedObject = value;
-                _verticalHandle.EditedObject = value;
-                _scaleHandle.EditedObject = value;
-                _rotationHandle.EditedObject = value;
+                foreach (AdvancedHandleBase handle in _handles)
+                    handle.EditedObject = value;
             }
         }
         
         object IIntegratedEditor.EditedObject => EditedObject;
 
         private IDrawClient _raycastClient;
-
         public IDrawClient RaycastClient
         {
             get => _raycastClient;
@@ -46,11 +37,8 @@ namespace Glyph.Tools.Transforming
             {
                 _raycastClient = value;
 
-                _positionHandle.RaycastClient = value;
-                _horizontalHandle.RaycastClient = value;
-                _verticalHandle.RaycastClient = value;
-                _scaleHandle.RaycastClient = value;
-                _rotationHandle.RaycastClient = value;
+                foreach (AdvancedHandleBase handle in _handles)
+                    handle.RaycastClient = value;
             }
         }
 
@@ -65,53 +53,58 @@ namespace Glyph.Tools.Transforming
             Add<UserInterface>();
 
             const float u = 100;
-            const float handleSize = u / 16;
+            const float cursorSize = u / 16;
             float radius = (new Vector2(2.5f, 2.5f) * u).Length();
 
-            _scaleHandle = Add<AdvancedScaleHandle>();
-            _scaleHandle.LocalPosition = new Vector2(2, 2) * u;
-            _scaleHandle.Rectangle = new CenteredRectangle(Vector2.Zero, new Vector2(1, 1) * u);
-            _scaleHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Black, Vector2.Zero, radius: handleSize));
+            var positionHandle = Add<AdvancedPositionHandle>();
+            positionHandle.Rectangle = new TopLeftRectangle(Vector2.Zero, new Vector2(1.5f, 1.5f) * u);
+            positionHandle.DefaultPrimitives.Add(new TopLeftRectangle(Vector2.Zero, new Vector2(1.5f, 1.5f) * u).ToPrimitive(Color.White * 0.25f));
+            positionHandle.DefaultPrimitives.Add(new LinePrimitive(Color.White * 0.5f, new Vector2(1.5f, 0) * u, new Vector2(1.5f, 1.5f) * u, new Vector2(0, 1.5f) * u));
 
-            _positionHandle = Add<AdvancedPositionHandle>();
-            _positionHandle.Rectangle = new CenteredRectangle(new Vector2(0.75f, 0.75f) * u, new Vector2(1.5f, 1.5f) * u);
+            var scaleHandle = Add<AdvancedScaleHandle>();
+            scaleHandle.LocalPosition = new Vector2(1.5f, 1.5f) * u;
+            scaleHandle.Rectangle = new CenteredRectangle(Vector2.Zero, new Vector2(1f, 1f) * u);
+            scaleHandle.DefaultPrimitives.Add(new LinePrimitive(Color.Black, new Vector2(0.5f, 0) * u, new Vector2(0.5f, 0.5f) * u, new Vector2(0, 0.5f) * u));
+            scaleHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Black, new Vector2(0.5f, 0.5f) * u, radius: cursorSize));
 
-            _horizontalHandle = Add<AdvancedPositionHandle>();
-            _horizontalHandle.Rectangle = new CenteredRectangle(new Vector2(1.75f, 0) * u, new Vector2(3.5f, 2) * u);
-            _horizontalHandle.Axes = Axes.Horizontal;
-            _horizontalHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Red, Vector2.Zero, handleSize));
-            _horizontalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Red, -Vector2.UnitX * float.MaxValue, Vector2.UnitX * float.MaxValue));
+            var horizontalHandle = Add<AdvancedPositionHandle>();
+            horizontalHandle.Rectangle = new CenteredRectangle(new Vector2(1.75f, 0) * u, new Vector2(3.5f, 2) * u);
+            horizontalHandle.Axes = Axes.Horizontal;
+            horizontalHandle.DefaultPrimitives.Add(new LinePrimitive(Color.Red, Vector2.Zero, new Vector2(3, 0) * u));
+            horizontalHandle.DefaultPrimitives.Add(new EllipsePrimitive(Color.Red, new Vector2(3, 0) * u, u / 4, sampling: 3));
+            horizontalHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Red, Vector2.Zero, cursorSize));
+            horizontalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Red, -Vector2.UnitX * float.MaxValue, Vector2.UnitX * float.MaxValue));
 
-            _verticalHandle = Add<AdvancedPositionHandle>();
-            _verticalHandle.Rectangle = new CenteredRectangle(new Vector2(0, 1.75f) * u, new Vector2(2, 3.5f) * u);
-            _verticalHandle.Axes = Axes.Vertical;
-            _verticalHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Blue, Vector2.Zero, handleSize));
-            _verticalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Blue, -Vector2.UnitY * float.MaxValue, Vector2.UnitY * float.MaxValue));
+            var verticalHandle = Add<AdvancedPositionHandle>();
+            verticalHandle.Rectangle = new CenteredRectangle(new Vector2(0, 1.75f) * u, new Vector2(2, 3.5f) * u);
+            verticalHandle.Axes = Axes.Vertical;
+            verticalHandle.DefaultPrimitives.Add(new LinePrimitive(Color.Blue, Vector2.Zero, new Vector2(0, 3) * u));
+            verticalHandle.DefaultPrimitives.Add(new EllipsePrimitive(Color.Blue, new Vector2(0, 3) * u, u / 4, rotation: MathHelper.PiOver2, sampling: 3));
+            verticalHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Blue, Vector2.Zero, cursorSize));
+            verticalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Blue, -Vector2.UnitY * float.MaxValue, Vector2.UnitY * float.MaxValue));
 
-            _rotationHandle = Add<AdvancedRotationHandle>();
-            _rotationHandle.Rectangle = new CenteredRectangle(new Vector2(2, 2) * u, new Vector2(3, 3) * u);
-            _rotationHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Green, Vector2.UnitY * radius, handleSize));
-            _rotationHandle.GrabbedPrimitives.Add(new EllipseOutlinePrimitive(Color.Green, Vector2.Zero, radius, sampling: EllipsePrimitive.DefaultSampling * 2));
+            var rotationHandle = Add<AdvancedRotationHandle>();
+            rotationHandle.Rectangle = new TopLeftRectangle(new Vector2(1, 1) * u, new Vector2(3, 3) * u);
+            rotationHandle.DefaultPrimitives.Add(new EllipseOutlinePrimitive(Color.Green, Vector2.Zero, radius, angleStart: MathHelper.ToRadians(15), angleSize: MathHelper.ToRadians(60)));
+            rotationHandle.GrabbedPrimitives.Add(new EllipseOutlinePrimitive(Color.Green, Vector2.Zero, radius, sampling: EllipsePrimitive.DefaultSampling * 2));
 
-            Schedulers.Draw.Plan(_horizontalHandle).After(_positionHandle);
-            Schedulers.Draw.Plan(_verticalHandle).After(_positionHandle);
-            Schedulers.Draw.Plan(_scaleHandle).After(_positionHandle);
-            Schedulers.Draw.Plan(_positionHandle).After(_rotationHandle);
+            EllipsePrimitive rotationCursor;
+            rotationHandle.HoverPrimitives.Add(rotationCursor = new EllipsePrimitive(Color.Green, Vector2.UnitY * radius, cursorSize));
+            rotationHandle.Schedulers.Update.Plan(_ => rotationCursor.Center = _anchoredSceneNode.AnchorNode.Rotation.ToRotatedVector() * radius);
 
-            var lineObject = Add<GlyphObject>();
-            lineObject.Add<SceneNode>();
-            lineObject.Add<PrimitiveRenderer>().Primitives.AddRange(new IPrimitive[]
+            _handles = new List<AdvancedHandleBase>
             {
-                new TopLeftRectangle(Vector2.Zero, new Vector2(1.5f, 1.5f) * u).ToPrimitive(Color.White * 0.25f),
-                new LinePrimitive(Color.White * 0.5f, new Vector2(1.5f, 0) * u, new Vector2(1.5f, 1.5f) * u),
-                new LinePrimitive(Color.White * 0.5f, new Vector2(0, 1.5f) * u, new Vector2(1.5f, 1.5f) * u),
-                new LinePrimitive(Color.Red, Vector2.Zero, new Vector2(3, 0) * u),
-                new EllipsePrimitive(Color.Red, new Vector2(3, 0) * u, u / 4, sampling: 3),
-                new LinePrimitive(Color.Blue, Vector2.Zero, new Vector2(0, 3) * u),
-                new EllipsePrimitive(Color.Blue, new Vector2(0, 3) * u, u / 4, rotation: MathHelper.PiOver2, sampling: 3),
-                new EllipseOutlinePrimitive(Color.Green, Vector2.Zero, radius, angleStart: MathHelper.ToRadians(15), angleSize: MathHelper.ToRadians(60)),
-                new LinePrimitive(Color.Black, new Vector2(2, 1.5f) * u, new Vector2(2, 2) * u, new Vector2(1.5f, 2) * u)
-            });
+                positionHandle,
+                horizontalHandle,
+                verticalHandle,
+                rotationHandle,
+                scaleHandle
+            };
+
+            Schedulers.Draw.Plan(horizontalHandle).After(positionHandle);
+            Schedulers.Draw.Plan(verticalHandle).After(positionHandle);
+            Schedulers.Draw.Plan(scaleHandle).After(positionHandle);
+            Schedulers.Draw.Plan(positionHandle).After(rotationHandle);
         }
     }
 }

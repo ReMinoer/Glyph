@@ -68,6 +68,11 @@ namespace Glyph
             return (float)System.Math.Atan2(value.Y, value.X);
         }
 
+        static public Vector2 ToRotatedVector(this float value)
+        {
+            return new Vector2((float)System.Math.Cos(value), (float)System.Math.Sin(value));
+        }
+
         static public Vector2 SetX(this Vector2 value, float x)
         {
             return new Vector2(x, value.Y);

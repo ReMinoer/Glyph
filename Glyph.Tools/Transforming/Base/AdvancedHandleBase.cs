@@ -11,8 +11,9 @@ namespace Glyph.Tools.Transforming.Base
 {
     public abstract class AdvancedHandleBase : HandleBase
     {
-        public PrimitiveCollection HoverPrimitives = new PrimitiveCollection();
-        public PrimitiveCollection GrabbedPrimitives = new PrimitiveCollection();
+        public PrimitiveCollection DefaultPrimitives { get; } = new PrimitiveCollection();
+        public PrimitiveCollection HoverPrimitives { get; } = new PrimitiveCollection();
+        public PrimitiveCollection GrabbedPrimitives { get; } = new PrimitiveCollection();
 
         public CenteredRectangle Rectangle { get; set; }
         protected override IArea Area => new CenteredRectangle(_sceneNode.Position + Rectangle.Center, Rectangle.Size);
@@ -23,6 +24,7 @@ namespace Glyph.Tools.Transforming.Base
             _userInterface.CursorMoved += OnCursorMoved;
 
             var primitiveRenderer = Add<PrimitiveRenderer>();
+            primitiveRenderer.Primitives.Add(DefaultPrimitives);
             primitiveRenderer.Primitives.Add(HoverPrimitives);
             primitiveRenderer.Primitives.Add(GrabbedPrimitives);
 
