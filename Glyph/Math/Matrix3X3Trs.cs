@@ -28,7 +28,7 @@ namespace Glyph.Math
             float m31 = m.Translation.X;
             float m32 = m.Translation.Y;
 
-            return new Matrix3X3(m11, m12, 0, m21, m22, 0, m31, m32, 1);
+            return new Matrix3X3(m11, m21, 0, m12, m22, 0, m31, m32, 1);
         }
 
         public override string ToString() => $"(T:{Translation}, R:{Rotation}, S:{Scale})";
