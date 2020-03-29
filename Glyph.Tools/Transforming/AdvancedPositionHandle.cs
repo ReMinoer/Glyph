@@ -1,10 +1,12 @@
 ﻿using Glyph.Core;
+using Glyph.Math;
+using Glyph.Math.Shapes;
 using Glyph.Tools.Transforming.Base;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Glyph.Tools.Transforming
 {
-    public class AdvancedPositionHandle : AdvancedHandleBase
+    public class AdvancedPositionHandle : AdvancedHandleBase<IPositionController>
     {
         private Vector2 _startPosition;
         private Vector2 _relativeGrabPosition;
@@ -34,12 +36,17 @@ namespace Glyph.Tools.Transforming
                     EditedObject.Position = projectedCursorPosition;
                     break;
                 case Axes.Horizontal:
-                    EditedObject.Position = _startPosition.SetX(projectedCursorPosition.X);
+                    EditedObject.Position = GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitX);
                     break;
                 case Axes.Vertical:
-                    EditedObject.Position = _startPosition.SetY(projectedCursorPosition.Y);
+                    EditedObject.Position = GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitY);
                     break;
             }
+        }
+
+        private Vector2 GetClosestPointOnAxis(Vector2 position, Vector2 axis)
+        {
+            return MathUtils.GetClosestToPointOnLine(position, new Segment(_sceneNode.Position, _sceneNode.Transform(axis)));
         }
 
         protected override void OnCancelled()

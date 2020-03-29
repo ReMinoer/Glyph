@@ -11,7 +11,7 @@ namespace Glyph.Core
     public class AnchoredSceneNode : SceneNodeBase
     {
         private readonly ProjectionManager _projectionManager;
-        private ISceneNodeComponent _anchorNode;
+        private ISceneNode _anchorNode;
         private ITransformer[] _projectionPath;
 
         private bool _ignoreRotation;
@@ -20,6 +20,9 @@ namespace Glyph.Core
             get => _ignoreRotation;
             set
             {
+                if (_ignoreRotation == value)
+                    return;
+
                 _ignoreRotation = value;
                 Refresh();
             }
@@ -31,12 +34,15 @@ namespace Glyph.Core
             get => _ignoreScale;
             set
             {
+                if (_ignoreScale == value)
+                    return;
+
                 _ignoreScale = value;
                 Refresh();
             }
         }
 
-        public ISceneNodeComponent AnchorNode
+        public ISceneNode AnchorNode
         {
             get => _anchorNode;
             set

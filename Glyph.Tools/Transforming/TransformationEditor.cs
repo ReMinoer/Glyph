@@ -2,28 +2,36 @@
 using Glyph.Core;
 using Glyph.Graphics.Primitives;
 using Glyph.Math.Shapes;
-using Glyph.Tools.Transforming.Base;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class SceneNodeEditor : GlyphObject, IIntegratedEditor<IWritableSceneNodeComponent>
+    public class TransformationEditor : GlyphObject, IIntegratedEditor<ITransformationController>
     {
+        public const float Unit = 100;
+
         private readonly AnchoredSceneNode _anchoredSceneNode;
-        private readonly List<AdvancedHandleBase> _handles;
-        
-        private IWritableSceneNodeComponent _editedObject;
-        public IWritableSceneNodeComponent EditedObject
+        private readonly List<AdvancedPositionHandle> _positionHandles;
+        private readonly List<AdvancedRotationHandle> _rotationHandles;
+        private readonly List<AdvancedScaleHandle> _scaleHandles;
+
+        private ITransformationController _editedObject;
+        public ITransformationController EditedObject
         {
             get => _editedObject;
             set
             {
                 _editedObject = value;
-                _anchoredSceneNode.AnchorNode = value;
+                _anchoredSceneNode.AnchorNode = value.Anchor;
+                _anchoredSceneNode.IgnoreRotation = !value.OrientedReferential;
 
-                foreach (AdvancedHandleBase handle in _handles)
-                    handle.EditedObject = value;
+                foreach (AdvancedPositionHandle handle in _positionHandles)
+                    handle.EditedObject = value.PositionController;
+                foreach (AdvancedRotationHandle handle in _rotationHandles)
+                    handle.EditedObject = value.RotationController;
+                foreach (AdvancedScaleHandle handle in _scaleHandles)
+                    handle.EditedObject = value.ScaleController;
             }
         }
         
@@ -37,12 +45,16 @@ namespace Glyph.Tools.Transforming
             {
                 _raycastClient = value;
 
-                foreach (AdvancedHandleBase handle in _handles)
+                foreach (AdvancedPositionHandle handle in _positionHandles)
+                    handle.RaycastClient = value;
+                foreach (AdvancedRotationHandle handle in _rotationHandles)
+                    handle.RaycastClient = value;
+                foreach (AdvancedScaleHandle handle in _scaleHandles)
                     handle.RaycastClient = value;
             }
         }
 
-        public SceneNodeEditor(GlyphResolveContext context)
+        public TransformationEditor(GlyphResolveContext context)
             : base(context)
         {
             _anchoredSceneNode = Add<AnchoredSceneNode>();
@@ -52,7 +64,7 @@ namespace Glyph.Tools.Transforming
 
             Add<UserInterface>();
 
-            const float u = 100;
+            const float u = Unit;
             const float cursorSize = u / 16;
             float radius = (new Vector2(2.5f, 2.5f) * u).Length();
 
@@ -73,7 +85,7 @@ namespace Glyph.Tools.Transforming
             horizontalHandle.DefaultPrimitives.Add(new LinePrimitive(Color.Red, Vector2.Zero, new Vector2(3, 0) * u));
             horizontalHandle.DefaultPrimitives.Add(new EllipsePrimitive(Color.Red, new Vector2(3, 0) * u, u / 4, sampling: 3));
             horizontalHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Red, Vector2.Zero, cursorSize));
-            horizontalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Red, -Vector2.UnitX * float.MaxValue, Vector2.UnitX * float.MaxValue));
+            horizontalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Red, -Vector2.UnitX * float.MaxValue, Vector2.Zero, Vector2.UnitX * float.MaxValue));
 
             var verticalHandle = Add<AdvancedPositionHandle>();
             verticalHandle.Rectangle = new CenteredRectangle(new Vector2(0, 1.75f) * u, new Vector2(2, 3.5f) * u);
@@ -81,7 +93,7 @@ namespace Glyph.Tools.Transforming
             verticalHandle.DefaultPrimitives.Add(new LinePrimitive(Color.Blue, Vector2.Zero, new Vector2(0, 3) * u));
             verticalHandle.DefaultPrimitives.Add(new EllipsePrimitive(Color.Blue, new Vector2(0, 3) * u, u / 4, rotation: MathHelper.PiOver2, sampling: 3));
             verticalHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Blue, Vector2.Zero, cursorSize));
-            verticalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Blue, -Vector2.UnitY * float.MaxValue, Vector2.UnitY * float.MaxValue));
+            verticalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Blue, -Vector2.UnitY * float.MaxValue, Vector2.Zero, Vector2.UnitY * float.MaxValue));
 
             var rotationHandle = Add<AdvancedRotationHandle>();
             rotationHandle.Rectangle = new TopLeftRectangle(new Vector2(1, 1) * u, new Vector2(3, 3) * u);
@@ -90,14 +102,28 @@ namespace Glyph.Tools.Transforming
 
             EllipsePrimitive rotationCursor;
             rotationHandle.HoverPrimitives.Add(rotationCursor = new EllipsePrimitive(Color.Green, Vector2.UnitY * radius, cursorSize));
-            rotationHandle.Schedulers.Update.Plan(_ => rotationCursor.Center = _anchoredSceneNode.AnchorNode.Rotation.ToRotatedVector() * radius);
+            rotationHandle.Schedulers.Update.Plan(_ =>
+            {
+                if (_editedObject.OrientedReferential)
+                    rotationCursor.Center = _anchoredSceneNode.AnchorNode.Rotation.ToRotatedVector() * radius;
+                else
+                    rotationCursor.Center = Vector2.UnitX * radius;
+            });
 
-            _handles = new List<AdvancedHandleBase>
+            _positionHandles = new List<AdvancedPositionHandle>
             {
                 positionHandle,
                 horizontalHandle,
-                verticalHandle,
-                rotationHandle,
+                verticalHandle
+            };
+
+            _rotationHandles = new List<AdvancedRotationHandle>
+            {
+                rotationHandle
+            };
+
+            _scaleHandles = new List<AdvancedScaleHandle>
+            {
                 scaleHandle
             };
 

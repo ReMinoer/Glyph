@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class AdvancedScaleHandle : AdvancedHandleBase
+    public class AdvancedScaleHandle : AdvancedHandleBase<IScaleController>
     {
         private float _startScale;
         private Vector2 _relativeGrabPosition;
@@ -26,7 +26,7 @@ namespace Glyph.Tools.Transforming
         {
             projectedCursorPosition -= _relativeGrabPosition;
 
-            Vector2 scaleRatio = (projectedCursorPosition - (_sceneNode.Position - _sceneNode.LocalPosition)) / _sceneNode.LocalPosition;
+            Vector2 scaleRatio = (projectedCursorPosition - _sceneNode.ParentNode.Position) / _sceneNode.LocalPosition.Rotate(_sceneNode.ParentNode.Rotation);
             EditedObject.Scale = _startScale * MathHelper.Max(MathHelper.Max(scaleRatio.X, scaleRatio.Y), 0.1f);
         }
 

@@ -1,12 +1,14 @@
 ﻿using System.Linq;
 using Glyph.Core;
 using Glyph.Math;
+using Glyph.Tools.Transforming;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Base
 {
-    public abstract class HandleBase : GlyphObject, IIntegratedEditor<IWritableSceneNodeComponent>
+    public abstract class HandleBase<TController> : GlyphObject, IIntegratedEditor<TController>
+        where TController : IAnchoredController
     {
         private readonly ProjectionManager _projectionManager;
         protected readonly SceneNode _sceneNode;
@@ -16,7 +18,7 @@ namespace Glyph.Tools.Base
 
         public IDrawClient RaycastClient { get; set; }
 
-        public IWritableSceneNodeComponent EditedObject { get; set; }
+        public TController EditedObject { get; set; }
         object IIntegratedEditor.EditedObject => EditedObject;
 
         protected abstract IArea Area { get; }
@@ -95,7 +97,7 @@ namespace Glyph.Tools.Base
         protected Vector2 ProjectToTargetScene(Vector2 value)
         {
             return _projectionManager.ProjectFromPosition(_sceneNode, value)
-                                     .To(EditedObject)
+                                     .To(EditedObject.Anchor)
                                      .ByRaycast()
                                      .First().Value;
         }

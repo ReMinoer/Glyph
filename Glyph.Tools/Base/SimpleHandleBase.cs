@@ -1,12 +1,14 @@
 ﻿using Glyph.Core;
 using Glyph.Graphics;
 using Glyph.Graphics.Renderer;
+using Glyph.Tools.Transforming;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Base
 {
-    public abstract class SimpleHandleBase<TSpriteSource> : HandleBase
+    public abstract class SimpleHandleBase<TSpriteSource, TController> : HandleBase<TController>
         where TSpriteSource : ISpriteSource
+        where TController : IAnchoredController
     {
         private readonly SpriteTransformer _spriteTransformer;
         protected readonly TSpriteSource _spriteSource;

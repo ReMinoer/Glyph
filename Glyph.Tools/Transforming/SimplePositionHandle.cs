@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class SimplePositionHandle : SimpleHandleBase<FilledCircleSprite>
+    public class SimplePositionHandle : SimpleHandleBase<FilledCircleSprite, IPositionController>
     {
         private Vector2 _startPosition;
         private Vector2 _relativeGrabPosition;

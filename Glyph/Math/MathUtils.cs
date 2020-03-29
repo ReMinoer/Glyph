@@ -163,5 +163,29 @@ namespace Glyph.Math
                 return new Rectangle(left, top, right - left, bottom - top);
             }
         }
+
+        // https://diego.assencio.com/?index=ec3d5dfdfc0b6a0d147a656f0af332bd
+        static public Vector2 GetClosestToPointOnLine(Vector2 point, Segment openSegment)
+        {
+            Vector2 p0 = openSegment.P0;
+            Vector2 v = openSegment.Vector;
+            float lambda = Vector2.Dot(point - p0, v) / Vector2.Dot(v, v);
+
+            return p0 + v * lambda;
+        }
+
+        static public Vector2 GetClosestToPointOnSegment(Vector2 point, Segment closedSegment)
+        {
+            Vector2 p0 = closedSegment.P0;
+            Vector2 v = closedSegment.Vector;
+            float lambda = Vector2.Dot(point - p0, v) / Vector2.Dot(v, v);
+
+            if (lambda <= 0)
+                return p0;
+            if (lambda >= 1)
+                return closedSegment.P1;
+
+            return p0 + v * lambda;
+        }
     }
 }

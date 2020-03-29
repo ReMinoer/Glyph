@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class AdvancedRotationHandle : AdvancedHandleBase
+    public class AdvancedRotationHandle : AdvancedHandleBase<IRotationController>
     {
         private float _startRotation;
         private float _relativeRotation;
@@ -20,13 +20,13 @@ namespace Glyph.Tools.Transforming
 
             _startRotation = EditedObject.Rotation;
 
-            Vector2 pivotPosition = _sceneNode.Position - _sceneNode.LocalPosition;
+            Vector2 pivotPosition = _sceneNode.ParentNode.Position;
             _relativeRotation = (ProjectToTargetScene(cursorPosition) - pivotPosition).ToRotation().GetValueOrDefault();
         }
         
         protected override void OnDragging(Vector2 projectedCursorPosition)
         {
-            Vector2 pivotPosition = _sceneNode.Position - _sceneNode.LocalPosition;
+            Vector2 pivotPosition = _sceneNode.ParentNode.Position;
             float? cursorRotation = (projectedCursorPosition - pivotPosition).ToRotation();
             if (!cursorRotation.HasValue)
                 return;

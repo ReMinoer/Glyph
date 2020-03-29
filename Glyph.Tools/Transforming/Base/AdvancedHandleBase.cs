@@ -9,14 +9,15 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming.Base
 {
-    public abstract class AdvancedHandleBase : HandleBase
+    public abstract class AdvancedHandleBase<TController> : HandleBase<TController>
+        where TController : IAnchoredController
     {
         public PrimitiveCollection DefaultPrimitives { get; } = new PrimitiveCollection();
         public PrimitiveCollection HoverPrimitives { get; } = new PrimitiveCollection();
         public PrimitiveCollection GrabbedPrimitives { get; } = new PrimitiveCollection();
 
         public CenteredRectangle Rectangle { get; set; }
-        protected override IArea Area => new CenteredRectangle(_sceneNode.Position + Rectangle.Center, Rectangle.Size);
+        protected override IArea Area => _sceneNode.Transform(Rectangle);
 
         public AdvancedHandleBase(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context, projectionManager)

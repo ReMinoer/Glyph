@@ -213,7 +213,8 @@ namespace Glyph.Application
 
                 Type<FreeCamera>(),
 
-                Type<SceneNodeEditor>(),
+                Type<TransformationEditor>(),
+                Type<MultiModeTransformationEditor>(),
                 Type<AdvancedPositionHandle>(),
                 Type<AdvancedRotationHandle>(),
                 Type<AdvancedScaleHandle>(),
