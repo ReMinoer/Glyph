@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 
@@ -12,19 +13,24 @@ namespace Glyph.Math.Shapes
 
     static public class IntersectionUtils
     {
+        static public IEnumerable<Vector2> TriangulationVertices(this ITriangulableShape shape)
+        {
+            return shape.TriangulationIndices?.Select(shape.GetIndexedVertex) ?? shape.Vertices;
+        }
+
         static public IEnumerable<Triangle> Triangles(this ITriangulableShape shape)
         {
-            using (IEnumerator<ushort> enumerator = shape.TriangulationIndices.GetEnumerator())
+            using (IEnumerator<Vector2> enumerator = shape.TriangulationVertices().GetEnumerator())
             {
                 if (!enumerator.MoveNext())
                     yield break;
 
                 var triangle = new Triangle();
-                triangle.P0 = shape.GetIndexedVertex(enumerator.Current);
+                triangle.P0 = enumerator.Current;
                 enumerator.MoveNext();
-                triangle.P1 = shape.GetIndexedVertex(enumerator.Current);
+                triangle.P1 = enumerator.Current;
                 enumerator.MoveNext();
-                triangle.P2 = shape.GetIndexedVertex(enumerator.Current);
+                triangle.P2 = enumerator.Current;
                 yield return triangle;
 
                 if (shape.StripTriangulation)
@@ -35,7 +41,7 @@ namespace Glyph.Math.Shapes
                         {
                             P0 = triangle.P2,
                             P1 = triangle.P1,
-                            P2 = shape.GetIndexedVertex(enumerator.Current)
+                            P2 = enumerator.Current
                         };
                         yield return triangle;
                     }
@@ -44,11 +50,11 @@ namespace Glyph.Math.Shapes
                 while (enumerator.MoveNext())
                 {
                     triangle = new Triangle();
-                    triangle.P0 = shape.GetIndexedVertex(enumerator.Current);
+                    triangle.P0 = enumerator.Current;
                     enumerator.MoveNext();
-                    triangle.P1 = shape.GetIndexedVertex(enumerator.Current);
+                    triangle.P1 = enumerator.Current;
                     enumerator.MoveNext();
-                    triangle.P2 = shape.GetIndexedVertex(enumerator.Current);
+                    triangle.P2 = enumerator.Current;
                     yield return triangle;
                 }
             }
