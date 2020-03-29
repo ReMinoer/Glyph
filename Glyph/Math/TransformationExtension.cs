@@ -15,104 +15,128 @@ namespace Glyph.Math
             return new Transformation(-transformation.Translation, -transformation.Rotation, 1 / transformation.Scale);
         }
 
-        static public IEdgedShape Transform(this ITransformation transformation, IEdgedShape shape)
+        static public ITransformer Inverse(this ITransformer transformer)
         {
-            return new TransformedEdgedShape(shape, transformation);
+            return new InverseTransformer(transformer);
         }
 
-        static public ITriangulableShape Transform(this ITransformation transformation, ITriangulableShape shape)
+        private class InverseTransformer : ITransformer
         {
-            Vector2[] vertices = shape.Vertices.Select(transformation.Transform).ToArray();
-            Segment[] edges = shape.Edges.Select(transformation.Transform).ToArray();
-            return new IndexedShape(vertices, edges, shape.TriangulationIndices.ToArray(), shape.StripTriangulation);
+            private readonly ITransformer _transformer;
+            public event EventHandler TransformationChanged;
+
+            public InverseTransformer(ITransformer transformer)
+            {
+                _transformer = transformer;
+                _transformer.TransformationChanged += OnTransformationChanged;
+            }
+
+            private void OnTransformationChanged(object sender, EventArgs e) => TransformationChanged?.Invoke(this, EventArgs.Empty);
+
+            public Vector2 Transform(Vector2 position) => _transformer.InverseTransform(position);
+            public Vector2 InverseTransform(Vector2 position) => _transformer.Transform(position);
+            public Transformation Transform(Transformation transformation) => _transformer.InverseTransform(transformation);
+            public Transformation InverseTransform(Transformation transformation) => _transformer.Transform(transformation);
         }
 
-        static public Segment Transform(this ITransformation transformation, Segment segment)
+        static public IEdgedShape Transform(this ITransformer transformer, IEdgedShape shape)
         {
-            return new Segment(transformation.Transform(segment.P0), transformation.Transform(segment.P1));
+            return new TransformedEdgedShape(shape, transformer);
         }
 
-        static public Triangle Transform(this ITransformation transformation, Triangle triangle)
+        static public ITriangulableShape Transform(this ITransformer transformer, ITriangulableShape shape)
         {
-            return new Triangle(transformation.Transform(triangle.P0), transformation.Transform(triangle.P1), transformation.Transform(triangle.P2));
+            Vector2[] vertices = shape.Vertices.Select(transformer.Transform).ToArray();
+            Segment[] edges = shape.Edges.Select(transformer.Transform).ToArray();
+            return new IndexedShape(vertices, edges, shape.TriangulationIndices?.ToArray(), shape.StripTriangulation);
         }
 
-        static public Quad Transform(this ITransformation transformation, IRectangle rectangle)
+        static public Segment Transform(this ITransformer transformer, Segment segment)
         {
-            return new Quad(transformation.Transform(rectangle.Position), transformation.Transform(rectangle.P1), transformation.Transform(rectangle.P2));
+            return new Segment(transformer.Transform(segment.P0), transformer.Transform(segment.P1));
         }
 
-        static public Quad Transform(this ITransformation transformation, TopLeftRectangle topLeftRectangle)
+        static public Triangle Transform(this ITransformer transformer, Triangle triangle)
         {
-            return new Quad(transformation.Transform(topLeftRectangle.Position), transformation.Transform(topLeftRectangle.P1), transformation.Transform(topLeftRectangle.P2));
+            return new Triangle(transformer.Transform(triangle.P0), transformer.Transform(triangle.P1), transformer.Transform(triangle.P2));
         }
 
-        static public Quad Transform(this ITransformation transformation, CenteredRectangle centeredRectangle)
+        static public Quad Transform(this ITransformer transformer, IRectangle rectangle)
         {
-            return new Quad(transformation.Transform(centeredRectangle.Position), transformation.Transform(centeredRectangle.P1), transformation.Transform(centeredRectangle.P2));
+            return new Quad(transformer.Transform(rectangle.Position), transformer.Transform(rectangle.P1), transformer.Transform(rectangle.P2));
         }
 
-        static public Quad Transform(this ITransformation transformation, Quad quad)
+        static public Quad Transform(this ITransformer transformer, TopLeftRectangle topLeftRectangle)
         {
-            return new Quad(transformation.Transform(quad.P0), transformation.Transform(quad.P1), transformation.Transform(quad.P2));
+            return new Quad(transformer.Transform(topLeftRectangle.Position), transformer.Transform(topLeftRectangle.P1), transformer.Transform(topLeftRectangle.P2));
         }
 
-        static public Circle Transform(this ITransformation transformation, Circle circle)
+        static public Quad Transform(this ITransformer transformer, CenteredRectangle centeredRectangle)
         {
-            return new Circle(transformation.Transform(circle.Center), circle.Radius * transformation.Scale);
+            return new Quad(transformer.Transform(centeredRectangle.Position), transformer.Transform(centeredRectangle.P1), transformer.Transform(centeredRectangle.P2));
         }
 
-        static public IEdgedShape InverseTransform(this ITransformation transformation, IEdgedShape shape)
+        static public Quad Transform(this ITransformer transformer, Quad quad)
         {
-            return new TransformedEdgedShape(shape, transformation.Inverse());
+            return new Quad(transformer.Transform(quad.P0), transformer.Transform(quad.P1), transformer.Transform(quad.P2));
         }
 
-        static public ITriangulableShape InverseTransform(this ITransformation transformation, ITriangulableShape shape)
+        static public Circle Transform(this ITransformer transformer, Circle circle)
         {
-            Vector2[] vertices = shape.Vertices.Select(transformation.InverseTransform).ToArray();
-            Segment[] edges = shape.Edges.Select(transformation.InverseTransform).ToArray();
-            return new IndexedShape(vertices, edges, shape.TriangulationIndices.ToArray(), shape.StripTriangulation);
+            return new Circle(transformer.Transform(circle.Center), transformer.Transform(circle.Center + Vector2.UnitX * circle.Radius).Length());
         }
 
-        static public Segment InverseTransform(this ITransformation transformation, Segment segment)
+        static public IEdgedShape InverseTransform(this ITransformer transformer, IEdgedShape shape)
         {
-            return new Segment(transformation.InverseTransform(segment.P0), transformation.InverseTransform(segment.P1));
+            return new TransformedEdgedShape(shape, transformer.Inverse());
         }
 
-        static public Triangle InverseTransform(this ITransformation transformation, Triangle triangle)
+        static public ITriangulableShape InverseTransform(this ITransformer transformer, ITriangulableShape shape)
         {
-            return new Triangle(transformation.InverseTransform(triangle.P0), transformation.InverseTransform(triangle.P1), transformation.InverseTransform(triangle.P2));
+            Vector2[] vertices = shape.Vertices.Select(transformer.InverseTransform).ToArray();
+            Segment[] edges = shape.Edges.Select(transformer.InverseTransform).ToArray();
+            return new IndexedShape(vertices, edges, shape.TriangulationIndices?.ToArray(), shape.StripTriangulation);
         }
 
-        static public Quad InverseTransform(this ITransformation transformation, IRectangle rectangle)
+        static public Segment InverseTransform(this ITransformer transformer, Segment segment)
         {
-            return new Quad(transformation.InverseTransform(rectangle.Position), transformation.InverseTransform(rectangle.P1), transformation.InverseTransform(rectangle.P2));
+            return new Segment(transformer.InverseTransform(segment.P0), transformer.InverseTransform(segment.P1));
         }
 
-        static public Quad InverseTransform(this ITransformation transformation, TopLeftRectangle topLeftRectangle)
+        static public Triangle InverseTransform(this ITransformer transformer, Triangle triangle)
         {
-            return new Quad(transformation.InverseTransform(topLeftRectangle.Position), transformation.InverseTransform(topLeftRectangle.P1), transformation.InverseTransform(topLeftRectangle.P2));
+            return new Triangle(transformer.InverseTransform(triangle.P0), transformer.InverseTransform(triangle.P1), transformer.InverseTransform(triangle.P2));
         }
 
-        static public Quad InverseTransform(this ITransformation transformation, CenteredRectangle centeredRectangle)
+        static public Quad InverseTransform(this ITransformer transformer, IRectangle rectangle)
         {
-            return new Quad(transformation.InverseTransform(centeredRectangle.Position), transformation.InverseTransform(centeredRectangle.P1), transformation.InverseTransform(centeredRectangle.P2));
+            return new Quad(transformer.InverseTransform(rectangle.Position), transformer.InverseTransform(rectangle.P1), transformer.InverseTransform(rectangle.P2));
         }
 
-        static public Quad InverseTransform(this ITransformation transformation, Quad quad)
+        static public Quad InverseTransform(this ITransformer transformer, TopLeftRectangle topLeftRectangle)
         {
-            return new Quad(transformation.InverseTransform(quad.P0), transformation.InverseTransform(quad.P1), transformation.InverseTransform(quad.P2));
+            return new Quad(transformer.InverseTransform(topLeftRectangle.Position), transformer.InverseTransform(topLeftRectangle.P1), transformer.InverseTransform(topLeftRectangle.P2));
         }
 
-        static public Circle InverseTransform(this ITransformation transformation, Circle circle)
+        static public Quad InverseTransform(this ITransformer transformer, CenteredRectangle centeredRectangle)
         {
-            return new Circle(transformation.InverseTransform(circle.Center), circle.Radius / transformation.Scale);
+            return new Quad(transformer.InverseTransform(centeredRectangle.Position), transformer.InverseTransform(centeredRectangle.P1), transformer.InverseTransform(centeredRectangle.P2));
+        }
+
+        static public Quad InverseTransform(this ITransformer transformer, Quad quad)
+        {
+            return new Quad(transformer.InverseTransform(quad.P0), transformer.InverseTransform(quad.P1), transformer.InverseTransform(quad.P2));
+        }
+
+        static public Circle InverseTransform(this ITransformer transformer, Circle circle)
+        {
+            return new Circle(transformer.InverseTransform(circle.Center), transformer.InverseTransform(circle.Center + Vector2.UnitX * circle.Radius).Length());
         }
 
         private class TransformedEdgedShape : IEdgedShape
         {
             private readonly IEdgedShape _shape;
-            protected readonly ITransformation _transformation;
+            protected readonly ITransformer _transformation;
 
             public IEnumerable<Vector2> Vertices => _shape.Vertices.Select(_transformation.Transform);
             public IEnumerable<Segment> Edges => _shape.Edges.Select(_transformation.Transform);
@@ -123,10 +147,10 @@ namespace Glyph.Math
             public Vector2 Center => MathUtils.GetCenter(Vertices);
             public TopLeftRectangle BoundingBox => MathUtils.GetBoundingBox(Vertices);
 
-            public TransformedEdgedShape(IEdgedShape shape, ITransformation transformation)
+            public TransformedEdgedShape(IEdgedShape shape, ITransformer transformation)
             {
                 _shape = shape;
-                _transformation = new Transformation(transformation);
+                _transformation = transformation;
             }
 
             public bool ContainsPoint(Vector2 point) => _shape.ContainsPoint(_transformation.InverseTransform(point));
@@ -154,10 +178,10 @@ namespace Glyph.Math
 
                 Vertices = vertices.AsReadOnly();
                 Edges = edges.AsReadOnly();
-                TriangulationIndices = triangulationIndices.AsReadOnly();
+                TriangulationIndices = triangulationIndices?.AsReadOnly();
                 VertexCount = vertices.Length;
                 EdgeCount = edges.Length;
-                TriangleCount = stripTriangulation ? triangulationIndices.Length - 2 : triangulationIndices.Length / 3;
+                TriangleCount = triangulationIndices == null ? 0 : (stripTriangulation ? triangulationIndices.Length - 2 : triangulationIndices.Length / 3);
                 StripTriangulation = stripTriangulation;
             }
         }
