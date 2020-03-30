@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class AdvancedRotationHandle : AdvancedHandleBase<IRotationController>
+    public class AdvancedRotationHandle : AdvancedHandleBase<IAnchoredRotationController>
     {
         private float _startRotation;
         private float _relativeRotation;

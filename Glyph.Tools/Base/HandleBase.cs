@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Math;
 using Glyph.Tools.Transforming;
@@ -7,7 +8,17 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Base
 {
-    public abstract class HandleBase<TController> : GlyphObject, IIntegratedEditor<TController>
+    public interface IHandle : IIntegratedEditor
+    {
+        IDrawClient RaycastClient { get; set; }
+    }
+
+    public interface IHandle<TController> : IHandle, IDraw, IIntegratedEditor<TController>
+    {
+        new TController EditedObject { get; set; }
+    }
+
+    public abstract class HandleBase<TController> : GlyphObject, IHandle<TController>
         where TController : IAnchoredController
     {
         private readonly ProjectionManager _projectionManager;

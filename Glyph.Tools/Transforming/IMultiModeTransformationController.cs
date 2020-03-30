@@ -6,4 +6,9 @@ namespace Glyph.Tools.Transforming
     {
         IReadOnlyList<ITransformationController> Modes { get; }
     }
+
+    public interface IMultiModeAnchoredTransformationController : IMultiModeTransformationController
+    {
+        new IReadOnlyList<IAnchoredTransformationController> Modes { get; }
+    }
 }

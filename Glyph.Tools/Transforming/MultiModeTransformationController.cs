@@ -4,9 +4,10 @@ using Glyph.Core;
 
 namespace Glyph.Tools.Transforming
 {
-    public class MultiModeTransformationController : IMultiModeTransformationController
+    public class MultiModeTransformationController : IMultiModeAnchoredTransformationController
     {
-        public IReadOnlyList<ITransformationController> Modes { get; }
+        public IReadOnlyList<IAnchoredTransformationController> Modes { get; }
+        IReadOnlyList<ITransformationController> IMultiModeTransformationController.Modes => Modes;
 
         public MultiModeTransformationController(IWritableSceneNode sceneNode)
         {

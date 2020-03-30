@@ -2,12 +2,13 @@
 using Glyph.Core;
 using Glyph.Graphics.Primitives;
 using Glyph.Math.Shapes;
+using Glyph.Tools.Base;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class TransformationEditor : GlyphObject, IIntegratedEditor<ITransformationController>
+    public class TransformationEditor : GlyphObject, IIntegratedEditor<IAnchoredTransformationController>
     {
         public const float Unit = 100;
 
@@ -16,22 +17,44 @@ namespace Glyph.Tools.Transforming
         private readonly List<AdvancedRotationHandle> _rotationHandles;
         private readonly List<AdvancedScaleHandle> _scaleHandles;
 
-        private ITransformationController _editedObject;
-        public ITransformationController EditedObject
+        private IEnumerable<IHandle> Handles
+        {
+            get
+            {
+                foreach (AdvancedPositionHandle handle in _positionHandles)
+                    yield return handle;
+                foreach (AdvancedRotationHandle handle in _rotationHandles)
+                    yield return handle;
+                foreach (AdvancedScaleHandle handle in _scaleHandles)
+                    yield return handle;
+            }
+        }
+
+        private IAnchoredTransformationController _editedObject;
+        public IAnchoredTransformationController EditedObject
         {
             get => _editedObject;
             set
             {
                 _editedObject = value;
-                _anchoredSceneNode.AnchorNode = value.Anchor;
-                _anchoredSceneNode.IgnoreRotation = !value.OrientedReferential;
+                _anchoredSceneNode.AnchorNode = _editedObject.Anchor;
+                _anchoredSceneNode.IgnoreRotation = !_editedObject.OrientedReferential;
 
-                foreach (AdvancedPositionHandle handle in _positionHandles)
-                    handle.EditedObject = value.PositionController;
-                foreach (AdvancedRotationHandle handle in _rotationHandles)
-                    handle.EditedObject = value.RotationController;
-                foreach (AdvancedScaleHandle handle in _scaleHandles)
-                    handle.EditedObject = value.ScaleController;
+                ConfigureHandles(_positionHandles, _editedObject.PositionController);
+                ConfigureHandles(_rotationHandles, _editedObject.RotationController);
+                ConfigureHandles(_scaleHandles, _editedObject.ScaleController);
+
+                void ConfigureHandles<THandle, TController>(IEnumerable<THandle> handles, TController controller)
+                    where THandle : class, IHandle<TController>
+                {
+                    bool hasController = controller != null;
+                    foreach (THandle handle in handles)
+                    {
+                        handle.EditedObject = controller;
+                        handle.Enabled = hasController;
+                        handle.Visible = hasController;
+                    }
+                }
             }
         }
         
@@ -45,12 +68,8 @@ namespace Glyph.Tools.Transforming
             {
                 _raycastClient = value;
 
-                foreach (AdvancedPositionHandle handle in _positionHandles)
-                    handle.RaycastClient = value;
-                foreach (AdvancedRotationHandle handle in _rotationHandles)
-                    handle.RaycastClient = value;
-                foreach (AdvancedScaleHandle handle in _scaleHandles)
-                    handle.RaycastClient = value;
+                foreach (IHandle handle in Handles)
+                    handle.RaycastClient = _raycastClient;
             }
         }
 

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class AdvancedScaleHandle : AdvancedHandleBase<IScaleController>
+    public class AdvancedScaleHandle : AdvancedHandleBase<IAnchoredScaleController>
     {
         private float _startScale;
         private Vector2 _relativeGrabPosition;

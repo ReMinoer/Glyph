@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class TransformationController : ITransformationController, IPositionController, IRotationController, IScaleController
+    public class TransformationController : IAnchoredTransformationController, IAnchoredPositionController, IAnchoredRotationController, IAnchoredScaleController
     {
         public IWritableSceneNode SceneNode { get; }
         public bool OrientedReferential { get; }
@@ -37,5 +37,9 @@ namespace Glyph.Tools.Transforming
         IPositionController ITransformationController.PositionController => this;
         IRotationController ITransformationController.RotationController => this;
         IScaleController ITransformationController.ScaleController => this;
+
+        IAnchoredPositionController IAnchoredTransformationController.PositionController => this;
+        IAnchoredRotationController IAnchoredTransformationController.RotationController => this;
+        IAnchoredScaleController IAnchoredTransformationController.ScaleController => this;
     }
 }

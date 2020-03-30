@@ -8,12 +8,12 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class MultiModeTransformationEditor : GlyphObject, IIntegratedEditor<IMultiModeTransformationController>
+    public class MultiModeTransformationEditor : GlyphObject, IIntegratedEditor<IMultiModeAnchoredTransformationController>
     {
         private readonly TransformationEditor _transformationEditor;
 
-        private IMultiModeTransformationController _editedObject;
-        public IMultiModeTransformationController EditedObject
+        private IMultiModeAnchoredTransformationController _editedObject;
+        public IMultiModeAnchoredTransformationController EditedObject
         {
             get => _editedObject;
             set

@@ -6,7 +6,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Glyph.Tools.Transforming
 {
-    public class AdvancedPositionHandle : AdvancedHandleBase<IPositionController>
+    public class AdvancedPositionHandle : AdvancedHandleBase<IAnchoredPositionController>
     {
         private Vector2 _startPosition;
         private Vector2 _relativeGrabPosition;

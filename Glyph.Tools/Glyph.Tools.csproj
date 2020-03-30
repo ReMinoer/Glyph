@@ -76,14 +76,11 @@
     <Compile Include="Transforming\AdvancedScaleHandle.cs" />
     <Compile Include="Transforming\Base\AdvancedHandleBase.cs" />
     <Compile Include="Transforming\AdvancedPositionHandle.cs" />
-    <Compile Include="Transforming\IAnchoredController.cs" />
     <Compile Include="Transforming\IMultiModeTransformationController.cs" />
-    <Compile Include="Transforming\IPositionController.cs" />
-    <Compile Include="Transforming\IRotationController.cs" />
-    <Compile Include="Transforming\IScaleController.cs" />
     <Compile Include="Transforming\ITransformationController.cs" />
     <Compile Include="Transforming\MultiModeTransformationController.cs" />
     <Compile Include="Transforming\MultiModeTransformationEditor.cs" />
+    <Compile Include="Transforming\TransformableDataController.cs" />
     <Compile Include="Transforming\TransformationController.cs" />
     <Compile Include="Transforming\SimplePositionHandle.cs" />
     <Compile Include="Transforming\TransformationEditor.cs" />
