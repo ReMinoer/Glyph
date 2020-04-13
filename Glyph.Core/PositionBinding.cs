@@ -2,16 +2,13 @@
 
 namespace Glyph.Core
 {
-    public class PositionBinding : GlyphComponent, IEnableable, IUpdate
+    public class PositionBinding : GlyphComponent, IUpdate
     {
         private readonly SceneNode _sceneNode;
-        public bool Enabled { get; set; }
         public ISceneNode Binding { get; set; }
 
         public PositionBinding(SceneNode sceneNode)
         {
-            Enabled = true;
-            
             _sceneNode = sceneNode;
         }
 

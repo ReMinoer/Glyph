@@ -26,7 +26,7 @@ namespace Glyph.Animation
 
         public void Update(ElapsedTime elapsedTime)
         {
-            SceneNode.LocalPosition += _motors.Where(x => x.Enabled).Aggregate(Vector2.Zero, (current, motor) => current + motor.Velocity);
+            SceneNode.LocalPosition += _motors.Where(x => x.Active).Aggregate(Vector2.Zero, (current, motor) => current + motor.Velocity);
         }
     }
 }

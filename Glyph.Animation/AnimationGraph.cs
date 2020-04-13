@@ -12,7 +12,7 @@ using OverGraphed;
 
 namespace Glyph.Animation
 {
-    public interface IAnimationGraph : IGraph, IUpdate, ITimeUnscalable, IEnableable
+    public interface IAnimationGraph : IGraph, IUpdate, ITimeUnscalable
     {
     }
 
@@ -36,7 +36,6 @@ namespace Glyph.Animation
         public T Animatable { get; set; }
         public TState Current { get; private set; }
         public TState Start { get; set; }
-        public bool Enabled { get; set; }
 
         public IReadOnlyDictionary<TState, Vertex> States => _readOnlyStates;
         public IEnumerable<Transition> Transitions => _graph.Edges;

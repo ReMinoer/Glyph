@@ -4,7 +4,7 @@ using Glyph.Core;
 
 namespace Glyph.UI
 {
-    public interface IControl : IEnableable, IDraw
+    public interface IControl : IDraw
     {
         SceneNode SceneNode { get; }
         Motion Motion { get; }

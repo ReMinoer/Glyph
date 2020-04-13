@@ -64,7 +64,7 @@ namespace Glyph.Tools.Base
         {
             Grabbed = false;
             
-            if (!Area.ContainsPoint(e.CursorPosition))
+            if (!Active || !Area.ContainsPoint(e.CursorPosition))
                 return;
             
             e.Handle();

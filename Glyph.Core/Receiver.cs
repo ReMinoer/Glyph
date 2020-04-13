@@ -4,12 +4,11 @@ using Glyph.Messaging;
 namespace Glyph.Core
 {
     [SinglePerParent]
-    public class Receiver<TMessage> : GlyphComponent, IEnableable
+    public class Receiver<TMessage> : GlyphComponent, IGlyphComponent
         where TMessage : IMessage
     {
         private readonly ITrackingRouter _router;
         private readonly IInterpreter _interpreter;
-        public bool Enabled { get; set; }
 
         public Receiver(ITrackingRouter router, IInterpreter<TMessage> interpreter)
         {

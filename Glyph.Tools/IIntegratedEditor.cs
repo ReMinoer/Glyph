@@ -2,7 +2,7 @@
 
 namespace Glyph.Tools
 {
-    public interface IIntegratedEditor : IEnableable
+    public interface IIntegratedEditor : IGlyphComponent
     {
         object EditedObject { get; }
     }

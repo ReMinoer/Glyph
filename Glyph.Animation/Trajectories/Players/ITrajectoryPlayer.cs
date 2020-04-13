@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Animation.Trajectories.Players
 {
-    public interface ITrajectoryPlayer : IEnableable, IUpdate, ITimeUnscalable
+    public interface ITrajectoryPlayer : IUpdate, ITimeUnscalable
     {
         bool Playing { get; }
         bool Paused { get; }

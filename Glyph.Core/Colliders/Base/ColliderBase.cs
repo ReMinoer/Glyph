@@ -12,7 +12,7 @@ namespace Glyph.Core.Colliders.Base
 
         protected readonly SceneNode SceneNode;
         private readonly ColliderManager _colliderManager;
-        public bool Enabled { get; set; }
+
         public Predicate<ICollider> IgnoredFilter { get; set; }
         protected SceneNode ParentNode { get; private set; }
         public abstract TopLeftRectangle BoundingBox { get; }

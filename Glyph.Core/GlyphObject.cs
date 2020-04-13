@@ -18,15 +18,15 @@ using Taskete;
 
 namespace Glyph.Core
 {
-    public class GlyphObject : GlyphComposite, IGlyphCompositeResolver, IEnableable, ILoadContent, IUpdate, IDraw, IBoxedComponent, IInterpreter
+    public class GlyphObject : GlyphComposite, IGlyphCompositeResolver, ILoadContent, IUpdate, IDraw, IBoxedComponent, IInterpreter
     {
         static public readonly WatchTree UpdateWatchTree = new WatchTree();
 
         private bool _initialized;
         private bool _contentLoaded;
-        public SchedulerHandler Schedulers { get; }
         protected internal readonly GlyphCompositeDependencyResolver Resolver;
-        public bool Enabled { get; set; }
+
+        public SchedulerHandler Schedulers { get; }
         public bool Visible { get; set; }
         public Predicate<IDrawer> DrawPredicate { get; set; }
         public IFilter<IDrawClient> DrawClientFilter { get; set; }

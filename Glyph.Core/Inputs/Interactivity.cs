@@ -9,7 +9,7 @@ using Niddle.Attributes;
 
 namespace Glyph.Core.Inputs
 {
-    public interface IInteractiveComponent : IEnableable
+    public interface IInteractiveComponent : IGlyphComponent
     {
         IInteractive Interactive { get; }
     }
@@ -26,10 +26,14 @@ namespace Glyph.Core.Inputs
         public abstract TInteractive Interactive { get; }
         IInteractive IInteractiveComponent.Interactive => Interactive;
 
-        public bool Enabled
+        public override bool Enabled
         {
-            get => Interactive.Enabled;
-            set => Interactive.Enabled = value;
+            get => base.Enabled;
+            set
+            {
+                base.Enabled = value;
+                Interactive.Enabled = value;
+            }
         }
 
         public override void Dispose()

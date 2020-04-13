@@ -14,7 +14,6 @@ namespace Glyph.UI.Simple
     public class SimpleBorder : GlyphComponent, ILoadContent, IBorder
     {
         private readonly RectangleSprite _rectangleSprite;
-        public bool Enabled { get; set; }
         public bool Visible { get; set; }
         public Predicate<IDrawer> DrawPredicate { get; set; }
         public IFilter<IDrawClient> DrawClientFilter { get; set; }

@@ -17,7 +17,7 @@ using Stave;
 
 namespace Glyph.Tools
 {
-    public class ShapedObjectSelector : GlyphContainer, IEnableable
+    public class ShapedObjectSelector : GlyphContainer
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -25,8 +25,7 @@ namespace Glyph.Tools
         private readonly InputClientManager _inputClientManager;
         private IBoxedComponent _selection;
         private UserInterface _userInterface;
-
-        public bool Enabled { get; set; } = true;
+        
         public ReadOnlySpace<IBoxedComponent> Space { get; }
         public IFilter<IInputClient> ClientFilter { get; set; }
         

@@ -15,6 +15,9 @@ namespace Glyph.Composition.Base
     {
         protected readonly List<GlyphResolvableInjectable> Injectables;
 
+        public virtual bool Enabled { get; set; } = true;
+        public bool Active => Enabled && this.ParentQueue().All(x => x.Enabled);
+
         public Guid Id { get; }
         public string Name { get; set; }
         public ComponentRouterSystem Router { get; }

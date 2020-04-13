@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Core.Colliders
 {
-    public interface ICollider : IMovableShape, IEnableable, IUpdate
+    public interface ICollider : IMovableShape, IUpdate
     {
         bool IsFreeze { get; set; }
         bool Unphysical { get; set; }

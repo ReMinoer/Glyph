@@ -8,12 +8,11 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Scripting
 {
-    public class Trigger : GlyphContainer, IEnableable, IShapedComponent<CenteredRectangle>, IMovableShape
+    public class Trigger : GlyphContainer, IShapedComponent<CenteredRectangle>, IMovableShape
     {
         private readonly TriggerManager _triggerManager;
         private readonly IRouter _router;
         private readonly SceneNode _sceneNode;
-        public bool Enabled { get; set; }
         public Vector2 Size { get; set; }
         public Predicate<Actor> ActorPredicate { get; set; }
 

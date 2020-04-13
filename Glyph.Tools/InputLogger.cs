@@ -7,10 +7,9 @@ using NLog;
 
 namespace Glyph.Tools
 {
-    public class InputLogger : GlyphComponent, IUpdate, IEnableable
+    public class InputLogger : GlyphComponent, IUpdate
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        public bool Enabled { get; set; }
         public Predicate<IInput> InputFilter { get; set; }
 
         public InputLogger()

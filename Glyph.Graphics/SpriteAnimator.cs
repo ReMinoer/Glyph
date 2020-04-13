@@ -5,12 +5,11 @@ using Glyph.Composition;
 namespace Glyph.Graphics
 {
     [SinglePerParent]
-    public class SpriteAnimator : GlyphComponent, IEnableable, IUpdate
+    public class SpriteAnimator : GlyphComponent, IUpdate
     {
         private readonly ISpriteSheet _spriteSheet;
         private readonly Period _period;
         private readonly Queue<object> _keysQueue;
-        public bool Enabled { get; set; }
         public bool Ended { get; private set; }
         public Dictionary<object, SpriteAnimation> Animations { get; private set; }
         public SpriteAnimation CurrentAnimation { get; private set; }

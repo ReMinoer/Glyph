@@ -7,12 +7,11 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Particles
 {
-    public sealed class ParticleEmitter : GlyphContainer, IEnableable, IUpdate, IDraw, ITimeUnscalable
+    public sealed class ParticleEmitter : GlyphContainer, IUpdate, IDraw, ITimeUnscalable
     {
         private readonly SceneNode _sceneNode;
         private readonly List<IParticle> _particles;
         private readonly Period _period;
-        public bool Enabled { get; set; }
         public bool Visible { get; set; }
         public Predicate<IDrawer> DrawPredicate { get; set; }
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
