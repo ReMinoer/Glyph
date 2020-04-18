@@ -79,7 +79,7 @@ namespace Glyph.Math
         public bool ContainsPoint(Vector2 point) => Contains(point.Coordinate(Axis));
         public bool Intersects(IRange<float> range) => RangeUtils.Intersects(this, range);
 
-        public bool Intersects(Segment segment) => IntersectionUtils.Intersects(this, segment);
+        public bool Intersects(Segment segment) => IntersectionUtils.Intersects<Segment>(this, segment);
         public bool Intersects<T>(T edgedShape) where T : IEdgedShape => IntersectionUtils.Intersects(this, edgedShape);
         public bool Intersects(Circle circle) => IntersectionUtils.Intersects(this, circle);
     }
