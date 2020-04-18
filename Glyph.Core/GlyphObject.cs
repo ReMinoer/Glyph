@@ -33,7 +33,6 @@ namespace Glyph.Core
 
         public GlyphObject(GlyphResolveContext context)
         {
-            Enabled = true;
             Visible = true;
 
             var compositeResolver = new GlyphCompositeDependencyResolver(this, context);

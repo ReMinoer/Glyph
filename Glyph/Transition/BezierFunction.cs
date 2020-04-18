@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Glyph.Transition
+﻿namespace Glyph.Transition
 {
     public class BezierFunction : ITimingFunction
     {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Glyph.Graphics.Primitives.Base;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

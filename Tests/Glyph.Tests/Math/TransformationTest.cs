@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
-namespace Glyph.Tests.Math.Shapes
+namespace Glyph.Tests.Math
 {
     [TestFixture]
     static public class TopLeftRectangleTest

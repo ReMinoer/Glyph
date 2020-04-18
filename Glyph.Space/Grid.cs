@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Diese.Collections;
 using Glyph.Math;
 using Glyph.Math.Shapes;

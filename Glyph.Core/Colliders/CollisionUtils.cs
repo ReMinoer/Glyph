@@ -53,8 +53,7 @@ namespace Glyph.Core.Colliders
 
                             var otherCase = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i + y, j + x), gridCollider.Grid.Delta);
 
-                            Vector2 temp;
-                            if (!collisionDelegate(shape.Shape, otherCase, out temp))
+                            if (!collisionDelegate(shape.Shape, otherCase, out _))
                                 continue;
 
                             rectangle = new TopLeftRectangle

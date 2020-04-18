@@ -1,5 +1,4 @@
 ﻿using Glyph.Animation.Motors.Base;
-using Glyph.Core;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Animation.Motors

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
 
 namespace Glyph.Space
 {

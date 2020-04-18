@@ -1,8 +1,6 @@
 ﻿using System;
-using Fingear.Controls;
 using Glyph.Animation;
 using Glyph.Core;
-using Glyph.Core.Inputs;
 
 namespace Glyph.UI.Controls
 {

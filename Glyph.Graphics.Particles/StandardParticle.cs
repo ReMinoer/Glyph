@@ -1,5 +1,4 @@
-﻿using Niddle;
-using Glyph.Animation;
+﻿using Glyph.Animation;
 using Glyph.Core;
 using Glyph.Graphics.Renderer;
 using Glyph.Particles;

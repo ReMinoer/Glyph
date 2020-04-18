@@ -14,7 +14,6 @@ namespace Glyph.Tools
 
         public InputLogger()
         {
-            Enabled = true;
         }
 
         public void Update(ElapsedTime elapsedTime)

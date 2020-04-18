@@ -118,8 +118,6 @@ namespace Glyph.Animation
 
         public AnimationGraph()
         {
-            Enabled = true;
-
             _graph = new AutoGraph<Vertex, Transition>();
             _states = new Dictionary<TState, Vertex>();
             _readOnlyStates = new ReadOnlyDictionary<TState, Vertex>(_states);

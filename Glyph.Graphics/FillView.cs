@@ -1,7 +1,5 @@
 ﻿using System;
 using Glyph.Core;
-using Glyph.Math;
-using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,7 +7,6 @@ namespace Glyph.Graphics
 {
     public class FillView : TargetViewBase
     {
-        private Quad _shape;
         private IView _parentView;
 
         public IView ParentView
@@ -36,12 +33,6 @@ namespace Glyph.Graphics
         public FillView(Func<GraphicsDevice> graphicsDeviceFunc)
             : base(graphicsDeviceFunc)
         {
-        }
-
-        protected override void Refresh()
-        {
-            _shape = _sceneNode.Transformation.Transform(new CenteredRectangle(ParentView.Center, Size));
-            base.Refresh();
         }
     }
 }

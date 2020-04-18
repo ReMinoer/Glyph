@@ -2,7 +2,6 @@
 using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
 using Microsoft.Xna.Framework;
-using Simulacra.Utils;
 
 namespace Glyph.Tools.Brushing.Grid.Brushes
 {

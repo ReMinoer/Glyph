@@ -6,7 +6,6 @@ using Glyph.Animation.Motors;
 using Glyph.Audio;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
-using Glyph.Composition.Messaging;
 using Glyph.Core;
 using Glyph.Core.Colliders;
 using Glyph.Core.Inputs;
@@ -25,7 +24,6 @@ using Glyph.Resolver;
 using Glyph.Scripting;
 using Glyph.Tools;
 using Glyph.Tools.Brushing.Controllers;
-using Glyph.Tools.ShapeRendering;
 using Glyph.Tools.Transforming;
 using Glyph.UI;
 using Glyph.UI.Menus;
@@ -205,11 +203,6 @@ namespace Glyph.Application
                 #endregion
 
                 #region Tools
-
-                Generic(typeof(ShapedComponentRendererManager<>)),
-
-                Type<RectangleComponentRenderer>(),
-                Type<CircleComponentRenderer>(),
 
                 Type<FreeCamera>(),
 

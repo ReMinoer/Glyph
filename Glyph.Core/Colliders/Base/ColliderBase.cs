@@ -41,7 +41,6 @@ namespace Glyph.Core.Colliders.Base
             _colliderManager = colliderManager;
             _colliderManager.Add(this);
 
-            Enabled = true;
             LocalCenter = Vector2.Zero;
         }
 

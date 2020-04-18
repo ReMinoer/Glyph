@@ -48,7 +48,7 @@ namespace Glyph.Space
                         return;
 
                     SetValue(i, j, value);
-                    ArrayChanged.Invoke(this, new ArrayChangedEventArgs
+                    ArrayChanged?.Invoke(this, new ArrayChangedEventArgs
                     {
                         StartingIndexes = new []{i, j},
                         NewValues = new []{value}
@@ -109,7 +109,7 @@ namespace Glyph.Space
                         newValues[i, j] = value;
                     }
 
-                ArrayChanged.Invoke(this, new ArrayChangedEventArgs
+                ArrayChanged?.Invoke(this, new ArrayChangedEventArgs
                 {
                     StartingIndexes = new []{minPoint.Y, minPoint.X},
                     NewValues = newValues

@@ -4,7 +4,7 @@ using Glyph.Messaging;
 namespace Glyph.Core
 {
     [SinglePerParent]
-    public class Receiver<TMessage> : GlyphComponent, IGlyphComponent
+    public class Receiver<TMessage> : GlyphComponent
         where TMessage : IMessage
     {
         private readonly ITrackingRouter _router;

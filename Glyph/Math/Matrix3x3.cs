@@ -5,16 +5,14 @@ namespace Glyph.Math
 {
     public struct Matrix3X3 : IEquatable<Matrix3X3>
     {
-        public float M11, M21, M31;
-        public float M12, M22, M32;
-        public float M13, M23, M33;
+        public float M11 { get; } public float M21 { get; } public float M31 { get; }
+        public float M12 { get; } public float M22 { get; } public float M32 { get; }
+        public float M13 { get; } public float M23 { get; } public float M33 { get; }
 
         public Matrix3X3 Inverse
         {
             get
             {
-                var result = new Matrix3X3();
-
                 float determinant = M11 * (M22 * M33 - M32 * M23)
                                     - M21 * (M12 * M33 - M32 * M13)
                                     + M31 * (M12 * M23 - M22 * M13);
@@ -22,17 +20,17 @@ namespace Glyph.Math
                 float invdet = 1 / determinant;
 
                 // (1 / det(A)) * (cofactor matrix of A)T
-                result.M11 = invdet * (M22 * M33 - M32 * M23);
-                result.M21 = invdet * (M21 * M33 - M31 * M23) * -1;
-                result.M31 = invdet * (M21 * M32 - M31 * M22);
-                result.M12 = invdet * (M12 * M33 - M32 * M13) * -1;
-                result.M22 = invdet * (M11 * M33 - M31 * M13);
-                result.M32 = invdet * (M11 * M32 - M31 * M12) * -1;
-                result.M13 = invdet * (M12 * M23 - M22 * M13);
-                result.M23 = invdet * (M11 * M23 - M21 * M13) * -1;
-                result.M33 = invdet * (M11 * M22 - M21 * M12);
-
-                return result;
+                return new Matrix3X3(
+                    invdet * (M22 * M33 - M32 * M23),
+                    invdet * (M21 * M33 - M31 * M23) * -1,
+                    invdet * (M21 * M32 - M31 * M22),
+                    invdet * (M12 * M33 - M32 * M13) * -1,
+                    invdet * (M11 * M33 - M31 * M13),
+                    invdet * (M11 * M32 - M31 * M12) * -1,
+                    invdet * (M12 * M23 - M22 * M13),
+                    invdet * (M11 * M23 - M21 * M13) * -1,
+                    invdet * (M11 * M22 - M21 * M12)
+                );
             }
         }
 
@@ -63,17 +61,17 @@ namespace Glyph.Math
         static public Matrix3X3 operator*(Matrix3X3 matrixA, Matrix3X3 matrixB)
         {
             return new Matrix3X3
-            {
-                M11 = (((matrixA.M11 * matrixB.M11) + (matrixA.M21 * matrixB.M12)) + (matrixA.M31 * matrixB.M13)),
-                M12 = (((matrixA.M12 * matrixB.M11) + (matrixA.M22 * matrixB.M12)) + (matrixA.M32 * matrixB.M13)),
-                M13 = (((matrixA.M13 * matrixB.M11) + (matrixA.M23 * matrixB.M12)) + (matrixA.M33 * matrixB.M13)),
-                M21 = (((matrixA.M11 * matrixB.M21) + (matrixA.M21 * matrixB.M22)) + (matrixA.M31 * matrixB.M23)),
-                M22 = (((matrixA.M12 * matrixB.M21) + (matrixA.M22 * matrixB.M22)) + (matrixA.M32 * matrixB.M23)),
-                M23 = (((matrixA.M13 * matrixB.M21) + (matrixA.M23 * matrixB.M22)) + (matrixA.M33 * matrixB.M23)),
-                M31 = (((matrixA.M11 * matrixB.M31) + (matrixA.M21 * matrixB.M32)) + (matrixA.M31 * matrixB.M33)),
-                M32 = (((matrixA.M12 * matrixB.M31) + (matrixA.M22 * matrixB.M32)) + (matrixA.M32 * matrixB.M33)),
-                M33 = (((matrixA.M13 * matrixB.M31) + (matrixA.M23 * matrixB.M32)) + (matrixA.M33 * matrixB.M33))
-            };
+            (
+                (((matrixA.M11 * matrixB.M11) + (matrixA.M21 * matrixB.M12)) + (matrixA.M31 * matrixB.M13)),
+                (((matrixA.M12 * matrixB.M11) + (matrixA.M22 * matrixB.M12)) + (matrixA.M32 * matrixB.M13)),
+                (((matrixA.M13 * matrixB.M11) + (matrixA.M23 * matrixB.M12)) + (matrixA.M33 * matrixB.M13)),
+                (((matrixA.M11 * matrixB.M21) + (matrixA.M21 * matrixB.M22)) + (matrixA.M31 * matrixB.M23)),
+                (((matrixA.M12 * matrixB.M21) + (matrixA.M22 * matrixB.M22)) + (matrixA.M32 * matrixB.M23)),
+                (((matrixA.M13 * matrixB.M21) + (matrixA.M23 * matrixB.M22)) + (matrixA.M33 * matrixB.M23)),
+                (((matrixA.M11 * matrixB.M31) + (matrixA.M21 * matrixB.M32)) + (matrixA.M31 * matrixB.M33)),
+                (((matrixA.M12 * matrixB.M31) + (matrixA.M22 * matrixB.M32)) + (matrixA.M32 * matrixB.M33)),
+                (((matrixA.M13 * matrixB.M31) + (matrixA.M23 * matrixB.M32)) + (matrixA.M33 * matrixB.M33))
+            );
         }
 
         static public implicit operator Matrix(Matrix3X3 m)

@@ -28,8 +28,6 @@ namespace Glyph.Graphics
             Animations = new Dictionary<object, SpriteAnimation>();
             _keysQueue = new Queue<object>();
             _period = new Period();
-
-            Enabled = true;
         }
 
         public void ChangeAnimation(object key, SpriteAnimatorTransition transition = SpriteAnimatorTransition.Instant)

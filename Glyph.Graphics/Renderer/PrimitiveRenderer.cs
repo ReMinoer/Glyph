@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Glyph.Composition;
 using Glyph.Core;
@@ -26,6 +27,7 @@ namespace Glyph.Graphics.Renderer
             SceneNode = sceneNode;
         }
         
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         protected override void Render(IDrawer drawer)
         {
             IEnumerable<IPrimitive> visiblePrimitives = Primitives.Where(x => x.Visible);

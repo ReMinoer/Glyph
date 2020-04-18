@@ -2,14 +2,13 @@
 using System.Windows;
 using Fingear.MonoGame;
 using Glyph.Core.Inputs;
-using Glyph.Engine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Framework.WpfInterop;
 
 namespace Glyph.WpfInterop
 {
-    public class GlyphWpfViewer : D3D11Client, IWpfGlyphClient, IGlyphClient
+    public class GlyphWpfViewer : D3D11Client, IWpfGlyphClient
     {
         private readonly WpfInputStates _wpfInputStates;
         RenderTarget2D IDrawClient.DefaultRenderTarget => RenderTarget;

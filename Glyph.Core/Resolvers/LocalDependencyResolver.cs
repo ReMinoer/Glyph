@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Niddle;
+using Niddle.Dependencies;
 using Niddle.Exceptions;
 
 namespace Glyph.Core.Resolvers

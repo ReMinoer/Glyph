@@ -20,7 +20,6 @@ namespace Glyph.Tools
 
         public ControlLogger(InteractionManager interactionManager)
         {
-            Enabled = true;
             _interactionManager = interactionManager;
             _activateControls = new HashSet<IControl>();
         }

@@ -12,7 +12,6 @@ namespace Glyph.Core
 {
     public class SpatialGrid<T> : GlyphComponent, IGrid<T>
     {
-        private readonly SceneNode _sceneNode;
         private IGrid<T> _localGrid;
 
         public IGrid<T> LocalGrid
@@ -41,11 +40,6 @@ namespace Glyph.Core
         public IEnumerable<IGridCase<T>> SignificantCases => LocalGrid.SignificantCases;
 
         public event EventHandler<ArrayChangedEventArgs> ArrayChanged;
-
-        public SpatialGrid(SceneNode sceneNode)
-        {
-            _sceneNode = sceneNode;
-        }
 
         private void OnArrayChanged(object sender, ArrayChangedEventArgs e)
         {

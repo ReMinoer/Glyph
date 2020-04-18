@@ -30,7 +30,6 @@ namespace Glyph.UI.Simple
 
         public SimpleBorder(Func<GraphicsDevice> graphicsDeviceFunc)
         {
-            Enabled = true;
             Visible = true;
 
             SceneNode = new SceneNode();

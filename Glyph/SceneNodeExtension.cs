@@ -3,7 +3,7 @@ using System.Linq;
 using Diese.Collections;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Core
+namespace Glyph
 {
     static public class SceneNodeExtension
     {

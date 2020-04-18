@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Glyph.Composition;
 using Glyph.Core.Colliders;
 using Glyph.Space;
 

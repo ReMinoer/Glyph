@@ -1,5 +1,4 @@
 using Glyph.Composition;
-using Niddle;
 
 namespace Glyph.Core.Layers
 {

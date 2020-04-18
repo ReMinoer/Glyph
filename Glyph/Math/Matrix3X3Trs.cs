@@ -5,9 +5,9 @@ namespace Glyph.Math
 {
     public struct Matrix3X3Trs : IEquatable<Matrix3X3Trs>
     {
-        public Vector2 Translation { get; set; }
-        public float Rotation { get; set; }
-        public float Scale { get; set; }
+        public Vector2 Translation { get; }
+        public float Rotation { get; }
+        public float Scale { get; }
 
         public Matrix3X3Trs(Vector2 translation, float rotation, float scale)
         {

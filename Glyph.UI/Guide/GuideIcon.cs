@@ -60,7 +60,7 @@ namespace Glyph.UI.Guide
         public event EventHandler Clicked;
         public event EventHandler IconChanged;
 
-        public GuideIcon(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
+        public GuideIcon(GlyphResolveContext context)
             : base(context)
         {
             SceneNode = Add<SceneNode>();

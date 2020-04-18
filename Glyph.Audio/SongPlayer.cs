@@ -14,7 +14,7 @@ namespace Glyph.Audio
         static private SongPlayer _instance;
         static public SongPlayer Instance => _instance ?? (_instance = new SongPlayer());
 
-        private const float VolumeSpeed = 0.0005f;
+        //private const float VolumeSpeed = 0.0005f;
         private readonly Period _waitTime = new Period(0);
 
         public Dictionary<string, Song> Musics;

@@ -16,10 +16,14 @@ namespace Glyph.Core.Colliders
             _colliderContainerImplementation = new ColliderContainerImplementation(this);
         }
 
-        public bool Enabled
+        public override bool Enabled
         {
             get => _colliderContainerImplementation.Enabled;
-            set => _colliderContainerImplementation.Enabled = value;
+            set
+            {
+                base.Enabled = value;
+                _colliderContainerImplementation.Enabled = value;
+            }
         }
 
         public bool Unphysical

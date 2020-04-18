@@ -12,14 +12,13 @@ using Glyph.Resolver;
 using Glyph.Space;
 using Glyph.UI;
 using Niddle.Attributes;
-using NLog;
 using Stave;
 
 namespace Glyph.Tools
 {
     public class ShapedObjectSelector : GlyphContainer
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        //static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
         private readonly InputClientManager _inputClientManager;
