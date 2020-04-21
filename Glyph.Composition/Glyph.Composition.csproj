@@ -83,6 +83,7 @@
     <Compile Include="Delegates\LoadContentDelegate.cs" />
     <Compile Include="Modelization\GlyphCategoryAttribute.cs" />
     <Compile Include="Modelization\GlyphCreatorExtension.cs" />
+    <Compile Include="Modelization\IAssetFile.cs" />
     <Compile Include="Modelization\IGlyphConfigurator.cs" />
     <Compile Include="Modelization\IGlyphCreator.cs" />
     <Compile Include="Modelization\IGlyphData.cs" />
