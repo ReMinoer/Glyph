@@ -1,107 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5292934A-D0E4-47FD-98FA-0A32B37657D3}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph.Graphics.Particles</RootNamespace>
-    <AssemblyName>Glyph.Graphics.Particles</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <TargetFramework>$(TargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody">
-      <Version>2.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="MonoGame.Framework.Portable">
-      <Version>3.7.1.189</Version>
-    </PackageReference>
-    <PackageReference Include="PropertyChanged.Fody">
-      <Version>2.1.4</Version>
-    </PackageReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />
+    <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj" />
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj" />
+    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj" />
+    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj" />
+    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj" />
+    <ProjectReference Include="..\Glyph.Particles\Glyph.Particles.csproj" />
+    <ProjectReference Include="..\Glyph\Glyph.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <PackageReference Include="Fody" Version="2.1.0" />
+    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.1.4" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ParticleBuilder.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StandardParticle.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
-      <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
-      <Name>Stave</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
-      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
-      <Name>Diese %28Taskete%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{cb5183d5-f68e-4129-a716-7f9eb33ce223}</Project>
-      <Name>Niddle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
-      <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>
-      <Name>Glyph.Animation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
-      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
-      <Name>Glyph.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
-      <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
-      <Name>Glyph.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
-      <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
-      <Name>Glyph.Graphics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
-      <Project>{26405f4b-4532-4f48-a96f-594a70c12b3e}</Project>
-      <Name>Glyph.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Particles\Glyph.Particles.csproj">
-      <Project>{1070485B-D9FE-4AA2-889A-5F809021C447}</Project>
-      <Name>Glyph.Particles</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph\Glyph.csproj">
-      <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
-      <Name>Glyph</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

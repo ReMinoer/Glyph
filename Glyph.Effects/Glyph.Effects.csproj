@@ -1,94 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph.Effects</RootNamespace>
-    <AssemblyName>Glyph.Effects</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFramework>$(TargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody">
-      <Version>2.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="MonoGame.Framework.Portable">
-      <Version>3.7.1.189</Version>
-    </PackageReference>
-    <PackageReference Include="PropertyChanged.Fody">
-      <Version>2.1.4</Version>
-    </PackageReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj" />
+    <ProjectReference Include="..\Glyph\Glyph.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <PackageReference Include="Fody" Version="2.1.0" />
+    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.1.4" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="EffectComponent.cs" />
-    <Compile Include="EffectComposite.cs" />
-    <Compile Include="EffectContainer.cs" />
-    <Compile Include="IEffectComponent.cs" />
-    <Compile Include="IEffectComposite.cs" />
-    <Compile Include="IEffectContainer.cs" />
-    <Compile Include="Masked\MaskedEffect.cs" />
-    <Compile Include="Masked\MaskPatch.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj">
-      <Project>{aa20cdf3-72ed-48da-ae3c-74c6fe9003fb}</Project>
-      <Name>Diese.Collections %28Stave%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
-      <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
-      <Name>Stave</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
-      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
-      <Name>Diese %28Taskete%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
-      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
-      <Name>Glyph.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph\Glyph.csproj">
-      <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
-      <Name>Glyph</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

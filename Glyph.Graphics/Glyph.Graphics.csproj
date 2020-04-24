@@ -1,153 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph.Graphics</RootNamespace>
-    <AssemblyName>Glyph.Graphics</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFramework>$(TargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody">
-      <Version>2.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="MonoGame.Framework.Portable">
-      <Version>3.7.1.189</Version>
-    </PackageReference>
-    <PackageReference Include="PropertyChanged.Fody">
-      <Version>2.1.4</Version>
-    </PackageReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />
+    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj" />
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj" />
+    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj" />
+    <ProjectReference Include="..\Glyph.Effects\Glyph.Effects.csproj" />
+    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj" />
+    <ProjectReference Include="..\Glyph\Glyph.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <PackageReference Include="Fody" Version="2.1.0" />
+    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.1.4" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DepthManager.cs" />
-    <Compile Include="Drawer.cs" />
-    <Compile Include="FillView.cs" />
-    <Compile Include="Primitives\EdgedShapeOutlinePrimitive.cs" />
-    <Compile Include="Primitives\EllipsePrimitive.cs" />
-    <Compile Include="Primitives\Base\PrimitiveBase.cs" />
-    <Compile Include="Primitives\TriangulableShapePrimitive.cs" />
-    <Compile Include="Primitives\PrimitiveCollection.cs" />
-    <Compile Include="Primitives\PrimitiveExtension.cs" />
-    <Compile Include="Primitives\Utils\PrimitiveHelpers.cs" />
-    <Compile Include="Renderer\FillingRectangle.cs" />
-    <Compile Include="ISpriteSheet.cs" />
-    <Compile Include="ISpriteSheetCarver.cs" />
-    <Compile Include="ISpriteSource.cs" />
-    <Compile Include="Primitives\EllipseOutlinePrimitive.cs" />
-    <Compile Include="IPrimitive.cs" />
-    <Compile Include="Primitives\LinePrimitive.cs" />
-    <Compile Include="Renderer\PrimitiveRenderer.cs" />
-    <Compile Include="Renderer\MappingRenderer.cs" />
-    <Compile Include="Renderer\Base\RendererBase.cs" />
-    <Compile Include="Renderer\Base\SpriteRendererBase.cs" />
-    <Compile Include="PrimitiveComponent.cs" />
-    <Compile Include="Primitives\VertexBufferType.cs" />
-    <Compile Include="Renderer\TexturingRenderer.cs" />
-    <Compile Include="Shapes\FilledCircleSprite.cs" />
-    <Compile Include="SpriteAnimation.cs" />
-    <Compile Include="TargetView.cs" />
-    <Compile Include="UniformFillTargetView.cs" />
-    <Compile Include="TargetViewBase.cs" />
-    <Compile Include="ViewEffectManager.cs" />
-    <Compile Include="SpriteAnimatorTransition.cs" />
-    <Compile Include="Shapes\CircleSprite.cs" />
-    <Compile Include="Shapes\FilledRectangleSprite.cs" />
-    <Compile Include="Shapes\RectangleSprite.cs" />
-    <Compile Include="Shapes\ShapedSpriteBase.cs" />
-    <Compile Include="SpriteArea.cs" />
-    <Compile Include="SpriteLoader.cs" />
-    <Compile Include="SpriteAnimator.cs" />
-    <Compile Include="SpriteSheet.cs" />
-    <Compile Include="SpriteSheetSplit.cs" />
-    <Compile Include="SpriteSourceBase.cs" />
-    <Compile Include="SpriteTarget.cs" />
-    <Compile Include="SpriteTransformer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Renderer\SpriteRenderer.cs" />
-    <Compile Include="Renderer\FillingRenderer.cs" />
-    <Compile Include="Carvers\UniformCarver.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj">
-      <Project>{aa20cdf3-72ed-48da-ae3c-74c6fe9003fb}</Project>
-      <Name>Diese.Collections %28Stave%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
-      <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
-      <Name>Stave</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
-      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
-      <Name>Diese %28Taskete%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{cb5183d5-f68e-4129-a716-7f9eb33ce223}</Project>
-      <Name>Niddle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
-      <Project>{8ba795fc-e007-40bb-bd70-90d970c99369}</Project>
-      <Name>Simulacra</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
-      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
-      <Name>Glyph.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
-      <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
-      <Name>Glyph.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Effects\Glyph.Effects.csproj">
-      <Project>{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}</Project>
-      <Name>Glyph.Effects</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj">
-      <Project>{068202CC-E943-4718-9771-62D72E50623E}</Project>
-      <Name>Glyph.Space</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph\Glyph.csproj">
-      <Project>{457cbbf3-26c7-478b-b4eb-1f85ff3c07f5}</Project>
-      <Name>Glyph</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

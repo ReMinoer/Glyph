@@ -1,196 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph.Core</RootNamespace>
-    <AssemblyName>Glyph.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>latest</LangVersion>
+    <TargetFramework>$(TargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody">
-      <Version>2.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="MonoGame.Framework.Portable">
-      <Version>3.7.1.189</Version>
-    </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>4.4.12</Version>
-    </PackageReference>
-    <PackageReference Include="PropertyChanged.Fody">
-      <Version>2.1.4</Version>
-    </PackageReference>
-    <PackageReference Include="System.Numerics.Vectors">
-      <Version>4.4.0</Version>
-    </PackageReference>
+    <ProjectReference Include="..\Diese.Diagnostics %28Glyph%29\Diese.Diagnostics %28Glyph%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\External\OverGraphed\OverGraphed\OverGraphed.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Taskete\Taskete.csproj" />
+    <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj" />
+    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj" />
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />
+    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj" />
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj" />
+    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj" />
+    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj" />
+    <ProjectReference Include="..\Glyph\Glyph.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <PackageReference Include="Fody" Version="2.1.0" />
+    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
+    <PackageReference Include="NLog" Version="4.4.12" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.1.4" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AnchoredSceneNode.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="ColliderManager.cs" />
-    <Compile Include="Colliders\Base\ColliderBase.cs" />
-    <Compile Include="Colliders\Base\ColliderContainerImplementation.cs" />
-    <Compile Include="Colliders\Base\ShapeColliderBase.cs" />
-    <Compile Include="Colliders\CircleCollider.cs" />
-    <Compile Include="Colliders\ColliderComposite.cs" />
-    <Compile Include="Colliders\ColliderContainer.cs" />
-    <Compile Include="Colliders\CollisionUtils.cs" />
-    <Compile Include="Colliders\GridCollider.cs" />
-    <Compile Include="Colliders\ICollider.cs" />
-    <Compile Include="Colliders\IGridCollider.cs" />
-    <Compile Include="Colliders\RectangleCollider.cs" />
-    <Compile Include="Collision.cs" />
-    <Compile Include="ICamera.cs" />
-    <Compile Include="ISceneNodeComponent.cs" />
-    <Compile Include="IWritableSceneNodeComponent.cs" />
-    <Compile Include="ReadOnlySceneNodeDelegate.cs" />
-    <Compile Include="Flipper.cs" />
-    <Compile Include="GlyphResolveContext.cs" />
-    <Compile Include="GridComponent.cs" />
-    <Compile Include="Inputs\ControlLayerTag.cs" />
-    <Compile Include="Inputs\Interactivity.cs" />
-    <Compile Include="Inputs\CursorControlBase.cs" />
-    <Compile Include="ProjectionManager.cs" />
-    <Compile Include="Projection.cs" />
-    <Compile Include="Inputs\ProjectionCursorControl.cs" />
-    <Compile Include="GlyphObject.cs" />
-    <Compile Include="IBoxedComponent.cs" />
-    <Compile Include="Resolvers\GlyphCompositeDependencyResolver.cs" />
-    <Compile Include="Resolvers\ResolverScope.cs" />
-    <Compile Include="Resolvers\LocalDependencyResolver.cs" />
-    <Compile Include="Inputs\IInputClient.cs" />
-    <Compile Include="Inputs\InputClientManager.cs" />
-    <Compile Include="IView.cs" />
-    <Compile Include="IShapedComponent.cs" />
-    <Compile Include="IWritableSceneNode.cs" />
-    <Compile Include="Layers\ILayer.cs" />
-    <Compile Include="Layers\ILayerManager.cs" />
-    <Compile Include="Layers\ILayerRoot.cs" />
-    <Compile Include="Layers\LayerBase.cs" />
-    <Compile Include="Layers\LayerManager.cs" />
-    <Compile Include="Layers\LayerRoot.cs" />
-    <Compile Include="PositionBinding.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadOnlySceneNode.cs" />
-    <Compile Include="Base\ReadOnlySceneNodeBase.cs" />
-    <Compile Include="Receiver.cs" />
-    <Compile Include="RootView.cs" />
-    <Compile Include="SceneGraphUtils.cs" />
-    <Compile Include="SceneNode.cs" />
-    <Compile Include="Base\SceneNodeBase.cs" />
-    <Compile Include="Scheduler\GlyphScheduler.cs" />
-    <Compile Include="Scheduler\GlyphSchedulerHandler.cs" />
-    <Compile Include="Scheduler\GlyphSchedulerSorter.cs" />
-    <Compile Include="Scheduler\IGlyphScheduler.cs" />
-    <Compile Include="Scheduler\IGlyphSchedulerAssigner.cs" />
-    <Compile Include="Scheduler\IGlyphSchedulerController.cs" />
-    <Compile Include="Tracking\Factory.cs" />
-    <Compile Include="Tracking\FactoryData.cs" />
-    <Compile Include="Tracking\IMessagingCollection.cs" />
-    <Compile Include="Tracking\MessagingSpace.cs" />
-    <Compile Include="Tracking\MessagingTracker.cs" />
-    <Compile Include="Base\ViewBase.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Diese.Diagnostics %28Glyph%29\Diese.Diagnostics %28Glyph%29.csproj">
-      <Project>{9749978a-b0cc-4ad3-926e-323c5d177f0c}</Project>
-      <Name>Diese.Diagnostics %28Glyph%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj">
-      <Project>{aa20cdf3-72ed-48da-ae3c-74c6fe9003fb}</Project>
-      <Name>Diese.Collections %28Stave%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
-      <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
-      <Name>Stave</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
-      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
-      <Name>Diese %28Taskete%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\External\OverGraphed\OverGraphed\OverGraphed.csproj">
-      <Project>{fdccff17-1219-4a4f-a674-d989319e5bb4}</Project>
-      <Name>OverGraphed</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Taskete\Taskete.csproj">
-      <Project>{107e0777-d23d-4ebb-8aa5-687e2dbe1d66}</Project>
-      <Name>Taskete</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj">
-      <Project>{9eef1863-44be-423e-a29d-088c23aac45e}</Project>
-      <Name>Fingear.MonoGame</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
-      <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
-      <Name>Fingear</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{cb5183d5-f68e-4129-a716-7f9eb33ce223}</Project>
-      <Name>Niddle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
-      <Project>{dfd5170c-d6c2-4815-88ed-6aa011d26d84}</Project>
-      <Name>Simulacra</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
-      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
-      <Name>Glyph.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
-      <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>
-      <Name>Glyph.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj">
-      <Project>{068202CC-E943-4718-9771-62D72E50623E}</Project>
-      <Name>Glyph.Space</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph\Glyph.csproj">
-      <Project>{457cbbf3-26c7-478b-b4eb-1f85ff3c07f5}</Project>
-      <Name>Glyph</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -1,169 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph.Tools</RootNamespace>
-    <AssemblyName>Glyph.Tools</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFramework>$(TargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.Portable">
-      <Version>3.7.1.189</Version>
-    </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>4.4.12</Version>
-    </PackageReference>
-    <PackageReference Include="System.Numerics.Vectors">
-      <Version>4.4.0</Version>
-    </PackageReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Taskete\Taskete.csproj" />
+    <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj" />
+    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj" />
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />
+    <ProjectReference Include="..\External\Simulacra\Simulacra.Injection\Simulacra.Injection.csproj" />
+    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj" />
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj" />
+    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj" />
+    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj" />
+    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj" />
+    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj" />
+    <ProjectReference Include="..\Glyph.UI\Glyph.UI.csproj" />
+    <ProjectReference Include="..\Glyph\Glyph.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
+    <PackageReference Include="NLog" Version="4.4.12" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Brushing\Decorators\ResettableBrush.cs" />
-    <Compile Include="Brushing\Decorators\RetargetedBrush.cs" />
-    <Compile Include="IIntegratedEditor.cs" />
-    <Compile Include="Brushing\Base\BrushBase.cs" />
-    <Compile Include="Brushing\Controllers\Base\BrushControllerBase.cs" />
-    <Compile Include="Brushing\BrushExtensions.cs" />
-    <Compile Include="Brushing\Grid\Brushes\ContinuousGridBrush.cs" />
-    <Compile Include="Brushing\Space\SpaceBrushArgs.cs" />
-    <Compile Include="Brushing\Controllers\CursorBrushController.cs" />
-    <Compile Include="Brushing\Controllers\Base\CursorBrushControllerBase.cs" />
-    <Compile Include="Brushing\Grid\Brushes\DraggableGridBrush.cs" />
-    <Compile Include="Brushing\Grid\GridBrushArgs.cs" />
-    <Compile Include="Brushing\Grid\Brushes\Base\GridBrushBase.cs" />
-    <Compile Include="Brushing\Controllers\IBrushController.cs" />
-    <Compile Include="Brushing\Space\ISpaceBrushArgs.cs" />
-    <Compile Include="Brushing\Grid\IGridBrush.cs" />
-    <Compile Include="Brushing\Grid\IGridBrushArgs.cs" />
-    <Compile Include="Brushing\Grid\IGridPaint.cs" />
-    <Compile Include="Brushing\IPaint.cs" />
-    <Compile Include="Brushing\Controllers\MultiBrushEditor.cs" />
-    <Compile Include="Brushing\Grid\Brushes\RectangleGridBrush.cs" />
-    <Compile Include="FreeCamera.cs" />
-    <Compile Include="Base\HandleBase.cs" />
-    <Compile Include="Brushing\IBrush.cs" />
-    <Compile Include="Transforming\AdvancedRotationHandle.cs" />
-    <Compile Include="Transforming\AdvancedScaleHandle.cs" />
-    <Compile Include="Transforming\Base\AdvancedHandleBase.cs" />
-    <Compile Include="Transforming\AdvancedPositionHandle.cs" />
-    <Compile Include="Transforming\IMultiModeTransformationController.cs" />
-    <Compile Include="Transforming\ITransformationController.cs" />
-    <Compile Include="Transforming\MultiModeTransformationController.cs" />
-    <Compile Include="Transforming\MultiModeTransformationEditor.cs" />
-    <Compile Include="Transforming\TransformableDataController.cs" />
-    <Compile Include="Transforming\TransformationController.cs" />
-    <Compile Include="Transforming\SimplePositionHandle.cs" />
-    <Compile Include="Transforming\TransformationEditor.cs" />
-    <Compile Include="ShapedObjectSelector.cs" />
-    <Compile Include="ControlLogger.cs" />
-    <Compile Include="InputLogger.cs" />
-    <Compile Include="SchedulingBreakpointHelper.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Base\SimpleHandleBase.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj">
-      <Project>{aa20cdf3-72ed-48da-ae3c-74c6fe9003fb}</Project>
-      <Name>Diese.Collections %28Stave%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
-      <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
-      <Name>Stave</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
-      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
-      <Name>Diese %28Taskete%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Taskete\Taskete.csproj">
-      <Project>{107e0777-d23d-4ebb-8aa5-687e2dbe1d66}</Project>
-      <Name>Taskete</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj">
-      <Project>{9eef1863-44be-423e-a29d-088c23aac45e}</Project>
-      <Name>Fingear.MonoGame</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
-      <Project>{7EE0B116-6B49-4073-99D8-827DD68B8AE0}</Project>
-      <Name>Fingear</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{B7380777-AC7C-4185-B58F-6C3B12301147}</Project>
-      <Name>Niddle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\Simulacra.Injection\Simulacra.Injection.csproj">
-      <Project>{9c7a9012-5536-43be-8055-2c3ff297c902}</Project>
-      <Name>Simulacra.Injection</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
-      <Project>{8ba795fc-e007-40bb-bd70-90d970c99369}</Project>
-      <Name>Simulacra</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
-      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
-      <Name>Glyph.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
-      <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
-      <Name>Glyph.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
-      <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
-      <Name>Glyph.Graphics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
-      <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>
-      <Name>Glyph.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj">
-      <Project>{068202CC-E943-4718-9771-62D72E50623E}</Project>
-      <Name>Glyph.Space</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.UI\Glyph.UI.csproj">
-      <Project>{47e66422-aefc-4b28-92c3-356ffd2e783c}</Project>
-      <Name>Glyph.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph\Glyph.csproj">
-      <Project>{457cbbf3-26c7-478b-b4eb-1f85ff3c07f5}</Project>
-      <Name>Glyph</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

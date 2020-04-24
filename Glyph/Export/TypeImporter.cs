@@ -30,12 +30,24 @@ namespace Glyph.Export
 
             IEnumerable<Assembly> assemblies = Directory.GetFiles(assemblyDirectory, "*.dll", SearchOption.TopDirectoryOnly)
                                                         .Select(Assembly.ReflectionOnlyLoadFrom)
-                                                        .Where(a => a.CustomAttributes.Any(x => x.AttributeType.Name == typeof(AssemblyContainsAttribute).Name))
+                                                        .Where(HasAssemblyContainsAttribute)
                                                         .ToArray();
 
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve -= CurrentDomainOnReflectionOnlyAssemblyResolve;
             
             return GetTypesFromAssemblies(assemblies.Select(a => Assembly.Load(a.GetName())));
+        }
+
+        static private bool HasAssemblyContainsAttribute(Assembly a)
+        {
+            try
+            {
+                return a.CustomAttributes.Any(x => x.AttributeType.Name == typeof(AssemblyContainsAttribute).Name);
+            }
+            catch (IOException)
+            {
+                return false;
+            }
         }
     }
 }

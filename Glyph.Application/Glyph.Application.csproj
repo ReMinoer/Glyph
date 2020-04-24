@@ -1,133 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5D6CC7F3-0720-4242-A0FB-678E7D76F147}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph.Application</RootNamespace>
-    <AssemblyName>Glyph.Application</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFramework>$(TargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Taskete\Taskete.csproj" />
+    <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj" />
+    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj" />
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />
+    <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj" />
+    <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj" />
+    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj" />
+    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj" />
+    <ProjectReference Include="..\Glyph.Graphics.Particles\Glyph.Graphics.Particles.csproj" />
+    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj" />
+    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj" />
+    <ProjectReference Include="..\Glyph.Particles\Glyph.Particles.csproj" />
+    <ProjectReference Include="..\Glyph.Physics\Glyph.Physics.csproj" />
+    <ProjectReference Include="..\Glyph.Scripting\Glyph.Scripting.csproj" />
+    <ProjectReference Include="..\Glyph.Tools\Glyph.Tools.csproj" />
+    <ProjectReference Include="..\Glyph.UI\Glyph.UI.csproj" />
+    <ProjectReference Include="..\Glyph\Glyph.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="GlyphRegistry.cs" />
-    <Compile Include="GlyphSchedulerProfiles.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj">
-      <Project>{aa20cdf3-72ed-48da-ae3c-74c6fe9003fb}</Project>
-      <Name>Diese.Collections %28Stave%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
-      <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
-      <Name>Stave</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
-      <Project>{DFDAB89C-1379-4BFA-93C9-75E1E7B16010}</Project>
-      <Name>Diese %28Taskete%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Taskete\Taskete.csproj">
-      <Project>{107e0777-d23d-4ebb-8aa5-687e2dbe1d66}</Project>
-      <Name>Taskete</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj">
-      <Project>{9eef1863-44be-423e-a29d-088c23aac45e}</Project>
-      <Name>Fingear.MonoGame</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj">
-      <Project>{7ee0b116-6b49-4073-99d8-827dd68b8ae0}</Project>
-      <Name>Fingear</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{cb5183d5-f68e-4129-a716-7f9eb33ce223}</Project>
-      <Name>Niddle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Animation\Glyph.Animation.csproj">
-      <Project>{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}</Project>
-      <Name>Glyph.Animation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Audio\Glyph.Audio.csproj">
-      <Project>{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}</Project>
-      <Name>Glyph.Audio</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Composition\Glyph.Composition.csproj">
-      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
-      <Name>Glyph.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Core\Glyph.Core.csproj">
-      <Project>{BC40E833-0EAA-4BBC-97D8-1541276BBA54}</Project>
-      <Name>Glyph.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Graphics.Particles\Glyph.Graphics.Particles.csproj">
-      <Project>{5292934A-D0E4-47FD-98FA-0A32B37657D3}</Project>
-      <Name>Glyph.Graphics.Particles</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Graphics\Glyph.Graphics.csproj">
-      <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
-      <Name>Glyph.Graphics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
-      <Project>{26405F4B-4532-4F48-A96F-594A70C12B3E}</Project>
-      <Name>Glyph.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Particles\Glyph.Particles.csproj">
-      <Project>{1070485B-D9FE-4AA2-889A-5F809021C447}</Project>
-      <Name>Glyph.Particles</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Physics\Glyph.Physics.csproj">
-      <Project>{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}</Project>
-      <Name>Glyph.Physics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Scripting\Glyph.Scripting.csproj">
-      <Project>{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}</Project>
-      <Name>Glyph.Scripting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Tools\Glyph.Tools.csproj">
-      <Project>{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}</Project>
-      <Name>Glyph.Tools</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.UI\Glyph.UI.csproj">
-      <Project>{47e66422-aefc-4b28-92c3-356ffd2e783c}</Project>
-      <Name>Glyph.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph\Glyph.csproj">
-      <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
-      <Name>Glyph</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -1,95 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Glyph.Demos.PrimitiveRendering</RootNamespace>
-    <AssemblyName>Glyph.Demos.PrimitiveRendering</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
+    <TargetFramework>$(TargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <ProjectReference Include="..\..\External\Fingear\External\Stave\Stave\Stave.csproj" />
+    <ProjectReference Include="..\..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
+    <ProjectReference Include="..\..\External\Fingear\Fingear\Fingear.csproj" />
+    <ProjectReference Include="..\..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />
+    <ProjectReference Include="..\..\Glyph.Composition\Glyph.Composition.csproj" />
+    <ProjectReference Include="..\..\Glyph.Core\Glyph.Core.csproj" />
+    <ProjectReference Include="..\..\Glyph.Engine\Glyph.Engine.csproj" />
+    <ProjectReference Include="..\..\Glyph.Graphics\Glyph.Graphics.csproj" />
+    <ProjectReference Include="..\..\Glyph.Messaging\Glyph.Messaging.csproj" />
+    <ProjectReference Include="..\..\Glyph.Tools\Glyph.Tools.csproj" />
+    <ProjectReference Include="..\..\Glyph\Glyph.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX">
-      <Version>3.7.1.189</Version>
-    </PackageReference>
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.7.1.189" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\External\Fingear\External\Stave\Stave\Stave.csproj">
-      <Project>{38a041e6-5aa9-4c22-b96f-35167f171959}</Project>
-      <Name>Stave</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
-      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
-      <Name>Diese %28Taskete%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\External\Fingear\Fingear\Fingear.csproj">
-      <Project>{7EE0B116-6B49-4073-99D8-827DD68B8AE0}</Project>
-      <Name>Fingear</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{CB5183D5-F68E-4129-A716-7F9EB33CE223}</Project>
-      <Name>Niddle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Glyph.Composition\Glyph.Composition.csproj">
-      <Project>{8D4F4138-EB36-4427-9A2B-10A50723268C}</Project>
-      <Name>Glyph.Composition</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Glyph.Core\Glyph.Core.csproj">
-      <Project>{bc40e833-0eaa-4bbc-97d8-1541276bba54}</Project>
-      <Name>Glyph.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Glyph.Engine\Glyph.Engine.csproj">
-      <Project>{25400349-233E-404D-BB4E-A0CB4AF893EA}</Project>
-      <Name>Glyph.Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Glyph.Graphics\Glyph.Graphics.csproj">
-      <Project>{CC4D895F-646F-43C8-B25E-81CF5803ED7A}</Project>
-      <Name>Glyph.Graphics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Glyph.Messaging\Glyph.Messaging.csproj">
-      <Project>{26405f4b-4532-4f48-a96f-594a70c12b3e}</Project>
-      <Name>Glyph.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Glyph.Tools\Glyph.Tools.csproj">
-      <Project>{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}</Project>
-      <Name>Glyph.Tools</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Glyph\Glyph.csproj">
-      <Project>{457cbbf3-26c7-478b-b4eb-1f85ff3c07f5}</Project>
-      <Name>Glyph</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

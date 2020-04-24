@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using Niddle;
 using Fingear.Controls;
 using Fingear.Controls.Composites;
@@ -23,7 +24,10 @@ namespace Glyph.Engine
         private bool _resizing;
 
         public GlyphEngine Engine { get; }
-        public virtual bool IsFocus => IsActive && System.Windows.Forms.Form.ActiveForm?.Handle == Window.Handle;
+
+        [DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+        public virtual bool IsFocus => IsActive && GetForegroundWindow() == Window.Handle;
 
         IInputStates IInputClient.States { get; } = new InputStates();
         Vector2 IDrawClient.Size => WindowSize.ToVector2();

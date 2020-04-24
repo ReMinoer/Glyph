@@ -1,146 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8D4F4138-EB36-4427-9A2B-10A50723268C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Glyph.Composition</RootNamespace>
-    <AssemblyName>Glyph.Composition</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>default</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WINDOWS</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFramework>$(TargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fody">
-      <Version>2.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="MonoGame.Framework.Portable">
-      <Version>3.7.1.189</Version>
-    </PackageReference>
-    <PackageReference Include="PropertyChanged.Fody">
-      <Version>2.1.4</Version>
-    </PackageReference>
+    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj" />
+    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
+    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />
+    <ProjectReference Include="..\External\Simulacra\Simulacra.Injection\Simulacra.Injection.csproj" />
+    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj" />
+    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj" />
+    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj" />
+    <ProjectReference Include="..\Glyph\Glyph.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
+    <PackageReference Include="Fody" Version="2.1.0" />
+    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.1.4" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Base\GlyphComponentBase.cs" />
-    <Compile Include="Base\GlyphContainerBase.cs" />
-    <Compile Include="IDrawer.cs" />
-    <Compile Include="Messaging\ComponentRouterSystem.cs" />
-    <Compile Include="Messaging\CompositionMessage.cs" />
-    <Compile Include="Messaging\DecompositionMessage.cs" />
-    <Compile Include="Messaging\ICompositionMessage.cs" />
-    <Compile Include="Messaging\IDecompositionMessage.cs" />
-    <Compile Include="Messaging\IDisposingMessage.cs" />
-    <Compile Include="Messaging\ILocalInterpreter.cs" />
-    <Compile Include="Messaging\MessageHelper.cs" />
-    <Compile Include="Delegates\DrawDelegate.cs" />
-    <Compile Include="DrawUtils.cs" />
-    <Compile Include="Exceptions\ComponentNotFoundException.cs" />
-    <Compile Include="IGlyphCompositeResolver.cs" />
-    <Compile Include="IDraw.cs" />
-    <Compile Include="ILoadContent.cs" />
-    <Compile Include="IUpdate.cs" />
-    <Compile Include="Messaging\DisposingMessage.cs" />
-    <Compile Include="Modelization\BindedData.cs" />
-    <Compile Include="Modelization\BindingCollectionExtension.cs" />
-    <Compile Include="Exceptions\SingleComponentException.cs" />
-    <Compile Include="GlyphComponent.cs" />
-    <Compile Include="GlyphComposite.cs" />
-    <Compile Include="GlyphContainer.cs" />
-    <Compile Include="IGlyphComponent.cs" />
-    <Compile Include="IGlyphComposite.cs" />
-    <Compile Include="IGlyphContainer.cs" />
-    <Compile Include="Delegates\InitializeDelegate.cs" />
-    <Compile Include="Delegates\LoadContentDelegate.cs" />
-    <Compile Include="Modelization\GlyphCategoryAttribute.cs" />
-    <Compile Include="Modelization\GlyphCreatorExtension.cs" />
-    <Compile Include="Modelization\IAssetFile.cs" />
-    <Compile Include="Modelization\IGlyphConfigurator.cs" />
-    <Compile Include="Modelization\IGlyphCreator.cs" />
-    <Compile Include="Modelization\IGlyphData.cs" />
-    <Compile Include="Modelization\OneWayFactoryBinding.cs" />
-    <Compile Include="Modelization\Base\SubDataCollection.cs" />
-    <Compile Include="Modelization\SimulacraCategoryAttribute.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SinglePerParentAttribute.cs" />
-    <Compile Include="Delegates\UpdateDelegate.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj">
-      <Project>{AA20CDF3-72ED-48DA-AE3C-74C6FE9003FB}</Project>
-      <Name>Diese.Collections %28Stave%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj">
-      <Project>{38A041E6-5AA9-4C22-B96F-35167F171959}</Project>
-      <Name>Stave</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj">
-      <Project>{dfdab89c-1379-4bfa-93c9-75e1e7b16010}</Project>
-      <Name>Diese %28Taskete%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj">
-      <Project>{cb5183d5-f68e-4129-a716-7f9eb33ce223}</Project>
-      <Name>Niddle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\Simulacra.Injection\Simulacra.Injection.csproj">
-      <Project>{9C7A9012-5536-43BE-8055-2C3FF297C902}</Project>
-      <Name>Simulacra.Injection</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj">
-      <Project>{dfd5170c-d6c2-4815-88ed-6aa011d26d84}</Project>
-      <Name>Simulacra</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj">
-      <Project>{26405f4b-4532-4f48-a96f-594a70c12b3e}</Project>
-      <Name>Glyph.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj">
-      <Project>{068202CC-E943-4718-9771-62D72E50623E}</Project>
-      <Name>Glyph.Space</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Glyph\Glyph.csproj">
-      <Project>{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}</Project>
-      <Name>Glyph</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FodyWeavers.xml" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
