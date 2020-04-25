@@ -21,15 +21,15 @@ namespace Glyph.Math
 
                 // (1 / det(A)) * (cofactor matrix of A)T
                 return new Matrix3X3(
-                    invdet * (M22 * M33 - M32 * M23),
-                    invdet * (M21 * M33 - M31 * M23) * -1,
-                    invdet * (M21 * M32 - M31 * M22),
-                    invdet * (M12 * M33 - M32 * M13) * -1,
-                    invdet * (M11 * M33 - M31 * M13),
-                    invdet * (M11 * M32 - M31 * M12) * -1,
-                    invdet * (M12 * M23 - M22 * M13),
-                    invdet * (M11 * M23 - M21 * M13) * -1,
-                    invdet * (M11 * M22 - M21 * M12)
+                    m11: invdet * (M22 * M33 - M32 * M23),
+                    m21: invdet * (M21 * M33 - M31 * M23) * -1,
+                    m31: invdet * (M21 * M32 - M31 * M22),
+                    m12: invdet * (M12 * M33 - M32 * M13) * -1,
+                    m22: invdet * (M11 * M33 - M31 * M13),
+                    m32: invdet * (M11 * M32 - M31 * M12) * -1,
+                    m13: invdet * (M12 * M23 - M22 * M13),
+                    m23: invdet * (M11 * M23 - M21 * M13) * -1,
+                    m33: invdet * (M11 * M22 - M21 * M12)
                 );
             }
         }

@@ -21,7 +21,6 @@ namespace Glyph.Tools
         private readonly SceneNode _sceneNode;
         private readonly Camera _camera;
         private IView _view;
-        private Vector2 _startCameraRootViewPosition;
         private Vector2 _startCursorRootViewPosition;
         private readonly ProjectionCursorControl _rootViewCursor;
         private readonly ActivityControl _moveCamera;
@@ -100,29 +99,32 @@ namespace Glyph.Tools
 
                 if (inputActivity.IsPressed())
                 {
+                    if (!_projectionManager.ProjectFromPosition(_rootView, cursorRootViewPosition).To(_view)
+                        .InDirections(GraphDirections.Successors)
+                        .Any(TransformPathContainsCamera))
+                        return;
+
+                    if (!_projectionManager.ProjectFromPosition(_sceneNode).To(_rootView)
+                        .InDirections(GraphDirections.Predecessors)
+                        .Where(TransformPathContainsCamera)
+                        .Any(out Projection<Vector2> cameraRootViewProjection))
+                        return;
+
                     if (!inputActivity.IsTriggered())
                     {
                         Vector2 cursorRootViewDelta = cursorRootViewPosition - _startCursorRootViewPosition;
-                        Vector2 cameraRootViewPosition = _startCameraRootViewPosition - cursorRootViewDelta;
-                        if (_projectionManager.ProjectFromPosition(_rootView, cameraRootViewPosition).To(_sceneNode).InDirections(GraphDirections.Successors)
-                                              .Where(TransformPathContainsCamera)
-                                              .Any(out Projection<Vector2> cameraSceneProjection))
+                        Vector2 newCameraRootViewPosition = cameraRootViewProjection.Value - cursorRootViewDelta;
+
+                        if (_projectionManager.ProjectFromPosition(_rootView, newCameraRootViewPosition).To(_sceneNode)
+                            .InDirections(GraphDirections.Successors)
+                            .Where(TransformPathContainsCamera)
+                            .Any(out Projection<Vector2> cameraSceneProjection))
                         {
                             _sceneNode.Position = cameraSceneProjection.Value;
                         }
                     }
-                
-                    if (_projectionManager.ProjectFromPosition(_rootView, cursorRootViewPosition).To(_view).InDirections(GraphDirections.Successors)
-                                          .Any(TransformPathContainsCamera))
-                    {
-                        if (_projectionManager.ProjectFromPosition(_sceneNode).To(_rootView).InDirections(GraphDirections.Predecessors)
-                                              .Where(TransformPathContainsCamera)
-                                              .Any(out Projection<Vector2> cameraRootViewProjection))
-                        {
-                            _startCursorRootViewPosition = cursorRootViewPosition;
-                            _startCameraRootViewPosition = cameraRootViewProjection.Value;
-                        }
-                    }
+
+                    _startCursorRootViewPosition = cursorRootViewPosition;
                 }
             }
         }
