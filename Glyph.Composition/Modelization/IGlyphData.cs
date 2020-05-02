@@ -1,4 +1,6 @@
-﻿using Diese.Collections.Observables.ReadOnly;
+﻿using System;
+using System.Collections.Generic;
+using Diese.Collections.Observables.ReadOnly;
 using Simulacra;
 using Simulacra.Injection;
 
@@ -9,5 +11,6 @@ namespace Glyph.Composition.Modelization
         string Name { get; }
         new IGlyphComponent BindedObject { get; }
         IReadOnlyObservableCollection<IGlyphData> Children { get; }
+        IEnumerable<Type> SerializationKnownTypes { get; set; }
     }
 }

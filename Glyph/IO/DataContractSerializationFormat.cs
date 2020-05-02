@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Linq;
 using Glyph.IO.Base;
 
 namespace Glyph.IO
@@ -17,6 +18,8 @@ namespace Glyph.IO
 
         private readonly string _displayName;
         private readonly string[] _fileExtensions;
+
+        public override IEnumerable<Type> KnownTypes { get; set; }
 
         public DataContractSerializationFormat()
         {
@@ -36,14 +39,42 @@ namespace Glyph.IO
             _fileExtensions = fileExtensions;
         }
 
-        public override T Load(Stream stream, IEnumerable<Type> knownTypes)
+        public override T Load(Stream stream)
         {
-            return (T)new DataContractSerializer(typeof(T), knownTypes).ReadObject(stream);
+            Type serializedType = ReadSerializedType(stream);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var dataContractSerializer = new DataContractSerializer(serializedType, KnownTypes);
+            object readObject = dataContractSerializer.ReadObject(stream);
+            if (!(readObject is T result))
+                throw new SerializationException($"Deserialized object of type \"{readObject.GetType().FullName}\" is not of the expected type \"{serializedType.FullName}\" !");
+
+            return result;
         }
 
-        public override void Save(T obj, Stream stream, IEnumerable<Type> knownTypes)
+        private Type ReadSerializedType(Stream stream)
         {
-            new DataContractSerializer(typeof(T), knownTypes).WriteObject(stream, obj);
+            XName rootName = XDocument.Load(stream).Root?.Name;
+            string loadedTypeName = rootName?.LocalName;
+            string loadedNamespace = rootName?.NamespaceName.Split('/').Last();
+
+            if (loadedTypeName == null || loadedNamespace == null)
+                throw new SerializationException("Cannot retrieve serialized object type name !");
+
+            string fullTypeName = $"{loadedNamespace}.{loadedTypeName}";
+            if (fullTypeName == typeof(T).FullName)
+                return typeof(T);
+
+            Type serializedType = Type.GetType(fullTypeName) ?? KnownTypes.FirstOrDefault(x => x.FullName == fullTypeName);
+            if (serializedType == null)
+                throw new SerializationException($"Cannot deserialize object of type \"{fullTypeName}\" !");
+
+            return serializedType;
+        }
+
+        public override void Save(T obj, Stream stream)
+        {
+            new DataContractSerializer(obj.GetType(), KnownTypes).WriteObject(stream, obj);
         }
     }
 }

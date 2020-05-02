@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Diese;
 using Diese.Collections.Observables.ReadOnly;
 using Glyph.Composition.Modelization.Base;
 using Niddle;
+using Simulacra.Binding;
 using Simulacra.Injection.Base;
 using Simulacra.Injection.Binding;
 
@@ -47,12 +49,15 @@ namespace Glyph.Composition.Modelization
         [SimulacraCategory, IgnoreDataMember]
         public IDependencyResolver Resolver => DependencyResolver;
 
+        [SimulacraCategory, IgnoreDataMember]
+        public IEnumerable<Type> SerializationKnownTypes { get; set; }
+
         IGlyphComponent IGlyphData.BindedObject => BindedObject;
         protected override IEnumerable<IGlyphConfigurator<T>> SubConfiguratorsBase => SubConfigurators;
 
         static BindedData()
         {
-            PropertyBindings.AddProperty(x => x.Name, x => x.Name);
+            PropertyBindings.From(x => x.Name).To(x => x.Name);
         }
 
         protected BindedData()
