@@ -68,6 +68,9 @@ namespace Glyph.Tools
 
         public void ShowTarget(IBoxedComponent boxedComponent)
         {
+            if (boxedComponent.Area.IsVoid)
+                return;
+
             TopLeftRectangle boundingBox = boxedComponent.Area.BoundingBox;
             const float marginScale = 1.1f;
 
