@@ -6,6 +6,7 @@ using Diese.Collections.Observables.ReadOnly;
 using Glyph.Composition.Modelization.Base;
 using Niddle;
 using Simulacra.Binding;
+using Simulacra.IO.Binding;
 using Simulacra.Injection.Base;
 using Simulacra.Injection.Binding;
 
@@ -15,6 +16,8 @@ namespace Glyph.Composition.Modelization
         where TData : BindedData<TData, T>
         where T : class, IGlyphComponent
     {
+        static public PathBindingCollection<TData, T> PathBindings { get; }
+
         [GlyphCategory]
         public string Name { get; set; }
 
@@ -57,11 +60,14 @@ namespace Glyph.Composition.Modelization
 
         static BindedData()
         {
+            PathBindings = new PathBindingCollection<TData, T>();
             PropertyBindings.From(x => x.Name).To(x => x.Name);
         }
 
         protected BindedData()
         {
+            BindingManager.Modules.Add(new PathBindingModule<TData, T>(Owner, PathBindings));
+
             Name = typeof(T).GetDisplayName();
 
             SubConfigurators = new SubDataCollection<IGlyphConfigurator<T>, TData, T>(this);

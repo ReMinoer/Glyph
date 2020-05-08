@@ -39,7 +39,7 @@ namespace Glyph.Core
         public IEnumerable<T> Values => LocalGrid.Values;
         public IEnumerable<IGridCase<T>> SignificantCases => LocalGrid.SignificantCases;
 
-        public event EventHandler<ArrayChangedEventArgs> ArrayChanged;
+        public event ArrayChangedEventHandler ArrayChanged;
 
         private void OnArrayChanged(object sender, ArrayChangedEventArgs e)
         {

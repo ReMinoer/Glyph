@@ -20,7 +20,7 @@ namespace Glyph.Space
         public Vector2 Delta => Grid.Delta;
         public bool HasLowEntropy => Grid.HasLowEntropy;
 
-        public event EventHandler<ArrayChangedEventArgs> ArrayChanged
+        public event ArrayChangedEventHandler ArrayChanged
         {
             add => Grid.ArrayChanged += value;
             remove => Grid.ArrayChanged -= value;

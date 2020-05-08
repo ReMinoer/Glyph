@@ -1,57 +1,57 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph", "Glyph\Glyph.csproj", "{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph", "Glyph\Glyph.csproj", "{457CBBF3-26C7-478B-B4EB-1F85FF3C07F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Audio", "Glyph.Audio\Glyph.Audio.csproj", "{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Audio", "Glyph.Audio\Glyph.Audio.csproj", "{46AA8A4B-5A43-45F3-99E4-B7BAD0D47FEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Tools", "Glyph.Tools\Glyph.Tools.csproj", "{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Tools", "Glyph.Tools\Glyph.Tools.csproj", "{6692F3F4-E1EA-4D53-B0A1-2DBA67414FC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.UI", "Glyph.UI\Glyph.UI.csproj", "{47E66422-AEFC-4B28-92C3-356FFD2E783C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.UI", "Glyph.UI\Glyph.UI.csproj", "{47E66422-AEFC-4B28-92C3-356FFD2E783C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Scripting", "Glyph.Scripting\Glyph.Scripting.csproj", "{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Scripting", "Glyph.Scripting\Glyph.Scripting.csproj", "{71BD4FA9-4CA8-426B-92D0-D32CF9D40794}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Effects", "Glyph.Effects\Glyph.Effects.csproj", "{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Effects", "Glyph.Effects\Glyph.Effects.csproj", "{C1E7FE9C-0D98-4F1C-A6B2-11DFDB431F8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Animation", "Glyph.Animation\Glyph.Animation.csproj", "{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Animation", "Glyph.Animation\Glyph.Animation.csproj", "{2384DA3A-F989-4B1B-9044-A005CE8F4AB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Graphics", "Glyph.Graphics\Glyph.Graphics.csproj", "{CC4D895F-646F-43C8-B25E-81CF5803ED7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Graphics", "Glyph.Graphics\Glyph.Graphics.csproj", "{CC4D895F-646F-43C8-B25E-81CF5803ED7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Composition", "Glyph.Composition\Glyph.Composition.csproj", "{8D4F4138-EB36-4427-9A2B-10A50723268C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Composition", "Glyph.Composition\Glyph.Composition.csproj", "{8D4F4138-EB36-4427-9A2B-10A50723268C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Application", "Glyph.Application\Glyph.Application.csproj", "{5D6CC7F3-0720-4242-A0FB-678E7D76F147}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Application", "Glyph.Application\Glyph.Application.csproj", "{5D6CC7F3-0720-4242-A0FB-678E7D76F147}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Physics", "Glyph.Physics\Glyph.Physics.csproj", "{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Physics", "Glyph.Physics\Glyph.Physics.csproj", "{008028BF-EE7E-4D70-8FD5-14EC3AFA26DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Messaging", "Glyph.Messaging\Glyph.Messaging.csproj", "{26405F4B-4532-4F48-A96F-594A70C12B3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Messaging", "Glyph.Messaging\Glyph.Messaging.csproj", "{26405F4B-4532-4F48-A96F-594A70C12B3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Space", "Glyph.Space\Glyph.Space.csproj", "{068202CC-E943-4718-9771-62D72E50623E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Space", "Glyph.Space\Glyph.Space.csproj", "{068202CC-E943-4718-9771-62D72E50623E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Particles", "Glyph.Particles\Glyph.Particles.csproj", "{1070485B-D9FE-4AA2-889A-5F809021C447}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Particles", "Glyph.Particles\Glyph.Particles.csproj", "{1070485B-D9FE-4AA2-889A-5F809021C447}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Graphics.Particles", "Glyph.Graphics.Particles\Glyph.Graphics.Particles.csproj", "{5292934A-D0E4-47FD-98FA-0A32B37657D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Graphics.Particles", "Glyph.Graphics.Particles\Glyph.Graphics.Particles.csproj", "{5292934A-D0E4-47FD-98FA-0A32B37657D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Core", "Glyph.Core\Glyph.Core.csproj", "{BC40E833-0EAA-4BBC-97D8-1541276BBA54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Core", "Glyph.Core\Glyph.Core.csproj", "{BC40E833-0EAA-4BBC-97D8-1541276BBA54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fingear", "External\Fingear\Fingear\Fingear.csproj", "{7EE0B116-6B49-4073-99D8-827DD68B8AE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fingear", "External\Fingear\Fingear\Fingear.csproj", "{7EE0B116-6B49-4073-99D8-827DD68B8AE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fingear.MonoGame", "External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj", "{9EEF1863-44BE-423E-A29D-088C23AAC45E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fingear.MonoGame", "External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj", "{9EEF1863-44BE-423E-A29D-088C23AAC45E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stave", "External\Fingear\External\Stave\Stave\Stave.csproj", "{38A041E6-5AA9-4C22-B96F-35167F171959}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.WpfInterop", "Glyph.WpfInterop\Glyph.WpfInterop.csproj", "{DE8D6CFE-29E2-4B00-A32B-A85A5CA583C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.WpfInterop", "Glyph.WpfInterop\Glyph.WpfInterop.csproj", "{DE8D6CFE-29E2-4B00-A32B-A85A5CA583C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.Framework.WpfInterop", "External\MonoGame.Framework.WpfInterop\MonoGame.Framework.WpfInterop\MonoGame.Framework.WpfInterop.csproj", "{809F0D79-AEDC-4754-A213-FDBE97CCD6D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.Framework.WpfInterop", "External\MonoGame.Framework.WpfInterop\MonoGame.Framework.WpfInterop\MonoGame.Framework.WpfInterop.csproj", "{809F0D79-AEDC-4754-A213-FDBE97CCD6D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Engine", "Glyph.Engine\Glyph.Engine.csproj", "{25400349-233E-404D-BB4E-A0CB4AF893EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Engine", "Glyph.Engine\Glyph.Engine.csproj", "{25400349-233E-404D-BB4E-A0CB4AF893EA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7C9C9D34-8CD9-4F17-93DE-0F4A9E0698D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Tests", "Tests\Glyph.Tests\Glyph.Tests.csproj", "{94DC85AB-7228-4CFD-8EDF-1BA2AA429354}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Tests", "Tests\Glyph.Tests\Glyph.Tests.csproj", "{94DC85AB-7228-4CFD-8EDF-1BA2AA429354}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Taskete", "External\Fingear\External\Taskete\Taskete\Taskete.csproj", "{107E0777-D23D-4EBB-8AA5-687E2DBE1D66}"
 EndProject
@@ -69,7 +69,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diese.Diagnostics (Glyph)",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{94F5EA39-C8BB-4637-8A4F-FA6C72580560}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Demos.Default", "Demos\Glyph.Demos.Default\Glyph.Demos.Default.csproj", "{22F7867E-4BA9-4D7C-A3DE-24289CAC2E8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Demos.Default", "Demos\Glyph.Demos.Default\Glyph.Demos.Default.csproj", "{22F7867E-4BA9-4D7C-A3DE-24289CAC2E8A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simulacra.Injection", "External\Simulacra\Simulacra.Injection\Simulacra.Injection.csproj", "{E5FF4FB2-6A99-4542-8157-4F05BAA2962A}"
 EndProject
@@ -79,7 +79,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Niddle", "External\Simulacr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Niddle.Test", "External\Simulacra\External\Niddle\Tests\Niddle.Test\Niddle.Test.csproj", "{6EE7C895-2329-48C8-A6FD-AD53F896277A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glyph.Demos.PrimitiveRendering", "Demos\Glyph.Demos.PrimitiveRendering\Glyph.Demos.PrimitiveRendering.csproj", "{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Glyph.Demos.PrimitiveRendering", "Demos\Glyph.Demos.PrimitiveRendering\Glyph.Demos.PrimitiveRendering.csproj", "{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simulacra.IO", "External\Simulacra\Simulacra.IO\Simulacra.IO.csproj", "{FE7DF20E-0B26-48E9-839D-2FA178DE71DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -231,6 +233,10 @@ Global
 		{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE7DF20E-0B26-48E9-839D-2FA178DE71DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE7DF20E-0B26-48E9-839D-2FA178DE71DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE7DF20E-0B26-48E9-839D-2FA178DE71DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE7DF20E-0B26-48E9-839D-2FA178DE71DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -254,6 +260,7 @@ Global
 		{CB5183D5-F68E-4129-A716-7F9EB33CE223} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 		{6EE7C895-2329-48C8-A6FD-AD53F896277A} = {7C9C9D34-8CD9-4F17-93DE-0F4A9E0698D6}
 		{76AF5AA8-ADAC-4EE6-801C-7ADBB5FB9112} = {94F5EA39-C8BB-4637-8A4F-FA6C72580560}
+		{FE7DF20E-0B26-48E9-839D-2FA178DE71DF} = {4F6AEC3A-15F3-46F8-8AE2-0FF105D92960}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {484F9B0D-760F-48AD-893C-CCFB7A1CF541}

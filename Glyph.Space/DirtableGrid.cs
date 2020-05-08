@@ -95,7 +95,7 @@ namespace Glyph.Space
         T IGrid<T>.this[IGridPositionable gridPositionable] => ((IGrid<T>)_gridImplementation)[gridPositionable];
         
         public event Action Dirtied;
-        public event EventHandler<ArrayChangedEventArgs> ArrayChanged;
+        public event ArrayChangedEventHandler ArrayChanged;
 
         public DirtableGrid(IWriteableGrid<T> gridImplementation)
         {

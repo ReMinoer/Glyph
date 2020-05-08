@@ -8,6 +8,7 @@
     <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
     <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />
     <ProjectReference Include="..\External\Simulacra\Simulacra.Injection\Simulacra.Injection.csproj" />
+    <ProjectReference Include="..\External\Simulacra\Simulacra.IO\Simulacra.IO.csproj" />
     <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj" />
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj" />
     <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj" />

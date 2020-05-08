@@ -18,7 +18,7 @@ namespace Glyph.Space
         protected abstract bool HasLowEntropyProtected { get; }
         bool IGrid<T>.HasLowEntropy => HasLowEntropyProtected;
 
-        public event EventHandler<ArrayChangedEventArgs> ArrayChanged;
+        public event ArrayChangedEventHandler ArrayChanged;
 
         protected GridBase(TopLeftRectangle rectangle, int columns, int rows)
             : base(rectangle, columns, rows)

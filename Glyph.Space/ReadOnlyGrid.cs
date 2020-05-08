@@ -27,7 +27,7 @@ namespace Glyph.Space
         public T this[Vector2 worldPoint] => _grid[worldPoint];
         public T this[IGridPositionable gridPositionable] => _grid[gridPositionable];
 
-        public event EventHandler<ArrayChangedEventArgs> ArrayChanged;
+        public event ArrayChangedEventHandler ArrayChanged;
 
         public ReadOnlyGrid(IGrid<T> grid)
         {

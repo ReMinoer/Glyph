@@ -29,6 +29,7 @@ namespace Glyph.Export
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomainOnReflectionOnlyAssemblyResolve;
 
             IEnumerable<Assembly> assemblies = Directory.GetFiles(assemblyDirectory, "*.dll", SearchOption.TopDirectoryOnly)
+                                                        .Where(x => Path.GetFileName(x) != "netstandard.dll")
                                                         .Select(Assembly.ReflectionOnlyLoadFrom)
                                                         .Where(HasAssemblyContainsAttribute)
                                                         .ToArray();

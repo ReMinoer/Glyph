@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Threading;
+using System.Xml;
 using Glyph.IO;
 using Simulacra.Binding;
 
@@ -8,68 +10,104 @@ namespace Glyph.Composition.Modelization
 {
     static public class BindingBuilderExtension
     {
-        static public PropertyBindingBuilder<TModel, TView, TLoadedValue> Load<TModel, TView, TLoadedValue>(
-            this IPropertyBindingBuilder<TModel, TView, AssetPath> builder,
+        static public IBindingBuilder<TModel, TView, TLoadedValue, TBindingCollection> Load<TModel, TView, TLoadedValue, TBindingCollection>(
+            this IBindingBuilder<TModel, TView, string, TBindingCollection> builder,
             Func<ILoadFormat<TLoadedValue>> loadFormatProvider)
         {
-            return builder.Select((mv, m, v) =>
-            {
-                if (!File.Exists(mv.Path))
-                    return default;
-
-                using (Stream stream = File.OpenRead(mv.Path))
-                {
-                    try
-                    {
-                        return loadFormatProvider().Load(stream);
-                    }
-                    catch (SerializationException)
-                    {
-                        return default;
-                    }
-                }
-            });
+            return builder.Select((mv, m, v) => SafeLoad(mv, loadFormatProvider));
         }
 
-        static public PropertyBindingBuilder<TModel, TView, TLoadedValue> Load<TModel, TView, TLoadedValue>(
-            this IPropertyBindingBuilder<TModel, TView, AssetPath> builder,
+        static public IBindingBuilder<TModel, TView, TLoadedValue, TBindingCollection> Load<TModel, TView, TLoadedValue, TBindingCollection>(
+            this IBindingBuilder<TModel, TView, string, TBindingCollection> builder,
             Func<ISerializationFormat<TLoadedValue>> serializationFormatProvider)
             where TModel : BindedData<TModel, TView>
             where TView : class, IGlyphComponent
         {
-            return builder.Select((mv, m, v) =>
+            return builder.Select((mv, m, v) => SafeLoad(mv, () =>
             {
-                if (!File.Exists(mv.Path))
-                    return default;
-
                 ISerializationFormat<TLoadedValue> serializationFormat = serializationFormatProvider();
                 serializationFormat.KnownTypes = m.SerializationKnownTypes;
-
-                using (Stream stream = File.OpenRead(mv.Path))
-                {
-                    try
-                    {
-                        return serializationFormat.Load(stream);
-                    }
-                    catch (SerializationException)
-                    {
-                        return default;
-                    }
-                }
-            });
+                return serializationFormat;
+            }));
         }
 
-        static public PropertyBindingBuilder<TModel, TView, IGlyphComponent> CreateComponent<TModel, TView, TCreator>(
-            this IPropertyBindingBuilder<TModel, TView, TCreator> builder)
+        static public IBindingBuilder<TModel, TView, TLoadedValue, TBindingCollection> Load<TModel, TView, TLoadedValue, TBindingCollection>(
+            this IBindingBuilder<TModel, TView, FilePath, TBindingCollection> builder,
+            Func<ILoadFormat<TLoadedValue>> loadFormatProvider)
+        {
+            return builder.Select((mv, m, v) => SafeLoad(mv, loadFormatProvider));
+        }
+
+        static public IBindingBuilder<TModel, TView, TLoadedValue, TBindingCollection> Load<TModel, TView, TLoadedValue, TBindingCollection>(
+            this IBindingBuilder<TModel, TView, FilePath, TBindingCollection> builder,
+            Func<ISerializationFormat<TLoadedValue>> serializationFormatProvider)
+            where TModel : BindedData<TModel, TView>
+            where TView : class, IGlyphComponent
+        {
+            return builder.Select((mv, m, v) => SafeLoad(mv, () =>
+            {
+                ISerializationFormat<TLoadedValue> serializationFormat = serializationFormatProvider();
+                serializationFormat.KnownTypes = m.SerializationKnownTypes;
+                return serializationFormat;
+            }));
+        }
+
+        static private TLoadedValue SafeLoad<TLoadedValue>(string path, Func<ILoadFormat<TLoadedValue>> formatProvider)
+        {
+            if (!File.Exists(path))
+                return default;
+
+            ILoadFormat<TLoadedValue> format = formatProvider();
+
+            Stream stream;
+            const int maxAccessTry = 100;
+            for (int i = 0;; i++)
+            {
+                try
+                {
+                    stream = File.OpenRead(path);
+                    break;
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(10);
+                    if (i == maxAccessTry)
+                        throw;
+                }
+            }
+
+            using (stream)
+            {
+                try
+                {
+                    return format.Load(stream);
+                }
+                catch (XmlException)
+                {
+                    return default;
+                }
+                catch (SerializationException)
+                {
+                    return default;
+                }
+                finally
+                {
+                    stream.Close();
+                }
+            }
+        }
+
+        static public IBindingBuilder<TModel, TView, IGlyphComponent, TBindingCollection> CreateComponent<TModel, TView, TCreator, TBindingCollection>(
+            this IBindingBuilder<TModel, TView, TCreator, TBindingCollection> builder)
             where TModel : BindedData<TModel, TView>
             where TView : class, IGlyphComponent
             where TCreator : IGlyphCreator<IGlyphComponent>
         {
-            return builder.Create<TModel, TView, TCreator, IGlyphComponent>();
+            return builder.CreateComponent<TModel, TView, TCreator, IGlyphComponent, TBindingCollection>();
         }
 
-        static public PropertyBindingBuilder<TModel, TView, TCreated> CreateComponent<TModel, TView, TCreator, TCreated>(
-            this IPropertyBindingBuilder<TModel, TView, TCreator> builder)
+        static public IBindingBuilder<TModel, TView, TCreated, TBindingCollection> CreateComponent<TModel, TView, TCreator, TCreated, TBindingCollection>(
+            this IBindingBuilder<TModel, TView, TCreator, TBindingCollection> builder)
             where TModel : BindedData<TModel, TView>
             where TView : class, IGlyphComponent
             where TCreator : IGlyphCreator<TCreated>
@@ -105,7 +143,7 @@ namespace Glyph.Composition.Modelization
                 builder.ReferenceGetter,
                 (m, mi, v) => mi,
                 compositeGetter)
-                .AsEventBinding(builder.EventSourceGetter));
+                .AsSubscriptionBinding(builder.SubscriptionGetter));
         }
     }
 }
