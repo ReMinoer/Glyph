@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using Glyph.IO.Base;
 
@@ -20,6 +22,7 @@ namespace Glyph.IO
         private readonly string[] _fileExtensions;
 
         public override IEnumerable<Type> KnownTypes { get; set; }
+        public Encoding Encoding { get; set; } = Encoding.Default;
 
         public DataContractSerializationFormat()
         {
@@ -74,7 +77,11 @@ namespace Glyph.IO
 
         public override void Save(T obj, Stream stream)
         {
-            new DataContractSerializer(obj.GetType(), KnownTypes).WriteObject(stream, obj);
+            using (var xmlTextWriter = new XmlTextWriter(stream, Encoding))
+            {
+                xmlTextWriter.Formatting = Formatting.Indented;
+                new DataContractSerializer(obj.GetType(), KnownTypes).WriteObject(xmlTextWriter, obj);
+            }
         }
     }
 }
