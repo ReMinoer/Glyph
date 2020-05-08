@@ -1,8 +1,8 @@
 ﻿namespace Glyph.IO
 {
-    public readonly struct FilePath
+    public struct FilePath
     {
-        public string Path { get; }
+        public string Path { get; set; }
 
         public FilePath(string path)
         {
