@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="Fody" Version="2.1.0" />
     <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
-    <PackageReference Include="NLog" Version="4.4.12" />
+    <PackageReference Include="NLog" Version="4.7.1" />
     <PackageReference Include="PropertyChanged.Fody" Version="2.1.4" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
   </ItemGroup>
