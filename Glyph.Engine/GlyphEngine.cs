@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ namespace Glyph.Engine
         public InputClientManager InputClientManager { get; }
         public InteractionManager InteractionManager { get; }
         private GlyphObject _root;
+        private SpriteBatch _spriteBatch;
 
         public GlyphObject Root
         {
@@ -121,6 +123,9 @@ namespace Glyph.Engine
 
         public void LoadContent()
         {
+            GraphicsDevice graphicsDevice = Resolver.Resolve<Func<GraphicsDevice>>()();
+            _spriteBatch = new SpriteBatch(graphicsDevice);
+
             Task.WaitAll(
                 Task.Run(async () => await SongPlayer.Instance.LoadContent(ContentLibrary)),
                 Task.Run(async () =>
@@ -167,8 +172,7 @@ namespace Glyph.Engine
 
         public void Draw(IDrawClient drawClient)
         {
-            var spriteBatch = new SpriteBatch(drawClient.GraphicsDevice);
-            var drawer = new Drawer(new SpriteBatchStack(spriteBatch), drawClient, Root, RootView.Camera.GetSceneNode().RootNode())
+            var drawer = new Drawer(new SpriteBatchStack(_spriteBatch), drawClient, Root, RootView.Camera.GetSceneNode().RootNode())
             {
                 CurrentView = RootView
             };

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics.Renderer.Base;
@@ -13,8 +15,15 @@ using Niddle.Attributes;
 
 namespace Glyph.Graphics.Renderer
 {
-    public class PrimitiveRenderer : RendererBase
+    public class PrimitiveRenderer : RendererBase, ILoadContent
     {
+        private readonly Func<GraphicsDevice> _graphicsDeviceFunc;
+        private DynamicVertexBuffer _vertexBuffer;
+        private DynamicIndexBuffer _indexBuffer;
+        private VertexPositionColor[] _vertexArray;
+        private ushort[] _indexArray;
+        private BasicEffect _basicEffect;
+
         [Populatable, ResolveTargets(ResolveTargets.Fraternal)]
         public List<IPrimitive> Primitives { get; } = new List<IPrimitive>();
         
@@ -22,71 +31,125 @@ namespace Glyph.Graphics.Renderer
         protected override ISceneNode SceneNode { get; }
         protected override float DepthProtected => SceneNode.Depth;
 
-        public PrimitiveRenderer(SceneNode sceneNode)
+        public PrimitiveRenderer(SceneNode sceneNode, Func<GraphicsDevice> graphicsDeviceFunc)
         {
+            _graphicsDeviceFunc = graphicsDeviceFunc;
             SceneNode = sceneNode;
         }
-        
+
+        public Task LoadContent(IContentLibrary contentLibrary)
+        {
+            GraphicsDevice graphicsDevice = _graphicsDeviceFunc();
+
+            _basicEffect = new BasicEffect(graphicsDevice)
+            {
+                VertexColorEnabled = true
+            };
+
+            RefreshBuffers();
+
+            return Task.CompletedTask;
+        }
+
+        public override void Dispose()
+        {
+            _vertexBuffer?.Dispose();
+            _indexBuffer?.Dispose();
+        }
+
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-        protected override void Render(IDrawer drawer)
+        private void RefreshBuffers()
         {
             IEnumerable<IPrimitive> visiblePrimitives = Primitives.Where(x => x.Visible);
             int totalVertexCount = visiblePrimitives.Sum(x => x.VertexCount);
             if (totalVertexCount == 0)
+            {
+                _vertexArray = null;
+                _vertexBuffer = null;
+                _indexArray = null;
+                _indexBuffer = null;
                 return;
-            
-            drawer.SpriteBatchStack.Push(null);
+            }
 
-            // Fill vertex buffer
-            var vertexArray = new VertexPositionColor[totalVertexCount];
+            GraphicsDevice graphicsDevice = _graphicsDeviceFunc();
 
+            // Resize vertex array if necessary
+            if (totalVertexCount != _vertexArray?.Length)
+                _vertexArray = new VertexPositionColor[totalVertexCount];
+
+            // Fill vertex array
             int i = 0;
             foreach (IPrimitive primitive in visiblePrimitives)
             {
-                primitive.CopyToVertexArray(vertexArray, i);
+                primitive.CopyToVertexArray(_vertexArray, i);
                 i += primitive.VertexCount;
             }
-            
-            var vertexBuffer = new VertexBuffer(drawer.GraphicsDevice, typeof(VertexPositionColor), totalVertexCount, BufferUsage.WriteOnly);
-            vertexBuffer.SetData(vertexArray);
-            drawer.GraphicsDevice.SetVertexBuffer(vertexBuffer);
-            
-            // Fill index buffer
-            int totalIndexCount = visiblePrimitives.Sum(x => x.IndexCount);
-            if (totalIndexCount > 0)
-            {
-                var indexArray = new ushort[totalIndexCount];
 
-                i = 0;
-                foreach (IPrimitive primitive in visiblePrimitives)
-                {
-                    primitive.CopyToIndexArray(indexArray, i);
-                    i += primitive.IndexCount;
-                }
-            
-                var indexBuffer = new IndexBuffer(drawer.GraphicsDevice, typeof(short), totalIndexCount, BufferUsage.WriteOnly);
-                indexBuffer.SetData(indexArray);
-                drawer.GraphicsDevice.Indices = indexBuffer;
+            // Resize vertex buffer if necessary
+            if (_vertexBuffer == null || _vertexArray.Length > _vertexBuffer.VertexCount)
+                _vertexBuffer = new DynamicVertexBuffer(graphicsDevice, typeof(VertexPositionColor), _vertexArray.Length, BufferUsage.WriteOnly);
+
+            // Set array to vertex buffer
+            _vertexBuffer.SetData(_vertexArray);
+
+            // Skip index array if none provided
+            int totalIndexCount = visiblePrimitives.Sum(x => x.IndexCount);
+            if (totalIndexCount == 0)
+            {
+                _indexArray = null;
+                _indexBuffer = null;
+                return;
             }
 
-            // Create basic effect
-            Quad rect = drawer.DisplayedRectangle;
-            var basicEffect = new BasicEffect(drawer.GraphicsDevice)
+            // Resize index buffer if necessary
+            if (totalIndexCount != _indexArray?.Length)
             {
-                World = SceneNode.Matrix,
-                View = Matrix.CreateLookAt(Vector3.Backward, Vector3.Zero, Vector3.Up),
-                Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, 0, float.MaxValue),
-                VertexColorEnabled = true
-            };
+                _indexArray = new ushort[totalIndexCount];
+                _indexBuffer = new DynamicIndexBuffer(graphicsDevice, typeof(short), _indexArray.Length, BufferUsage.WriteOnly);
+            }
+
+            // Fill index array
+            i = 0;
+            foreach (IPrimitive primitive in visiblePrimitives)
+            {
+                primitive.CopyToIndexArray(_indexArray, i);
+                i += primitive.IndexCount;
+            }
+
+            // Resize vertex buffer if necessary
+            if (_indexBuffer == null || _indexArray.Length > _indexBuffer.IndexCount)
+                _indexBuffer = new DynamicIndexBuffer(graphicsDevice, typeof(short), _indexArray.Length, BufferUsage.WriteOnly);
+
+            // Set array to index buffer
+            _indexBuffer.SetData(_indexArray);
+        }
+
+        protected override void Render(IDrawer drawer)
+        {
+            RefreshBuffers();
+
+            drawer.SpriteBatchStack.Push(null);
+
+            // Set vertex and index buffers
+            drawer.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
+            if (_vertexBuffer != null)
+                drawer.GraphicsDevice.Indices = _indexBuffer;
+
+            // Configure basic effect
+            Quad rect = drawer.DisplayedRectangle;
+
+            _basicEffect.World = SceneNode.Matrix;
+            _basicEffect.View = Matrix.CreateLookAt(Vector3.Backward, Vector3.Zero, Vector3.Up);
+            _basicEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, 0, float.MaxValue);
             
             // Draw primitives
-            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in _basicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
 
                 int verticesIndex = 0;
                 int indicesIndex = 0;
-                foreach (IPrimitive primitive in visiblePrimitives)
+                foreach (IPrimitive primitive in Primitives.Where(x => x.Visible))
                 {
                     primitive.DrawPrimitives(drawer.GraphicsDevice, verticesIndex, indicesIndex);
                     verticesIndex += primitive.VertexCount;
