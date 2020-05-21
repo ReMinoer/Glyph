@@ -25,9 +25,9 @@ namespace Glyph.Tools.Transforming.Base
             _userInterface.CursorMoved += OnCursorMoved;
 
             var primitiveRenderer = Add<PrimitiveRenderer>();
-            primitiveRenderer.Primitives.Add(DefaultPrimitives);
-            primitiveRenderer.Primitives.Add(HoverPrimitives);
-            primitiveRenderer.Primitives.Add(GrabbedPrimitives);
+            primitiveRenderer.PrimitiveProviders.Add(DefaultPrimitives);
+            primitiveRenderer.PrimitiveProviders.Add(HoverPrimitives);
+            primitiveRenderer.PrimitiveProviders.Add(GrabbedPrimitives);
 
             HoverPrimitives.Visible = false;
             GrabbedPrimitives.Visible = false;

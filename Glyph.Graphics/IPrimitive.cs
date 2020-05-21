@@ -6,13 +6,17 @@ namespace Glyph.Graphics
 {
     public interface IPrimitive
     {
-        bool Visible { get; }
+        bool Visible { get; set; }
+        PrimitiveType Type { get; }
         IEnumerable<Vector2> Vertices { get; }
-        IEnumerable<ushort> Indices { get; }
+        IEnumerable<int> Indices { get; }
+        IEnumerable<Vector2> TextureCoordinates { get; }
         int VertexCount { get; }
         int IndexCount { get; }
+        void CopyToVertexArray(VertexPosition[] vertexArray, int startIndex);
         void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex);
-        void CopyToIndexArray(ushort[] indexArray, int startIndex);
-        void DrawPrimitives(GraphicsDevice graphicsDevice, int verticesIndex, int indicesIndex);
+        void CopyToVertexArray(VertexPositionColorTexture[] vertexArray, int startIndex);
+        void CopyToVertexArray(VertexPositionTexture[] vertexArray, int startIndex);
+        void CopyToIndexArray(int[] indexArray, int startIndex);
     }
 }

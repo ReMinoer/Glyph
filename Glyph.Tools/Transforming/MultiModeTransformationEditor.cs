@@ -72,7 +72,7 @@ namespace Glyph.Tools.Transforming
                 userInterface.TouchStarted += OnTouchStarted;
                 userInterface.TouchEnded += OnTouchEnded;
 
-                Add<PrimitiveRenderer>().Primitives.Add(_primitive.ToPrimitive(Color.Pink));
+                Add<PrimitiveRenderer>().PrimitiveProviders.Add(_primitive.ToPrimitive(Color.Pink));
             }
 
             private void OnTouchStarted(object sender, HandlableTouchEventArgs e)

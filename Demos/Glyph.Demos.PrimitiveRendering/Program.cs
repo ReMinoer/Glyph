@@ -33,7 +33,7 @@ namespace Glyph.Demos.PrimitiveRendering
 
                 var scene = root.Add<GlyphObject>();
                 scene.Add<SceneNode>().RootNode();
-                scene.Add<PrimitiveRenderer>().Primitives.AddRange(new PrimitiveCollection
+                scene.Add<PrimitiveRenderer>().PrimitiveProviders.Add(new PrimitiveCollection
                 {
                     new EllipsePrimitive(Color.Yellow, Color.Red, Vector2.Zero, r / 3, r / 8, thickness: r / 20, rotation: tilt, angleStart: pi, angleSize: pi),
                     new EllipsePrimitive(Color.Purple, Color.White, Vector2.Zero, r / 4 - r / 10),

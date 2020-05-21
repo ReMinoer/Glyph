@@ -159,8 +159,7 @@ namespace Glyph.Application
                 Type<TexturingRenderer>(),
 
                 Type<PrimitiveRenderer>(),
-                Type<PrimitiveComponent>(),
-                Generic(typeof(PrimitiveComponent<>)),
+                Type<PrimitivesComponent>(),
 
                 Generic(typeof(MappingRenderer<>)),
 

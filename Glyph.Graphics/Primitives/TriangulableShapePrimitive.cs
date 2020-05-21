@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Diese.Collections.ReadOnly;
 using Glyph.Graphics.Primitives.Base;
+using Glyph.Graphics.Primitives.Utils;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,29 +13,32 @@ namespace Glyph.Graphics.Primitives
         where TTriangulableShape : ITriangulableShape
     {
         private TTriangulableShape _shape;
+        private ReadOnlyList<Vector2> _readOnlyVertices;
+        private ReadOnlyList<int> _readOnlyIndexes;
+        private ReadOnlyList<Vector2> _readOnlyTextureCoordinates;
+
         public TTriangulableShape Shape
         {
             get => _shape;
             set
             {
                 _shape = value;
-                DirtyVertices();
-                DirtyIndices();
+                _readOnlyVertices = new ReadOnlyList<Vector2>((_shape?.Vertices ?? Enumerable.Empty<Vector2>()).ToArray());
+                _readOnlyIndexes = _shape?.TriangulationIndices != null ? new ReadOnlyList<int>(_shape.TriangulationIndices.Cast<int>().ToArray()) : null;
+                _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(PrimitiveHelpers.GetOrthographicTextureCoordinates(this).ToArray());
             }
         }
 
-        private Color _color;
-        public Color Color
-        {
-            get => _color;
-            set
-            {
-                _color = value;
-                DirtyColors();
-            }
-        }
+        protected override IReadOnlyList<Vector2> ReadOnlyVertices => _readOnlyVertices;
+        protected override IReadOnlyList<int> ReadOnlyIndices => _readOnlyIndexes;
+        protected override IReadOnlyList<Vector2> ReadOnlyTextureCoordinates => _readOnlyTextureCoordinates;
 
-        protected override PrimitiveType PrimitiveType => Shape != null && Shape.StripTriangulation ? PrimitiveType.TriangleStrip : PrimitiveType.TriangleList;
+        public override int VertexCount => Shape?.VertexCount ?? 0;
+        public override int IndexCount => Shape.TriangulationIndices == null ? 0 : Shape.StripTriangulation ? Shape.TriangleCount + 2 : Shape.TriangleCount * 3;
+        public override PrimitiveType Type => Shape != null && Shape.StripTriangulation ? PrimitiveType.TriangleStrip : PrimitiveType.TriangleList;
+
+        public Color Color { get; set; }
+        protected override Color GetColor(int vertexIndex) => Color;
 
         public TriangulableShapePrimitive()
         {
@@ -40,26 +46,13 @@ namespace Glyph.Graphics.Primitives
 
         public TriangulableShapePrimitive(TTriangulableShape shape)
         {
-            _shape = shape;
+            Shape = shape;
         }
 
         public TriangulableShapePrimitive(Color color, TTriangulableShape shape)
             : this(shape)
         {
             Color = color;
-        }
-
-        protected override IEnumerable<Vector2> GetRefreshedVertices() => _shape.Vertices;
-        protected override IEnumerable<ushort> GetRefreshedIndices() => _shape.TriangulationIndices;
-        protected override Color GetRefreshedColor(int vertexIndex) => Color;
-        protected override int GetRefreshedVertexCount() => _shape.VertexCount;
-
-        protected override int GetRefreshedIndexCount()
-        {
-            if (_shape.TriangulationIndices == null)
-                return 0;
-            
-            return _shape.StripTriangulation ? _shape.TriangleCount + 2 : _shape.TriangleCount * 3;
         }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Primitives
 {
-    public class EllipsePrimitive : PrimitiveBase
+    public class EllipsePrimitive : ProceduralPrimitiveBase
     {
         private Vector2 _center;
         public Vector2 Center
@@ -121,37 +121,12 @@ namespace Glyph.Graphics.Primitives
             }
         }
 
-        private Color[] _centerColors;
-        public Color[] CenterColors
-        {
-            get => _centerColors;
-            set
-            {
-                if (_centerColors == value)
-                    return;
+        public override PrimitiveType Type => PrimitiveType.TriangleList;
+        public Color[] CenterColors { get; set; }
+        public Color[] BorderColors { get; set; }
 
-                _centerColors = value;
-                DirtyColors();
-            }
-        }
-
-        private Color[] _borderColors;
-        public Color[] BorderColors
-        {
-            get => _borderColors;
-            set
-            {
-                if (_borderColors == value)
-                    return;
-
-                _borderColors = value;
-                DirtyColors();
-            }
-        }
-        
         public bool HasInnerVoid => Thickness < Width && Thickness < Height;
         private bool Completed => AngleSize >= MathHelper.TwoPi;
-        protected override PrimitiveType PrimitiveType => PrimitiveType.TriangleList;
 
         public EllipsePrimitive()
         {
@@ -212,7 +187,27 @@ namespace Glyph.Graphics.Primitives
                 yield return point;
         }
 
-        protected override IEnumerable<ushort> GetRefreshedIndices()
+        protected override IEnumerable<Vector2> GetRefreshedTextureCoordinates()
+        {
+            var center = new Vector2(0.5f, 0.5f);
+
+            if (HasInnerVoid)
+            {
+                float width = (Width - Thickness) / Width * 0.5f;
+                float height = (Height - Thickness) / Height * 0.5f;
+                foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(center, width, height, Rotation, AngleStart, AngleSize, Sampling))
+                    yield return point;
+            }
+            else
+            {
+                yield return center;
+            }
+
+            foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(center, 0.5f, 0.5f, Rotation, AngleStart, AngleSize, Sampling))
+                yield return point;
+        }
+
+        protected override IEnumerable<int> GetRefreshedIndices()
         {
             int n = PrimitiveHelpers.GetEllipseOutlinePointsCount(AngleSize, Sampling);
             
@@ -251,7 +246,7 @@ namespace Glyph.Graphics.Primitives
             }
         }
 
-        protected override Color GetRefreshedColor(int i)
+        protected override Color GetColor(int i)
         {
             if (HasInnerVoid)
                 return i < VertexCount / 2 ? CenterColors[i % CenterColors.Length] : BorderColors[i % BorderColors.Length];

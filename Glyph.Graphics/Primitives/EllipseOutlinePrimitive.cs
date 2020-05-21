@@ -2,11 +2,10 @@
 using Glyph.Graphics.Primitives.Base;
 using Glyph.Graphics.Primitives.Utils;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Primitives
 {
-    public class EllipseOutlinePrimitive : OutlinePrimitiveBase
+    public class EllipseOutlinePrimitive : LineProceduralPrimitiveBase
     {
         private Vector2 _center;
         public Vector2 Center
@@ -105,7 +104,7 @@ namespace Glyph.Graphics.Primitives
         }
 
         private bool Completed => AngleSize >= MathHelper.TwoPi;
-        protected override PrimitiveType PrimitiveType => PrimitiveType.LineStrip;
+        protected override bool IsStrip => true;
 
         public EllipseOutlinePrimitive()
         {
@@ -164,7 +163,7 @@ namespace Glyph.Graphics.Primitives
             return Completed ? count + 1 : count;
         }
 
-        protected override IEnumerable<ushort> GetRefreshedIndices() => null;
+        protected override IEnumerable<int> GetRefreshedIndices() => null;
         protected override int GetRefreshedIndexCount() => 0;
     }
 }
