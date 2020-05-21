@@ -26,9 +26,18 @@ namespace Glyph.Graphics.Renderer
         public List<IPrimitiveProvider> PrimitiveProviders { get; } = new List<IPrimitiveProvider>();
         public IEnumerable<IPrimitive> Primitives => PrimitiveProviders.SelectMany(x => x.Primitives);
 
-        public override IArea Area => MathUtils.GetBoundingBox(Primitives.SelectMany(x => x.Vertices));
         protected override ISceneNode SceneNode { get; }
         protected override float DepthProtected => SceneNode.Depth;
+
+        public override IArea Area
+        {
+            get
+            {
+                TopLeftRectangle boundingBox = MathUtils.GetBoundingBox(Primitives.SelectMany(x => x.Vertices));
+                boundingBox.Position += SceneNode.Position;
+                return boundingBox;
+            }
+        }
 
         public PrimitiveRenderer(SceneNode sceneNode, Func<GraphicsDevice> graphicsDeviceFunc)
         {
