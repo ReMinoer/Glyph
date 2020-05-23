@@ -3,7 +3,7 @@ using Glyph.Core;
 
 namespace Glyph.Tools.Brushing.Controllers.Base
 {
-    public abstract class BrushControllerBase<TCanvas, TBrushArgs, TPaint> : GlyphObject, IBrushController<TCanvas, TBrushArgs, TPaint>
+    public abstract class BrushControllerBase<TCanvas, TBrushArgs, TPaint> : GlyphObject, IBrushController<TCanvas, TBrushArgs, TPaint>, IIntegratedEditor<TCanvas>
         where TPaint : IPaint
     {
         public TCanvas Canvas { get; set; }

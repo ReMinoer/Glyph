@@ -2,8 +2,9 @@
 
 namespace Glyph.Tools.Brushing.Controllers
 {
-    public interface IBrushController<TCanvas> : IIntegratedEditor<TCanvas>
+    public interface IBrushController<TCanvas>
     {
+        bool Enabled { get; set; }
         TCanvas Canvas { get; set; }
         bool ApplyingBrush { get; }
 
