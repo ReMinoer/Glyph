@@ -10,49 +10,24 @@ using Glyph.IO.Base;
 
 namespace Glyph.IO
 {
-    public class DataContractSerializationFormat<T> : SerializationFormatBase<T>
+    public class DataContractSerializationFormat<T> : DataContractSerializationFormat, ISerializationFormat<T>
     {
-        public override FileType FileType => new FileType
-        {
-            DisplayName = _displayName,
-            Extensions = _fileExtensions
-        };
+        public void Save(T obj, Stream stream) => base.Save(obj, stream);
+        new public T Load(Stream stream) => Load<T>(stream);
+    }
 
-        private readonly string _displayName;
-        private readonly string[] _fileExtensions;
-
+    public class DataContractSerializationFormat : SerializationFormatBase
+    {
         public override IEnumerable<Type> KnownTypes { get; set; }
         public Encoding Encoding { get; set; } = Encoding.Default;
 
-        public DataContractSerializationFormat()
-        {
-            _displayName = "XML";
-            _fileExtensions = new[] { ".xml" };
-        }
-
-        public DataContractSerializationFormat(string displayName, IEnumerable<string> fileExtensions)
-        {
-            _displayName = displayName;
-            _fileExtensions = fileExtensions.ToArray();
-        }
-
-        public DataContractSerializationFormat(string displayName, params string[] fileExtensions)
-        {
-            _displayName = displayName;
-            _fileExtensions = fileExtensions;
-        }
-
-        public override T Load(Stream stream)
+        protected override object Load(Stream stream)
         {
             Type serializedType = ReadSerializedType(stream);
             stream.Seek(0, SeekOrigin.Begin);
 
             var dataContractSerializer = new DataContractSerializer(serializedType, KnownTypes);
-            object readObject = dataContractSerializer.ReadObject(stream);
-            if (!(readObject is T result))
-                throw new SerializationException($"Deserialized object of type \"{readObject.GetType().FullName}\" is not of the expected type \"{serializedType.FullName}\" !");
-
-            return result;
+            return dataContractSerializer.ReadObject(stream);
         }
 
         private Type ReadSerializedType(Stream stream)
@@ -65,17 +40,14 @@ namespace Glyph.IO
                 throw new SerializationException("Cannot retrieve serialized object type name !");
 
             string fullTypeName = $"{loadedNamespace}.{loadedTypeName}";
-            if (fullTypeName == typeof(T).FullName)
-                return typeof(T);
-
-            Type serializedType = Type.GetType(fullTypeName) ?? KnownTypes.FirstOrDefault(x => x.FullName == fullTypeName);
+            Type serializedType = Type.GetType(fullTypeName) ?? KnownTypes?.FirstOrDefault(x => x.FullName == fullTypeName);
             if (serializedType == null)
                 throw new SerializationException($"Cannot deserialize object of type \"{fullTypeName}\" !");
 
             return serializedType;
         }
 
-        public override void Save(T obj, Stream stream)
+        public override void Save(object obj, Stream stream)
         {
             using (var xmlTextWriter = new XmlTextWriter(stream, Encoding))
             {

@@ -14,7 +14,11 @@ namespace Glyph.Composition.Modelization
             this IBindingBuilder<TModel, TView, string, TBindingCollection> builder,
             Func<ILoadFormat<TLoadedValue>> loadFormatProvider)
         {
-            return builder.Select((mv, m, v) => SafeLoad(mv, loadFormatProvider));
+            return builder.Select((mv, m, v) => SafeLoad(mv, stream =>
+            {
+                ILoadFormat<TLoadedValue> serializationFormat = loadFormatProvider();
+                return serializationFormat.Load(stream);
+            }));
         }
 
         static public IBindingBuilder<TModel, TView, TLoadedValue, TBindingCollection> Load<TModel, TView, TLoadedValue, TBindingCollection>(
@@ -23,11 +27,11 @@ namespace Glyph.Composition.Modelization
             where TModel : BindedData<TModel, TView>
             where TView : class, IGlyphComponent
         {
-            return builder.Select((mv, m, v) => SafeLoad(mv, () =>
+            return builder.Select((mv, m, v) => SafeLoad(mv, stream =>
             {
                 ISerializationFormat<TLoadedValue> serializationFormat = serializationFormatProvider();
                 serializationFormat.KnownTypes = m.SerializationKnownTypes;
-                return serializationFormat;
+                return serializationFormat.Load(stream);
             }));
         }
 
@@ -35,7 +39,11 @@ namespace Glyph.Composition.Modelization
             this IBindingBuilder<TModel, TView, FilePath, TBindingCollection> builder,
             Func<ILoadFormat<TLoadedValue>> loadFormatProvider)
         {
-            return builder.Select((mv, m, v) => SafeLoad(mv, loadFormatProvider));
+            return builder.Select((mv, m, v) => SafeLoad(mv, stream =>
+            {
+                ILoadFormat<TLoadedValue> serializationFormat = loadFormatProvider();
+                return serializationFormat.Load(stream);
+            }));
         }
 
         static public IBindingBuilder<TModel, TView, TLoadedValue, TBindingCollection> Load<TModel, TView, TLoadedValue, TBindingCollection>(
@@ -44,20 +52,18 @@ namespace Glyph.Composition.Modelization
             where TModel : BindedData<TModel, TView>
             where TView : class, IGlyphComponent
         {
-            return builder.Select((mv, m, v) => SafeLoad(mv, () =>
+            return builder.Select((mv, m, v) => SafeLoad(mv, stream =>
             {
                 ISerializationFormat<TLoadedValue> serializationFormat = serializationFormatProvider();
                 serializationFormat.KnownTypes = m.SerializationKnownTypes;
-                return serializationFormat;
+                return serializationFormat.Load(stream);
             }));
         }
 
-        static private TLoadedValue SafeLoad<TLoadedValue>(string path, Func<ILoadFormat<TLoadedValue>> formatProvider)
+        static private TLoadedValue SafeLoad<TLoadedValue>(string path, Func<Stream, TLoadedValue> loader)
         {
             if (!File.Exists(path))
                 return default;
-
-            ILoadFormat<TLoadedValue> format = formatProvider();
 
             Stream stream;
             const int maxAccessTry = 100;
@@ -80,7 +86,7 @@ namespace Glyph.Composition.Modelization
             {
                 try
                 {
-                    return format.Load(stream);
+                    return loader(stream);
                 }
                 catch (XmlException)
                 {
