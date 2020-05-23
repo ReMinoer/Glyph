@@ -13,7 +13,7 @@ namespace Glyph.Export
             var importedTypes = new List<Type>();
             foreach (Assembly assembly in assemblies)
                 foreach (AssemblyContainsAttribute attribute in assembly.GetCustomAttributes<AssemblyContainsAttribute>())
-                    importedTypes.AddRange(assembly.GetExportedTypes().Where(t => attribute.Type.IsAssignableFrom(t)));
+                    importedTypes.AddRange(assembly.GetExportedTypes().Where(t => attribute.Type.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract));
             
             return importedTypes;
         }

@@ -40,7 +40,8 @@ namespace Glyph.IO
                 throw new SerializationException("Cannot retrieve serialized object type name !");
 
             string fullTypeName = $"{loadedNamespace}.{loadedTypeName}";
-            Type serializedType = Type.GetType(fullTypeName) ?? KnownTypes?.FirstOrDefault(x => x.FullName == fullTypeName);
+
+            Type serializedType = KnownTypes?.FirstOrDefault(x => x.FullName == fullTypeName) ?? Type.GetType(fullTypeName);
             if (serializedType == null)
                 throw new SerializationException($"Cannot deserialize object of type \"{fullTypeName}\" !");
 
