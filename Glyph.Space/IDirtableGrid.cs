@@ -6,6 +6,5 @@ namespace Glyph.Space
         where T : class, IDirtable
     {
         IEnumerable<IGridCase<T>> DirtiedCases { get; }
-        void Clean();
     }
 }

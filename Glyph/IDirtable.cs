@@ -4,7 +4,9 @@ namespace Glyph
 {
     public interface IDirtable
     {
-        bool IsDirty { get; }
-        event Action Dirtied;
+        event EventHandler Dirtied;
+        event EventHandler DirtyCleaned;
+        void SetDirty();
+        void CleanDirty();
     }
 }

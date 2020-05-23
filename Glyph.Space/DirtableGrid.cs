@@ -14,19 +14,6 @@ namespace Glyph.Space
         private readonly IWriteableGrid<T> _gridImplementation;
         private readonly List<IGridCase<T>> _dirtiedCases;
         private readonly IReadOnlyList<IGridCase<T>> _readOnlyDirtiedCases;
-        private bool _isDirty;
-
-        public bool IsDirty
-        {
-            get => _isDirty;
-            private set
-            {
-                _isDirty = value;
-
-                if (_isDirty)
-                    Dirtied?.Invoke();
-            }
-        }
 
         public T this[int i, int j]
         {
@@ -35,9 +22,9 @@ namespace Glyph.Space
             {
                 _gridImplementation[i, j] = value;
 
-                value.Dirtied += () => IsDirty = true;
+                value.Dirtied += SetDirty;
                 _dirtiedCases.Add(new GridCase<T>(i, j, value));
-                IsDirty = true;
+                SetDirty();
             }
         }
 
@@ -48,9 +35,9 @@ namespace Glyph.Space
             {
                 _gridImplementation[gridPoint] = value;
 
-                value.Dirtied += () => IsDirty = true;
+                value.Dirtied += SetDirty;
                 _dirtiedCases.Add(new GridCase<T>(gridPoint, value));
-                IsDirty = true;
+                SetDirty();
             }
         }
 
@@ -59,11 +46,12 @@ namespace Glyph.Space
             get => _gridImplementation[worldPoint];
             set
             {
+
                 _gridImplementation[worldPoint] = value;
 
-                value.Dirtied += () => IsDirty = true;
+                value.Dirtied += SetDirty;
                 _dirtiedCases.Add(new GridCase<T>(ToGridPoint(worldPoint), value));
-                IsDirty = true;
+                SetDirty();
             }
         }
 
@@ -74,11 +62,12 @@ namespace Glyph.Space
             {
                 _gridImplementation[gridPositionable] = value;
 
-                value.Dirtied += () => IsDirty = true;
+                value.Dirtied += SetDirty;
                 _dirtiedCases.Add(new GridCase<T>(gridPositionable.GridPosition, value));
-                IsDirty = true;
+                SetDirty();
             }
         }
+
         public bool IsVoid => _gridImplementation.IsVoid;
         public IEnumerable<IGridCase<T>> DirtiedCases => _readOnlyDirtiedCases;
         public TopLeftRectangle BoundingBox => _gridImplementation.BoundingBox;
@@ -93,9 +82,6 @@ namespace Glyph.Space
         T IGrid<T>.this[Point gridPoint] => ((IGrid<T>)_gridImplementation)[gridPoint];
         T IGrid<T>.this[Vector2 worldPoint] => ((IGrid<T>)_gridImplementation)[worldPoint];
         T IGrid<T>.this[IGridPositionable gridPositionable] => ((IGrid<T>)_gridImplementation)[gridPositionable];
-        
-        public event Action Dirtied;
-        public event ArrayChangedEventHandler ArrayChanged;
 
         public DirtableGrid(IWriteableGrid<T> gridImplementation)
         {
@@ -103,22 +89,25 @@ namespace Glyph.Space
             _gridImplementation.ArrayChanged += OnArrayChanged;
 
             foreach (T item in _gridImplementation)
-                item.Dirtied += () => IsDirty = true;
+                item.Dirtied += SetDirty;
 
             _dirtiedCases = new List<IGridCase<T>>();
             _readOnlyDirtiedCases = _dirtiedCases.AsReadOnly();
         }
 
+        public event ArrayChangedEventHandler ArrayChanged;
         private void OnArrayChanged(object sender, ArrayChangedEventArgs e)
         {
             ArrayChanged?.Invoke(this, e);
         }
 
-        public void Clean()
-        {
-            IsDirty = false;
-            _dirtiedCases.Clear();
-        }
+        public event EventHandler Dirtied;
+        public event EventHandler DirtyCleaned;
+        public void CleanDirty() => DirtyCleaned?.Invoke(this, EventArgs.Empty);
+
+        private void SetDirty() => Dirtied?.Invoke(this, EventArgs.Empty);
+        void IDirtable.SetDirty() => SetDirty();
+        private void SetDirty(object sender, EventArgs e) => SetDirty();
 
         public bool ContainsPoint(Vector2 point) => _gridImplementation.ContainsPoint(point);
         public bool Intersects(Segment segment) => _gridImplementation.Intersects(segment);
