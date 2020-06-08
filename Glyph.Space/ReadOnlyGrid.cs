@@ -58,6 +58,7 @@ namespace Glyph.Space
         
         int IArray.Rank => _grid.Rank;
         int IArray.GetLength(int dimension) => _grid.GetLength(dimension);
+        object IArray.this[params int[] indexes] => this[indexes[0], indexes[1]];
         T IArray<T>.this[params int[] indexes] => this[indexes[0], indexes[1]];
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_grid).GetEnumerator();
     }

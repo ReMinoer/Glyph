@@ -128,6 +128,7 @@ namespace Glyph.Space
 
         int IArray.Rank => _gridImplementation.Rank;
         int IArray.GetLength(int dimension) => _gridImplementation.GetLength(dimension);
+        object IArray.this[params int[] indexes] => _gridImplementation[indexes];
         T IArray<T>.this[params int[] indexes] => _gridImplementation[indexes];
         T IWriteableArray<T>.this[params int[] indexes]
         {

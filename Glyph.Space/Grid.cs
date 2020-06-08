@@ -36,6 +36,8 @@ namespace Glyph.Space
             }
         }
 
+        object IArray.this[params int[] indexes] => null;
+
         public Grid(TopLeftRectangle rectangle, int columns, int rows)
         {
             Rectangle = rectangle;

@@ -71,6 +71,7 @@ namespace Glyph.Core
 
         int IArray.Rank => LocalGrid.Rank;
         int IArray.GetLength(int dimension) => LocalGrid.GetLength(dimension);
+        object IArray.this[params int[] indexes] => LocalGrid[indexes];
         T IArray<T>.this[params int[] indexes] => LocalGrid[indexes];
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => LocalGrid.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => LocalGrid.GetEnumerator();
