@@ -6,6 +6,9 @@ using Diese.Collections.Observables.ReadOnly;
 using Glyph.Composition.Modelization.Base;
 using Niddle;
 using Simulacra.Binding;
+using Simulacra.Binding.Array;
+using Simulacra.Binding.Collection;
+using Simulacra.Binding.Property;
 using Simulacra.IO.Binding;
 using Simulacra.Injection.Base;
 using Simulacra.Injection.Binding;
@@ -16,7 +19,28 @@ namespace Glyph.Composition.Modelization
         where TData : BindedData<TData, T>
         where T : class, IGlyphComponent
     {
-        static public PathBindingCollection<TData, T> PathBindings { get; }
+        public class BindingCollections : IPropertyBindingsProvider<TData, T>, ICollectionBindingsProvider<TData, T>, IArrayBindingsProvider<TData, T>, IPathBindingsProvider<TData, T>
+        {
+            private readonly PropertyBindingCollection<TData, T> _propertyBindings = new PropertyBindingCollection<TData, T>();
+            private readonly CollectionBindingCollection<TData, T> _collectionBindings = new CollectionBindingCollection<TData, T>();
+            private readonly ArrayBindingCollection<TData, T> _arrayBindings = new ArrayBindingCollection<TData, T>();
+            private readonly PathBindingCollection<TData, T> _pathBindings = new PathBindingCollection<TData, T>();
+
+            PropertyBindingCollection<TData, T> IPropertyBindingsProvider<TData, T>.PropertyBindings => _propertyBindings;
+            CollectionBindingCollection<TData, T> ICollectionBindingsProvider<TData, T>.CollectionBindings => _collectionBindings;
+            ArrayBindingCollection<TData, T> IArrayBindingsProvider<TData, T>.ArrayBindings => _arrayBindings;
+            PathBindingCollection<TData, T> IPathBindingsProvider<TData, T>.PathBindings => _pathBindings;
+
+            internal void RegisterModules(BindingManager<T> bindingManager, TData owner)
+            {
+                bindingManager.Modules.Add(new PropertyBindingModule<TData, T>(owner, _propertyBindings));
+                bindingManager.Modules.Add(new CollectionBindingModule<TData, T>(owner, _collectionBindings));
+                bindingManager.Modules.Add(new ArrayBindingModule<TData, T>(owner, _arrayBindings));
+                bindingManager.Modules.Add(new PathBindingModule<TData, T>(owner, _pathBindings));
+            }
+        }
+
+        static public BindingCollections Bindings { get; } = new BindingCollections();
 
         [GlyphCategory]
         public string Name { get; set; }
@@ -60,13 +84,12 @@ namespace Glyph.Composition.Modelization
 
         static BindedData()
         {
-            PathBindings = new PathBindingCollection<TData, T>();
-            PropertyBindings.From(x => x.Name).To(x => x.Name);
+            Bindings.From(x => x.Name).To(x => x.Name);
         }
 
         protected BindedData()
         {
-            BindingManager.Modules.Add(new PathBindingModule<TData, T>(Owner, PathBindings));
+            Bindings.RegisterModules(BindingManager, Owner);
 
             Name = typeof(T).GetDisplayName();
 
