@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Diese;
 using Diese.Collections;
@@ -24,6 +26,7 @@ namespace Glyph.Core
 
         private bool _initialized;
         private bool _contentLoaded;
+        private readonly Dictionary<string, IGlyphComponent> _keyedComponents = new Dictionary<string, IGlyphComponent>();
         protected internal readonly GlyphCompositeDependencyResolver Resolver;
 
         public SchedulerHandler Schedulers { get; }
@@ -91,10 +94,44 @@ namespace Glyph.Core
                 Task.Run(async () => await loadingItem.LoadContent(Resolver.Resolve<IContentLibrary>())).Wait();
         }
 
+        public IGlyphComponent GetComponent(string key) => key.StartsWith("$") ? throw new ArgumentException() : GetComponentBase(key);
+        public bool SetComponent(string key, IGlyphComponent component) => key.StartsWith("$") ? throw new ArgumentException() : SetComponentBase(key, component);
+
+        protected IGlyphComponent GetComponentProperty([CallerMemberName] string propertyName = null) => GetComponentBase('$' + propertyName);
+        protected bool SetComponentProperty(IGlyphComponent component, [CallerMemberName] string propertyName = null) => SetComponentBase('$' + propertyName, component);
+
+        private IGlyphComponent GetComponentBase(string key)
+        {
+            return _keyedComponents.TryGetValue(key, out IGlyphComponent component) ? component : null;
+        }
+
+        private bool SetComponentBase(string key, IGlyphComponent component)
+        {
+            IGlyphComponent currentComponent = GetComponentBase(key);
+            if (component == currentComponent)
+                return false;
+
+            if (currentComponent != null)
+            {
+                RemoveAndDispose(currentComponent);
+                _keyedComponents.Remove(key);
+            }
+
+            if (component != null)
+            {
+                Add(component);
+                _keyedComponents[key] = component;
+            }
+
+            return true;
+        }
+
         public override sealed bool Remove(IGlyphComponent item)
         {
             if (!Contains(item) || !base.Remove(item))
                 return false;
+
+            _keyedComponents.Remove(x => x.Value == item);
 
             if (item is GlyphObject glyphObject)
                 Schedulers.RemoveComponent(glyphObject);
@@ -114,6 +151,7 @@ namespace Glyph.Core
         {
             base.Clear();
 
+            _keyedComponents.Clear();
             Schedulers.ClearComponents();
         }
 
