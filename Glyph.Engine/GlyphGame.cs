@@ -75,7 +75,7 @@ namespace Glyph.Engine
             _windowSize = new Point(_graphicsDeviceManager.PreferredBackBufferWidth, _graphicsDeviceManager.PreferredBackBufferHeight);
             _lastWindowSize = WindowSize;
 
-            Engine = new GlyphEngine(new ContentLibrary(Content.ServiceProvider, contentRootPath), dependencyConfigurator);
+            Engine = new GlyphEngine(new ContentLibrary(Services, contentRootPath), dependencyConfigurator);
             Engine.Stopped += OnEngineStopped;
             Engine.FocusedClient = this;
             
