@@ -41,6 +41,8 @@ namespace Glyph.Composition.Modelization
             IGlyphCreator<TViewItem> creatorItem = _creatorItemGetter(model, modelItem, view);
 
             creatorItem.DependencyResolver = model.Resolver;
+            creatorItem.SerializationKnownTypes = model.SerializationKnownTypes;
+
             creatorItem.Instantiate();
             return creatorItem.BindedObject;
         }
