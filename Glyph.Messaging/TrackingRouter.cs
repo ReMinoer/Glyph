@@ -22,7 +22,7 @@ namespace Glyph.Messaging
             InterpretMethodName = interpretMethodName;
         }
 
-        public void Register(object item)
+        public bool Register(object item)
         {
             if (!_subscribersDelegates.TryGetValue(item, out List<Delegate> subscriberDelegates))
             {
@@ -39,6 +39,8 @@ namespace Glyph.Messaging
                 base.Add(d);
                 subscriberDelegates.Add(d);
             }
+
+            return true;
         }
 
         public void Register<T>(object item)

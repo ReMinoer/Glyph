@@ -157,12 +157,12 @@ namespace Glyph.Core
 
         public override sealed void Initialize()
         {
-            if (Disposed)
+            if (IsDisposed)
                 return;
 
             foreach (InitializeDelegate initialize in Schedulers.Initialize.Planning.ToArray())
             {
-                if (Disposed)
+                if (IsDisposed)
                     return;
 
                 initialize();
@@ -173,7 +173,7 @@ namespace Glyph.Core
 
         public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            if (Disposed)
+            if (IsDisposed)
                 return;
             
             await Task.WhenAll(Schedulers.LoadContent.Planning.Select(async x => await x(contentLibrary)).ToArray());
@@ -182,12 +182,12 @@ namespace Glyph.Core
 
         public void Update(ElapsedTime elapsedTime)
         {
-            if (Disposed || !Enabled)
+            if (IsDisposed || !Enabled)
                 return;
 
             foreach (UpdateDelegate update in Schedulers.Update.Planning.ToArray())
             {
-                if (Disposed || !Enabled)
+                if (IsDisposed || !Enabled)
                     return;
 
                 using (UpdateWatchTree.Start($"{update.Target?.GetType().GetDisplayName()} -- {update.Method.Name}"))
@@ -197,7 +197,7 @@ namespace Glyph.Core
         
         public void Draw(IDrawer drawer)
         {
-            if (Disposed || !this.Displayed(drawer, drawer.Client))
+            if (IsDisposed || !this.Displayed(drawer, drawer.Client))
                 return;
 
             foreach (DrawDelegate draw in Schedulers.Draw.Planning.ToArray())

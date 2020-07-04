@@ -21,7 +21,9 @@ namespace Glyph.Composition.Base
         public Guid Id { get; }
         public string Name { get; set; }
         public ComponentRouterSystem Router { get; }
-        public bool Disposed { get; private set; }
+        public bool IsDisposed { get; private set; }
+
+        public event EventHandler Disposed;
 
         public IGlyphContainer Parent
         {
@@ -156,7 +158,8 @@ namespace Glyph.Composition.Base
             IMessage disposingMessage = MessageHelper.BuildGeneric(typeof(DisposingMessage<>), GetType(), t => t.GetConstructors().First(), this);
             Router.Send(disposingMessage);
 
-            Disposed = true;
+            IsDisposed = true;
+            Disposed?.Invoke(this, EventArgs.Empty);
             base.Dispose();
         }
         

@@ -4,7 +4,7 @@ using Niddle.Attributes;
 
 namespace Glyph.Core
 {
-    public class Flipper : GlyphComponent, IFlipable
+    public class Flipper : GlyphComponent, IFlipableComponent
     {
         private Axes _axes;
 
@@ -21,13 +21,13 @@ namespace Glyph.Core
         }
 
         [Populatable(PopulateMethodName = nameof(ITracker<object>.Register))]
-        public ITracker<IFlipable> Flipables { get; } = new Tracker<IFlipable>();
+        public ITracker<IFlipableComponent> Flipables { get; } = new DisposableTracker<IFlipableComponent>();
 
         public void Flip(Axes axes)
         {
             _axes ^= axes;
 
-            foreach (IFlipable flipable in Flipables)
+            foreach (IFlipableComponent flipable in Flipables)
                 flipable.Flip(axes);
         }
     }

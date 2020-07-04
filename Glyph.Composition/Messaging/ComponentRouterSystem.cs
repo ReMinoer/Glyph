@@ -90,10 +90,9 @@ namespace Glyph.Composition.Messaging
             Global.Send(message);
         }
 
-        public void Register(object item)
+        public bool Register(object item)
         {
-            Global.Register(item);
-            Local.Register(item);
+            return Global.Register(item) || Local.Register(item);
         }
 
         public void Register<T>(object item)
@@ -184,12 +183,6 @@ namespace Glyph.Composition.Messaging
         {
             GlobalRouter.Clear();
             Local.Clear();
-        }
-
-        void ITracker<object>.ClearDisposed()
-        {
-            Global.ClearDisposed();
-            Local.ClearDisposed();
         }
 
         public IEnumerator<Delegate> GetEnumerator()

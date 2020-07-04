@@ -23,10 +23,9 @@ namespace Glyph.Messaging
         bool ICollection<Delegate>.Remove(Delegate item) => false;
         
         int ITracker<object>.Count => 0;
-        void ITracker<object>.Register(object item) {}
+        bool ITracker<object>.Register(object item) => false;
         bool ITracker<object>.Unregister(object item) => false;
         void ITracker<object>.Clear() {}
-        void ITracker<object>.ClearDisposed() {}
         bool ITracker<object>.Contains(object item) => false;
 
         void ITrackingRouter.Register<T>(object item) {}

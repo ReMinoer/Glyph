@@ -83,6 +83,11 @@ namespace Glyph.Composition.Modelization
         IGlyphComponent IGlyphData.BindedObject => BindedObject;
         protected override IEnumerable<IGlyphConfigurator<T>> SubConfiguratorsBase => SubConfigurators;
 
+        private bool _isDisposed;
+        bool INotifyDisposed.IsDisposed => _isDisposed;
+
+        public event EventHandler Disposed;
+
         protected BindedData()
         {
             Bindings.RegisterModules(BindingManager, Owner);
@@ -100,6 +105,14 @@ namespace Glyph.Composition.Modelization
         protected override void DisposeBindedObject()
         {
             BindedObject?.Dispose();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _isDisposed = true;
+            Disposed?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -6,7 +6,7 @@ using Simulacra.Injection;
 
 namespace Glyph.Composition.Modelization
 {
-    public interface IGlyphData : IBindableData, IDependencyResolverClient
+    public interface IGlyphData : IBindableData, IDependencyResolverClient, INotifyDisposed
     {
         string DisplayName { get; }
         new IGlyphComponent BindedObject { get; }

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Diese.Collections;
 using Glyph.Composition;
 using Simulacra;
 
 namespace Glyph.Core.Tracking
 {
-    public class Factory<T> : Tracker<T>, ICreator<T>
+    public class Factory<T> : DisposableTracker<T>, ICreator<T>
         where T : class, IGlyphComponent
     {
         private readonly IGlyphCompositeResolver _parent;
@@ -34,16 +33,22 @@ namespace Glyph.Core.Tracking
             return item;
         }
 
-        public override void Register(T item)
+        public override bool Register(T item)
         {
+            if (!base.Register(item))
+                return false;
+
             _parent.Add(item);
-            base.Register(item);
+            return true;
         }
 
         public override bool Unregister(T item)
         {
+            if (!base.Unregister(item))
+                return false;
+
             _parent.Remove(item);
-            return base.Unregister(item);
+            return true;
         }
 
         public override void Clear()

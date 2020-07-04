@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework;
 namespace Glyph.Space
 {
     public class TrackingSpace<T> : WriteableSpaceBase<T>
-        where T : class
+        where T : class, INotifyDisposed
     {
-        private readonly Tracker<T> _tracker;
+        private readonly DisposableTracker<T> _tracker;
         protected override ICollection<T> Items => _tracker;
 
         public TrackingSpace(Func<T, Vector2> getPoint, IPartitioner partitioner = null)
@@ -30,7 +30,7 @@ namespace Glyph.Space
         protected TrackingSpace(WriteableSpaceBase<T> parent, Func<T, Vector2> getPoint, Func<T, TopLeftRectangle> getBox, IPartitioner partitioner = null)
             : base(parent, getPoint, getBox, partitioner)
         {
-            _tracker = new Tracker<T>();
+            _tracker = new DisposableTracker<T>();
         }
 
         protected override IWriteableSpace<T> CreatePartition(IPartitioner partitioner)
