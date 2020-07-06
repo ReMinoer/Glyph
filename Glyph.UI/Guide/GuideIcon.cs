@@ -85,7 +85,7 @@ namespace Glyph.UI.Guide
             SpriteArea = Add<SpriteArea>();
 
             Text = Add<Text>();
-            Text.Asset = "guide-keys";
+            Text.Asset = "Font/guide-keys";
             Text.SpriteTransformer.Color = Color.Black;
 
             Add<SpriteRenderer>();

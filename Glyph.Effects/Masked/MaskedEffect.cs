@@ -30,7 +30,7 @@ namespace Glyph.Effects.Masked
         {
             MaskRender = new RenderTarget2D(graphicsDevice, _effectTargetRectangle.Width, _effectTargetRectangle.Height);
 
-            _square = await contentLibrary.GetOrLoad<Texture2D>("square");
+            _square = await contentLibrary.GetOrLoad<Texture2D>("Glyph/square");
         }
 
         public override void Update(GameTime gameTime)

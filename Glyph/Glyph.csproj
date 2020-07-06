@@ -6,6 +6,7 @@
     <ProjectReference Include="..\External\Fingear\External\Stave\Diese.Collections %28Stave%29\Diese.Collections %28Stave%29.csproj" />
     <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
     <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />
+    <ProjectReference Include="..\External\Simulacra\Simulacra.IO\Simulacra.IO.csproj" />
     <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj" />
   </ItemGroup>
   <ItemGroup>

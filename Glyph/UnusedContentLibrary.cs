@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Glyph.IO;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph
@@ -13,17 +14,17 @@ namespace Glyph
             ServiceProvider = serviceProvider;
         }
 
-        public Task<T> GetOrLoad<T>(string assetName)
+        public Task<T> GetOrLoad<T>(string assetPath)
         {
             throw new InvalidOperationException();
         }
 
-        public Task<T> GetOrLoadLocalized<T>(string assetName)
+        public Task<T> GetOrLoadLocalized<T>(string assetPath)
         {
             throw new InvalidOperationException();
         }
 
-        public Task<Effect> GetOrLoadEffect(string assetName)
+        public Task<Effect> GetOrLoadEffect(string assetPath)
         {
             throw new InvalidOperationException();
         }

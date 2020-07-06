@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Glyph.IO;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph
@@ -7,8 +8,8 @@ namespace Glyph
     public interface IContentLibrary
     {
         IServiceProvider ServiceProvider { get; }
-        Task<T> GetOrLoad<T>(string assetName);
-        Task<T> GetOrLoadLocalized<T>(string assetName);
-        Task<Effect> GetOrLoadEffect(string assetName);
+        Task<T> GetOrLoad<T>(string assetPath);
+        Task<T> GetOrLoadLocalized<T>(string assetPath);
+        Task<Effect> GetOrLoadEffect(string assetPath);
     }
 }
