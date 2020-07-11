@@ -16,11 +16,11 @@ namespace Glyph
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly ConcurrentBag<ContentManager> _contentManagers = new ConcurrentBag<ContentManager>();
-        private readonly ConcurrentDictionary<string, Task> _loadingTasks = new ConcurrentDictionary<string, Task>(new PathComparer());
-        
-        private readonly SemaphoreSlim _effectLock = new SemaphoreSlim(1);
+        private readonly ConcurrentDictionary<string, Task<object>> _loadingTasks = new ConcurrentDictionary<string, Task<object>>(new PathComparer());
 
-        public IServiceProvider ServiceProvider { get; }
+        private readonly IGraphicsDeviceService _graphicsDeviceService;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly SemaphoreSlim _effectLock = new SemaphoreSlim(1);
 
         private string _rootPath;
         public string RootPath
@@ -35,28 +35,30 @@ namespace Glyph
             }
         }
 
-        public ContentLibrary(IServiceProvider serviceProvider, string rootPath = null)
+        public ContentLibrary(IGraphicsDeviceService graphicsDeviceService, string rootPath = null)
         {
-            ServiceProvider = serviceProvider;
-            RootPath = rootPath;
+            _graphicsDeviceService = graphicsDeviceService;
+            _serviceProvider = new ServiceProvider(graphicsDeviceService);
+
+            RootPath = rootPath ?? "Content";
         }
 
-        public Task<T> GetOrLoad<T>(string assetPath)
+        public async Task<T> GetOrLoad<T>(string assetPath)
         {
-            return (Task<T>)_loadingTasks.GetOrAdd(assetPath, x => Task.Run(() => Load<T>(x)));
+            return (T)await _loadingTasks.GetOrAdd(assetPath, x => Task.Run(() => Load<T>(x)));
         }
 
-        public Task<T> GetOrLoadLocalized<T>(string assetPath)
+        public async Task<T> GetOrLoadLocalized<T>(string assetPath)
         {
-            return (Task<T>)_loadingTasks.GetOrAdd(assetPath, x => Task.Run(() => LoadLocalized<T>(x)));
+            return (T)await _loadingTasks.GetOrAdd(assetPath, x => Task.Run(() => LoadLocalized<T>(x)));
         }
 
-        public Task<Effect> GetOrLoadEffect(string assetPath)
+        public async Task<Effect> GetOrLoadEffect(string assetPath)
         {
-            return (Task<Effect>)_loadingTasks.GetOrAdd(assetPath, LoadEffect);
+            return (Effect)await _loadingTasks.GetOrAdd(assetPath, LoadEffect);
         }
 
-        private T Load<T>(string assetPath)
+        private object Load<T>(string assetPath)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             ContentManager contentManager = GetContentManager();
@@ -69,7 +71,7 @@ namespace Glyph
             return content;
         }
 
-        private T LoadLocalized<T>(string assetPath)
+        private object LoadLocalized<T>(string assetPath)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             ContentManager contentManager = GetContentManager();
@@ -82,17 +84,15 @@ namespace Glyph
             return content;
         }
 
-        private async Task<Effect> LoadEffect(string assetPath)
+        private async Task<object> LoadEffect(string assetPath)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
-
-            GraphicsDevice graphicsDevice = ((IGraphicsDeviceService)ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
 
             Effect effect;
             await _effectLock.WaitAsync();
             try
             {
-                effect = new Effect(graphicsDevice, File.ReadAllBytes(Path.Combine(_rootPath, assetPath + ".mgfx")));
+                effect = new Effect(_graphicsDeviceService.GraphicsDevice, File.ReadAllBytes(Path.Combine(_rootPath, assetPath + ".mgfx")));
             }
             finally
             {
@@ -113,13 +113,31 @@ namespace Glyph
         private ContentManager GetContentManager()
         {
             if (!_contentManagers.TryTake(out ContentManager contentManager))
-                contentManager = new ContentManager(ServiceProvider, _rootPath);
+                contentManager = new ContentManager(_serviceProvider, _rootPath);
             return contentManager;
         }
 
         private void ReleaseContentManager(ContentManager contentManager)
         {
             _contentManagers.Add(contentManager);
+        }
+
+        public class ServiceProvider : IServiceProvider
+        {
+            public IGraphicsDeviceService GraphicsDeviceService { get; }
+
+            public ServiceProvider(IGraphicsDeviceService graphicsDeviceService)
+            {
+                GraphicsDeviceService = graphicsDeviceService;
+            }
+
+            public object GetService(Type serviceType)
+            {
+                if (serviceType == typeof(IGraphicsDeviceService))
+                    return GraphicsDeviceService;
+
+                throw new InvalidOperationException();
+            }
         }
     }
 }

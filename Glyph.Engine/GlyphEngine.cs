@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,12 +31,19 @@ namespace Glyph.Engine
         public IDependencyResolver Resolver { get; }
         public RootView RootView { get; private set; }
         public ProjectionManager ProjectionManager { get; }
-        public IContentLibrary ContentLibrary { get; }
         public InputClientManager InputClientManager { get; }
         public InteractionManager InteractionManager { get; }
-        private GlyphObject _root;
         private SpriteBatch _spriteBatch;
 
+        private readonly IGraphicsDeviceService _graphicsDeviceService;
+
+        private IContentLibrary _contentLibrary;
+        public IContentLibrary ContentLibrary
+        {
+            get => _contentLibrary ?? (_contentLibrary = new ContentLibrary(_graphicsDeviceService));
+        }
+
+        private GlyphObject _root;
         public GlyphObject Root
         {
             get
@@ -78,9 +84,12 @@ namespace Glyph.Engine
         public event Action Paused;
         public event Action<IGlyphClient> FocusChanged;
 
-        public GlyphEngine(IContentLibrary contentLibrary, Action<IDependencyRegistry> dependencyConfigurator = null, params string[] args)
+        public GlyphEngine(IGraphicsDeviceService graphicsDeviceService, IContentLibrary contentLibrary, Action<IDependencyRegistry> dependencyConfigurator = null, params string[] args)
         {
             Logger.Info("Engine arguments : " + string.Join(" ", args));
+
+            _graphicsDeviceService = graphicsDeviceService;
+            _contentLibrary = contentLibrary;
 
             Registry = GlyphRegistry.BuildGlobalRegistry();
             dependencyConfigurator?.Invoke(Registry);
@@ -91,8 +100,7 @@ namespace Glyph.Engine
 
             RootView = new RootView();
             ProjectionManager = new ProjectionManager(RootView, Resolver.Resolve<ISubscribableRouter>());
-            
-            ContentLibrary = contentLibrary;
+
             InputClientManager = new InputClientManager();
             InteractionManager = new InteractionManager();
 
@@ -109,7 +117,7 @@ namespace Glyph.Engine
                     return FocusedClient.GraphicsDevice;
                 }
                 
-                return ((IGraphicsDeviceService)ContentLibrary.ServiceProvider.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
+                return _graphicsDeviceService.GraphicsDevice;
             }));
         }
 

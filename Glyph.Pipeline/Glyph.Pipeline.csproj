@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(TargetFramework)</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Glyph\Glyph.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="2.1.0" />
+    <PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.0.1460-develop" />
+    <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
+    <PackageReference Include="PropertyChanged.Fody" Version="2.1.4" />
+  </ItemGroup>
+</Project>

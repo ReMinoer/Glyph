@@ -13,7 +13,7 @@ namespace Glyph.Demos.PrimitiveRendering
     {
         static public void Main()
         {
-            using (var game = new GlyphGame())
+            using (var game = new GlyphGame(_ => new UnusedContentLibrary()))
             {
                 GlyphEngine engine = game.Engine;
                 GlyphObject root = engine.Root;

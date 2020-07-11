@@ -16,14 +16,13 @@ namespace Glyph.Engine
 {
     public class GlyphGame : Game, IGlyphClient
     {
-        private readonly GraphicsDeviceManager _graphicsDeviceManager;
-
         private IControl _fullscreenControl;
         private Point _windowSize;
         private Point _lastWindowSize;
         private bool _resizing;
 
         public GlyphEngine Engine { get; }
+        public GraphicsDeviceManager GraphicsDeviceManager { get; }
 
         [DllImport("user32.dll")]
         static extern IntPtr GetForegroundWindow();
@@ -41,7 +40,7 @@ namespace Glyph.Engine
             get => _windowSize;
             set
             {
-                if (_graphicsDeviceManager.IsFullScreen)
+                if (GraphicsDeviceManager.IsFullScreen)
                 {
                     _lastWindowSize = value;
                     return;
@@ -52,30 +51,30 @@ namespace Glyph.Engine
 
                 _windowSize = value;
 
-                _graphicsDeviceManager.PreferredBackBufferWidth = value.X;
-                _graphicsDeviceManager.PreferredBackBufferHeight = value.Y;
-                _graphicsDeviceManager.ApplyChanges();
+                GraphicsDeviceManager.PreferredBackBufferWidth = value.X;
+                GraphicsDeviceManager.PreferredBackBufferHeight = value.Y;
+                GraphicsDeviceManager.ApplyChanges();
 
                 SizeChanged?.Invoke(_windowSize.ToVector2());
             }
         }
 
-        public GlyphGame(string contentRootPath = null, Action<IDependencyRegistry> dependencyConfigurator = null)
+        public GlyphGame(Func<IGraphicsDeviceService, IContentLibrary> contentLibraryCreator, Action<IDependencyRegistry> dependencyConfigurator = null)
         {
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnClientSizeChanged;
             IsMouseVisible = false;
 
-            _graphicsDeviceManager = new GraphicsDeviceManager(this)
+            GraphicsDeviceManager = new GraphicsDeviceManager(this)
             {
                 PreferMultiSampling = true
             };
-            _graphicsDeviceManager.ApplyChanges();
+            GraphicsDeviceManager.ApplyChanges();
             
-            _windowSize = new Point(_graphicsDeviceManager.PreferredBackBufferWidth, _graphicsDeviceManager.PreferredBackBufferHeight);
+            _windowSize = new Point(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
             _lastWindowSize = WindowSize;
 
-            Engine = new GlyphEngine(new ContentLibrary(Services, contentRootPath), dependencyConfigurator);
+            Engine = new GlyphEngine(GraphicsDeviceManager, contentLibraryCreator(GraphicsDeviceManager), dependencyConfigurator);
             Engine.Stopped += OnEngineStopped;
             Engine.FocusedClient = this;
             

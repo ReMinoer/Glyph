@@ -7,19 +7,22 @@ namespace Glyph.Graphics
 {
     public class SpriteLoader : SpriteSourceBase, ILoadContent
     {
-        private Texture2D _texture;
         public string Asset { get; set; }
-        public override event Action<ISpriteSource> Loaded;
 
-        public override sealed Texture2D Texture
-        {
-            get { return _texture; }
-        }
+        private Texture2D _texture;
+        public override sealed Texture2D Texture => _texture;
+
+        public override event Action<ISpriteSource> Loaded;
 
         public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            _texture = await contentLibrary.GetOrLoad<Texture2D>(Asset);
+            if (Asset == null)
+            {
+                _texture = null;
+                return;
+            }
 
+            _texture = await contentLibrary.GetOrLoad<Texture2D>(Asset);
             Loaded?.Invoke(this);
         }
     }
