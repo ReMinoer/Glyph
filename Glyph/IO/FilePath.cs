@@ -8,7 +8,10 @@
         {
             Path = PathUtils.Normalize(path);
         }
-        
+
+        static public FilePath None => new FilePath();
+        public bool Defined => !string.IsNullOrWhiteSpace(Path);
+
         static public implicit operator string(FilePath filePath) => filePath.Path;
         static public implicit operator FilePath(string path) => new FilePath(path);
 
