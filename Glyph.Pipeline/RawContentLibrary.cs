@@ -1,48 +1,37 @@
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Glyph.Content;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Framework.Content.Pipeline.Builder;
 using NLog;
 using Simulacra.IO.Utils;
+using Simulacra.IO.Watching;
 
 namespace Glyph.Pipeline
 {
-    public class RawContentLibrary : IContentLibrary
+    public class RawContentLibrary : ContentLibrary
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IContentLibrary _cacheLibrary;
-        private readonly ConcurrentDictionary<string, Task<object>> _loadingTasks = new ConcurrentDictionary<string, Task<object>>(new PathComparer());
-
+        private readonly PathWatcher _pathWatcher;
         private readonly PipelineManager _pipelineManager;
         private readonly SemaphoreSlim _pipelineSemaphore = new SemaphoreSlim(1);
 
-        private string _rootPath;
-        public string RootPath
+        public string RawRootPath { get; }
+
+        public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, string rawRootPath, string cacheRootPath)
+            : base(graphicsDeviceService, Path.Combine(cacheRootPath, "bin"))
         {
-            get => _rootPath;
-            set
-            {
-                if (PathComparer.Equals(_rootPath, value, PathCaseComparison.EnvironmentDefault, FolderPathEquality.RespectAmbiguity))
-                    return;
+            RawRootPath = rawRootPath;
 
-                _rootPath = value;
-            }
-        }
-
-        public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, string rootPath, string cacheRootPath)
-        {
-            RootPath = rootPath;
-            string cacheBinPath = Path.Combine(cacheRootPath, "bin");
-            string cacheObjPath = Path.Combine(cacheRootPath, "obj");
-
-            _cacheLibrary = new ContentLibrary(graphicsDeviceService, cacheBinPath);
-            _pipelineManager = new PipelineManager(rootPath, cacheBinPath, cacheObjPath)
+            _pathWatcher = new PathWatcher();
+            _pipelineManager = new PipelineManager(RawRootPath, RootPath, Path.Combine(cacheRootPath, "obj"))
             {
                 CompressContent = true,
                 Profile = GraphicsProfile.HiDef,
@@ -50,37 +39,38 @@ namespace Glyph.Pipeline
             };
         }
 
-        public async Task<T> GetOrLoad<T>(string assetPath)
+        protected override IAsset<T> CreateAsset<T>(string assetPath, LoadDelegate<T> loadDelegate)
         {
-            return (T)await _loadingTasks.GetOrAdd(assetPath, Load<T>);
+            var asset = new Asset<T>(assetPath, loadDelegate);
+
+            // TODO: Ideally it should trigger asset refresh for all future changes on files using same asset path and any extension
+            foreach (string rawFilePath in GetAllRawFilesMatchingAssetPath(assetPath))
+            {
+                string absoluteRawFilePath = rawFilePath;
+                if (!PathUtils.IsValidAbsolutePath(absoluteRawFilePath))
+                    absoluteRawFilePath = Path.Combine(Environment.CurrentDirectory, rawFilePath);
+
+                // Refresh asset on file changes
+                _pathWatcher.WatchFile(absoluteRawFilePath, OnFileChanged);
+                async void OnFileChanged(object s, FileChangedEventArgs e) => await asset.ResetAsync();
+
+                // Stop watching changes on asset full release
+                asset.FullyReleasing += (s, e) => _pathWatcher.Unwatch(OnFileChanged);
+            }
+
+            return asset;
         }
 
-        public async Task<T> GetOrLoadLocalized<T>(string assetPath)
-        {
-            return (T)await _loadingTasks.GetOrAdd(assetPath, LoadLocalized<T>);
-        }
-
-        public async Task<Effect> GetOrLoadEffect(string assetPath)
-        {
-            return (Effect)await _loadingTasks.GetOrAdd(assetPath, LoadEffect);
-        }
-
-        private async Task<object> Load<T>(string assetPath)
+        protected override async Task<T> Load<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
         {
             await CookAsset(assetPath);
-            return await _cacheLibrary.GetOrLoad<T>(assetPath);
+            return await base.Load(loadingFunc, assetPath, cancellationToken);
         }
 
-        private async Task<object> LoadLocalized<T>(string assetPath)
+        protected override async Task<Effect> LoadEffect(string assetPath, CancellationToken cancellationToken)
         {
             await CookAsset(assetPath);
-            return await _cacheLibrary.GetOrLoadLocalized<T>(assetPath);
-        }
-
-        private async Task<object> LoadEffect(string assetPath)
-        {
-            await CookAsset(assetPath);
-            return await _cacheLibrary.GetOrLoadEffect(assetPath);
+            return await base.LoadEffect(assetPath, cancellationToken);
         }
 
         private async Task CookAsset(string assetPath)
@@ -92,9 +82,9 @@ namespace Glyph.Pipeline
             bool foundProcessor = false;
             try
             {
-                foreach (string sourcePath in Directory.EnumerateFiles(RootPath, $"{assetPath}.*"))
+                foreach (string rawFilePath in GetAllRawFilesMatchingAssetPath(assetPath))
                 {
-                    string importerName = _pipelineManager.FindImporterByExtension(Path.GetExtension(sourcePath));
+                    string importerName = _pipelineManager.FindImporterByExtension(Path.GetExtension(rawFilePath));
                     if (importerName == null)
                         continue;
 
@@ -106,8 +96,8 @@ namespace Glyph.Pipeline
 
                     foundProcessor = true;
 
-                    string outputPath = sourcePath.Substring(RootPath.Length + 1);
-                    await Task.Run(() => _pipelineManager.BuildContent(sourcePath, outputPath, importerName, processorName));
+                    string outputPath = rawFilePath.Substring(RawRootPath.Length + 1);
+                    await Task.Run(() => _pipelineManager.BuildContent(rawFilePath, outputPath, importerName, processorName));
 
                     Logger.Info($"Cooked {assetPath} ({stopwatch.ElapsedMilliseconds} ms, Importer: {importerName}, Processor: {processorName})");
                     return;
@@ -124,5 +114,7 @@ namespace Glyph.Pipeline
             if (!foundProcessor)
                 throw new PipelineException($"No processor found for {assetPath}");
         }
+
+        private IEnumerable<string> GetAllRawFilesMatchingAssetPath(string assetPath) => Directory.EnumerateFiles(RawRootPath, $"{assetPath}.*");
     }
 }

@@ -29,7 +29,7 @@ namespace Glyph.Export
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomainOnReflectionOnlyAssemblyResolve;
 
             IEnumerable<Assembly> assemblies = Directory.GetFiles(assemblyDirectory, "*.dll", SearchOption.TopDirectoryOnly)
-                                                        .Where(x => Path.GetFileName(x) != "netstandard.dll")
+                                                        .Where(x => !IgnoredDlls.Contains(Path.GetFileName(x)))
                                                         .Select(Assembly.ReflectionOnlyLoadFrom)
                                                         .Where(HasAssemblyContainsAttribute)
                                                         .ToArray();
@@ -50,5 +50,17 @@ namespace Glyph.Export
                 return false;
             }
         }
+
+        static private string[] IgnoredDlls =
+        {
+            "netstandard.dll",
+            // "Module was expected to contain an assembly manifest."
+            "assimp.dll",
+            "FreeImage.dll",
+            "freetype6.dll",
+            "libmojoshader_64.dll",
+            "nvtt.dll",
+            "PVRTexLibWrapper.dll"
+        };
     }
 }

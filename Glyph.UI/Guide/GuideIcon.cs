@@ -30,16 +30,16 @@ namespace Glyph.UI.Guide
         public bool Clickable { get; set; }
         public bool KeyNameVisible { get; set; }
 
-        public string ComputerIconAsset
+        public string ComputerIconAssetPath
         {
-            get => ComputerIcon.Asset;
-            set => ComputerIcon.Asset = value;
+            get => ComputerIcon.AssetPath;
+            set => ComputerIcon.AssetPath = value;
         }
 
-        public string GamePadIconAsset
+        public string GamePadIconAssetPath
         {
-            get => GamePadIcon.Asset;
-            set => GamePadIcon.Asset = value;
+            get => GamePadIcon.AssetPath;
+            set => GamePadIcon.AssetPath = value;
         }
 
         private Fingear.Controls.IControl _control;
@@ -60,7 +60,7 @@ namespace Glyph.UI.Guide
         public event EventHandler Clicked;
         public event EventHandler IconChanged;
 
-        public GuideIcon(GlyphResolveContext context)
+        public GuideIcon(GlyphResolveContext context, IContentLibrary contentLibrary)
             : base(context)
         {
             SceneNode = Add<SceneNode>();
@@ -68,18 +68,14 @@ namespace Glyph.UI.Guide
 
             SpriteSheetSplit = Add<SpriteSheetSplit>();
 
-            ComputerIcon = new SpriteSheet
-            {
-                Asset = ComputerIconAsset
-            };
+            ComputerIcon = new SpriteSheet(contentLibrary);
+            ComputerIcon.AssetPath = ComputerIconAssetPath;
+
+            GamePadIcon = new SpriteSheet(contentLibrary);
+            GamePadIcon.AssetPath = GamePadIconAssetPath;
+
             SpriteSheetSplit.Add(ComputerIcon);
-
-            GamePadIcon = new SpriteSheet
-            {
-                Asset = GamePadIconAsset
-            };
             SpriteSheetSplit.Add(GamePadIcon);
-
             SpriteSheetSplit.ApplyCarver(new UniformCarver(1, 1));
 
             SpriteArea = Add<SpriteArea>();
@@ -105,9 +101,10 @@ namespace Glyph.UI.Guide
             TransitionOpacity.Reset();
         }
 
-        private async Task LoadContentLocal(IContentLibrary content)
+        private Task LoadContentLocal(IContentLibrary content)
         {
             IconChanged?.Invoke(this, EventArgs.Empty);
+            return Task.CompletedTask;
         }
 
         private void HandleInput(ElapsedTime elapsedTime)

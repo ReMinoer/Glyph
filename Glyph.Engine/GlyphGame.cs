@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Niddle;
 using Fingear.Controls;
 using Fingear.Controls.Composites;
@@ -106,7 +107,7 @@ namespace Glyph.Engine
         protected override void LoadContent()
         {
             base.LoadContent();
-            Engine.LoadContent();
+            Task.Run(async () => await Engine.LoadContentAsync()).Wait();
         }
 
         protected override void Update(GameTime gameTime)

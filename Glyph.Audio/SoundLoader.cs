@@ -22,7 +22,7 @@ namespace Glyph.Audio
 
         public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            await Task.WhenAll(_assets.Select(async x => _soundEffects[x.Key] = await contentLibrary.GetOrLoad<SoundEffect>(x.Value)));
+            await Task.WhenAll(_assets.Select(async x => _soundEffects[x.Key] = await contentLibrary.GetAsset<SoundEffect>(x.Value).GetContentAsync()));
         }
 
         public void Add(object key, string asset)

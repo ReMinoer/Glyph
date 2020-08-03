@@ -28,10 +28,10 @@ namespace Glyph.Graphics
             }
         }
 
-        public string Asset
+        public string AssetPath
         {
-            get { return _spriteLoader.Asset; }
-            set { _spriteLoader.Asset = value; }
+            get { return _spriteLoader.AssetPath; }
+            set { _spriteLoader.AssetPath = value; }
         }
 
         public Texture2D Texture
@@ -41,9 +41,9 @@ namespace Glyph.Graphics
 
         public event Action<ISpriteSource> Loaded;
 
-        public SpriteSheet()
+        public SpriteSheet(IContentLibrary contentLibrary)
         {
-            _spriteLoader = new SpriteLoader();
+            _spriteLoader = new SpriteLoader(contentLibrary);
             Components.Add(_spriteLoader);
 
             Frames = new List<Rectangle>();

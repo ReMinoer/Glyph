@@ -1,12 +1,12 @@
-using System.Threading.Tasks;
+using Glyph.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph
 {
     public interface IContentLibrary
     {
-        Task<T> GetOrLoad<T>(string assetPath);
-        Task<T> GetOrLoadLocalized<T>(string assetPath);
-        Task<Effect> GetOrLoadEffect(string assetPath);
+        IAsset<T> GetAsset<T>(string assetPath);
+        IAsset<T> GetLocalizedAsset<T>(string assetPath);
+        IAsset<Effect> GetEffectAsset(string assetPath);
     }
 }

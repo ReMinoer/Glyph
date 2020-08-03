@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using Fingear.MonoGame;
 using Glyph.Core.Inputs;
@@ -37,7 +38,7 @@ namespace Glyph.WpfInterop
                 if (IsInitialized)
                 {
                     Engine?.Initialize();
-                    Engine?.LoadContent();
+                    Task.Run(() => Engine?.LoadContentAsync()).Wait();
                 }
 
                 if (IsLoaded && Engine != null && !Engine.IsStarted)
@@ -78,7 +79,7 @@ namespace Glyph.WpfInterop
         protected override void LoadContent()
         {
             base.LoadContent();
-            Engine?.LoadContent();
+            Task.Run(() => Engine?.LoadContentAsync()).Wait();
         }
 
         protected override void Update(GameTime gameTime)

@@ -1,29 +1,54 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Glyph.Composition;
+using Glyph.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class SpriteLoader : SpriteSourceBase, ILoadContent
+    public class SpriteLoader : SpriteSourceBase, ILoadContent, IUpdate
     {
-        public string Asset { get; set; }
+        private readonly IContentLibrary _contentLibrary;
 
         private Texture2D _texture;
         public override sealed Texture2D Texture => _texture;
 
+        private string _assetPath;
+        private readonly AssetAsyncLoader<Texture2D> _assetAsyncLoader = new AssetAsyncLoader<Texture2D>();
+
+        public string AssetPath
+        {
+            get => _assetPath;
+            set
+            {
+                if (_assetPath == value)
+                    return;
+
+                _assetPath = value;
+                _assetAsyncLoader.Asset = value != null ? _contentLibrary.GetAsset<Texture2D>(value) : null;
+            }
+        }
+
         public override event Action<ISpriteSource> Loaded;
+
+        public SpriteLoader(IContentLibrary contentLibrary)
+        {
+            _contentLibrary = contentLibrary;
+        }
 
         public async Task LoadContent(IContentLibrary contentLibrary)
         {
-            if (Asset == null)
-            {
-                _texture = null;
-                return;
-            }
+            await _assetAsyncLoader.LoadContent(CancellationToken.None);
 
-            _texture = await contentLibrary.GetOrLoad<Texture2D>(Asset);
-            Loaded?.Invoke(this);
+            if (_assetAsyncLoader.UpdateContent(ref _texture))
+                Loaded?.Invoke(this);
+        }
+
+        public void Update(ElapsedTime elapsedTime)
+        {
+            if (_assetAsyncLoader.UpdateContent(ref _texture))
+                Loaded?.Invoke(this);
         }
     }
 }

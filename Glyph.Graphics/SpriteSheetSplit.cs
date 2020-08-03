@@ -9,6 +9,7 @@ namespace Glyph.Graphics
 {
     public sealed class SpriteSheetSplit : GlyphComposite<SpriteSheet>, ISpriteSheet, ILoadContent
     {
+        private readonly IContentLibrary _contentLibrary;
         private bool _loadedContent;
         private int _currentFrame;
         private FrameData _frameData;
@@ -43,9 +44,17 @@ namespace Glyph.Graphics
 
         public event Action<ISpriteSource> Loaded;
 
-        public void Add(string asset)
+        public SpriteSheetSplit(IContentLibrary contentLibrary)
         {
-            Add(new SpriteSheet { Asset = asset });
+            _contentLibrary = contentLibrary;
+        }
+        
+        public void Add(string assetPath)
+        {
+            Add(new SpriteSheet(_contentLibrary)
+            {
+                AssetPath = assetPath
+            });
         }
 
         public async Task LoadContent(IContentLibrary contentLibrary)

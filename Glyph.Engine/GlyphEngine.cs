@@ -7,6 +7,7 @@ using Fingear;
 using Fingear.Inputs;
 using Glyph.Application;
 using Glyph.Audio;
+using Glyph.Content;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Graphics;
@@ -129,13 +130,13 @@ namespace Glyph.Engine
             IsInitialized = true;
         }
 
-        public void LoadContent()
+        public async Task LoadContentAsync()
         {
             GraphicsDevice graphicsDevice = Resolver.Resolve<Func<GraphicsDevice>>()();
             _spriteBatch = new SpriteBatch(graphicsDevice);
 
-            Task.WaitAll(
-                Task.Run(async () => await SongPlayer.Instance.LoadContent(ContentLibrary)),
+            await Task.WhenAll(
+                SongPlayer.Instance.LoadContent(ContentLibrary),
                 Task.Run(async () =>
                 {
                     if (Root != null)

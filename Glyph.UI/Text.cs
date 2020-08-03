@@ -32,7 +32,7 @@ namespace Glyph.UI
         public async Task LoadContentLocal(IContentLibrary contentLibrary)
         {
             if (Asset != null)
-                Font = await contentLibrary.GetOrLoad<SpriteFont>(Asset);
+                Font = await contentLibrary.GetAsset<SpriteFont>(Asset).GetContentAsync();
         }
 
         public void DrawLocal(IDrawer drawer)

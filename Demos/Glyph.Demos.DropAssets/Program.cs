@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Glyph.Audio;
+using Glyph.Content;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Engine;
@@ -22,9 +24,14 @@ namespace Glyph.Demos.DropAssets
         private const string CachePath = "Cache";
 
         static private GlyphGame _game;
+        static private Form _form;
+        static private RawContentLibrary _rawContentLibrary;
+
         static private SpriteLoader _spriteLoader;
         static private SoundLoader _soundLoader;
         static private SoundEmitter _soundEmitter;
+
+        static private CancellationTokenSource _dropCancellation;
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -35,12 +42,12 @@ namespace Glyph.Demos.DropAssets
         {
             AllocConsole();
 
-            using (_game = new GlyphGame(x => new RawContentLibrary(x, ContentPath, CachePath)))
+            using (_game = new GlyphGame(x => _rawContentLibrary = new RawContentLibrary(x, ContentPath, CachePath)))
             {
-                var form = (Form)Control.FromHandle(_game.Window.Handle);
-                form.AllowDrop = true;
-                form.DragOver += OnDragOver;
-                form.DragDrop += OnDragDrop;
+                _form = (Form)Control.FromHandle(_game.Window.Handle);
+                _form.AllowDrop = true;
+                _form.DragOver += OnDragOver;
+                _form.DragDrop += OnDragDrop;
 
                 GlyphEngine engine = _game.Engine;
                 GlyphObject root = engine.Root;
@@ -73,6 +80,9 @@ namespace Glyph.Demos.DropAssets
 
         static private async void OnDragDrop(object sender, DragEventArgs e)
         {
+            _dropCancellation?.Cancel();
+            _dropCancellation = new CancellationTokenSource();
+
             var filePaths = e.Data.GetData(DataFormats.FileDrop) as string[];
             if (filePaths == null || filePaths.Length == 0)
                 return;
@@ -80,31 +90,43 @@ namespace Glyph.Demos.DropAssets
             string filePath = filePaths[0];
             Console.WriteLine($"Drop {filePath}...");
 
-            await CopyFileToContentFolder(filePath);
-            await LoadAssetAsync(filePath);
+            await CopyFileToContentFolder(filePath, _dropCancellation.Token);
+            await LoadAssetAsync(filePath, _dropCancellation.Token);
+
+            // Focus to update engine and update content. It should not be necessary.
+            _form.Focus();
         }
 
-        static private Task CopyFileToContentFolder(string filePath)
+        static private Task CopyFileToContentFolder(string filePath, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             string fileName = Path.GetFileName(filePath);
 
             if (!Directory.Exists(ContentPath))
                 Directory.CreateDirectory(ContentPath);
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             string copyPath = Path.Combine(ContentPath, fileName);
-            return Task.Run(() => File.Copy(filePath, copyPath, overwrite: true));
+            return Task.Run(() => File.Copy(filePath, copyPath, overwrite: true), cancellationToken);
         }
 
-        static private async Task LoadAssetAsync(string filePath)
+        static private async Task LoadAssetAsync(string filePath, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             string assetPath = Path.GetFileNameWithoutExtension(filePath);
 
-            var asset = await _game.Engine.ContentLibrary.GetOrLoad<object>(assetPath);
-            switch (asset)
+            // Get uncached asset to determine content type
+            IAsset<object> uncachedAsset = _rawContentLibrary.GetAsset<object>(assetPath);
+            object content = await uncachedAsset.GetContentAsync(cancellationToken);
+            await uncachedAsset.ReleaseAsync();
+
+            switch (content)
             {
                 case Texture2D _:
-                    _spriteLoader.Asset = assetPath;
-                    await _spriteLoader.LoadContent(_game.Engine.ContentLibrary);
+                    _spriteLoader.AssetPath = assetPath;
                     break;
                 case SoundEffect _:
                     const string key = nameof(key);
