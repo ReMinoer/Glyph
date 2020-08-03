@@ -5,8 +5,7 @@ using Simulacra.Binding.Collection.Base;
 namespace Glyph.Composition.Modelization
 {
     public class OneWayFactoryBinding<TModel, TView, TModelItem, TViewItem> : OneWayCollectionBindingBase<TModel, TView, TModelItem, TViewItem>
-        where TModel : BindedData<TModel, TView>
-        where TView : class, IGlyphComponent
+        where TModel : IGlyphData, IHierarchicalData
         where TViewItem : class, IGlyphComponent
     {
         private readonly Func<TModel, TModelItem, TView, IGlyphCreator<TViewItem>> _creatorItemGetter;
@@ -40,7 +39,7 @@ namespace Glyph.Composition.Modelization
         {
             IGlyphCreator<TViewItem> creatorItem = _creatorItemGetter(model, modelItem, view);
 
-            creatorItem.DependencyResolver = model.Resolver;
+            creatorItem.DependencyResolver = model.DependencyResolver;
             creatorItem.SerializationKnownTypes = model.SerializationKnownTypes;
 
             creatorItem.Instantiate();

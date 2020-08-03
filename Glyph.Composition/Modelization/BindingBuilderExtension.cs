@@ -24,8 +24,7 @@ namespace Glyph.Composition.Modelization
         static public IBindingBuilder<TModel, TView, TLoadedValue, TBindingCollection> Load<TModel, TView, TLoadedValue, TBindingCollection>(
             this IBindingBuilder<TModel, TView, string, TBindingCollection> builder,
             Func<ISerializationFormat<TLoadedValue>> serializationFormatProvider)
-            where TModel : BindedData<TModel, TView>
-            where TView : class, IGlyphComponent
+            where TModel : IGlyphData
         {
             return builder.Select((mv, m, v) => SafeLoad(mv, stream =>
             {
@@ -49,8 +48,7 @@ namespace Glyph.Composition.Modelization
         static public IBindingBuilder<TModel, TView, TLoadedValue, TBindingCollection> Load<TModel, TView, TLoadedValue, TBindingCollection>(
             this IBindingBuilder<TModel, TView, FilePath, TBindingCollection> builder,
             Func<ISerializationFormat<TLoadedValue>> serializationFormatProvider)
-            where TModel : BindedData<TModel, TView>
-            where TView : class, IGlyphComponent
+            where TModel : IGlyphData
         {
             return builder.Select((mv, m, v) => SafeLoad(mv, stream =>
             {
@@ -105,8 +103,7 @@ namespace Glyph.Composition.Modelization
 
         static public IBindingBuilder<TModel, TView, IGlyphComponent, TBindingCollection> CreateComponent<TModel, TView, TCreator, TBindingCollection>(
             this IBindingBuilder<TModel, TView, TCreator, TBindingCollection> builder)
-            where TModel : BindedData<TModel, TView>
-            where TView : class, IGlyphComponent
+            where TModel : IGlyphData
             where TCreator : IGlyphCreator<IGlyphComponent>
         {
             return builder.CreateComponent<TModel, TView, TCreator, IGlyphComponent, TBindingCollection>();
@@ -114,8 +111,7 @@ namespace Glyph.Composition.Modelization
 
         static public IBindingBuilder<TModel, TView, TCreated, TBindingCollection> CreateComponent<TModel, TView, TCreator, TCreated, TBindingCollection>(
             this IBindingBuilder<TModel, TView, TCreator, TBindingCollection> builder)
-            where TModel : BindedData<TModel, TView>
-            where TView : class, IGlyphComponent
+            where TModel : IGlyphData
             where TCreator : IGlyphCreator<TCreated>
             where TCreated : IGlyphComponent
         {
@@ -125,14 +121,14 @@ namespace Glyph.Composition.Modelization
                     return default;
 
                 mv.SerializationKnownTypes = m.SerializationKnownTypes;
-                mv.DependencyResolver = m.Resolver;
+                mv.DependencyResolver = m.DependencyResolver;
                 return mv.Create();
             });
         }
 
         static public void ToBindedComposite<TModel, TView, TModelItem>(this ICollectionBindingBuilder<TModel, TView, TModelItem, TModelItem> builder)
-            where TModel : BindedData<TModel, TView>
-            where TView : class, IGlyphComposite<IGlyphComponent>
+            where TModel : IGlyphData, IHierarchicalData
+            where TView : IGlyphComposite<IGlyphComponent>
             where TModelItem : IGlyphCreator<IGlyphComponent>
         {
             builder.ToComposite(v => v);
@@ -141,8 +137,7 @@ namespace Glyph.Composition.Modelization
         static public void ToComposite<TModel, TView, TModelItem>(
             this ICollectionBindingBuilder<TModel, TView, TModelItem, TModelItem> builder,
             Func<TView, IGlyphComposite<IGlyphComponent>> compositeGetter)
-            where TModel : BindedData<TModel, TView>
-            where TView : class, IGlyphComponent
+            where TModel : IGlyphData, IHierarchicalData
             where TModelItem : IGlyphCreator<IGlyphComponent>
         {
             builder.BindingCollection.Add(builder.ReferencePropertyName, new OneWayFactoryBinding<TModel, TView, TModelItem, IGlyphComponent>(

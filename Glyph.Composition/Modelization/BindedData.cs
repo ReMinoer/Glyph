@@ -15,7 +15,7 @@ using Simulacra.Injection.Base;
 
 namespace Glyph.Composition.Modelization
 {
-    public class BindedData<TData, T> : ResolvingDataBase<TData, T, IGlyphConfigurator<T>>, IGlyphCreator<T>, IGlyphConfigurator<T>
+    public class BindedData<TData, T> : ResolvingDataBase<TData, T, IGlyphConfigurator<T>>, IGlyphCreator<T>, IGlyphConfigurator<T>, IHierarchicalData
         where TData : BindedData<TData, T>
         where T : class, IGlyphComponent
     {
@@ -53,18 +53,17 @@ namespace Glyph.Composition.Modelization
         new public bool IsInstantiated => base.IsInstantiated;
 
         [Browsable(false), IgnoreDataMember]
-        public SubDataCollection<IGlyphConfigurator<T>, TData, T> SubConfigurators { get; }
+        public SubDataCollection<IGlyphConfigurator<T>> SubConfigurators { get; }
 
         [Browsable(false), IgnoreDataMember]
-        public SubDataCollection<IGlyphData, TData, T> SubData { get; }
+        public SubDataCollection<IGlyphData> SubData { get; }
 
         [Browsable(false), IgnoreDataMember]
         public IReadOnlyObservableCollection<IGlyphData> Children { get; }
 
-        [Browsable(false), IgnoreDataMember]
-        public override IDependencyResolver DependencyResolver
+        protected override IDependencyResolver DependencyResolver
         {
-            protected get => base.DependencyResolver;
+            get => base.DependencyResolver;
             set
             {
                 base.DependencyResolver = value;
@@ -73,9 +72,13 @@ namespace Glyph.Composition.Modelization
                     subConfigurator.DependencyResolver = value;
             }
         }
-        
+
         [Browsable(false), IgnoreDataMember]
-        public IDependencyResolver Resolver => DependencyResolver;
+        public IDependencyResolver Resolver
+        {
+            get => DependencyResolver;
+            set => DependencyResolver = value;
+        }
 
         [Browsable(false), IgnoreDataMember]
         public IEnumerable<Type> SerializationKnownTypes { get; set; }
@@ -92,8 +95,8 @@ namespace Glyph.Composition.Modelization
         {
             Bindings.RegisterModules(BindingManager, Owner);
 
-            SubConfigurators = new SubDataCollection<IGlyphConfigurator<T>, TData, T>(this);
-            SubData = new SubDataCollection<IGlyphData, TData, T>(this);
+            SubConfigurators = new SubDataCollection<IGlyphConfigurator<T>>(this);
+            SubData = new SubDataCollection<IGlyphData>(this);
 
             var readOnlySubConfiguratos = new EnumerableReadOnlyObservableCollection<IGlyphData>(SubConfigurators);
             var readOnlySubData = new ReadOnlyObservableCollection<IGlyphData>(SubData);

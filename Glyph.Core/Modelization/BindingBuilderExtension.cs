@@ -8,7 +8,6 @@ namespace Glyph.Core.Modelization
     static public class BindingBuilderExtension
     {
         static public void SetToBindedObject<TModel, TView, TComponent, TBindingCollection>(this IBindingBuilder<TModel, TView, TComponent, TBindingCollection> builder)
-            where TModel : BindedData<TModel, TView>
             where TView : GlyphObject
             where TComponent : IGlyphComponent
         {
@@ -18,7 +17,6 @@ namespace Glyph.Core.Modelization
         static public void SetToObject<TModel, TView, TComponent, TBindingCollection>(
             this IBindingBuilder<TModel, TView, TComponent, TBindingCollection> builder,
             Func<TView, GlyphObject> objectGetter)
-            where TModel : BindedData<TModel, TView>
             where TView : class, IGlyphComponent
             where TComponent : IGlyphComponent
         {

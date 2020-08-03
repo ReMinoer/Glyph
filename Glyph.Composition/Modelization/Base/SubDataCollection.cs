@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using Diese.Collections.Observables;
+using Simulacra.Injection;
 
 namespace Glyph.Composition.Modelization.Base
 {
-    public class SubDataCollection<TGlyphData, TData, T> : IObservableCollection<TGlyphData>
+    public class SubDataCollection<TGlyphData> : IObservableCollection<TGlyphData>
         where TGlyphData : IGlyphData
-        where T : class, IGlyphComponent
-        where TData : BindedData<TData, T>
     {
         private readonly IObservableCollection<TGlyphData> _collectionImplementation;
-        private readonly BindedData<TData, T> _bindedData;
+        private readonly IDependencyResolverClient _parentData;
 
         public int Count => _collectionImplementation.Count;
         bool ICollection<TGlyphData>.IsReadOnly => _collectionImplementation.IsReadOnly;
@@ -20,10 +19,10 @@ namespace Glyph.Composition.Modelization.Base
         public event PropertyChangedEventHandler PropertyChanged;
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public SubDataCollection(BindedData<TData, T> bindedData)
+        public SubDataCollection(IDependencyResolverClient parentData)
         {
             _collectionImplementation = new ObservableCollection<TGlyphData>();
-            _bindedData = bindedData;
+            _parentData = parentData;
 
             _collectionImplementation.PropertyChanged += OnPropertyChanged;
             _collectionImplementation.CollectionChanged += OnCollectionChanged;
@@ -35,7 +34,7 @@ namespace Glyph.Composition.Modelization.Base
         public void Add(TGlyphData item)
         {
             _collectionImplementation.Add(item);
-            item.DependencyResolver = _bindedData.Resolver;
+            item.DependencyResolver = _parentData.DependencyResolver;
         }
 
         public bool Remove(TGlyphData item) => _collectionImplementation.Remove(item);
