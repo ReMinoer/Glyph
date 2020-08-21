@@ -92,15 +92,6 @@ namespace Glyph.Content
                     // Cancel loading
                     _releaseCancellation?.Cancel();
 
-                    try
-                    {
-                        // Await for loading end
-                        await _loadingTask;
-                    }
-                    catch (OperationCanceledException)
-                    {
-                    }
-
                     // Dispose content if necessary
                     //if (_loadingTask.IsCompleted)
                     //    (_loadingTask.Result as IDisposable)?.Dispose();
