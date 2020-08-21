@@ -110,9 +110,9 @@ namespace Glyph.Pipeline
             }
 
             if (!foundImporter)
-                throw new PipelineException($"No importer found for {assetPath}");
+                throw new NoImporterException(assetPath);
             if (!foundProcessor)
-                throw new PipelineException($"No processor found for {assetPath}");
+                throw new NoProcessorException(assetPath);
         }
 
         private IEnumerable<string> GetAllRawFilesMatchingAssetPath(string assetPath) => Directory.EnumerateFiles(RawRootPath, $"{assetPath}.*");
