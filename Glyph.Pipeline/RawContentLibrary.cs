@@ -29,9 +29,10 @@ namespace Glyph.Pipeline
             : base(graphicsDeviceService, Path.Combine(cacheRootPath, "bin"))
         {
             RawRootPath = rawRootPath;
-
             _pathWatcher = new PathWatcher();
-            _pipelineManager = new PipelineManager(RawRootPath, RootPath, Path.Combine(cacheRootPath, "obj"))
+
+            // Song files are not valid if we are not using full paths
+            _pipelineManager = new PipelineManager(Path.GetFullPath(RawRootPath), Path.GetFullPath(RootPath), Path.GetFullPath(Path.Combine(cacheRootPath, "obj")))
             {
                 CompressContent = true,
                 Profile = GraphicsProfile.HiDef,
@@ -96,8 +97,10 @@ namespace Glyph.Pipeline
 
                     foundProcessor = true;
 
-                    string outputPath = rawFilePath.Substring(RawRootPath.Length + 1);
-                    await Task.Run(() => _pipelineManager.BuildContent(rawFilePath, outputPath, importerName, processorName));
+                    string inputPath = Path.GetFullPath(rawFilePath);
+                    string outputPath = Path.GetFullPath(Path.Combine(RootPath, rawFilePath.Substring(RawRootPath.Length + 1)));
+
+                    await Task.Run(() => _pipelineManager.BuildContent(inputPath, outputPath, importerName, processorName));
 
                     Logger.Info($"Cooked {assetPath} ({stopwatch.ElapsedMilliseconds} ms, Importer: {importerName}, Processor: {processorName})");
                     return;
