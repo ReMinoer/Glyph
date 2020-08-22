@@ -167,6 +167,7 @@ namespace Glyph.Application
 
                 #region Audio
                 
+                Type<SongPlayer>(),
                 Type<SoundLoader>(),
                 Type<SoundEmitter>(),
                 Type<SoundListener>(),

@@ -15,6 +15,7 @@ using Glyph.Pipeline;
 using Glyph.Tools;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 
 namespace Glyph.Demos.DropAssets
 {
@@ -30,6 +31,7 @@ namespace Glyph.Demos.DropAssets
         static private SpriteLoader _spriteLoader;
         static private SoundLoader _soundLoader;
         static private SoundEmitter _soundEmitter;
+        static private SongPlayer _songPlayer;
 
         static private CancellationTokenSource _dropCancellation;
 
@@ -68,6 +70,8 @@ namespace Glyph.Demos.DropAssets
                 _soundLoader = scene.Add<SoundLoader>();
                 _soundEmitter = scene.Add<SoundEmitter>();
                 scene.Add<SoundListener>();
+
+                _songPlayer = scene.Add<SongPlayer>();
 
                 _game.Run();
             }
@@ -134,6 +138,9 @@ namespace Glyph.Demos.DropAssets
                     _soundLoader.Add(key, assetPath);
                     await _soundLoader.LoadContent(_game.Engine.ContentLibrary);
                     _soundEmitter.Play(key);
+                    break;
+                case Song _:
+                    _songPlayer.AssetPath = assetPath;
                     break;
             }
         }

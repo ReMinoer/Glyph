@@ -136,7 +136,6 @@ namespace Glyph.Engine
             _spriteBatch = new SpriteBatch(graphicsDevice);
 
             await Task.WhenAll(
-                SongPlayer.Instance.LoadContent(ContentLibrary),
                 Task.Run(async () =>
                 {
                     if (Root != null)
@@ -162,10 +161,7 @@ namespace Glyph.Engine
         public void Update()
         {
             using (GlyphObject.UpdateWatchTree.Start("Root"))
-            {
                 Root?.Update(_elapsedTime);
-                SongPlayer.Instance.Update(_elapsedTime);
-            }
 
             if (GlyphObject.UpdateWatchTree.Enabled)
             {
