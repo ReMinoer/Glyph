@@ -34,8 +34,7 @@ namespace Glyph.Graphics.Renderer
             get
             {
                 TopLeftRectangle boundingBox = MathUtils.GetBoundingBox(Primitives.SelectMany(x => x.Vertices));
-                boundingBox.Position += SceneNode.Position;
-                return boundingBox;
+                return SceneNode.Transform(boundingBox);
             }
         }
 
