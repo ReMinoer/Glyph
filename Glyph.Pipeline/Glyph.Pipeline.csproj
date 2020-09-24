@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>$(TargetFramework)</TargetFramework>
   </PropertyGroup>
@@ -7,8 +7,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Fody" Version="2.1.0" />
-    <PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.0.1460-develop" />
+    <PackageReference Include="MonoGame.Framework.Content.Pipeline" Version="3.8.0.1460-develop" GeneratePathProperty="True" />
     <PackageReference Include="MonoGame.Framework.Portable" Version="3.7.1.189" PrivateAssets="All" />
     <PackageReference Include="PropertyChanged.Fody" Version="2.1.4" />
   </ItemGroup>
+    <ItemGroup>
+        <Content Update="$(PkgMonoGame_Framework_Content_Pipeline)\contentFiles\any\netstandard2.0\*.*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 </Project>
