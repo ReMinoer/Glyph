@@ -28,6 +28,8 @@ namespace Glyph.Pipeline
         public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, string rawRootPath, string cacheRootPath)
             : base(graphicsDeviceService, Path.Combine(cacheRootPath, "bin"))
         {
+            Directory.CreateDirectory(cacheRootPath);
+
             RawRootPath = rawRootPath;
             _pathWatcher = new PathWatcher();
 
