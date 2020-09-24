@@ -72,7 +72,7 @@ namespace Glyph.Pipeline
 
         protected override async Task<Effect> LoadEffect(string assetPath, CancellationToken cancellationToken)
         {
-            await CookAsset(assetPath);
+            await CopyEffect(assetPath);
             return await base.LoadEffect(assetPath, cancellationToken);
         }
 
@@ -122,6 +122,31 @@ namespace Glyph.Pipeline
                 throw new NoImporterException(assetPath);
             if (!foundProcessor)
                 throw new NoProcessorException(assetPath);
+        }
+
+        private async Task CopyEffect(string assetPath)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            try
+            {
+                string inputPath = Path.GetFullPath(Path.Combine(RawRootPath, assetPath + ".mgfx"));
+                if (!File.Exists(inputPath))
+                    throw new AssetNotFoundException(assetPath);
+
+                string outputPath = Path.GetFullPath(Path.Combine(RootPath, inputPath.Substring(RawRootPath.Length + 1)));
+                string outputFolderPath = Path.GetDirectoryName(outputPath);
+                if (outputFolderPath != null)
+                    Directory.CreateDirectory(outputFolderPath);
+
+                await Task.Run(() => File.Copy(inputPath, outputPath, overwrite: true));
+
+                Logger.Info($"Copied {assetPath} ({stopwatch.ElapsedMilliseconds} ms)");
+            }
+            finally
+            {
+                stopwatch.Stop();
+            }
         }
 
         private string[] GetAllRawFilesMatchingAssetPath(string assetPath) => Directory.GetFiles(RawRootPath, $"{assetPath}.*");
