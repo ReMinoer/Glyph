@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -78,8 +77,8 @@ namespace Glyph.Pipeline
 
         private async Task CookAsset(string assetPath)
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
             await _pipelineSemaphore.WaitAsync();
+            Stopwatch stopwatch = Stopwatch.StartNew();
 
             bool foundImporter = false;
             bool foundProcessor = false;
