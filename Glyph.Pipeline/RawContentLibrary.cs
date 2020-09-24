@@ -51,12 +51,12 @@ namespace Glyph.Pipeline
                 if (!PathUtils.IsValidAbsolutePath(absoluteRawFilePath))
                     absoluteRawFilePath = Path.Combine(Environment.CurrentDirectory, rawFilePath);
 
-                // Refresh asset on file changes
-                _pathWatcher.WatchFile(absoluteRawFilePath, OnFileChanged);
                 async void OnFileChanged(object s, FileChangedEventArgs e) => await asset.ResetAsync();
 
+                // Refresh asset on file changes
+                _pathWatcher.WatchFile(absoluteRawFilePath, OnFileChanged);
                 // Stop watching changes on asset full release
-                asset.FullyReleasing += (s, e) => _pathWatcher.Unwatch(OnFileChanged);
+                asset.FullyReleasing += (s, e) => _pathWatcher.Unwatch(absoluteRawFilePath, OnFileChanged);
             }
 
             return asset;
