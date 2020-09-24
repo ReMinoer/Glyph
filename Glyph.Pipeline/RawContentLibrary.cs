@@ -83,7 +83,11 @@ namespace Glyph.Pipeline
             bool foundProcessor = false;
             try
             {
-                foreach (string rawFilePath in GetAllRawFilesMatchingAssetPath(assetPath))
+                string[] rawFilePaths = GetAllRawFilesMatchingAssetPath(assetPath);
+                if (rawFilePaths.Length == 0)
+                    throw new AssetNotFoundException(assetPath);
+
+                foreach (string rawFilePath in rawFilePaths)
                 {
                     string importerName = _pipelineManager.FindImporterByExtension(Path.GetExtension(rawFilePath));
                     if (importerName == null)
@@ -118,6 +122,6 @@ namespace Glyph.Pipeline
                 throw new NoProcessorException(assetPath);
         }
 
-        private IEnumerable<string> GetAllRawFilesMatchingAssetPath(string assetPath) => Directory.EnumerateFiles(RawRootPath, $"{assetPath}.*");
+        private string[] GetAllRawFilesMatchingAssetPath(string assetPath) => Directory.GetFiles(RawRootPath, $"{assetPath}.*");
     }
 }
