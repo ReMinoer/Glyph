@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Glyph.IO
 {
@@ -22,11 +21,7 @@ namespace Glyph.IO
 
         public FileTypeAttribute(params string[] extensions)
         {
-            FileType = new FileType
-            {
-                DisplayName = extensions?.FirstOrDefault()?.TrimStart('.').ToUpper() + " Files",
-                Extensions = extensions
-            };
+            FileType = new FileType(extensions);
         }
     }
 }
