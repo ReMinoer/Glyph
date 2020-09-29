@@ -23,6 +23,8 @@ namespace Glyph.Content
         private readonly SemaphoreSlim _effectLock = new SemaphoreSlim(1);
 
         public string RootPath { get; }
+        protected virtual string WorkingDirectory => RootPath;
+        string IContentLibrary.WorkingDirectory => WorkingDirectory;
 
         public ContentLibrary(IGraphicsDeviceService graphicsDeviceService, string rootPath = null)
         {

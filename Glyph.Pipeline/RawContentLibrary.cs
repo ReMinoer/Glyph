@@ -23,6 +23,7 @@ namespace Glyph.Pipeline
         private readonly SemaphoreSlim _pipelineSemaphore = new SemaphoreSlim(1);
 
         public string RawRootPath { get; }
+        protected override string WorkingDirectory => RawRootPath;
 
         public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, string rawRootPath, string cacheRootPath)
             : base(graphicsDeviceService, Path.Combine(cacheRootPath, "bin"))
