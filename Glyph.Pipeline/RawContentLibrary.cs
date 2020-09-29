@@ -66,28 +66,29 @@ namespace Glyph.Pipeline
 
         protected override async Task<T> Load<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
         {
-            await CookAsset(assetPath);
-            return await base.Load(loadingFunc, assetPath, cancellationToken);
+            if (await CookAsset(assetPath))
+                return await base.Load(loadingFunc, assetPath, cancellationToken);
+            return default;
         }
 
         protected override async Task<Effect> LoadEffect(string assetPath, CancellationToken cancellationToken)
         {
-            await CopyEffect(assetPath);
-            return await base.LoadEffect(assetPath, cancellationToken);
+            if (await CopyEffect(assetPath))
+                return await base.LoadEffect(assetPath, cancellationToken);
+            return null;
         }
 
-        private async Task CookAsset(string assetPath)
+        private async Task<bool> CookAsset(string assetPath)
         {
             await _pipelineSemaphore.WaitAsync();
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             bool foundImporter = false;
-            bool foundProcessor = false;
             try
             {
                 string[] rawFilePaths = GetAllRawFilesMatchingAssetPath(assetPath);
                 if (rawFilePaths.Length == 0)
-                    throw new AssetNotFoundException(assetPath);
+                    return false; //throw new AssetNotFoundException(assetPath);
 
                 foreach (string rawFilePath in rawFilePaths)
                 {
@@ -101,15 +102,25 @@ namespace Glyph.Pipeline
                     if (processorName == null)
                         continue;
 
-                    foundProcessor = true;
-
                     string inputPath = Path.GetFullPath(rawFilePath);
                     string outputPath = Path.GetFullPath(Path.Combine(RootPath, rawFilePath.Substring(RawRootPath.Length + 1)));
 
-                    await Task.Run(() => _pipelineManager.BuildContent(inputPath, outputPath, importerName, processorName));
+                    await Task.Run(() =>
+                        {
+                            try
+                            {
+                                return _pipelineManager.BuildContent(inputPath, outputPath, importerName, processorName);
+                            }
+                            catch (PipelineException)
+                            {
+                                Logger.Info($"Failed to cook {assetPath}. Second try... (Importer: {importerName}, Processor: {processorName})");
+                                return _pipelineManager.BuildContent(inputPath, outputPath, importerName, processorName);
+                            }
+                        }
+                    );
 
                     Logger.Info($"Cooked {assetPath} ({stopwatch.ElapsedMilliseconds} ms, Importer: {importerName}, Processor: {processorName})");
-                    return;
+                    return true;
                 }
             }
             finally
@@ -120,11 +131,10 @@ namespace Glyph.Pipeline
 
             if (!foundImporter)
                 throw new NoImporterException(assetPath);
-            if (!foundProcessor)
-                throw new NoProcessorException(assetPath);
+            throw new NoProcessorException(assetPath);
         }
 
-        private async Task CopyEffect(string assetPath)
+        private async Task<bool> CopyEffect(string assetPath)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -132,7 +142,7 @@ namespace Glyph.Pipeline
             {
                 string inputPath = Path.GetFullPath(Path.Combine(RawRootPath, assetPath + ".mgfx"));
                 if (!File.Exists(inputPath))
-                    throw new AssetNotFoundException(assetPath);
+                    return false; //throw new AssetNotFoundException(assetPath);
 
                 string outputPath = Path.GetFullPath(Path.Combine(RootPath, inputPath.Substring(RawRootPath.Length + 1)));
                 string outputFolderPath = Path.GetDirectoryName(outputPath);
@@ -142,6 +152,7 @@ namespace Glyph.Pipeline
                 await Task.Run(() => File.Copy(inputPath, outputPath, overwrite: true));
 
                 Logger.Info($"Copied {assetPath} ({stopwatch.ElapsedMilliseconds} ms)");
+                return true;
             }
             finally
             {
@@ -149,6 +160,16 @@ namespace Glyph.Pipeline
             }
         }
 
-        private string[] GetAllRawFilesMatchingAssetPath(string assetPath) => Directory.GetFiles(RawRootPath, $"{assetPath}.*");
+        private string[] GetAllRawFilesMatchingAssetPath(string assetPath)
+        {
+            string folderPath = Path.GetDirectoryName(assetPath);
+            string fullFolderPath = folderPath != null ? Path.Combine(RawRootPath, folderPath) : RawRootPath;
+
+            if (!Directory.Exists(fullFolderPath))
+                return Array.Empty<string>();
+
+            string assetName = Path.GetFileName(assetPath);
+            return Directory.GetFiles(fullFolderPath, $"{assetName}.*");
+        }
     }
 }

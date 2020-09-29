@@ -30,6 +30,7 @@ namespace Glyph.Content
         private async Task<T> GetContentAsyncInternal(CancellationToken cancellationToken)
         {
             await _loadingSemaphore.WaitAsync(cancellationToken);
+
             try
             {
                 // Create loading task if it doesn't exists
@@ -70,34 +71,13 @@ namespace Glyph.Content
             if (Interlocked.Decrement(ref _handlerCounter) > 0)
                 return false;
 
-            FullyReleasing?.Invoke(this, EventArgs.Empty);
-            await FullyReleaseAsync();
-            FullyReleased?.Invoke(this, EventArgs.Empty);
-
-            return true;
-        }
-
-        private async Task FullyReleaseAsync()
-        {
-            await StopLoadingAsync();
-        }
-
-        private async Task StopLoadingAsync()
-        {
             await _loadingSemaphore.WaitAsync(CancellationToken.None);
             try
             {
-                if (_loadingTask != null)
-                {
-                    // Cancel loading
-                    _releaseCancellation?.Cancel();
-
-                    // Dispose content if necessary
-                    //if (_loadingTask.IsCompleted)
-                    //    (_loadingTask.Result as IDisposable)?.Dispose();
-                }
-
-                _loadingTask = null;
+                FullyReleasing?.Invoke(this, EventArgs.Empty);
+                await StopLoadingAsync();
+                FullyReleased?.Invoke(this, EventArgs.Empty);
+                return true;
             }
             finally
             {
@@ -107,8 +87,39 @@ namespace Glyph.Content
 
         public async Task ResetAsync()
         {
-            await StopLoadingAsync();
-            ContentChanged?.Invoke(this, EventArgs.Empty);
+            await _loadingSemaphore.WaitAsync(CancellationToken.None);
+            try
+            {
+                await StopLoadingAsync();
+                ContentChanged?.Invoke(this, EventArgs.Empty);
+            }
+            finally
+            {
+                _loadingSemaphore.Release();
+            }
+        }
+
+        private async Task StopLoadingAsync()
+        {
+            if (_loadingTask == null)
+                return;
+
+            // Cancel loading
+            _releaseCancellation?.Cancel();
+
+            try
+            {
+                await _loadingTask;
+            }
+            catch (OperationCanceledException)
+            {
+            }
+
+            // Dispose content if necessary
+            //if (_loadingTask.IsCompleted)
+            //    (_loadingTask.Result as IDisposable)?.Dispose();
+
+            _loadingTask = null;
         }
     }
 }

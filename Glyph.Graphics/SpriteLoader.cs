@@ -26,7 +26,7 @@ namespace Glyph.Graphics
                     return;
 
                 _assetPath = value;
-                _assetAsyncLoader.Asset = value != null ? _contentLibrary.GetAsset<Texture2D>(value) : null;
+                _assetAsyncLoader.Asset = !string.IsNullOrWhiteSpace(value) ? _contentLibrary.GetAsset<Texture2D>(value) : null;
             }
         }
 
