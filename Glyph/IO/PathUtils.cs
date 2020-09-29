@@ -30,5 +30,24 @@ namespace Glyph.IO
 
             return path;
         }
+
+        static public bool CanBeRelative(string path, string rootFolderPath)
+        {
+            string normalizedPath = Normalize(path);
+            string normalizedRoot = NormalizeFolder(rootFolderPath);
+
+            return normalizedPath.StartsWith(normalizedRoot);
+        }
+
+        static public string MakeRelative(string path, string rootFolderPath)
+        {
+            string normalizedPath = Normalize(path);
+            string normalizedRoot = NormalizeFolder(rootFolderPath);
+
+            if (normalizedPath.StartsWith(normalizedRoot))
+                return normalizedPath.Substring(normalizedRoot.Length);
+
+            return path;
+        }
     }
 }
