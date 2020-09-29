@@ -6,7 +6,7 @@
 
         public FolderPath(string path)
         {
-            Path = PathUtils.NormalizeFolder(path);
+            Path = path != null ? PathUtils.Normalize(path) : null;
         }
 
         static public FolderPath None => new FolderPath();

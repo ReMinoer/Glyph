@@ -1,10 +1,10 @@
 ﻿namespace Glyph.IO
 {
-    public struct FilePath
+    public struct AssetPath
     {
         public string Path { get; set; }
 
-        public FilePath(string path)
+        public AssetPath(string path)
         {
             Path = path != null ? PathUtils.Normalize(path) : null;
         }
@@ -12,8 +12,8 @@
         static public FilePath None => new FilePath();
         public bool Defined => !string.IsNullOrWhiteSpace(Path);
 
-        static public implicit operator string(FilePath filePath) => filePath.Path;
-        static public implicit operator FilePath(string path) => new FilePath(path);
+        static public implicit operator string(AssetPath filePath) => filePath.Path;
+        static public implicit operator AssetPath(string path) => new AssetPath(path);
 
         public override string ToString() => Path;
     }
