@@ -22,9 +22,15 @@ namespace Glyph.Tools
         private readonly Camera _camera;
         private IView _view;
         private Vector2 _startCursorRootViewPosition;
+
+        private Vector2 _defaultPosition;
+        private float _defaultZoom = 1;
+
         private readonly ProjectionCursorControl _rootViewCursor;
         private readonly ActivityControl _moveCamera;
         private readonly Control<float> _zoomCamera;
+        private readonly Control _resetCamera;
+
         public IDrawClient Client { get; set; }
 
         public IView View
@@ -60,7 +66,8 @@ namespace Glyph.Tools
             {
                 _rootViewCursor = new ProjectionCursorControl("Main view cursor", InputSystem.Instance.Mouse.Cursor, _rootView, _rootView, projectionManager),
                 _moveCamera = new ActivityControl("Move camera", InputSystem.Instance.Mouse[MouseButton.Right]),
-                _zoomCamera = new Control<float>("Zoom camera", InputSystem.Instance.Mouse.Wheel.Force())
+                _zoomCamera = new Control<float>("Zoom camera", InputSystem.Instance.Mouse.Wheel.Force()),
+                _resetCamera = new Control("Reset camera", InputSystem.Instance.Mouse[MouseButton.Middle])
             });
 
             Schedulers.Update.Plan(HandleInput);
@@ -79,13 +86,28 @@ namespace Glyph.Tools
             float wantedZoom = MathHelper.Min(widthZoom, heightZoom);
 
             _sceneNode.Position = boundingBox.Center;
-            _camera.Zoom = wantedZoom;
+            _camera.Zoom = wantedZoom > 0 ? wantedZoom : 1;
+        }
+
+        public void SaveAsDefault()
+        {
+            _defaultPosition = _sceneNode.Position;
+            _defaultZoom = _camera.Zoom;
+        }
+
+        public void RestoreDefault()
+        {
+            _sceneNode.Position = _defaultPosition;
+            _camera.Zoom = _defaultZoom;
         }
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
             if (Client != null && _inputClientManager.DrawClient != Client)
                 return;
+
+            if (_resetCamera.IsActive)
+                RestoreDefault();
 
             if (_zoomCamera.IsActive(out float wheelValue))
             {
