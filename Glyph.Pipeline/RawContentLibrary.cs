@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Glyph.Content;
@@ -14,7 +17,7 @@ using Simulacra.IO.Watching;
 
 namespace Glyph.Pipeline
 {
-    public class RawContentLibrary : ContentLibrary
+    public class RawContentLibrary : ContentLibrary, IRawContentLibrary
     {
         static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -47,7 +50,7 @@ namespace Glyph.Pipeline
             var asset = new Asset<T>(assetPath, loadDelegate);
 
             // TODO: Ideally it should trigger asset refresh for all future changes on files using same asset path and any extension
-            foreach (string rawFilePath in GetAllRawFilesMatchingAssetPath(assetPath))
+            foreach (string rawFilePath in GetRawFilesPaths(assetPath))
             {
                 string absoluteRawFilePath = rawFilePath;
                 if (!PathUtils.IsValidAbsolutePath(absoluteRawFilePath))
@@ -86,8 +89,8 @@ namespace Glyph.Pipeline
             bool foundImporter = false;
             try
             {
-                string[] rawFilePaths = GetAllRawFilesMatchingAssetPath(assetPath);
-                if (rawFilePaths.Length == 0)
+                ICollection<string> rawFilePaths = GetRawFilesPaths(assetPath);
+                if (rawFilePaths.Count == 0)
                     return false; //throw new AssetNotFoundException(assetPath);
 
                 foreach (string rawFilePath in rawFilePaths)
@@ -160,7 +163,7 @@ namespace Glyph.Pipeline
             }
         }
 
-        private string[] GetAllRawFilesMatchingAssetPath(string assetPath)
+        public ICollection<string> GetRawFilesPaths(string assetPath)
         {
             string folderPath = Path.GetDirectoryName(assetPath);
             string fullFolderPath = folderPath != null ? Path.Combine(RawRootPath, folderPath) : RawRootPath;
@@ -170,6 +173,60 @@ namespace Glyph.Pipeline
 
             string assetName = Path.GetFileName(assetPath);
             return Directory.GetFiles(fullFolderPath, $"{assetName}.*");
+        }
+
+        public IEnumerable<string> GetSupportedFileExtensions(Type type)
+        {
+            if (typeof(IContentImporter).IsAssignableFrom(type))
+                return GetSupportedExtensionsForImporter(type);
+            if (typeof(IContentProcessor).IsAssignableFrom(type))
+                return GetSupportedExtensionsForProcessor(type);
+            return GetSupportedExtensionsForEngineContent(type);
+        }
+
+        private IEnumerable<string> GetSupportedExtensionsForImporter(Type importerType)
+        {
+            return importerType.GetCustomAttribute<ContentImporterAttribute>()?.FileExtensions ?? Enumerable.Empty<string>();
+        }
+
+        private IEnumerable<string> GetSupportedExtensionsForProcessor(Type processorType)
+        {
+            Type processorInputType = ProcessorsInputTypes[processorType.Name];
+
+            return _pipelineManager.GetImporterTypes()
+                .Where(x => x.BaseType?.GetGenericTypeDefinition() == typeof(ContentImporter<>))
+                .Where(x => x.BaseType.GenericTypeArguments[0].IsAssignableFrom(processorInputType))
+                .SelectMany(GetSupportedExtensionsForImporter);
+        }
+
+        private IEnumerable<string> GetSupportedExtensionsForEngineContent(Type contentType)
+        {
+            return _pipelineManager.GetProcessorTypes()
+                .Where(x => contentType.IsAssignableFrom(ContentProcessorUtils.GetEngineContentType(x)))
+                .SelectMany(GetSupportedExtensionsForProcessor);
+        }
+
+        private Dictionary<string, Type> _processorsInputTypes;
+        private Dictionary<string, Type> ProcessorsInputTypes
+        {
+            get
+            {
+                return _processorsInputTypes ??
+                    (_processorsInputTypes = _pipelineManager.GetProcessorTypes()
+                        .ToDictionary(x => x.Name, x => _pipelineManager.CreateProcessor(x.Name, GetProcessorDefaultValues(x.Name)).InputType));
+            }
+        }
+
+        private OpaqueDataDictionary GetProcessorDefaultValues(string processorName)
+        {
+            OpaqueDataDictionary processorDefaultValues = _pipelineManager.GetProcessorDefaultValues(processorName);
+            foreach (string key in processorDefaultValues.Keys.ToArray())
+            {
+                if (processorDefaultValues[key] == null)
+                    processorDefaultValues[key] = string.Empty;
+            }
+
+            return processorDefaultValues;
         }
     }
 }
