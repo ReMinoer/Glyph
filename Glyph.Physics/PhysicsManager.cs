@@ -4,12 +4,12 @@
     {
         public const float EarthGravity = 9.80665f;
         public float Gravity { get; set; }
-        public float LengthUnit { get; set; }
+        public float PixelByMeter { get; set; } // pixel/m
 
         public PhysicsManager()
         {
             Gravity = EarthGravity;
-            LengthUnit = 1f;
+            PixelByMeter = 1f;
         }
     }
 }
