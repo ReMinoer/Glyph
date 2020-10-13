@@ -30,11 +30,10 @@ namespace Glyph.Core.Colliders
         static public bool IsShapeCollidingGrid<TShape>(CollisionDelegate<TShape, TopLeftRectangle> collisionDelegate, ICollider<TShape> shape, IGridCollider gridCollider, out Collision collision)
             where TShape : IShape
         {
-            Point topleft = gridCollider.Grid.ToGridPoint(shape.Center - shape.BoundingBox.Size / 2);
-            Point bottomRight = gridCollider.Grid.ToGridPoint(shape.Center + shape.BoundingBox.Size / 2);
+            Rectangle gridRange = gridCollider.Grid.ToGridRange(shape.BoundingBox).ClampToRectangle(gridCollider.Grid.Bounds);
 
-            for (int i = topleft.Y; i <= bottomRight.Y; i++)
-                for (int j = topleft.X; j <= bottomRight.X; j++)
+            for (int i = gridRange.Y; i < gridRange.Bottom; i++)
+                for (int j = gridRange.X; j < gridRange.Right; j++)
                 {
                     if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;
@@ -86,11 +85,10 @@ namespace Glyph.Core.Colliders
         static public bool IsGridCollidingShape<TShape>(CollisionDelegate<TopLeftRectangle, TShape> collisionDelegate, IGridCollider gridCollider, ICollider<TShape> shape, out Collision collision)
             where TShape : IShape
         {
-            Point topleft = gridCollider.Grid.ToGridPoint(shape.Center - shape.BoundingBox.Size / 2);
-            Point bottomRight = gridCollider.Grid.ToGridPoint(shape.Center + shape.BoundingBox.Size / 2);
+            Rectangle gridRange = gridCollider.Grid.ToGridRange(shape.BoundingBox).ClampToRectangle(gridCollider.Grid.Bounds);
 
-            for (int i = topleft.Y; i <= bottomRight.Y; i++)
-                for (int j = topleft.X; j <= bottomRight.X; j++)
+            for (int i = gridRange.Y; i < gridRange.Bottom; i++)
+                for (int j = gridRange.X; j < gridRange.Right; j++)
                 {
                     if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;
