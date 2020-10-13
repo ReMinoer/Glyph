@@ -93,7 +93,9 @@ namespace Glyph.Graphics
 
         private void Refresh()
         {
-            Rectangle = GetFrameRectangle(CurrentFrame);
+            Rectangle = FramesCount > 0
+                ? GetFrameRectangle(CurrentFrame)
+                : Microsoft.Xna.Framework.Rectangle.Empty;
         }
     }
 }
