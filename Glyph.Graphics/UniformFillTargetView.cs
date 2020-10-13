@@ -67,9 +67,12 @@ namespace Glyph.Graphics
 
         private void RefreshParentCamera()
         {
-            _parentCamera.Zoom = UniformView.Size.X / UniformView.Size.Y > ParentView.Size.X / ParentView.Size.Y
-                ? ParentView.Size.X / UniformView.Size.X
-                : ParentView.Size.Y / UniformView.Size.Y;
+            if (ParentView != null)
+                _parentCamera.Zoom = UniformView.Size.X / UniformView.Size.Y > ParentView.Size.X / ParentView.Size.Y
+                    ? ParentView.Size.X / UniformView.Size.X
+                    : ParentView.Size.Y / UniformView.Size.Y;
+            else
+                _parentCamera.Zoom = 1;
         }
 
         public override void Initialize()
