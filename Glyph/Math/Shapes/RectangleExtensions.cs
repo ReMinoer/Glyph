@@ -53,6 +53,20 @@ namespace Glyph.Math.Shapes
             return point;
         }
 
+        static public Point ClampToRectangle(this Point point, Rectangle rectangle)
+        {
+            if (point.X < rectangle.Left)
+                point.X = rectangle.Left;
+            if (point.X > rectangle.Right)
+                point.X = rectangle.Right;
+            if (point.Y < rectangle.Top)
+                point.Y = rectangle.Top;
+            if (point.Y > rectangle.Bottom)
+                point.Y = rectangle.Bottom;
+
+            return point;
+        }
+
         static public TopLeftRectangle ClampToRectangle(this TopLeftRectangle inner, TopLeftRectangle outer)
         {
             if (inner.Left < outer.Left)
@@ -74,6 +88,27 @@ namespace Glyph.Math.Shapes
             return inner;
         }
 
+        static public Rectangle ClampToRectangle(this Rectangle inner, Rectangle outer)
+        {
+            if (inner.Left < outer.Left)
+            {
+                inner.Width -= outer.Left - inner.Left;
+                inner.X = outer.Y;
+            }
+            if (inner.Right > outer.Right)
+                inner.Width -= inner.Right - outer.Right;
+
+            if (inner.Top < outer.Top)
+            {
+                inner.Height -= outer.Top - inner.Top;
+                inner.Y = outer.Y;
+            }
+            if (inner.Bottom > outer.Bottom)
+                inner.Height -= inner.Bottom - outer.Bottom;
+
+            return inner;
+        }
+
         static public TopLeftRectangle EncaseRectangle(this TopLeftRectangle inner, TopLeftRectangle outer)
         {
             if (inner.Left < outer.Left)
@@ -85,6 +120,21 @@ namespace Glyph.Math.Shapes
                 inner.Top += outer.Top - inner.Top;
             else if (inner.Bottom > outer.Bottom)
                 inner.Top -= inner.Bottom - outer.Bottom;
+
+            return inner;
+        }
+
+        static public Rectangle EncaseRectangle(this Rectangle inner, Rectangle outer)
+        {
+            if (inner.Left < outer.Left)
+                inner.X += outer.Left - inner.Left;
+            else if (inner.Right > outer.Right)
+                inner.X -= inner.Right - outer.Right;
+
+            if (inner.Top < outer.Top)
+                inner.Y += outer.Top - inner.Top;
+            else if (inner.Bottom > outer.Bottom)
+                inner.Y -= inner.Bottom - outer.Bottom;
 
             return inner;
         }
