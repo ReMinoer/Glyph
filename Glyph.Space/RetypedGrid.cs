@@ -16,7 +16,6 @@ namespace Glyph.Space
         public TopLeftRectangle BoundingBox => Grid.BoundingBox;
         public Vector2 Center => Grid.Center;
         public GridDimension Dimension => Grid.Dimension;
-        public Rectangle Bounds => Grid.Bounds;
         public Vector2 Delta => Grid.Delta;
         public bool HasLowEntropy => Grid.HasLowEntropy;
 

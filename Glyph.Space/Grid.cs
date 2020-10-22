@@ -91,7 +91,7 @@ namespace Glyph.Space
 
         public TopLeftRectangle ToWorldRange(Rectangle rectangle)
         {
-            return new TopLeftRectangle(ToWorldPoint(rectangle.Location), Delta.Integrate(rectangle.Size) + Delta);
+            return new TopLeftRectangle(ToWorldPoint(rectangle.Location), Delta.Integrate(rectangle.Size));
         }
 
         public Point ToGridPoint(Vector2 worldPoint)
@@ -102,7 +102,7 @@ namespace Glyph.Space
         public Rectangle ToGridRange(TopLeftRectangle rectangle)
         {
             Point position = ToGridPoint(rectangle.Position);
-            return new Rectangle(position, ToGridPoint(rectangle.P3) - position + new Point(1, 1));
+            return new Rectangle(position, ToGridPoint(rectangle.P3) - position);
         }
     }
 
@@ -113,16 +113,22 @@ namespace Glyph.Space
         protected override bool HasLowEntropyProtected => false;
         protected override IEnumerable<IGridCase<T>> SignificantCasesProtected => new Enumerable<IGridCase<T>>(new Enumerator(this));
 
-        public Grid(TopLeftRectangle rectangle, int columns, int rows)
+        public Grid(TopLeftRectangle rectangle, int columns, int rows, Func<int[], T> defaultCellValueFactory = null)
             : base(rectangle, columns, rows)
         {
             _data = new TwoDimensionArray<T>(new T[Dimension.Rows, Dimension.Columns]);
+
+            if (defaultCellValueFactory != null)
+                _data.Fill(defaultCellValueFactory);
         }
 
-        public Grid(int columns, int rows, Vector2 origin, Vector2 delta)
+        public Grid(int columns, int rows, Vector2 origin, Vector2 delta, Func<int[], T> defaultCellValueFactory = null)
             : base(columns, rows, origin, delta)
         {
             _data = new TwoDimensionArray<T>(new T[Dimension.Rows, Dimension.Columns]);
+
+            if (defaultCellValueFactory != null)
+                _data.Fill(defaultCellValueFactory);
         }
 
         public Grid(TopLeftRectangle rectangle, ITwoDimensionWriteableArray<T> data)

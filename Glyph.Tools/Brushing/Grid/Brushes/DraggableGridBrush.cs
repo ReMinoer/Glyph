@@ -8,7 +8,7 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
     {
         public override bool CanEndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
-            return base.CanEndApply(canvas, args, paint) && paint.CanApply(canvas, args);
+            return paint.CanApply(canvas, args);
         }
 
         public override void EndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)

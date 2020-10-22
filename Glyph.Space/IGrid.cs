@@ -9,7 +9,6 @@ namespace Glyph.Space
     public interface IGrid : IArray, IShape
     {
         GridDimension Dimension { get; }
-        Rectangle Bounds { get; }
         Vector2 Delta { get; }
         Vector2 ToWorldPoint(int i, int j);
         Vector2 ToWorldPoint(Point gridPoint);

@@ -1,5 +1,6 @@
 ﻿using Glyph.Math;
 using Glyph.Math.Shapes;
+using Glyph.Space;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Core.Colliders
@@ -30,10 +31,10 @@ namespace Glyph.Core.Colliders
         static public bool IsShapeCollidingGrid<TShape>(CollisionDelegate<TShape, TopLeftRectangle> collisionDelegate, ICollider<TShape> shape, IGridCollider gridCollider, out Collision collision)
             where TShape : IShape
         {
-            Rectangle gridRange = gridCollider.Grid.ToGridRange(shape.BoundingBox).ClampToRectangle(gridCollider.Grid.Bounds);
-
-            for (int i = gridRange.Y; i < gridRange.Bottom; i++)
-                for (int j = gridRange.X; j < gridRange.Right; j++)
+            Rectangle gridRange = gridCollider.Grid.ToGridRange(shape.BoundingBox).ClampToRectangle(gridCollider.Grid.IndexesBounds());
+            
+            for (int i = gridRange.Top; i <= gridRange.Bottom; i++)
+                for (int j = gridRange.Left; j <= gridRange.Right; j++)
                 {
                     if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;
@@ -85,10 +86,10 @@ namespace Glyph.Core.Colliders
         static public bool IsGridCollidingShape<TShape>(CollisionDelegate<TopLeftRectangle, TShape> collisionDelegate, IGridCollider gridCollider, ICollider<TShape> shape, out Collision collision)
             where TShape : IShape
         {
-            Rectangle gridRange = gridCollider.Grid.ToGridRange(shape.BoundingBox).ClampToRectangle(gridCollider.Grid.Bounds);
+            Rectangle gridRange = gridCollider.Grid.ToGridRange(shape.BoundingBox).ClampToRectangle(gridCollider.Grid.IndexesBounds());
 
-            for (int i = gridRange.Y; i < gridRange.Bottom; i++)
-                for (int j = gridRange.X; j < gridRange.Right; j++)
+            for (int i = gridRange.Top; i <= gridRange.Bottom; i++)
+                for (int j = gridRange.Left; j <= gridRange.Right; j++)
                 {
                     if (!gridCollider.IsCollidableCase(shape, i, j))
                         continue;

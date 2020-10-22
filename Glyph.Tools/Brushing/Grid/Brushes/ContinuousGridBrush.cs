@@ -34,17 +34,22 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
             // TODO: Use better grid cell-segment intersection algorithm
             var segment = new Segment(args.WorldPoint, _previousWorldPoint);
             TopLeftRectangle segmentBox = MathUtils.GetBoundingBox(args.WorldPoint, _previousWorldPoint);
-            Rectangle gridRectangle = canvas.ToGridRange(segmentBox);
-
-            for (int i = 0; i < gridRectangle.Height; i++)
-                for (int j = 0; j < gridRectangle.Width; j++)
+            Rectangle gridRectangle = canvas.ToGridRange(segmentBox).ClampToRectangle(canvas.IndexesBounds());
+            
+            for (int i = gridRectangle.Top; i <= gridRectangle.Bottom; i++)
+                for (int j = gridRectangle.Left; j <= gridRectangle.Right; j++)
                 {
-                    TopLeftRectangle cellRectangle = canvas.ToWorldRange(j + gridRectangle.X, i + gridRectangle.Y, 1, 1);
+                    var gridPoint = new Point(j, i);
+
+                    TopLeftRectangle cellRectangle = canvas.ToWorldRange(gridPoint.X, gridPoint.Y, 1, 1);
                     if (!cellRectangle.Intersects(segment))
                         continue;
 
-                    if (paint.CanApply(canvas, args))
-                        paint.Apply(canvas, args);
+                    Vector2 worldPoint = canvas.ToWorldPoint(gridPoint);
+
+                    var cellArgs = new GridBrushArgs(gridPoint, worldPoint);
+                    if (paint.CanApply(canvas, cellArgs))
+                        paint.Apply(canvas, cellArgs);
                 }
         }
         

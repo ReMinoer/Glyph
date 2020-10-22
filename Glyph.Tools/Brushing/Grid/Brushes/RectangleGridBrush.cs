@@ -1,6 +1,8 @@
 ﻿using Glyph.Math;
+using Glyph.Math.Shapes;
 using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
+using Glyph.UI;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Brushing.Grid.Brushes
@@ -17,10 +19,7 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
 
         public override bool CanEndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
-            if (!base.CanEndApply(canvas, args, paint))
-                return false;
-
-            Rectangle rectangle = MathUtils.GetBoundingBox(args.GridPoint, _startPoint);
+            Rectangle rectangle = MathUtils.GetBoundingBox(args.GridPoint, _startPoint).ClampToRectangle(canvas.IndexesBounds());
 
             for (int i = rectangle.Top; i <= rectangle.Bottom; i++)
                 for (int j = rectangle.Left; j <= rectangle.Right; j++)
@@ -35,12 +34,12 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
 
         public override void EndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
-            Rectangle rectangle = MathUtils.GetBoundingBox(args.GridPoint, _startPoint);
+            Rectangle rectangle = MathUtils.GetBoundingBox(args.GridPoint, _startPoint).ClampToRectangle(canvas.IndexesBounds());
 
             for (int i = rectangle.Top; i <= rectangle.Bottom; i++)
                 for (int j = rectangle.Left; j <= rectangle.Right; j++)
                 {
-                    var point = new Point(j, i);
+                    var point = new Point(j , i);
                     paint.Apply(canvas, new GridBrushArgs(point, canvas.ToWorldPoint(point)));
                 }
         }
