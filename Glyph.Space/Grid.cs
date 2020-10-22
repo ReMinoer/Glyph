@@ -9,12 +9,11 @@ using Simulacra.Utils;
 
 namespace Glyph.Space
 {
-    // TODO : Clamp methods to grid dimensions
     public class Grid : IGrid
     {
         public TopLeftRectangle Rectangle { get; private set; }
-        public GridDimension Dimension { get; private set; }
-        public Vector2 Delta { get; private set; }
+        public GridDimension Dimension { get; }
+        public Vector2 Delta { get; }
         public bool IsVoid => (Dimension.Columns == 0 && Dimension.Rows == 0) || Delta == Vector2.Zero;
         public TopLeftRectangle BoundingBox => Rectangle;
         public Rectangle Bounds => new Rectangle(0, 0, Dimension.Columns, Dimension.Rows);
@@ -59,50 +58,14 @@ namespace Glyph.Space
         public bool Intersects<T>(T edgedShape) where T : IEdgedShape => Rectangle.Intersects(edgedShape);
         public bool Intersects(Circle circle) => Rectangle.Intersects(circle);
 
-        public bool ContainsPoint(int i, int j)
-        {
-            return j >= 0 && j < Dimension.Columns && i >= 0 && i < Dimension.Rows;
-        }
-
-        public bool ContainsPoint(Point gridPoint)
-        {
-            return ContainsPoint(gridPoint.Y, gridPoint.X);
-        }
-
-        public Vector2 ToWorldPoint(int i, int j)
-        {
-            return ToWorldPoint(new Point(j, i));
-        }
-
         public Vector2 ToWorldPoint(Point gridPoint)
         {
             return Rectangle.Position + Delta.Integrate(gridPoint);
         }
 
-        public Vector2 ToWorldPoint(IGridPositionable gridPositionable)
-        {
-            return ToWorldPoint(gridPositionable.GridPosition);
-        }
-
-        public TopLeftRectangle ToWorldRange(int x, int y, int width, int height)
-        {
-            return ToWorldRange(new Rectangle(x, y, width, height));
-        }
-
-        public TopLeftRectangle ToWorldRange(Rectangle rectangle)
-        {
-            return new TopLeftRectangle(ToWorldPoint(rectangle.Location), Delta.Integrate(rectangle.Size));
-        }
-
         public Point ToGridPoint(Vector2 worldPoint)
         {
             return Delta.Discretize(worldPoint - Rectangle.Position);
-        }
-
-        public Rectangle ToGridRange(TopLeftRectangle rectangle)
-        {
-            Point position = ToGridPoint(rectangle.Position);
-            return new Rectangle(position, ToGridPoint(rectangle.P3) - position);
         }
     }
 

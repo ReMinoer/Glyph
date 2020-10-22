@@ -83,27 +83,6 @@ namespace Glyph.Space
             }
         }
 
-        public T this[IGridPositionable gridPositionable]
-        {
-            get => _gridImplementation[gridPositionable];
-            set
-            {
-                T previousValue = this[gridPositionable];
-                if (previousValue == value)
-                    return;
-
-                if (previousValue != null)
-                    UnsubscribeDirty(new GridCase<T>(gridPositionable.GridPosition, previousValue));
-
-                _gridImplementation[gridPositionable] = value;
-
-                if (value != null)
-                    SubscribeDirty(new GridCase<T>(gridPositionable.GridPosition, value));
-
-                SetDirty(new GridCase<T>(gridPositionable.GridPosition, value));
-            }
-        }
-
         T IWriteableArray<T>.this[params int[] indexes]
         {
             get => _gridImplementation[indexes];
@@ -137,7 +116,6 @@ namespace Glyph.Space
         
         T IGrid<T>.this[Point gridPoint] => ((IGrid<T>)_gridImplementation)[gridPoint];
         T IGrid<T>.this[Vector2 worldPoint] => ((IGrid<T>)_gridImplementation)[worldPoint];
-        T IGrid<T>.this[IGridPositionable gridPositionable] => ((IGrid<T>)_gridImplementation)[gridPositionable];
 
         public DirtableGrid(IWriteableGrid<T> gridImplementation)
         {
@@ -206,15 +184,8 @@ namespace Glyph.Space
         public bool Intersects(Segment segment) => _gridImplementation.Intersects(segment);
         public bool Intersects<T1>(T1 edgedShape) where T1 : IEdgedShape => _gridImplementation.Intersects(edgedShape);
         public bool Intersects(Circle circle) => _gridImplementation.Intersects(circle);
-        public Vector2 ToWorldPoint(int i, int j) => _gridImplementation.ToWorldPoint(i, j);
         public Vector2 ToWorldPoint(Point gridPoint) => _gridImplementation.ToWorldPoint(gridPoint);
-        public Vector2 ToWorldPoint(IGridPositionable gridPoint) => _gridImplementation.ToWorldPoint(gridPoint);
-        public TopLeftRectangle ToWorldRange(int x, int y, int width, int height) => _gridImplementation.ToWorldRange(x, y, width, height);
-        public TopLeftRectangle ToWorldRange(Rectangle rectangle) => _gridImplementation.ToWorldRange(rectangle);
         public Point ToGridPoint(Vector2 worldPoint) => _gridImplementation.ToGridPoint(worldPoint);
-        public Rectangle ToGridRange(TopLeftRectangle rectangle) => _gridImplementation.ToGridRange(rectangle);
-        public bool ContainsPoint(int i, int j) => _gridImplementation.ContainsPoint(i, j);
-        public bool ContainsPoint(Point gridPoint) => _gridImplementation.ContainsPoint(gridPoint);
         public T[][] ToArray() => _gridImplementation.ToArray();
         public IEnumerator<T> GetEnumerator() => _gridImplementation.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _gridImplementation.GetEnumerator();
@@ -223,5 +194,6 @@ namespace Glyph.Space
         int IArray.GetLength(int dimension) => _gridImplementation.GetLength(dimension);
         object IArray.this[params int[] indexes] => _gridImplementation[indexes];
         T IArray<T>.this[params int[] indexes] => _gridImplementation[indexes];
+        object ITwoDimensionArray.this[int i, int j] => _gridImplementation[i, j];
     }
 }

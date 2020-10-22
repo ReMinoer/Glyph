@@ -76,11 +76,7 @@ namespace Glyph.Space
             set => this[ToGridPoint(worldPoint)] = value;
         }
 
-        public T this[IGridPositionable gridPositionable]
-        {
-            get => this[gridPositionable.GridPosition];
-            set => this[gridPositionable.GridPosition] = value;
-        }
+        object ITwoDimensionArray.this[int i, int j] => this[i, j];
 
         public void Fill(Func<T> valueFactory)
         {

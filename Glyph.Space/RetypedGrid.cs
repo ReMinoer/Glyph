@@ -31,16 +31,10 @@ namespace Glyph.Space
             Grid = grid;
         }
 
-        public Vector2 ToWorldPoint(int i, int j) => Grid.ToWorldPoint(i, j);
         public Vector2 ToWorldPoint(Point gridPoint) => Grid.ToWorldPoint(gridPoint);
-        public Vector2 ToWorldPoint(IGridPositionable gridPoint) => Grid.ToWorldPoint(gridPoint);
-        public TopLeftRectangle ToWorldRange(int x, int y, int width, int height) => Grid.ToWorldRange(x, y, width, height);
-        public TopLeftRectangle ToWorldRange(Rectangle rectangle) => Grid.ToWorldRange(rectangle);
         public Point ToGridPoint(Vector2 worldPoint) => Grid.ToGridPoint(worldPoint);
-        public Rectangle ToGridRange(TopLeftRectangle rectangle) => Grid.ToGridRange(rectangle);
+
         public bool ContainsPoint(Vector2 point) => Grid.ContainsPoint(point);
-        public bool ContainsPoint(int i, int j) => Grid.ContainsPoint(i, j);
-        public bool ContainsPoint(Point gridPoint) => Grid.ContainsPoint(gridPoint);
         public bool Intersects(Segment segment) => Grid.Intersects(segment);
         public bool Intersects(Circle circle) => Grid.Intersects(circle);
         public bool Intersects<T>(T edgedShape)
@@ -54,7 +48,7 @@ namespace Glyph.Space
         public TNewValue this[int i, int j] => Getter(Grid[i, j]);
         public TNewValue this[Point gridPoint] => Getter(Grid[gridPoint]);
         public TNewValue this[Vector2 worldPoint] => Getter(Grid[worldPoint]);
-        public TNewValue this[IGridPositionable gridPositionable] => Getter(Grid[gridPositionable]);
+        object ITwoDimensionArray.this[int i, int j] => this[i, j];
 
         public TNewValue[][] ToArray()
         {
@@ -101,12 +95,6 @@ namespace Glyph.Space
         {
             get => base[worldPoint];
             set => Setter(Grid[worldPoint], value);
-        }
-
-        new public TNewValue this[IGridPositionable gridPositionable]
-        {
-            get => base[gridPositionable];
-            set => Setter(Grid[gridPositionable], value);
         }
     }
 }

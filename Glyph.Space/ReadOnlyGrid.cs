@@ -24,7 +24,7 @@ namespace Glyph.Space
         public T this[int i, int j] => _grid[i, j];
         public T this[Point gridPoint] => _grid[gridPoint];
         public T this[Vector2 worldPoint] => _grid[worldPoint];
-        public T this[IGridPositionable gridPositionable] => _grid[gridPositionable];
+        object ITwoDimensionArray.this[int i, int j] => _grid[i, j];
 
         public event ArrayChangedEventHandler ArrayChanged;
 
@@ -43,15 +43,8 @@ namespace Glyph.Space
         public bool Intersects(Segment segment) => _grid.Intersects(segment);
         public bool Intersects<TShape>(TShape edgedShape) where TShape : IEdgedShape => _grid.Intersects(edgedShape);
         public bool Intersects(Circle circle) => _grid.Intersects(circle);
-        public Vector2 ToWorldPoint(int i, int j) => _grid.ToWorldPoint(i, j);
         public Vector2 ToWorldPoint(Point gridPoint) => _grid.ToWorldPoint(gridPoint);
-        public Vector2 ToWorldPoint(IGridPositionable gridPoint) => _grid.ToWorldPoint(gridPoint);
-        public TopLeftRectangle ToWorldRange(int x, int y, int width, int height) => _grid.ToWorldRange(x, y, width, height);
-        public TopLeftRectangle ToWorldRange(Rectangle rectangle) => _grid.ToWorldRange(rectangle);
         public Point ToGridPoint(Vector2 worldPoint) => _grid.ToGridPoint(worldPoint);
-        public Rectangle ToGridRange(TopLeftRectangle rectangle) => _grid.ToGridRange(rectangle);
-        public bool ContainsPoint(int i, int j) => _grid.ContainsPoint(i, j);
-        public bool ContainsPoint(Point gridPoint) => _grid.ContainsPoint(gridPoint);
         public T[][] ToArray() => _grid.ToArray();
         public IEnumerator<T> GetEnumerator() => _grid.GetEnumerator();
         
