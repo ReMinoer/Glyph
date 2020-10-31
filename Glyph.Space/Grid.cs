@@ -9,14 +9,51 @@ using Simulacra.Utils;
 
 namespace Glyph.Space
 {
-    public class Grid : IGrid
+    public class Grid : IResizeableGrid
     {
+        private GridDimension _dimension;
+        public virtual GridDimension Dimension
+        {
+            get => _dimension;
+            set
+            {
+                if (_dimension.Equals(value))
+                    return;
+
+                if (IsNotifying)
+                {
+                    GridDimension previousValue = _dimension;
+
+                    _dimension = value;
+                    UpdateRectangle();
+
+                    NotifyArrayChanged(ArrayChangedEventArgs.Resize(value.ToArray(), previousValue.ToArray()));
+                }
+                else
+                {
+                    _dimension = value;
+                    UpdateRectangle();
+                }
+            }
+        }
+
+        private Vector2 _delta;
+        public Vector2 Delta
+        {
+            get => _delta;
+            set
+            {
+                _delta = value;
+                UpdateRectangle();
+            }
+        }
+
         public TopLeftRectangle Rectangle { get; private set; }
-        public GridDimension Dimension { get; }
-        public Vector2 Delta { get; }
-        public bool IsVoid => (Dimension.Columns == 0 && Dimension.Rows == 0) || Delta == Vector2.Zero;
-        public TopLeftRectangle BoundingBox => Rectangle;
-        public Rectangle Bounds => new Rectangle(0, 0, Dimension.Columns, Dimension.Rows);
+
+        private void UpdateRectangle()
+        {
+            Rectangle = new TopLeftRectangle(Rectangle.Position, Delta * Dimension);
+        }
 
         public Vector2 Center
         {
@@ -24,8 +61,17 @@ namespace Glyph.Space
             set => Rectangle = new TopLeftRectangle { Center = value, Size = Rectangle.Size };
         }
 
-        int IArray.Rank => 2;
-        int IArray.GetLength(int dimension)
+        public Vector2 Origin
+        {
+            get => Rectangle.Position;
+            set => Rectangle = new TopLeftRectangle { Position = value, Size = Rectangle.Size };
+        }
+
+        public bool IsVoid => (Dimension.Columns == 0 && Dimension.Rows == 0) || Delta == Vector2.Zero;
+        public TopLeftRectangle BoundingBox => Rectangle;
+
+        int IArrayDefinition.Rank => 2;
+        int IArrayDefinition.GetLength(int dimension)
         {
             switch (dimension)
             {
@@ -35,22 +81,18 @@ namespace Glyph.Space
             }
         }
 
-        object IArray.this[params int[] indexes] => null;
-
-        public Grid(TopLeftRectangle rectangle, int columns, int rows)
+        int[] IResizeableArrayDefinition.Lengths
         {
-            Rectangle = rectangle;
-            Dimension = new GridDimension(columns, rows);
-
-            Delta = Rectangle.Size / Dimension;
+            set => Dimension = new GridDimension(value[1], value[0]);
         }
+
+        public event ArrayChangedEventHandler ArrayChanged;
 
         public Grid(int columns, int rows, Vector2 origin, Vector2 delta)
         {
-            Dimension = new GridDimension(columns, rows);
-            Delta = delta;
-
-            Rectangle = new TopLeftRectangle(origin, delta * new Vector2(columns, rows));
+            _dimension = new GridDimension(columns, rows);
+            _delta = delta;
+            Rectangle = new TopLeftRectangle(origin, _delta * _dimension);
         }
 
         public bool ContainsPoint(Vector2 worldPoint) => Rectangle.ContainsPoint(worldPoint);
@@ -65,61 +107,61 @@ namespace Glyph.Space
 
         public Point ToGridPoint(Vector2 worldPoint)
         {
-            return Delta.Discretize(worldPoint - Rectangle.Position);
+            return Delta.Discretize(worldPoint - Rectangle.Position); 
         }
+
+        protected bool IsNotifying => ArrayChanged != null;
+        protected void NotifyArrayChanged(ArrayChangedEventArgs e) => ArrayChanged?.Invoke(this, e);
     }
 
     public class Grid<T> : GridBase<T>
     {
-        private readonly ITwoDimensionWriteableArray<T> _data;
+        private readonly TwoDimensionArray<T> _data;
+        private readonly Func<T, int[], T> _defaultCellValueFactory;
+
+        public override sealed GridDimension Dimension
+        {
+            get => new GridDimension(_data.Lengths[1], _data.Lengths[0]);
+            set
+            {
+                _data.Resize(value.ToArray(), keepValues: true, _defaultCellValueFactory);
+                base.Dimension = value;
+            }
+        }
+
+        public GridDimension Capacities
+        {
+            get => new GridDimension(_data.Capacities[1], _data.Capacities[0]);
+            set => _data.Capacities = value.ToArray();
+        }
 
         protected override bool HasLowEntropyProtected => false;
         protected override IEnumerable<IGridCase<T>> SignificantCasesProtected => new Enumerable<IGridCase<T>>(new Enumerator(this));
 
-        public Grid(TopLeftRectangle rectangle, int columns, int rows, Func<int[], T> defaultCellValueFactory = null)
-            : base(rectangle, columns, rows)
-        {
-            _data = new TwoDimensionArray<T>(new T[Dimension.Rows, Dimension.Columns]);
-
-            if (defaultCellValueFactory != null)
-                _data.Fill(defaultCellValueFactory);
-        }
-
-        public Grid(int columns, int rows, Vector2 origin, Vector2 delta, Func<int[], T> defaultCellValueFactory = null)
+        public Grid(int columns, int rows, Vector2 origin, Vector2 delta, Func<T, int[], T> defaultCellValueFactory = null)
             : base(columns, rows, origin, delta)
         {
-            _data = new TwoDimensionArray<T>(new T[Dimension.Rows, Dimension.Columns]);
+            _data = new TwoDimensionArray<T>(new T[rows, columns]);
+            _defaultCellValueFactory = defaultCellValueFactory;
 
-            if (defaultCellValueFactory != null)
-                _data.Fill(defaultCellValueFactory);
+            if (_defaultCellValueFactory != null)
+                _data.Fill(_defaultCellValueFactory ?? ((_, __) => default));
         }
 
-        public Grid(TopLeftRectangle rectangle, ITwoDimensionWriteableArray<T> data)
-            : base(rectangle, data.GetLength(1), data.GetLength(0))
-        {
-            _data = data;
-        }
-
-        public Grid(ITwoDimensionWriteableArray<T> data, Vector2 origin, Vector2 delta)
+        public Grid(TwoDimensionArray<T> data, Vector2 origin, Vector2 delta)
             : base(data.GetLength(1), data.GetLength(0), origin, delta)
         {
             _data = data;
         }
 
+        public override void Resize(int[] newLengths, bool keepValues = true, Func<T, int[], T> valueFactory = null)
+        {
+            _data.Resize(newLengths, keepValues, valueFactory);
+            base.Dimension = new GridDimension(newLengths[1], newLengths[0]);
+        }
+
         protected override T GetValue(int i, int j) => _data[i, j];
         protected override void SetValue(int i, int j, T value) => _data[i, j] = value;
-
-        protected override T[][] ToArrayProtected()
-        {
-            var array = new T[_data.GetLength(0)][];
-            for (int i = 0; i < array.GetLength(0); i++)
-            {
-                array[i] = new T[_data.GetLength(1)];
-                for (int j = 0; j < array.GetLength(1); j++)
-                    array[i][j] = _data[i, j];
-            }
-            return array;
-        }
 
         public class Enumerator : IEnumerator<IGridCase<T>>
         {

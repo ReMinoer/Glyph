@@ -8,13 +8,14 @@ using Simulacra.Utils;
 
 namespace Glyph.Space
 {
-    public class DirtableGrid<T> : IDirtableGrid<T>
+    public class DirtableGrid<T> : IDirtableResizeableGrid<T>
         where T : class, IDirtable
     {
-        private readonly IWriteableGrid<T> _gridImplementation;
+        private readonly IResizeableGrid<T> _gridImplementation;
         private readonly List<IGridCase<T>> _dirtiedCases;
         private readonly IReadOnlyList<IGridCase<T>> _readOnlyDirtiedCases;
-        private readonly EventHandler[,] _dirtyHandlers;
+
+        private EventHandler[,] _dirtyHandlers;
 
         public T this[int i, int j]
         {
@@ -96,28 +97,36 @@ namespace Glyph.Space
                     UnsubscribeDirty(new GridCase<T>(indexes[0], indexes[1], previousValue));
 
                 _gridImplementation[indexes] = value;
+                var valueCase = new GridCase<T>(indexes[0], indexes[1], value);
 
                 if (value != null)
-                    SubscribeDirty(new GridCase<T>(indexes[0], indexes[1], value));
+                    SubscribeDirty(valueCase);
 
-                SetDirty(new GridCase<T>(indexes[0], indexes[1], value));
+                SetDirty(valueCase);
             }
+        }
+
+        public GridDimension Dimension
+        {
+            get => _gridImplementation.Dimension;
+            set => _gridImplementation.Dimension = value;
+        }
+
+        public Vector2 Delta
+        {
+            get => _gridImplementation.Delta;
+            set => _gridImplementation.Delta = value;
         }
 
         public bool IsVoid => _gridImplementation.IsVoid;
         public IEnumerable<IGridCase<T>> DirtiedCases => _readOnlyDirtiedCases;
         public TopLeftRectangle BoundingBox => _gridImplementation.BoundingBox;
         public Vector2 Center => _gridImplementation.Center;
-        public GridDimension Dimension => _gridImplementation.Dimension;
-        public Vector2 Delta => _gridImplementation.Delta;
         public bool HasLowEntropy => _gridImplementation.HasLowEntropy;
         public IEnumerable<T> Values => _gridImplementation.Values;
         public IEnumerable<IGridCase<T>> SignificantCases => _gridImplementation.SignificantCases;
-        
-        T IGrid<T>.this[Point gridPoint] => ((IGrid<T>)_gridImplementation)[gridPoint];
-        T IGrid<T>.this[Vector2 worldPoint] => ((IGrid<T>)_gridImplementation)[worldPoint];
 
-        public DirtableGrid(IWriteableGrid<T> gridImplementation)
+        public DirtableGrid(IResizeableGrid<T> gridImplementation)
         {
             _gridImplementation = gridImplementation;
             _gridImplementation.ArrayChanged += OnArrayChanged;
@@ -153,7 +162,8 @@ namespace Glyph.Space
             Dirtied?.Invoke(this, EventArgs.Empty);
         }
 
-        void IDirtable.SetDirty()
+        void IDirtable.SetDirty() => SetDirty();
+        private void SetDirty()
         {
             int[] indexes = this.GetResetIndex();
             while (this.MoveIndex(indexes))
@@ -180,20 +190,45 @@ namespace Glyph.Space
             _dirtyHandlers[point.Y, point.X] = null;
         }
 
+        public void Resize(int[] newLengths, bool keepValues = true, Func<T, int[], T> valueFactory = null)
+        {
+            _dirtyHandlers = (EventHandler[,])_dirtyHandlers.ToResizedArray<EventHandler>(newLengths, keepValues: true);
+
+            _gridImplementation.Resize(newLengths, keepValues, (previous, indexes) =>
+            {
+                if (previous != null)
+                    UnsubscribeDirty(new GridCase<T>(indexes[0], indexes[1], previous));
+
+                T value = valueFactory(previous, indexes);
+                var valueCase = new GridCase<T>(indexes[0], indexes[1], value);
+
+                if (value != null)
+                    SubscribeDirty(valueCase);
+
+                return value;
+            });
+
+            SetDirty();
+        }
+
         public bool ContainsPoint(Vector2 point) => _gridImplementation.ContainsPoint(point);
         public bool Intersects(Segment segment) => _gridImplementation.Intersects(segment);
         public bool Intersects<T1>(T1 edgedShape) where T1 : IEdgedShape => _gridImplementation.Intersects(edgedShape);
         public bool Intersects(Circle circle) => _gridImplementation.Intersects(circle);
         public Vector2 ToWorldPoint(Point gridPoint) => _gridImplementation.ToWorldPoint(gridPoint);
         public Point ToGridPoint(Vector2 worldPoint) => _gridImplementation.ToGridPoint(worldPoint);
-        public T[][] ToArray() => _gridImplementation.ToArray();
         public IEnumerator<T> GetEnumerator() => _gridImplementation.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _gridImplementation.GetEnumerator();
 
-        int IArray.Rank => _gridImplementation.Rank;
-        int IArray.GetLength(int dimension) => _gridImplementation.GetLength(dimension);
+        int IArrayDefinition.Rank => _gridImplementation.Rank;
+        int IArrayDefinition.GetLength(int dimension) => _gridImplementation.GetLength(dimension);
         object IArray.this[params int[] indexes] => _gridImplementation[indexes];
         T IArray<T>.this[params int[] indexes] => _gridImplementation[indexes];
         object ITwoDimensionArray.this[int i, int j] => _gridImplementation[i, j];
+
+        int[] IResizeableArrayDefinition.Lengths
+        {
+            set => _gridImplementation.Lengths = value;
+        }
     }
 }

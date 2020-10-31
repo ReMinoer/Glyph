@@ -50,15 +50,13 @@ namespace Glyph.Space
         public TNewValue this[Vector2 worldPoint] => Getter(Grid[worldPoint]);
         object ITwoDimensionArray.this[int i, int j] => this[i, j];
 
-        public TNewValue[][] ToArray()
+        public TNewValue[,] ToArray()
         {
-            var array = new TNewValue[Dimension.Rows][];
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = new TNewValue[Dimension.Columns];
+            var array = new TNewValue[Dimension.Rows, Dimension.Columns];
+            for (int i = 0; i < Dimension.Rows; i++)
                 for (int j = 0; j < Dimension.Columns; j++)
-                    array[i][j] = this[i, j];
-            }
+                    array[i, j] = this[i, j];
+
             return array;
         }
     }

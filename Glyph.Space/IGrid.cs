@@ -5,7 +5,7 @@ using Simulacra.Utils;
 
 namespace Glyph.Space
 {
-    public interface IGrid : IArray, IShape
+    public interface IGrid : IArrayDefinition, IShape
     {
         GridDimension Dimension { get; }
         Vector2 Delta { get; }
@@ -20,6 +20,5 @@ namespace Glyph.Space
         IEnumerable<IGridCase<T>> SignificantCases { get; }
         T this[Point gridPoint] { get; }
         T this[Vector2 worldPoint] { get; }
-        T[][] ToArray();
     }
 }

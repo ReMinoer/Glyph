@@ -14,6 +14,8 @@ namespace Glyph.Space
             Rows = rows;
         }
 
+        public int[] ToArray() => new[] {Rows, Columns};
+
         static public implicit operator Point(GridDimension gridDimension)
         {
             return new Point(gridDimension.Columns, gridDimension.Rows);

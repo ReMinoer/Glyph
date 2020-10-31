@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -45,11 +44,10 @@ namespace Glyph.Space
         public bool Intersects(Circle circle) => _grid.Intersects(circle);
         public Vector2 ToWorldPoint(Point gridPoint) => _grid.ToWorldPoint(gridPoint);
         public Point ToGridPoint(Vector2 worldPoint) => _grid.ToGridPoint(worldPoint);
-        public T[][] ToArray() => _grid.ToArray();
         public IEnumerator<T> GetEnumerator() => _grid.GetEnumerator();
         
-        int IArray.Rank => _grid.Rank;
-        int IArray.GetLength(int dimension) => _grid.GetLength(dimension);
+        int IArrayDefinition.Rank => _grid.Rank;
+        int IArrayDefinition.GetLength(int dimension) => _grid.GetLength(dimension);
         object IArray.this[params int[] indexes] => this[indexes[0], indexes[1]];
         T IArray<T>.this[params int[] indexes] => this[indexes[0], indexes[1]];
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_grid).GetEnumerator();
