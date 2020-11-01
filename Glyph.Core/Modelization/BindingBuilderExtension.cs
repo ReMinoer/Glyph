@@ -20,7 +20,7 @@ namespace Glyph.Core.Modelization
             where TView : class, IGlyphComponent
             where TComponent : IGlyphComponent
         {
-            builder.Do((m, v) => objectGetter(v).SetComponent('%' + builder.Name, builder.Getter(m, v)));
+            builder.Do((m, v) => objectGetter(v).SetKeyedComponent('%' + builder.Name, builder.Getter(m, v)));
         }
     }
 }

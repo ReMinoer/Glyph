@@ -94,20 +94,14 @@ namespace Glyph.Core
                 Task.Run(async () => await loadingItem.LoadContent(Resolver.Resolve<IContentLibrary>())).Wait();
         }
 
-        public IGlyphComponent GetComponent(string key) => key.StartsWith("$") ? throw new ArgumentException() : GetComponentBase(key);
-        public bool SetComponent(string key, IGlyphComponent component) => key.StartsWith("$") ? throw new ArgumentException() : SetComponentBase(key, component);
-
-        protected IGlyphComponent GetComponentProperty([CallerMemberName] string propertyName = null) => GetComponentBase('$' + propertyName);
-        protected bool SetComponentProperty(IGlyphComponent component, [CallerMemberName] string propertyName = null) => SetComponentBase('$' + propertyName, component);
-
-        private IGlyphComponent GetComponentBase(string key)
+        public IGlyphComponent GetKeyedComponent(string key)
         {
             return _keyedComponents.TryGetValue(key, out IGlyphComponent component) ? component : null;
         }
 
-        private bool SetComponentBase(string key, IGlyphComponent component)
+        public bool SetKeyedComponent(string key, IGlyphComponent component)
         {
-            IGlyphComponent currentComponent = GetComponentBase(key);
+            IGlyphComponent currentComponent = GetKeyedComponent(key);
             if (component == currentComponent)
                 return false;
 
@@ -121,6 +115,29 @@ namespace Glyph.Core
             {
                 Add(component);
                 _keyedComponents[key] = component;
+            }
+
+            return true;
+        }
+
+        protected bool SetPropertyComponent<T>(ref T component, T value, bool disposeOnRemove = false)
+            where T : class, IGlyphComponent
+        {
+            if (component == value)
+                return false;
+
+            if (component != null)
+            {
+                Remove(component);
+                if (disposeOnRemove)
+                    component.Dispose();
+            }
+
+            component = value;
+
+            if (component != null)
+            {
+                Add(component);
             }
 
             return true;
