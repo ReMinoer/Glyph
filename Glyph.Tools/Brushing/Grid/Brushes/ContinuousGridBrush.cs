@@ -3,14 +3,23 @@ using Glyph.Math.Shapes;
 using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
 using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Tools.Brushing.Grid.Brushes
 {
     public class ContinuousGridBrush<TCell, TPaint> : GridBrushBase<TCell, TPaint>
         where TPaint : IGridPaint<TCell>
     {
+        private readonly ArrayRange _brushRange;
+
         private Point _previousGridPoint;
         private Vector2 _previousWorldPoint;
+
+        public ContinuousGridBrush(Point? size = null)
+        {
+            (int x, int y) = size ?? new Point(1, 1);
+            _brushRange = new ArrayRange(new []{-y / 2, -x / 2}, new[] { y, x });
+        }
 
         public override void StartApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
@@ -45,11 +54,17 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
                     if (!cellRectangle.Intersects(segment))
                         continue;
 
-                    Vector2 worldPoint = canvas.ToWorldPoint(gridPoint);
+                    for (int y = 0; y < _brushRange.Lengths[0]; y++)
+                        for (int x = 0; x < _brushRange.Lengths[1]; x++)
+                        {
+                            gridPoint = new Point(j + _brushRange.StartingIndexes[1] + x, i + _brushRange.StartingIndexes[0] + y);
+                            Vector2 worldPoint = canvas.ToWorldPoint(gridPoint);
 
-                    var cellArgs = new GridBrushArgs(gridPoint, worldPoint);
-                    if (paint.CanApply(canvas, cellArgs))
-                        paint.Apply(canvas, cellArgs);
+                            var cellArgs = new GridBrushArgs(gridPoint, worldPoint);
+                            if (paint.CanApply(canvas, cellArgs))
+                                paint.Apply(canvas, cellArgs);
+                        }
+
                 }
         }
         

@@ -3,6 +3,7 @@ using Glyph.Space;
 using Glyph.Tools.Brushing.Decorators;
 using Glyph.Tools.Brushing.Decorators.Cursors;
 using Glyph.Tools.Brushing.Grid;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Brushing
 {
@@ -23,11 +24,12 @@ namespace Glyph.Tools.Brushing
             return new ResettableBrush<IBrush<TCanvas, TArgs, TPaint>, TCanvas, TArgs, TPaint>(brush, resetPaint, resetPredicate);
         }
 
-        static public IBrush<IWriteableGrid<TCell>, TArgs, TPaint> GridCursor<TCell, TArgs, TPaint>(this IBrush<IWriteableGrid<TCell>, TArgs, TPaint> brush, bool showRectangle = false)
+        static public IBrush<IWriteableGrid<TCell>, TArgs, TPaint> GridCursor<TCell, TArgs, TPaint>(
+            this IBrush<IWriteableGrid<TCell>, TArgs, TPaint> brush, Point? size = null, bool showRectangle = false)
             where TArgs : IGridBrushArgs
             where TPaint : IPaint<IWriteableGrid<TCell>, TArgs>
         {
-            return new GridCursorBrush<IBrush<IWriteableGrid<TCell>, TArgs, TPaint>, IWriteableGrid<TCell>, TCell, TArgs, TPaint>(brush, showRectangle);
+            return new GridCursorBrush<IBrush<IWriteableGrid<TCell>, TArgs, TPaint>, IWriteableGrid<TCell>, TCell, TArgs, TPaint>(brush, size, showRectangle);
         }
     }
 }

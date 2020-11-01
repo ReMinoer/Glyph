@@ -18,11 +18,13 @@ namespace Glyph.Tools.Brushing.Decorators.Cursors
         private GridCursor _gridCursor;
         private Vector2 _cursorStartPosition;
 
+        public Point Size { get; }
         public bool ShowRectangle { get; }
 
-        public GridCursorBrush(TBrush brush, bool showRectangle)
+        public GridCursorBrush(TBrush brush, Point? size = null, bool showRectangle = false)
             : base(brush)
         {
+            Size = size ?? new Point(1, 1);
             ShowRectangle = showRectangle;
         }
 
@@ -35,7 +37,7 @@ namespace Glyph.Tools.Brushing.Decorators.Cursors
         {
             base.Update(canvas, args, paint);
 
-            _gridCursor.Rectangle = new TopLeftRectangle(canvas.ToWorldPoint(args.GridPoint), canvas.Delta);
+            _gridCursor.Rectangle = new CenteredRectangle(canvas.ToWorldPoint(args.GridPoint) + canvas.Delta / 2, canvas.Delta * Size.ToVector2());
         }
 
         public override void StartApply(TCanvas canvas, TArgs args, TPaint paint)
@@ -52,7 +54,9 @@ namespace Glyph.Tools.Brushing.Decorators.Cursors
             if (ShowRectangle)
             {
                 TopLeftRectangle rectangle = MathUtils.GetBoundingBox(_cursorStartPosition, canvas.ToWorldPoint(args.GridPoint));
-                rectangle.Size += canvas.Delta;
+                rectangle.Position -= canvas.Delta * Size.ToVector2() / 2;
+                rectangle.Size += canvas.Delta * Size.ToVector2();
+
                 _gridCursor.Rectangle = rectangle;
             }
         }
