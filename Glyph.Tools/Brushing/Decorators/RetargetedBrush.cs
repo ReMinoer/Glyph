@@ -1,28 +1,24 @@
 ﻿using System;
+using Glyph.Tools.Brushing.Decorators.Base;
 
 namespace Glyph.Tools.Brushing.Decorators
 {
-    public class RetargetedBrush<TCanvasIn, TCanvasOut, TArgsIn, TArgsOut, TPaint> : IBrush<TCanvasOut, TArgsOut, TPaint>
-        where TPaint : IPaint<TCanvasIn, TArgsIn>
+    public class RetargetedBrush<TBrush, TBrushCanvas, TBrushArgs, TCanvas, TArgs, TPaint> : BrushDecoratorBase<TBrush, TBrushCanvas, TBrushArgs, TPaint, TCanvas, TArgs, TPaint>
+        where TBrush : IBrush<TBrushCanvas, TBrushArgs, TPaint>
+        where TPaint : IPaint
     {
-        private readonly IBrush<TCanvasIn, TArgsIn, TPaint> _brush;
-        private readonly Func<TCanvasOut, TCanvasIn> _targetSelector;
-        private readonly Func<TCanvasOut, TArgsOut, TArgsIn> _argsFunc;
+        private readonly Func<TCanvas, TBrushCanvas> _targetSelector;
+        private readonly Func<TCanvas, TArgs, TBrushArgs> _argsFunc;
 
-        public RetargetedBrush(IBrush<TCanvasIn, TArgsIn, TPaint> brush, Func<TCanvasOut, TCanvasIn> targetSelector, Func<TCanvasOut, TArgsOut, TArgsIn> argsFunc)
+        public RetargetedBrush(TBrush brush, Func<TCanvas, TBrushCanvas> targetSelector, Func<TCanvas, TArgs, TBrushArgs> argsFunc)
+            : base(brush)
         {
-            _brush = brush;
             _targetSelector = targetSelector;
             _argsFunc = argsFunc;
         }
 
-        public bool CanStartApply(TCanvasOut canvas, TArgsOut args, TPaint paint) => _brush.CanStartApply(_targetSelector(canvas), _argsFunc(canvas, args), paint);
-        public void StartApply(TCanvasOut canvas, TArgsOut args, TPaint paint) => _brush.StartApply(_targetSelector(canvas), _argsFunc(canvas, args), paint);
-        public void UpdateApply(TCanvasOut canvas, TArgsOut args, TPaint paint) => _brush.UpdateApply(_targetSelector(canvas), _argsFunc(canvas, args), paint);
-        public bool CanEndApply(TCanvasOut canvas, TArgsOut args, TPaint paint) => _brush.CanEndApply(_targetSelector(canvas), _argsFunc(canvas, args), paint);
-        public void EndApply(TCanvasOut canvas, TArgsOut args, TPaint paint) => _brush.EndApply(_targetSelector(canvas), _argsFunc(canvas, args), paint);
-        public void OnInvalidStart(TCanvasOut canvas, TArgsOut args, TPaint paint) => _brush.OnInvalidStart(_targetSelector(canvas), _argsFunc(canvas, args), paint);
-        public void OnCancellation(TCanvasOut canvas, TArgsOut args, TPaint paint) => _brush.OnCancellation(_targetSelector(canvas), _argsFunc(canvas, args), paint);
-        public void OnInvalidEnd(TCanvasOut canvas, TArgsOut args, TPaint paint) => _brush.OnInvalidEnd(_targetSelector(canvas), _argsFunc(canvas, args), paint);
+        protected override TBrushCanvas GetCanvas(TCanvas canvas) => _targetSelector(canvas);
+        protected override TBrushArgs GetArgs(TCanvas canvas, TArgs args) => _argsFunc(canvas, args);
+        protected override TPaint GetPaint(TCanvas canvas, TArgs args, TPaint paint) => paint;
     }
 }

@@ -13,10 +13,11 @@ namespace Glyph.Tools.Brushing.Controllers
         event EventHandler ApplyEnded;
     }
 
-    public interface IBrushController<TCanvas, TBrushArgs, TPaint> : IBrushController<TCanvas>
+    public interface IBrushController<TCanvas, TBrush, TBrushArgs, TPaint> : IBrushController<TCanvas>
+        where TBrush : IBrush<TCanvas, TBrushArgs, TPaint>
         where TPaint : IPaint
     {
-        IBrush<TCanvas, TBrushArgs, TPaint> Brush { get; set; }
+        TBrush Brush { get; set; }
         TPaint Paint { get; set; }
     }
 }

@@ -3,12 +3,49 @@ using Glyph.Core;
 
 namespace Glyph.Tools.Brushing.Controllers.Base
 {
-    public abstract class BrushControllerBase<TCanvas, TBrushArgs, TPaint> : GlyphObject, IBrushController<TCanvas, TBrushArgs, TPaint>, IIntegratedEditor<TCanvas>
+    public abstract class BrushControllerBase<TCanvas, TBrush, TBrushArgs, TPaint> : GlyphObject, IBrushController<TCanvas, TBrush, TBrushArgs, TPaint>, IIntegratedEditor<TCanvas>
+        where TBrush : IBrush<TCanvas, TBrushArgs, TPaint>
         where TPaint : IPaint
     {
-        public TCanvas Canvas { get; set; }
-        public IBrush<TCanvas, TBrushArgs, TPaint> Brush { get; set; }
-        public TPaint Paint { get; set; }
+        private TCanvas _canvas;
+        public TCanvas Canvas
+        {
+            get => _canvas;
+            set
+            {
+                if (ApplyingBrush)
+                    Cancel(default(TBrushArgs));
+
+                _canvas = value;
+            }
+        }
+
+        private TBrush _brush;
+        public virtual TBrush Brush
+        {
+            get => _brush;
+            set
+            {
+                if (ApplyingBrush)
+                    Cancel(default(TBrushArgs));
+
+                _brush = value;
+            }
+        }
+
+        private TPaint _paint;
+        public TPaint Paint
+        {
+            get => _paint;
+            set
+            {
+                if (ApplyingBrush)
+                    Cancel(default(TBrushArgs));
+
+                _paint = value;
+            }
+        }
+
         public bool ApplyingBrush { get; private set; }
 
         object IIntegratedEditor.EditedObject => Canvas;
@@ -24,23 +61,31 @@ namespace Glyph.Tools.Brushing.Controllers.Base
             Schedulers.Update.Plan(UpdateLocal);
         }
 
-        private void UpdateLocal(ElapsedTime elapsedtime)
+        private void UpdateLocal(ElapsedTime elapsedTime)
         {
+            if (Canvas == null)
+                return;
+
+            TBrushArgs args = GetBrushArgs(Canvas);
+
+            Brush?.Update(Canvas, args, Paint);
+
             if (!ApplyingBrush)
             {
                 if (RequestingApplyStart && Canvas != null && Brush != null && Paint != null)
                 {
-                    TBrushArgs args = GetBrushArgs(Canvas);
-
                     if (Brush.CanStartApply(Canvas, args, Paint))
                     {
                         ApplyingBrush = true;
                         Brush.StartApply(Canvas, args, Paint);
+
+                        OnApplyStarted(args);
                         ApplyStarted?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
                         Brush.OnInvalidStart(Canvas, args, Paint);
+                        OnStartInvalided(args);
                     }
                 }
             }
@@ -48,42 +93,57 @@ namespace Glyph.Tools.Brushing.Controllers.Base
             {
                 if (RequestingApplyEnd)
                 {
-                    TBrushArgs args = GetBrushArgs(Canvas);
                     ApplyingBrush = false;
 
                     if (Brush.CanEndApply(Canvas, args, Paint))
                     {
                         Brush.EndApply(Canvas, args, Paint);
+
+                        OnApplyEnded(args);
                         ApplyEnded?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
                         Brush.OnInvalidEnd(Canvas, args, Paint);
+                        OnEndInvalided(args);
                     }
                 }
             }
 
             if (ApplyingBrush)
             {
-                TBrushArgs args = GetBrushArgs(Canvas);
-
                 if (RequestingCancellation)
                 {
-                    ApplyingBrush = false;
-
-                    Brush.OnCancellation(Canvas, args, Paint);
-                    ApplyCancelled?.Invoke(this, EventArgs.Empty);
+                    Cancel(args);
                 }
                 else
                 {
                     Brush.UpdateApply(Canvas, args, Paint);
+                    OnApplyUpdated(args);
                 }
             }
+        }
+
+        private void Cancel(TBrushArgs args)
+        {
+            ApplyingBrush = false;
+            Brush.OnCancellation(Canvas, args, Paint);
+
+            OnCancelled(args);
+            ApplyCancelled?.Invoke(this, EventArgs.Empty);
         }
 
         protected abstract bool RequestingApplyStart { get; }
         protected abstract bool RequestingApplyEnd { get; }
         protected abstract bool RequestingCancellation { get; }
+
+        protected virtual void OnApplyStarted(TBrushArgs args) {}
+        protected virtual void OnStartInvalided(TBrushArgs args) {}
+        protected virtual void OnApplyEnded(TBrushArgs args) {}
+        protected virtual void OnEndInvalided(TBrushArgs args) {}
+        protected virtual void OnCancelled(TBrushArgs args) {}
+        protected virtual void OnApplyUpdated(TBrushArgs args) { }
+
         protected abstract TBrushArgs GetBrushArgs(TCanvas canvas);
     }
 }

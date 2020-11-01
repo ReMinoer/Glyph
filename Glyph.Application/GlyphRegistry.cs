@@ -24,6 +24,7 @@ using Glyph.Resolver;
 using Glyph.Scripting;
 using Glyph.Tools;
 using Glyph.Tools.Brushing.Controllers;
+using Glyph.Tools.Brushing.Decorators.Cursors;
 using Glyph.Tools.Transforming;
 using Glyph.UI;
 using Glyph.UI.Menus;
@@ -220,6 +221,7 @@ namespace Glyph.Application
 
                 Type<EngineCursorBrushController>(),
                 Type<DataCursorBrushController>(),
+                Type<GridCursor>(),
 
                 #endregion
 

@@ -8,7 +8,8 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Brushing.Controllers
 {
-    public abstract class SimpleCursorBrushControllerBase<TCanvas, TPaint> : CursorBrushControllerBase<TCanvas, ISpaceBrushArgs, TPaint>
+    public abstract class SimpleCursorBrushControllerBase<TCanvas, TBrush, TPaint> : CursorBrushControllerBase<TCanvas, TBrush, ISpaceBrushArgs, TPaint>
+        where TBrush : IBrush<TCanvas, ISpaceBrushArgs, TPaint>
         where TPaint : IPaint
     {
         public SimpleCursorBrushControllerBase(GlyphResolveContext glyphResolveContext, RootView rootView, ProjectionManager projectionManager)
@@ -28,7 +29,7 @@ namespace Glyph.Tools.Brushing.Controllers
         protected abstract ISceneNode GetCanvasTargetSceneNode(TCanvas canvas);
     }
 
-    public class EngineCursorBrushController : SimpleCursorBrushControllerBase<IGlyphComponent, IPaint>
+    public class EngineCursorBrushController : SimpleCursorBrushControllerBase<IGlyphComponent, IBrush<IGlyphComponent, ISpaceBrushArgs, IPaint>, IPaint>
     {
         public EngineCursorBrushController(GlyphResolveContext glyphResolveContext, RootView rootView, ProjectionManager projectionManager)
             : base(glyphResolveContext, rootView, projectionManager)
@@ -38,7 +39,7 @@ namespace Glyph.Tools.Brushing.Controllers
         protected override ISceneNode GetCanvasTargetSceneNode(IGlyphComponent canvas) => canvas.GetSceneNode();
     }
 
-    public class DataCursorBrushController : SimpleCursorBrushControllerBase<IGlyphData, IPaint>
+    public class DataCursorBrushController : SimpleCursorBrushControllerBase<IGlyphData, IBrush<IGlyphData, ISpaceBrushArgs, IPaint>, IPaint>
     {
         public DataCursorBrushController(GlyphResolveContext glyphResolveContext, RootView rootView, ProjectionManager projectionManager)
             : base(glyphResolveContext, rootView, projectionManager)

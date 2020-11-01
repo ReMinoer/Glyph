@@ -1,12 +1,17 @@
-﻿namespace Glyph.Tools.Brushing
+﻿using Glyph.Composition;
+using Niddle;
+
+namespace Glyph.Tools.Brushing
 {
     public interface IBrush
     {
+        IGlyphComponent CreateCursor(IDependencyResolver dependencyResolver);
     }
 
     public interface IBrush<in TCanvas, in TArgs, in TPaint> : IBrush
         where TPaint : IPaint
     {
+        void Update(TCanvas canvas, TArgs args, TPaint paint);
         bool CanStartApply(TCanvas canvas, TArgs args, TPaint paint);
         void StartApply(TCanvas canvas, TArgs args, TPaint paint);
         void UpdateApply(TCanvas canvas, TArgs args, TPaint paint);

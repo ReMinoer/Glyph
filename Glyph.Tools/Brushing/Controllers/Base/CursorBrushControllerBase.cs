@@ -3,6 +3,7 @@ using Diese.Collections;
 using Fingear.Controls;
 using Fingear.Inputs;
 using Fingear.MonoGame;
+using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.UI;
@@ -11,7 +12,8 @@ using IControl = Fingear.Controls.IControl;
 
 namespace Glyph.Tools.Brushing.Controllers.Base
 {
-    public abstract class CursorBrushControllerBase<TCanvas, TBrushArgs, TPaint> : BrushControllerBase<TCanvas, TBrushArgs, TPaint>
+    public abstract class CursorBrushControllerBase<TCanvas, TBrush, TBrushArgs, TPaint> : BrushControllerBase<TCanvas, TBrush, TBrushArgs, TPaint>
+        where TBrush : IBrush<TCanvas, TBrushArgs, TPaint>
         where TPaint : IPaint
     {
         protected readonly RootView RootView;
@@ -27,6 +29,19 @@ namespace Glyph.Tools.Brushing.Controllers.Base
         {
             get => _applyBrush.Input;
             set => _applyBrush.Input = value;
+        }
+
+        private IGlyphComponent _cursorComponent;
+        public override TBrush Brush
+        {
+            get => base.Brush;
+            set
+            {
+                base.Brush = value;
+
+                IGlyphComponent newCursor = Brush?.CreateCursor(Resolver);
+                SetPropertyComponent(ref _cursorComponent, newCursor, disposeOnRemove: true);
+            }
         }
 
         protected CursorBrushControllerBase(GlyphResolveContext context, RootView rootView, ProjectionManager projectionManager)
@@ -46,7 +61,7 @@ namespace Glyph.Tools.Brushing.Controllers.Base
             Schedulers.Update.Plan(UpdateBrushPosition).AtStart();
         }
 
-        private void UpdateBrushPosition(ElapsedTime elapsedtime)
+        private void UpdateBrushPosition(ElapsedTime elapsedTime)
         {
             if (_cursor.IsActive(out System.Numerics.Vector2 cursorPosition))
             {

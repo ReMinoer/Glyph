@@ -1,20 +1,33 @@
 ﻿using System;
+using Glyph.Space;
 using Glyph.Tools.Brushing.Decorators;
+using Glyph.Tools.Brushing.Decorators.Cursors;
+using Glyph.Tools.Brushing.Grid;
 
 namespace Glyph.Tools.Brushing
 {
     static public class BrushExtensions
     {
-        static public IBrush<TCanvasOut, TArgsOut, TPaint> Retarget<TCanvasIn, TCanvasOut, TArgsIn, TArgsOut, TPaint>(this IBrush<TCanvasIn, TArgsIn, TPaint> brush, Func<TCanvasOut, TCanvasIn> targetSelector, Func<TCanvasOut, TArgsOut, TArgsIn> argsFunc)
-            where TPaint : IPaint<TCanvasIn, TArgsIn>
+        static public RetargetedBrush<TBrush, TBrushCanvas, TBrushArgs, TCanvas, TArgs, TPaint> Retarget<TBrush, TBrushCanvas, TBrushArgs, TCanvas, TArgs, TPaint>(
+            this TBrush brush, Func<TCanvas, TBrushCanvas> targetSelector, Func<TCanvas, TArgs, TBrushArgs> argsFunc)
+            where TBrush : IBrush<TBrushCanvas, TBrushArgs, TPaint>
+            where TPaint : IPaint
         {
-            return new RetargetedBrush<TCanvasIn, TCanvasOut, TArgsIn, TArgsOut, TPaint>(brush, targetSelector, argsFunc);
+            return new RetargetedBrush<TBrush, TBrushCanvas, TBrushArgs, TCanvas, TArgs, TPaint>(brush, targetSelector, argsFunc);
         }
 
-        static public IBrush<TCanvas, TArgs, TPaint> Resettable<TCanvas, TArgs, TPaint>(this IBrush<TCanvas, TArgs, TPaint> brush, TPaint resetPaint, Func<TCanvas, TArgs, TPaint, bool> resetPredicate)
+        static public IBrush<TCanvas, TArgs, TPaint> Resettable<TCanvas, TArgs, TPaint>(
+            this IBrush<TCanvas, TArgs, TPaint> brush, TPaint resetPaint, Func<TCanvas, TArgs, TPaint, bool> resetPredicate)
             where TPaint : IPaint<TCanvas, TArgs>
         {
-            return new ResettableBrush<TCanvas, TArgs, TPaint>(brush, resetPaint, resetPredicate);
+            return new ResettableBrush<IBrush<TCanvas, TArgs, TPaint>, TCanvas, TArgs, TPaint>(brush, resetPaint, resetPredicate);
+        }
+
+        static public IBrush<IWriteableGrid<TCell>, TArgs, TPaint> GridCursor<TCell, TArgs, TPaint>(this IBrush<IWriteableGrid<TCell>, TArgs, TPaint> brush, bool showRectangle = false)
+            where TArgs : IGridBrushArgs
+            where TPaint : IPaint<IWriteableGrid<TCell>, TArgs>
+        {
+            return new GridCursorBrush<IBrush<IWriteableGrid<TCell>, TArgs, TPaint>, IWriteableGrid<TCell>, TCell, TArgs, TPaint>(brush, showRectangle);
         }
     }
 }
