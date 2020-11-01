@@ -144,8 +144,7 @@ namespace Glyph.Space
             _data = new TwoDimensionArray<T>(new T[rows, columns]);
             _defaultCellValueFactory = defaultCellValueFactory;
 
-            if (_defaultCellValueFactory != null)
-                _data.Fill(_defaultCellValueFactory ?? ((_, __) => default));
+            _data.Fill(_defaultCellValueFactory ?? ((_, __) => default));
         }
 
         public Grid(TwoDimensionArray<T> data, Vector2 origin, Vector2 delta)
@@ -156,7 +155,7 @@ namespace Glyph.Space
 
         public override void Resize(int[] newLengths, bool keepValues = true, Func<T, int[], T> valueFactory = null)
         {
-            _data.Resize(newLengths, keepValues, valueFactory);
+            _data.Resize(newLengths, keepValues, valueFactory ?? _defaultCellValueFactory);
             base.Dimension = new GridDimension(newLengths[1], newLengths[0]);
         }
 
