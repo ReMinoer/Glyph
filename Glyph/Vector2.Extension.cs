@@ -171,7 +171,14 @@ namespace Glyph
 
         static public Point Discretize(this Vector2 value, Vector2 localPoint)
         {
-            return new Point((int)(localPoint.X / value.X), (int)(localPoint.Y / value.Y));
+            var result = new Point((int)(localPoint.X / value.X), (int)(localPoint.Y / value.Y));
+
+            if (localPoint.X < 0)
+                result -= new Point(1, 0);
+            if (localPoint.Y < 0)
+                result -= new Point(0, 1);
+
+            return result;
         }
 
         static public Vector2 Integrate(this Vector2 value, Point gridPoint)
