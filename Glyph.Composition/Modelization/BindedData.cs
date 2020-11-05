@@ -43,7 +43,7 @@ namespace Glyph.Composition.Modelization
         static public BindingCollections Bindings { get; } = new BindingCollections();
 
         [Browsable(false), IgnoreDataMember]
-        public string DisplayName => BindedObject != null ? BindedObject.Name : TypeName;
+        public virtual string DisplayName => TypeName;
         static private readonly string TypeName = typeof(TData).GetDisplayName();
 
         [Browsable(false), IgnoreDataMember]
