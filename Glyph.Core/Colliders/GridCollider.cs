@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Glyph.Core.Colliders.Base;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -31,7 +32,7 @@ namespace Glyph.Core.Colliders
         public override bool Intersects(Circle circle) => Intersects(IntersectionUtils.Intersects, circle);
 
         public bool Intersects<TOther>(IntersectionDelegate<TopLeftRectangle, TOther> intersectionDelegate, TOther other) where TOther : IShape
-            => !Grid.Intersection(intersectionDelegate, other, (x, y) => IsCollidableCase(null, x, y)).IsEmpty;
+            => Grid.IndexIntersection(intersectionDelegate, other, (x, y) => IsCollidableCase(null, x, y)).Any();
 
         public bool IsCollidableCase(ICollider collider, int i, int j) => IsCollidableCaseDelegate(collider, Grid[i, j]);
         public override bool ContainsPoint(Vector2 point) => IsCollidableCaseDelegate(null, Grid[point]);

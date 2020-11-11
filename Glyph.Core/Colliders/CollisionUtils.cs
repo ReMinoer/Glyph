@@ -1,4 +1,5 @@
-﻿using Glyph.Math;
+﻿using System.Collections.Generic;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
@@ -32,15 +33,12 @@ namespace Glyph.Core.Colliders
             ICollider<TShape> shapeCollider, IGridCollider gridCollider, out Collision collision)
             where TShape : IShape
         {
-            GridIntersection shapeGridBox = gridCollider.Grid.Intersection(
+            IEnumerable<int[]> shapeGridBox = gridCollider.Grid.IndexIntersection(
                 (x, y) => rectangleCollisionDelegate(y, x, out _),
                 shapeCollider.Shape,
                 (i, j) => gridCollider.IsCollidableCase(shapeCollider, i, j));
 
-            IIndexEnumerator shapeGridBoxEnumerator = shapeGridBox.GetIndexEnumerator();
-            int[] indexes = shapeGridBoxEnumerator.GetResetIndex();
-
-            while (shapeGridBoxEnumerator.MoveIndex(indexes))
+            foreach (int[] indexes in shapeGridBox)
             {
                 int i = indexes[0];
                 int j = indexes[1];

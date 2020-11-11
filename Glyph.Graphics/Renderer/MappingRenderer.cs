@@ -1,4 +1,5 @@
-﻿using Glyph.Composition;
+﻿using System.Collections.Generic;
+using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics.Renderer.Base;
 using Glyph.Math;
@@ -40,11 +41,8 @@ namespace Glyph.Graphics.Renderer
             if (!drawnRectangle.Intersects(cameraRectangle, out TopLeftRectangle visibleRectangle))
                 return;
 
-            GridIntersection gridIntersection = Grid.Intersection(visibleRectangle);
-
-            IIndexEnumerator indexEnumerator = gridIntersection.GetIndexEnumerator();
-            int[] indexes = indexEnumerator.GetResetIndex();
-            while (indexEnumerator.MoveIndex(indexes))
+            IEnumerable<int[]> indexIntersection = Grid.IndexIntersection(visibleRectangle);
+            foreach (int[] indexes in indexIntersection)
             {
                 if (!RenderingBehaviour(Grid[indexes], this))
                     continue;

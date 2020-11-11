@@ -54,10 +54,8 @@ namespace Glyph.Space
         public Point ToGridPoint(Vector2 worldPoint) => _grid.ToGridPoint(worldPoint);
         public IEnumerator<T> GetEnumerator() => _grid.GetEnumerator();
 
-        public int[] GetResetIndex() => _grid.GetResetIndex();
-        public bool MoveIndex(int[] indexes) => _grid.MoveIndex(indexes);
-
         int IArrayDefinition.Rank => _grid.Rank;
+        int IArrayDefinition.GetLowerBound(int dimension) => _grid.GetLowerBound(dimension);
         int IArrayDefinition.GetLength(int dimension) => _grid.GetLength(dimension);
         object IArray.this[params int[] indexes] => this[indexes[0], indexes[1]];
         T IArray<T>.this[params int[] indexes] => this[indexes[0], indexes[1]];

@@ -230,6 +230,7 @@ namespace Glyph.Space
         public bool MoveIndex(int[] indexes) => _gridImplementation.MoveIndex(indexes);
 
         int IArrayDefinition.Rank => _gridImplementation.Rank;
+        int IArrayDefinition.GetLowerBound(int dimension) => _gridImplementation.GetLowerBound(dimension);
         int IArrayDefinition.GetLength(int dimension) => _gridImplementation.GetLength(dimension);
         object IArray.this[params int[] indexes] => _gridImplementation[indexes];
         T IArray<T>.this[params int[] indexes] => _gridImplementation[indexes];

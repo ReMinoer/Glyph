@@ -45,6 +45,7 @@ namespace Glyph.Space
         public Vector2 Center => Shape.Center;
 
         int IArrayDefinition.Rank => 2;
+        int IArrayDefinition.GetLowerBound(int dimension) => 0;
         int IArrayDefinition.GetLength(int dimension)
         {
             switch (dimension)
@@ -91,9 +92,6 @@ namespace Glyph.Space
 
         protected bool IsNotifying => ArrayChanged != null;
         protected void NotifyArrayChanged(ArrayChangedEventArgs e) => ArrayChanged?.Invoke(this, e);
-
-        public int[] GetResetIndex() => ArrayUtils.GetResetIndex(this);
-        public bool MoveIndex(int[] indexes) => ArrayUtils.MoveIndex(this, indexes);
     }
 
     public class Grid<T> : GridBase<T>
@@ -130,7 +128,7 @@ namespace Glyph.Space
         }
 
         public Grid(TwoDimensionArray<T> data, Vector2 delta)
-            : base(data.GetLength(1), data.GetLength(0), delta)
+            : base(data.Lengths[1], data.Lengths[0], delta)
         {
             _data = data;
         }

@@ -1,4 +1,5 @@
-﻿using Glyph.Math;
+﻿using System.Collections.Generic;
+using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
@@ -40,25 +41,18 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
 
         private void TryApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
         {
-            // TODO: Use better grid cell-segment intersection algorithm
             var segment = new Segment(args.WorldPoint, _previousWorldPoint);
-            GridIntersection segmentGridIntersection = canvas.Intersection(segment);
 
-            IIndexEnumerator intersectionEnumerator = segmentGridIntersection.GetIndexEnumerator();
-            int[] indexes = intersectionEnumerator.GetResetIndex();
-            while (intersectionEnumerator.MoveIndex(indexes))
+            IEnumerable<int[]> indexIntersection = canvas.IndexIntersection(segment);
+            foreach (int[] indexes in indexIntersection)
             {
-                int y = indexes[0];
                 int x = indexes[1];
-
-                Quad cellShape = canvas.ToWorldRange(x, y, 1, 1);
-                if (!cellShape.Intersects(segment))
-                    continue;
+                int y = indexes[0];
 
                 for (int i = 0; i < _brushRange.Lengths[0]; i++)
                     for (int j = 0; j < _brushRange.Lengths[1]; j++)
                     {
-                        Point gridPoint = new Point(x + _brushRange.StartingIndexes[1] + j, y + _brushRange.StartingIndexes[0] + i);
+                        Point gridPoint = new Point(x + _brushRange.StartingIndex[1] + j, y + _brushRange.StartingIndex[0] + i);
                         Vector2 worldPoint = canvas.ToWorldPoint(gridPoint);
 
                         var cellArgs = new GridBrushArgs(gridPoint, worldPoint);
