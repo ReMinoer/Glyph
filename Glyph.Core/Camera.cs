@@ -77,7 +77,5 @@ namespace Glyph.Core
         }
 
         private void OnSceneNodeRefreshed(SceneNodeBase obj) => Refresh();
-
-        void IFlipable.Flip(Axes axes) => Transformation.Flip(axes);
     }
 }

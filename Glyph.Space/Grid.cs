@@ -11,6 +11,8 @@ namespace Glyph.Space
 {
     public class Grid : IResizeableGrid
     {
+        public ITransformation Transformation { get; set; }
+
         private GridDimension _dimension;
         public virtual GridDimension Dimension
         {
@@ -25,50 +27,22 @@ namespace Glyph.Space
                     GridDimension previousValue = _dimension;
 
                     _dimension = value;
-                    UpdateRectangle();
 
                     NotifyArrayChanged(ArrayChangedEventArgs.Resize(value.ToArray(), previousValue.ToArray()));
                 }
                 else
                 {
                     _dimension = value;
-                    UpdateRectangle();
                 }
             }
         }
 
-        private Vector2 _delta;
-        public Vector2 Delta
-        {
-            get => _delta;
-            set
-            {
-                _delta = value;
-                UpdateRectangle();
-            }
-        }
-
-        public TopLeftRectangle Rectangle { get; private set; }
-
-        private void UpdateRectangle()
-        {
-            Rectangle = new TopLeftRectangle(Rectangle.Position, Delta * Dimension);
-        }
-
-        public Vector2 Center
-        {
-            get => Rectangle.Center;
-            set => Rectangle = new TopLeftRectangle { Center = value, Size = Rectangle.Size };
-        }
-
-        public Vector2 Origin
-        {
-            get => Rectangle.Position;
-            set => Rectangle = new TopLeftRectangle { Position = value, Size = Rectangle.Size };
-        }
+        public Vector2 Delta { get; set; }
+        public Quad Shape => Transformation.Transform(new TopLeftRectangle(Vector2.Zero, Delta * Dimension));
 
         public bool IsVoid => (Dimension.Columns == 0 && Dimension.Rows == 0) || Delta == Vector2.Zero;
-        public TopLeftRectangle BoundingBox => Rectangle;
+        public TopLeftRectangle BoundingBox => Shape.BoundingBox;
+        public Vector2 Center => Shape.Center;
 
         int IArrayDefinition.Rank => 2;
         int IArrayDefinition.GetLength(int dimension)
@@ -88,30 +62,38 @@ namespace Glyph.Space
 
         public event ArrayChangedEventHandler ArrayChanged;
 
-        public Grid(int columns, int rows, Vector2 origin, Vector2 delta)
+        public Grid(int columns, int rows, Vector2 delta)
         {
             _dimension = new GridDimension(columns, rows);
-            _delta = delta;
-            Rectangle = new TopLeftRectangle(origin, _delta * _dimension);
+            Delta = delta;
         }
 
-        public bool ContainsPoint(Vector2 worldPoint) => Rectangle.ContainsPoint(worldPoint);
-        public bool Intersects(Segment segment) => Rectangle.Intersects(segment);
-        public bool Intersects<T>(T edgedShape) where T : IEdgedShape => Rectangle.Intersects(edgedShape);
-        public bool Intersects(Circle circle) => Rectangle.Intersects(circle);
+        public bool ContainsPoint(Vector2 worldPoint) => Shape.ContainsPoint(worldPoint);
+        public bool Intersects(Segment segment) => Shape.Intersects(segment);
+        public bool Intersects<T>(T edgedShape) where T : IEdgedShape => Shape.Intersects(edgedShape);
+        public bool Intersects(Circle circle) => Shape.Intersects(circle);
 
         public Vector2 ToWorldPoint(Point gridPoint)
         {
-            return Rectangle.Position + Delta.Integrate(gridPoint);
+            if (Transformation != null)
+                return Transformation.Transform(Delta.Integrate(gridPoint));
+
+            return Delta.Integrate(gridPoint);
         }
 
         public Point ToGridPoint(Vector2 worldPoint)
         {
-            return Delta.Discretize(worldPoint - Rectangle.Position); 
+            if (Transformation != null)
+                return Delta.Discretize(Transformation.InverseTransform(worldPoint));
+
+            return Delta.Discretize(worldPoint); 
         }
 
         protected bool IsNotifying => ArrayChanged != null;
         protected void NotifyArrayChanged(ArrayChangedEventArgs e) => ArrayChanged?.Invoke(this, e);
+
+        public int[] GetResetIndex() => ArrayUtils.GetResetIndex(this);
+        public bool MoveIndex(int[] indexes) => ArrayUtils.MoveIndex(this, indexes);
     }
 
     public class Grid<T> : GridBase<T>
@@ -138,8 +120,8 @@ namespace Glyph.Space
         protected override bool HasLowEntropyProtected => false;
         protected override IEnumerable<IGridCase<T>> SignificantCasesProtected => new Enumerable<IGridCase<T>>(new Enumerator(this));
 
-        public Grid(int columns, int rows, Vector2 origin, Vector2 delta, Func<T, int[], T> defaultCellValueFactory = null)
-            : base(columns, rows, origin, delta)
+        public Grid(int columns, int rows, Vector2 delta, Func<T, int[], T> defaultCellValueFactory = null)
+            : base(columns, rows, delta)
         {
             _data = new TwoDimensionArray<T>(new T[rows, columns]);
             _defaultCellValueFactory = defaultCellValueFactory;
@@ -147,8 +129,8 @@ namespace Glyph.Space
             _data.Fill(_defaultCellValueFactory ?? ((_, __) => default));
         }
 
-        public Grid(TwoDimensionArray<T> data, Vector2 origin, Vector2 delta)
-            : base(data.GetLength(1), data.GetLength(0), origin, delta)
+        public Grid(TwoDimensionArray<T> data, Vector2 delta)
+            : base(data.GetLength(1), data.GetLength(0), delta)
         {
             _data = data;
         }

@@ -15,8 +15,15 @@ namespace Glyph.Space
         public bool IsVoid => Grid.IsVoid;
         public TopLeftRectangle BoundingBox => Grid.BoundingBox;
         public Vector2 Center => Grid.Center;
+
         public GridDimension Dimension => Grid.Dimension;
         public Vector2 Delta => Grid.Delta;
+        public ITransformation Transformation
+        {
+            get => Grid.Transformation;
+            set => Grid.Transformation = value;
+        }
+
         public bool HasLowEntropy => Grid.HasLowEntropy;
 
         public event ArrayChangedEventHandler ArrayChanged

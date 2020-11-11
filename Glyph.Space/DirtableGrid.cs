@@ -118,6 +118,12 @@ namespace Glyph.Space
             set => _gridImplementation.Delta = value;
         }
 
+        public ITransformation Transformation
+        {
+            get => _gridImplementation.Transformation;
+            set => _gridImplementation.Transformation = value;
+        }
+
         public bool IsVoid => _gridImplementation.IsVoid;
         public IEnumerable<IGridCase<T>> DirtiedCases => _readOnlyDirtiedCases;
         public TopLeftRectangle BoundingBox => _gridImplementation.BoundingBox;
@@ -136,8 +142,8 @@ namespace Glyph.Space
 
             _dirtyHandlers = new EventHandler[_gridImplementation.Dimension.Rows, _gridImplementation.Dimension.Columns];
 
-            int[] indexes = this.GetResetIndex();
-            while (this.MoveIndex(indexes))
+            int[] indexes = GetResetIndex();
+            while (MoveIndex(indexes))
                 SubscribeDirty(new GridCase<T>(indexes[0], indexes[1], _gridImplementation[indexes]));
         }
 
@@ -165,8 +171,8 @@ namespace Glyph.Space
         void IDirtable.SetDirty() => SetDirty();
         private void SetDirty()
         {
-            int[] indexes = this.GetResetIndex();
-            while (this.MoveIndex(indexes))
+            int[] indexes = GetResetIndex();
+            while (MoveIndex(indexes))
                 _dirtiedCases.Add(new GridCase<T>(indexes[0], indexes[1], this[indexes[0], indexes[1]]));
 
             Dirtied?.Invoke(this, EventArgs.Empty);
@@ -219,6 +225,9 @@ namespace Glyph.Space
         public Point ToGridPoint(Vector2 worldPoint) => _gridImplementation.ToGridPoint(worldPoint);
         public IEnumerator<T> GetEnumerator() => _gridImplementation.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _gridImplementation.GetEnumerator();
+
+        public int[] GetResetIndex() => _gridImplementation.GetResetIndex();
+        public bool MoveIndex(int[] indexes) => _gridImplementation.MoveIndex(indexes);
 
         int IArrayDefinition.Rank => _gridImplementation.Rank;
         int IArrayDefinition.GetLength(int dimension) => _gridImplementation.GetLength(dimension);

@@ -9,6 +9,7 @@ namespace Glyph.Space
     {
         GridDimension Dimension { get; }
         Vector2 Delta { get; }
+        ITransformation Transformation { get; set; }
         Vector2 ToWorldPoint(Point gridPoint);
         Point ToGridPoint(Vector2 worldPoint);
     }

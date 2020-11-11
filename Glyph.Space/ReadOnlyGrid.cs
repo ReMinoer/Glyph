@@ -14,8 +14,16 @@ namespace Glyph.Space
         public bool IsVoid => _grid.IsVoid;
         public TopLeftRectangle BoundingBox => _grid.BoundingBox;
         public Vector2 Center => _grid.Center;
+
         public Vector2 Delta => _grid.Delta;
         public GridDimension Dimension => _grid.Dimension;
+
+        public ITransformation Transformation
+        {
+            get => _grid.Transformation;
+            set => _grid.Transformation = value;
+        }
+
         public bool HasLowEntropy => _grid.HasLowEntropy;
         public IEnumerable<T> Values => _grid.Values;
         public IEnumerable<IGridCase<T>> SignificantCases => _grid.SignificantCases;
@@ -45,7 +53,10 @@ namespace Glyph.Space
         public Vector2 ToWorldPoint(Point gridPoint) => _grid.ToWorldPoint(gridPoint);
         public Point ToGridPoint(Vector2 worldPoint) => _grid.ToGridPoint(worldPoint);
         public IEnumerator<T> GetEnumerator() => _grid.GetEnumerator();
-        
+
+        public int[] GetResetIndex() => _grid.GetResetIndex();
+        public bool MoveIndex(int[] indexes) => _grid.MoveIndex(indexes);
+
         int IArrayDefinition.Rank => _grid.Rank;
         int IArrayDefinition.GetLength(int dimension) => _grid.GetLength(dimension);
         object IArray.this[params int[] indexes] => this[indexes[0], indexes[1]];

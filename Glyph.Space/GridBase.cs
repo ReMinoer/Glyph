@@ -17,8 +17,8 @@ namespace Glyph.Space
         protected abstract bool HasLowEntropyProtected { get; }
         bool IGrid<T>.HasLowEntropy => HasLowEntropyProtected;
 
-        protected GridBase(int columns, int rows, Vector2 origin, Vector2 delta)
-            : base(columns, rows, origin, delta)
+        protected GridBase(int columns, int rows, Vector2 delta)
+            : base(columns, rows, delta)
         {
         }
 

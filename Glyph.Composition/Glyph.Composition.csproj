@@ -11,7 +11,6 @@
     <ProjectReference Include="..\External\Simulacra\Simulacra.IO\Simulacra.IO.csproj" />
     <ProjectReference Include="..\External\Simulacra\Simulacra\Simulacra.csproj" />
     <ProjectReference Include="..\Glyph.Messaging\Glyph.Messaging.csproj" />
-    <ProjectReference Include="..\Glyph.Space\Glyph.Space.csproj" />
     <ProjectReference Include="..\Glyph\Glyph.csproj" />
   </ItemGroup>
   <ItemGroup>

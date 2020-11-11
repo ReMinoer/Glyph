@@ -45,8 +45,8 @@ namespace Glyph.Graphics
         {
             Components.Add(_sceneNode = new SceneNode());
             Components.Add(EffectManager = new ViewEffectManager(graphicsDeviceFunc));
-            Components.Add(_fillingRectangle = new FillingRectangle());
-            Components.Add(_fillingRenderer = new FillingRenderer(_fillingRectangle, EffectManager, _sceneNode));
+            Components.Add(_fillingRectangle = new FillingRectangle(_sceneNode));
+            Components.Add(_fillingRenderer = new FillingRenderer(_fillingRectangle, EffectManager));
 
             _sceneNode.Refreshed += OnSceneNodeRefreshed;
         }

@@ -6,15 +6,12 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph
 {
-    public interface ISceneNode : IRepresentative<ISceneNode>, ITransformer
+    public interface ISceneNode : IRepresentative<ISceneNode>, ITransformation
     {
         ISceneNode ParentNode { get; }
         IReadOnlyObservableList<ISceneNode> Children { get; }
         Vector2 Position { get; }
-        float Rotation { get; }
-        float Scale { get; }
         float Depth { get; }
-        Matrix3X3 Matrix { get; }
         Transformation Transformation { get; }
         Vector2 LocalPosition { get; }
         float LocalRotation { get; }

@@ -1,5 +1,4 @@
 ﻿using Glyph.Composition;
-using Glyph.Core;
 using Glyph.Graphics.Renderer.Base;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -10,38 +9,30 @@ namespace Glyph.Graphics.Renderer
 {
     public class TexturingRenderer : SpriteRendererBase
     {
-        private readonly SceneNode _sceneNode;
         private readonly FillingRectangle _fillingRectangle;
-        protected override ISceneNode SceneNode => _sceneNode;
-        protected override float DepthProtected => _sceneNode.Depth;
+        protected override ISceneNode SceneNode => _fillingRectangle.SceneNode;
+        protected override float DepthProtected => SceneNode.Depth;
 
-        public override IArea Area => new TopLeftRectangle
-        {
-            Position = _sceneNode.Position + _fillingRectangle.Rectangle.Position,
-            Size = _fillingRectangle.Rectangle.Size
-        };
+        public override IArea Area => _fillingRectangle.Rectangle;
 
-        public TexturingRenderer(SceneNode sceneNode, FillingRectangle fillingRectangle, ISpriteSource source)
+        public TexturingRenderer(FillingRectangle fillingRectangle, ISpriteSource source)
             : base(source)
         {
-            _sceneNode = sceneNode;
             _fillingRectangle = fillingRectangle;
         }
 
         protected override void Render(IDrawer drawer)
         {
             TopLeftRectangle cameraRectangle = drawer.DisplayedRectangle.BoundingBox;
-            TopLeftRectangle drawnRectangle = new CenteredRectangle
-            {
-                Center = _sceneNode.Position + _fillingRectangle.Rectangle.Center,
-                Size = _fillingRectangle.Rectangle.Size
-            };
+            TopLeftRectangle drawnRectangle = _fillingRectangle.Rectangle.BoundingBox;
 
             if (!drawnRectangle.Intersects(cameraRectangle, out TopLeftRectangle visibleRectangle))
                 return;
 
             TopLeftRectangle sourceRectangle = Source.GetDrawnRectangle().ToFloats();
-            Vector2 sourcePatchInit = visibleRectangle.Position - sourceRectangle.Size.Integrate(sourceRectangle.Size.Discretize(visibleRectangle.Position - drawnRectangle.Position)) + sourceRectangle.Position;
+
+            Vector2 diff = cameraRectangle.Position - drawnRectangle.Position;
+            Vector2 sourcePatchInit = new Vector2(MathHelper.Max(diff.X, 0), MathHelper.Max(diff.Y, 0));
             Vector2 sourcePatchOrigin = sourcePatchInit;
 
             float y = 0;
@@ -60,15 +51,15 @@ namespace Glyph.Graphics.Renderer
                     float destinationRemainingWidth = visibleRectangle.Width - x;
                     float sourcePatchWidth = MathHelper.Min(sourceRemainingWidth, destinationRemainingWidth);
 
-                    Vector2 position = visibleRectangle.Position + new Vector2(x, y);
+                    Vector2 position = visibleRectangle.Position + (SceneNode.Transform(new Vector2(x, y)) - SceneNode.Position);
                     var sourcePatch = new TopLeftRectangle(sourcePatchOrigin, new Vector2(sourcePatchWidth, sourcePatchHeight));
 
                     if (SpriteTransformer != null)
-                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToIntegers(), SpriteTransformer.Color, 0,
-                            Vector2.Zero, SpriteTransformer.Scale, SpriteTransformer.Effects, _sceneNode.Depth);
+                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToIntegers(), SpriteTransformer.Color,
+                            SceneNode.Rotation, Vector2.Zero, SceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, SceneNode.Depth);
                     else
-                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToIntegers(), Color.White, 0,
-                            Vector2.Zero, 1f, SpriteEffects.None, _sceneNode.Depth);
+                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToIntegers(), Color.White,
+                            SceneNode.Rotation, Vector2.Zero, SceneNode.Scale, SpriteEffects.None, SceneNode.Depth);
 
                     x += sourcePatchWidth;
                     sourcePatchOrigin.X = sourceRectangle.Position.X;

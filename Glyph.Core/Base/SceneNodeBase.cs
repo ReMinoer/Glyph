@@ -32,10 +32,11 @@ namespace Glyph.Core.Base
         Transformation ISceneNode.Transformation => new Transformation(_position, _rotation, _scale);
         Vector2 ISceneNode.LocalPosition => _transformation.Translation;
         Vector2 ISceneNode.Position => _position;
+        Vector2 ITransformation.Translation => _position;
         float ISceneNode.LocalRotation => _transformation.Rotation;
-        float ISceneNode.Rotation => _rotation;
+        float ITransformation.Rotation => _rotation;
         float ISceneNode.LocalScale => _transformation.Scale;
-        float ISceneNode.Scale => _scale;
+        float ITransformation.Scale => _scale;
         float ISceneNode.LocalDepth => _localDepth;
         float ISceneNode.Depth => _depth;
         Matrix3X3 ISceneNode.LocalMatrix => _transformation.Matrix;

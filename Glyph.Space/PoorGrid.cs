@@ -34,8 +34,8 @@ namespace Glyph.Space
             get { return _items.Select<KeyValuePair<Point, T>, IGridCase<T>>(x => new GridCase<T>(x.Key, x.Value)); }
         }
 
-        public PoorGrid(int columns, int rows, Vector2 origin, Vector2 delta)
-            : base(columns, rows, origin, delta)
+        public PoorGrid(int columns, int rows, Vector2 delta)
+            : base(columns, rows, delta)
         {
             _items = new Dictionary<Point, T>();
         }

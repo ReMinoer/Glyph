@@ -10,7 +10,7 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
     public class ContinuousGridBrush<TCell, TPaint> : GridBrushBase<TCell, TPaint>
         where TPaint : IGridPaint<TCell>
     {
-        private readonly ArrayRange _brushRange;
+        private readonly IndexRange _brushRange;
 
         private Point _previousGridPoint;
         private Vector2 _previousWorldPoint;
@@ -18,7 +18,7 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
         public ContinuousGridBrush(Point? size = null)
         {
             (int x, int y) = size ?? new Point(1, 1);
-            _brushRange = new ArrayRange(new []{-y / 2, -x / 2}, new[] { y, x });
+            _brushRange = new IndexRange(new []{-y / 2, -x / 2}, new[] { y, x });
         }
 
         public override void StartApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
@@ -42,30 +42,30 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
         {
             // TODO: Use better grid cell-segment intersection algorithm
             var segment = new Segment(args.WorldPoint, _previousWorldPoint);
-            TopLeftRectangle segmentBox = MathUtils.GetBoundingBox(args.WorldPoint, _previousWorldPoint);
-            Rectangle gridRectangle = canvas.ToGridRange(segmentBox).ClampToRectangle(canvas.IndexesBounds());
-            
-            for (int i = gridRectangle.Top; i <= gridRectangle.Bottom; i++)
-                for (int j = gridRectangle.Left; j <= gridRectangle.Right; j++)
-                {
-                    var gridPoint = new Point(j, i);
+            GridIntersection segmentGridIntersection = canvas.Intersection(segment);
 
-                    TopLeftRectangle cellRectangle = canvas.ToWorldRange(gridPoint.X, gridPoint.Y, 1, 1);
-                    if (!cellRectangle.Intersects(segment))
-                        continue;
+            IIndexEnumerator intersectionEnumerator = segmentGridIntersection.GetIndexEnumerator();
+            int[] indexes = intersectionEnumerator.GetResetIndex();
+            while (intersectionEnumerator.MoveIndex(indexes))
+            {
+                int y = indexes[0];
+                int x = indexes[1];
 
-                    for (int y = 0; y < _brushRange.Lengths[0]; y++)
-                        for (int x = 0; x < _brushRange.Lengths[1]; x++)
-                        {
-                            gridPoint = new Point(j + _brushRange.StartingIndexes[1] + x, i + _brushRange.StartingIndexes[0] + y);
-                            Vector2 worldPoint = canvas.ToWorldPoint(gridPoint);
+                Quad cellShape = canvas.ToWorldRange(x, y, 1, 1);
+                if (!cellShape.Intersects(segment))
+                    continue;
 
-                            var cellArgs = new GridBrushArgs(gridPoint, worldPoint);
-                            if (paint.CanApply(canvas, cellArgs))
-                                paint.Apply(canvas, cellArgs);
-                        }
+                for (int i = 0; i < _brushRange.Lengths[0]; i++)
+                    for (int j = 0; j < _brushRange.Lengths[1]; j++)
+                    {
+                        Point gridPoint = new Point(x + _brushRange.StartingIndexes[1] + j, y + _brushRange.StartingIndexes[0] + i);
+                        Vector2 worldPoint = canvas.ToWorldPoint(gridPoint);
 
-                }
+                        var cellArgs = new GridBrushArgs(gridPoint, worldPoint);
+                        if (paint.CanApply(canvas, cellArgs))
+                            paint.Apply(canvas, cellArgs);
+                    }
+            }
         }
         
         public override bool CanEndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint) => true;

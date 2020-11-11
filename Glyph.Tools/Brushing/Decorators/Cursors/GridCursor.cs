@@ -9,15 +9,15 @@ namespace Glyph.Tools.Brushing.Decorators.Cursors
     public class GridCursor : GlyphObject
     {
         private readonly SceneNode _sceneNode;
-        private readonly TriangulableShapePrimitive<TopLeftRectangle> _cursorPrimitive;
+        private readonly TriangulableShapePrimitive<Quad> _cursorPrimitive;
 
-        public TopLeftRectangle Rectangle
+        public Quad Rectangle
         {
             get => _cursorPrimitive.Shape;
             set
             {
-                _sceneNode.Position = value.Position;
-                _cursorPrimitive.Shape = new TopLeftRectangle(Vector2.Zero, value.Size);
+                _sceneNode.Position = value.P0;
+                _cursorPrimitive.Shape = new Quad(Vector2.Zero, value.P1 - value.P0, value.P2 - value.P0);
             }
         }
 
@@ -25,7 +25,7 @@ namespace Glyph.Tools.Brushing.Decorators.Cursors
             : base(context)
         {
             _sceneNode = Add<SceneNode>();
-            _cursorPrimitive = new TopLeftRectangle().ToPrimitive(Color.White * 0.5f);
+            _cursorPrimitive = new Quad().ToPrimitive(Color.White * 0.5f);
 
             Add<PrimitiveRenderer>().PrimitiveProviders.Add(_cursorPrimitive);
         }

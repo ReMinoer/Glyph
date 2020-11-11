@@ -2,6 +2,7 @@
 using Glyph.Math.Shapes;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
+using Simulacra.Utils;
 
 namespace Glyph.Core.Colliders
 {
@@ -11,8 +12,7 @@ namespace Glyph.Core.Colliders
             where TOther : IShape
             where TShape : IShape
         {
-            Vector2 correction;
-            if (collisionDelegate(shape.Shape, other.Shape, out correction))
+            if (collisionDelegate(shape.Shape, other.Shape, out Vector2 correction))
             {
                 collision = new Collision
                 {
@@ -28,87 +28,61 @@ namespace Glyph.Core.Colliders
             return false;
         }
         
-        static public bool IsShapeCollidingGrid<TShape>(CollisionDelegate<TShape, TopLeftRectangle> collisionDelegate, ICollider<TShape> shape, IGridCollider gridCollider, out Collision collision)
+        static public bool IsShapeCollidingGrid<TShape>(CollisionDelegate<TShape, TopLeftRectangle> rectangleCollisionDelegate,
+            ICollider<TShape> shapeCollider, IGridCollider gridCollider, out Collision collision)
             where TShape : IShape
         {
-            Rectangle gridRange = gridCollider.Grid.ToGridRange(shape.BoundingBox).ClampToRectangle(gridCollider.Grid.IndexesBounds());
-            
-            for (int i = gridRange.Top; i <= gridRange.Bottom; i++)
-                for (int j = gridRange.Left; j <= gridRange.Right; j++)
-                {
-                    if (!gridCollider.IsCollidableCase(shape, i, j))
-                        continue;
+            GridIntersection shapeGridBox = gridCollider.Grid.Intersection(
+                (x, y) => rectangleCollisionDelegate(y, x, out _),
+                shapeCollider.Shape,
+                (i, j) => gridCollider.IsCollidableCase(shapeCollider, i, j));
 
-                    var rectangle = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
+            IIndexEnumerator shapeGridBoxEnumerator = shapeGridBox.GetIndexEnumerator();
+            int[] indexes = shapeGridBoxEnumerator.GetResetIndex();
 
-                    bool colliding = false;
-                    for (int x = -1; x <= 1 && !colliding; x++)
-                        for (int y = -1; y <= 1 && !colliding; y++)
-                        {
-                            if ((x + y) % 2 == 0)
-                                continue;
+            while (shapeGridBoxEnumerator.MoveIndex(indexes))
+            {
+                int i = indexes[0];
+                int j = indexes[1];
 
-                            if (!gridCollider.Grid.ContainsPoint(i + y, j + x) || !gridCollider.IsCollidableCase(shape, i + y, j + x))
-                                continue;
+                var rectangle = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
 
-                            var otherCase = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i + y, j + x), gridCollider.Grid.Delta);
-
-                            if (!collisionDelegate(shape.Shape, otherCase, out _))
-                                continue;
-
-                            rectangle = new TopLeftRectangle
-                            {
-                                Position = (gridCollider.Grid.ToWorldPoint(i, j) + gridCollider.Grid.ToWorldPoint(i + y, j + x)) * 0.5f,
-                                Size = gridCollider.Grid.Delta + gridCollider.Grid.Delta.Multiply(System.Math.Abs(x), System.Math.Abs(y))
-                            };
-
-                            colliding = true;
-                        }
-                    
-                    Vector2 correction;
-                    if (collisionDelegate(shape.Shape, rectangle, out correction))
+                bool colliding = false;
+                for (int x = -1; x <= 1 && !colliding; x++)
+                    for (int y = -1; y <= 1 && !colliding; y++)
                     {
-                        collision = new Collision
+                        if ((x + y) % 2 == 0)
+                            continue;
+
+                        if (!gridCollider.Grid.ContainsPoint(i + y, j + x) || !gridCollider.IsCollidableCase(shapeCollider, i + y, j + x))
+                            continue;
+
+                        var otherCase = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i + y, j + x), gridCollider.Grid.Delta);
+
+                        if (!rectangleCollisionDelegate(shapeCollider.Shape, otherCase, out _))
+                            continue;
+
+                        rectangle = new TopLeftRectangle
                         {
-                            Sender = shape,
-                            OtherCollider = gridCollider,
-                            Correction = correction
+                            Position = (gridCollider.Grid.ToWorldPoint(i, j) + gridCollider.Grid.ToWorldPoint(i + y, j + x)) * 0.5f,
+                            Size = gridCollider.Grid.Delta + gridCollider.Grid.Delta.Multiply(System.Math.Abs(x), System.Math.Abs(y))
                         };
 
-                        return true;
+                        colliding = true;
                     }
-                }
 
-            collision = new Collision();
-            return false;
-        }
+                if (!rectangleCollisionDelegate(shapeCollider.Shape, rectangle, out Vector2 correction))
+                    continue;
 
-        static public bool IsGridCollidingShape<TShape>(CollisionDelegate<TopLeftRectangle, TShape> collisionDelegate, IGridCollider gridCollider, ICollider<TShape> shape, out Collision collision)
-            where TShape : IShape
-        {
-            Rectangle gridRange = gridCollider.Grid.ToGridRange(shape.BoundingBox).ClampToRectangle(gridCollider.Grid.IndexesBounds());
-
-            for (int i = gridRange.Top; i <= gridRange.Bottom; i++)
-                for (int j = gridRange.Left; j <= gridRange.Right; j++)
+                collision = new Collision
                 {
-                    if (!gridCollider.IsCollidableCase(shape, i, j))
-                        continue;
+                    Sender = shapeCollider,
+                    OtherCollider = gridCollider,
+                    Correction = correction
+                };
 
-                    var rectangle = new TopLeftRectangle(gridCollider.Grid.ToWorldPoint(i, j), gridCollider.Grid.Delta);
-
-                    Vector2 correction;
-                    if (collisionDelegate(rectangle, shape.Shape, out correction))
-                    {
-                        collision = new Collision
-                        {
-                            Sender = gridCollider,
-                            OtherCollider = shape,
-                            Correction = correction
-                        };
-
-                        return true;
-                    }
-                }
+                return true;
+            }
 
             collision = new Collision();
             return false;

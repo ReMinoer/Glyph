@@ -6,6 +6,7 @@ using Glyph.Math.Shapes;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Simulacra.Utils;
 
 namespace Glyph.Graphics.Renderer
 {
@@ -39,25 +40,26 @@ namespace Glyph.Graphics.Renderer
             if (!drawnRectangle.Intersects(cameraRectangle, out TopLeftRectangle visibleRectangle))
                 return;
 
-            Rectangle visibleSubGrid = Grid.ToGridRange(visibleRectangle).ClampToRectangle(Grid.IndexesBounds());
+            GridIntersection gridIntersection = Grid.Intersection(visibleRectangle);
 
-            for (int i = visibleSubGrid.Top; i <= visibleSubGrid.Bottom; i++)
-                for (int j = visibleSubGrid.Left; j <= visibleSubGrid.Right; j++)
+            IIndexEnumerator indexEnumerator = gridIntersection.GetIndexEnumerator();
+            int[] indexes = indexEnumerator.GetResetIndex();
+            while (indexEnumerator.MoveIndex(indexes))
+            {
+                if (!RenderingBehaviour(Grid[indexes], this))
+                    continue;
+
+                Vector2 position = Grid.ToWorldPoint(indexes);
+
+                if (SpriteTransformer != null)
+                    drawer.SpriteBatchStack.Current.Draw(Source.Texture, position + Transformation.Translation, Source.Rectangle, SpriteTransformer.Color,
+                        SceneNode.Rotation + Transformation.Rotation, SpriteTransformer.Origin, SceneNode.Scale * Transformation.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, Depth);
+                else
                 {
-                    if (!RenderingBehaviour(Grid[i, j], this))
-                        continue;
-
-                    Vector2 position = Grid.ToWorldPoint(i, j) + Grid.Delta / 2;
-
-                    if (SpriteTransformer != null)
-                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position + Transformation.Translation, Source.Rectangle, SpriteTransformer.Color,
-                            Transformation.Rotation, SpriteTransformer.Origin, Transformation.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, Depth);
-                    else
-                    {
-                        drawer.SpriteBatchStack.Current.Draw(Source.Texture, position + Transformation.Translation, Source.Rectangle, Color.White,
-                            Transformation.Rotation, Source.GetDefaultOrigin(), Transformation.Scale, SpriteEffects.None, Depth);
-                    }
+                    drawer.SpriteBatchStack.Current.Draw(Source.Texture, position + Transformation.Translation, Source.Rectangle, Color.White,
+                        SceneNode.Rotation + Transformation.Rotation, Source.GetDefaultOrigin(), SceneNode.Scale * Transformation.Scale, SpriteEffects.None, Depth);
                 }
+            }
         }
     }
 }

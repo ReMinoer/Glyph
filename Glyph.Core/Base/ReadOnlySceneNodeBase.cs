@@ -13,6 +13,7 @@ namespace Glyph.Core.Base
         public ISceneNode ParentNode => SceneNode.ParentNode;
         public IReadOnlyObservableList<ISceneNode> Children => SceneNode.Children;
         public Vector2 Position => SceneNode.Position;
+        Vector2 ITransformation.Translation => Position;
         public float Rotation => SceneNode.Rotation;
         public float Scale => SceneNode.Scale;
         public float Depth => SceneNode.Depth;

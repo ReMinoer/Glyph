@@ -2,7 +2,7 @@
 
 namespace Glyph.Math
 {
-    public interface ITransformation : ITransformer, IFlipable
+    public interface ITransformation : ITransformer
     {
         Vector2 Translation { get; }
         float Rotation { get; }
