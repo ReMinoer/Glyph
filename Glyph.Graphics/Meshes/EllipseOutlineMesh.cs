@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Glyph.Graphics.Primitives.Base;
-using Glyph.Graphics.Primitives.Utils;
+using Glyph.Graphics.Meshes.Base;
+using Glyph.Graphics.Meshes.Utils;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Graphics.Primitives
+namespace Glyph.Graphics.Meshes
 {
-    public class EllipseOutlinePrimitive : LineProceduralPrimitiveBase
+    public class EllipseOutlineMesh : LineProceduralMeshBase
     {
         private Vector2 _center;
         public Vector2 Center
@@ -106,16 +106,16 @@ namespace Glyph.Graphics.Primitives
         private bool Completed => AngleSize >= MathHelper.TwoPi;
         protected override bool IsStrip => true;
 
-        public EllipseOutlinePrimitive()
+        public EllipseOutlineMesh()
         {
         }
 
-        public EllipseOutlinePrimitive(Vector2 center, float radius, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseOutlineMesh(Vector2 center, float radius, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
             : this(center, radius, radius, rotation, angleStart, angleSize, sampling)
         {
         }
 
-        public EllipseOutlinePrimitive(Vector2 center, float width, float height, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseOutlineMesh(Vector2 center, float width, float height, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
         {
             Center = center;
             Width = width;
@@ -126,13 +126,13 @@ namespace Glyph.Graphics.Primitives
             Sampling = sampling;
         }
 
-        public EllipseOutlinePrimitive(Color color, Vector2 center, float radius, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseOutlineMesh(Color color, Vector2 center, float radius, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
             : this(center, radius, radius, rotation, angleStart, angleSize, sampling)
         {
             Colors = new[] { color };
         }
 
-        public EllipseOutlinePrimitive(Color color, Vector2 center, float width, float height, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseOutlineMesh(Color color, Vector2 center, float width, float height, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
             : this(center, width, height, rotation, angleStart, angleSize, sampling)
         {
             Colors = new[] { color };
@@ -140,7 +140,7 @@ namespace Glyph.Graphics.Primitives
 
         protected override IEnumerable<Vector2> GetRefreshedVertices()
         {
-            IEnumerable<Vector2> points = PrimitiveHelpers.GetEllipseOutlinePoints(Center, Width, Height, Rotation, AngleStart, AngleSize, Sampling);
+            IEnumerable<Vector2> points = MeshHelpers.GetEllipseOutlinePoints(Center, Width, Height, Rotation, AngleStart, AngleSize, Sampling);
             using (IEnumerator<Vector2> pointEnumerator = points.GetEnumerator())
             {
                 if (!pointEnumerator.MoveNext())
@@ -159,7 +159,7 @@ namespace Glyph.Graphics.Primitives
         
         protected override int GetRefreshedVertexCount()
         {
-            int count = PrimitiveHelpers.GetEllipseOutlinePointsCount(AngleSize, Sampling);
+            int count = MeshHelpers.GetEllipseOutlinePointsCount(AngleSize, Sampling);
             return Completed ? count + 1 : count;
         }
 

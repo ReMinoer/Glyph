@@ -1,5 +1,5 @@
 ﻿using Glyph.Core;
-using Glyph.Graphics.Primitives;
+using Glyph.Graphics.Meshes;
 using Glyph.Graphics.Renderer;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -12,9 +12,9 @@ namespace Glyph.Tools.Transforming.Base
     public abstract class AdvancedHandleBase<TController> : HandleBase<TController>
         where TController : IAnchoredController
     {
-        public PrimitiveCollection DefaultPrimitives { get; } = new PrimitiveCollection();
-        public PrimitiveCollection HoverPrimitives { get; } = new PrimitiveCollection();
-        public PrimitiveCollection GrabbedPrimitives { get; } = new PrimitiveCollection();
+        public VisualMeshCollection DefaultMeshes { get; } = new VisualMeshCollection();
+        public VisualMeshCollection HoverMeshes { get; } = new VisualMeshCollection();
+        public VisualMeshCollection GrabbedMeshes { get; } = new VisualMeshCollection();
 
         public CenteredRectangle Rectangle { get; set; }
         protected override IArea Area => _sceneNode.Transform(Rectangle);
@@ -24,33 +24,33 @@ namespace Glyph.Tools.Transforming.Base
         {
             _userInterface.CursorMoved += OnCursorMoved;
 
-            var primitiveRenderer = Add<PrimitiveRenderer>();
-            primitiveRenderer.PrimitiveProviders.Add(DefaultPrimitives);
-            primitiveRenderer.PrimitiveProviders.Add(HoverPrimitives);
-            primitiveRenderer.PrimitiveProviders.Add(GrabbedPrimitives);
+            var meshRenderer = Add<MeshRenderer>();
+            meshRenderer.MeshProviders.Add(DefaultMeshes);
+            meshRenderer.MeshProviders.Add(HoverMeshes);
+            meshRenderer.MeshProviders.Add(GrabbedMeshes);
 
-            HoverPrimitives.Visible = false;
-            GrabbedPrimitives.Visible = false;
+            HoverMeshes.Visible = false;
+            GrabbedMeshes.Visible = false;
         }
 
         private void OnCursorMoved(object sender, CursorEventArgs e)
         {
-            HoverPrimitives.Visible = Grabbed || Area.ContainsPoint(e.CursorPosition);
+            HoverMeshes.Visible = Grabbed || Area.ContainsPoint(e.CursorPosition);
         }
 
         protected override void OnGrabbed(Vector2 cursorPosition)
         {
-            GrabbedPrimitives.Visible = true;
+            GrabbedMeshes.Visible = true;
         }
 
         protected override void OnReleased()
         {
-            GrabbedPrimitives.Visible = false;
+            GrabbedMeshes.Visible = false;
         }
 
         protected override void OnCancelled()
         {
-            GrabbedPrimitives.Visible = false;
+            GrabbedMeshes.Visible = false;
         }
     }
 }

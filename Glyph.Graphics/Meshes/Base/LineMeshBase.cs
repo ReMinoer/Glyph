@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Graphics.Primitives.Base
+namespace Glyph.Graphics.Meshes.Base
 {
-    public abstract class LinePrimitiveBase : PrimitiveBase
+    public abstract class LineMeshBase : MeshBase
     {
         protected abstract bool IsStrip { get; }
         public override sealed PrimitiveType Type => IsStrip ? PrimitiveType.LineStrip : PrimitiveType.LineList;

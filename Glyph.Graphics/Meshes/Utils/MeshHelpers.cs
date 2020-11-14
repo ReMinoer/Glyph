@@ -4,14 +4,14 @@ using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Graphics.Primitives.Utils
+namespace Glyph.Graphics.Meshes.Utils
 {
-    static public class PrimitiveHelpers
+    static public class MeshHelpers
     {
-        static public IEnumerable<Vector2> GetOrthographicTextureCoordinates(IPrimitive primitive)
+        static public IEnumerable<Vector2> GetOrthographicTextureCoordinates(IVisualMesh mesh)
         {
-            TopLeftRectangle boundingBox = MathUtils.GetBoundingBox(primitive.Vertices);
-            return primitive.Vertices.Select(x => x.Rescale(boundingBox, new TopLeftRectangle(0, 0, 1, 1)));
+            TopLeftRectangle boundingBox = MathUtils.GetBoundingBox(mesh.Vertices);
+            return mesh.Vertices.Select(x => x.Rescale(boundingBox, new TopLeftRectangle(0, 0, 1, 1)));
         }
 
         static public int GetEllipseOutlinePointsCount(float angleSize, int sampling)

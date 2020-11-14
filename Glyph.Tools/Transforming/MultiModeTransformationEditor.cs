@@ -1,5 +1,5 @@
 ﻿using Glyph.Core;
-using Glyph.Graphics.Primitives;
+using Glyph.Graphics.Meshes;
 using Glyph.Graphics.Renderer;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -56,9 +56,9 @@ namespace Glyph.Tools.Transforming
             private readonly MultiModeTransformationEditor _editor;
 
             private readonly SceneNode _sceneNode;
-            private readonly CenteredRectangle _primitive = new CenteredRectangle(Vector2.Zero, new Vector2(TransformationEditor.Unit / 2, TransformationEditor.Unit / 2));
+            private readonly CenteredRectangle _buttonShape = new CenteredRectangle(Vector2.Zero, new Vector2(TransformationEditor.Unit / 2, TransformationEditor.Unit / 2));
 
-            private Quad InteractiveArea => _sceneNode.Transform(_primitive);
+            private Quad InteractiveArea => _sceneNode.Transform(_buttonShape);
 
             public ModeToggle(GlyphResolveContext context, MultiModeTransformationEditor editor)
                 : base(context)
@@ -72,7 +72,7 @@ namespace Glyph.Tools.Transforming
                 userInterface.TouchStarted += OnTouchStarted;
                 userInterface.TouchEnded += OnTouchEnded;
 
-                Add<PrimitiveRenderer>().PrimitiveProviders.Add(_primitive.ToPrimitive(Color.Pink));
+                Add<MeshRenderer>().MeshProviders.Add(_buttonShape.ToMesh(Color.Pink));
             }
 
             private void OnTouchStarted(object sender, HandlableTouchEventArgs e)

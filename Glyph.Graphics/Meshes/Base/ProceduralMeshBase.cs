@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Graphics.Primitives.Base
+namespace Glyph.Graphics.Meshes.Base
 {
-    public abstract class ProceduralPrimitiveBase : PrimitiveBase
+    public abstract class ProceduralMeshBase : MeshBase
     {
         private Vector2[] _vertexCache;
         private Vector2[] _textureCoordinatesCache;

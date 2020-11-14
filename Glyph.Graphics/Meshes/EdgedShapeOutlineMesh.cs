@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections.ReadOnly;
-using Glyph.Graphics.Primitives.Base;
-using Glyph.Graphics.Primitives.Utils;
+using Glyph.Graphics.Meshes.Base;
+using Glyph.Graphics.Meshes.Utils;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Graphics.Primitives
+namespace Glyph.Graphics.Meshes
 {
-    public class EdgedShapeOutlinePrimitive<TEdgedShape> : LinePrimitiveBase
+    public class EdgedShapeOutlineMesh<TEdgedShape> : LineMeshBase
         where TEdgedShape : IEdgedShape
     {
         private TEdgedShape _shape;
@@ -23,7 +23,7 @@ namespace Glyph.Graphics.Primitives
             {
                 _shape = value;
                 _readOnlyVertices = new ReadOnlyList<Vector2>(GetVertices().ToArray());
-                _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(PrimitiveHelpers.GetOrthographicTextureCoordinates(this).ToArray());
+                _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(MeshHelpers.GetOrthographicTextureCoordinates(this).ToArray());
             }
         }
 
@@ -34,16 +34,16 @@ namespace Glyph.Graphics.Primitives
 
         protected override bool IsStrip => true;
 
-        public EdgedShapeOutlinePrimitive()
+        public EdgedShapeOutlineMesh()
         {
         }
 
-        public EdgedShapeOutlinePrimitive(TEdgedShape shape)
+        public EdgedShapeOutlineMesh(TEdgedShape shape)
         {
             Shape = shape;
         }
 
-        public EdgedShapeOutlinePrimitive(Color color, TEdgedShape shape)
+        public EdgedShapeOutlineMesh(Color color, TEdgedShape shape)
             : this(shape)
         {
             Colors = new[] { color };

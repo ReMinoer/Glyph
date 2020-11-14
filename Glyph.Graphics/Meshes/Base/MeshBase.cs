@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Graphics.Primitives.Base
+namespace Glyph.Graphics.Meshes.Base
 {
-    public abstract class PrimitiveBase : IPrimitive, IPrimitiveProvider
+    public abstract class MeshBase : IVisualMesh, IVisualMeshProvider
     {
         public bool Visible { get; set; } = true;
 
@@ -21,12 +21,12 @@ namespace Glyph.Graphics.Primitives.Base
 
         protected abstract Color GetColor(int vertexIndex);
 
-        private readonly IPrimitive[] _primitives;
-        IEnumerable<IPrimitive> IPrimitiveProvider.Primitives => _primitives;
+        private readonly IVisualMesh[] _meshes;
+        IEnumerable<IVisualMesh> IVisualMeshProvider.Meshes => _meshes;
 
-        protected PrimitiveBase()
+        protected MeshBase()
         {
-            _primitives = new IPrimitive[]{this};
+            _meshes = new IVisualMesh[]{this};
         }
 
         public virtual void CopyToVertexArray(VertexPosition[] vertexArray, int startIndex)

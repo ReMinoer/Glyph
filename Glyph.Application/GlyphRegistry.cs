@@ -159,8 +159,8 @@ namespace Glyph.Application
                 Type<FillingRenderer>(),
                 Type<TexturingRenderer>(),
 
-                Type<PrimitiveRenderer>(),
-                Type<PrimitivesComponent>(),
+                Type<MeshRenderer>(),
+                Type<MeshesComponent>(),
 
                 Generic(typeof(MappingRenderer<>)),
 

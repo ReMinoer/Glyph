@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections.ReadOnly;
-using Glyph.Graphics.Primitives.Base;
-using Glyph.Graphics.Primitives.Utils;
+using Glyph.Graphics.Meshes.Base;
+using Glyph.Graphics.Meshes.Utils;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Graphics.Primitives
+namespace Glyph.Graphics.Meshes
 {
-    public class TriangulableShapePrimitive<TTriangulableShape> : PrimitiveBase
+    public class TriangulableShapeMesh<TTriangulableShape> : MeshBase
         where TTriangulableShape : ITriangulableShape
     {
         private TTriangulableShape _shape;
@@ -25,7 +25,7 @@ namespace Glyph.Graphics.Primitives
                 _shape = value;
                 _readOnlyVertices = new ReadOnlyList<Vector2>((_shape?.Vertices ?? Enumerable.Empty<Vector2>()).ToArray());
                 _readOnlyIndexes = _shape?.TriangulationIndices != null ? new ReadOnlyList<int>(_shape.TriangulationIndices.Cast<int>().ToArray()) : null;
-                _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(PrimitiveHelpers.GetOrthographicTextureCoordinates(this).ToArray());
+                _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(MeshHelpers.GetOrthographicTextureCoordinates(this).ToArray());
             }
         }
 
@@ -40,16 +40,16 @@ namespace Glyph.Graphics.Primitives
         public Color Color { get; set; }
         protected override Color GetColor(int vertexIndex) => Color;
 
-        public TriangulableShapePrimitive()
+        public TriangulableShapeMesh()
         {
         }
 
-        public TriangulableShapePrimitive(TTriangulableShape shape)
+        public TriangulableShapeMesh(TTriangulableShape shape)
         {
             Shape = shape;
         }
 
-        public TriangulableShapePrimitive(Color color, TTriangulableShape shape)
+        public TriangulableShapeMesh(Color color, TTriangulableShape shape)
             : this(shape)
         {
             Color = color;

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using Glyph.Graphics.Primitives.Base;
+using Glyph.Graphics.Meshes.Base;
 using Microsoft.Xna.Framework;
 
-namespace Glyph.Graphics.Primitives
+namespace Glyph.Graphics.Meshes
 {
-    public class LinePrimitive : LineProceduralPrimitiveBase
+    public class LineMesh : LineProceduralMeshBase
     {
         private Vector2[] _points;
         public Vector2[] Points
@@ -23,22 +23,22 @@ namespace Glyph.Graphics.Primitives
         public bool IsLineList { get; set; }
         protected override bool IsStrip => !IsLineList;
 
-        public LinePrimitive()
+        public LineMesh()
         {
         }
 
-        public LinePrimitive(params Vector2[] points)
+        public LineMesh(params Vector2[] points)
         {
             Points = points;
         }
 
-        public LinePrimitive(Color color, params Vector2[] points)
+        public LineMesh(Color color, params Vector2[] points)
             : this(points)
         {
             Colors = new[] { color };
         }
 
-        public LinePrimitive(Color color, bool isLineList, params Vector2[] points)
+        public LineMesh(Color color, bool isLineList, params Vector2[] points)
             : this(color, points)
         {
             IsLineList = isLineList;

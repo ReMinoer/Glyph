@@ -15,7 +15,7 @@ using Niddle.Attributes;
 
 namespace Glyph.Graphics.Renderer
 {
-    public class PrimitiveRenderer : RendererBase, ILoadContent
+    public class MeshRenderer : RendererBase, ILoadContent
     {
         private readonly Func<GraphicsDevice> _graphicsDeviceFunc;
         private VertexPositionColor[] _vertexArray;
@@ -23,8 +23,8 @@ namespace Glyph.Graphics.Renderer
         private BasicEffect _basicEffect;
 
         [Populatable, ResolveTargets(ResolveTargets.Fraternal)]
-        public List<IPrimitiveProvider> PrimitiveProviders { get; } = new List<IPrimitiveProvider>();
-        public IEnumerable<IPrimitive> Primitives => PrimitiveProviders.SelectMany(x => x.Primitives);
+        public List<IVisualMeshProvider> MeshProviders { get; } = new List<IVisualMeshProvider>();
+        public IEnumerable<IVisualMesh> Meshes => MeshProviders.SelectMany(x => x.Meshes);
 
         protected override ISceneNode SceneNode { get; }
         protected override float DepthProtected => SceneNode.Depth;
@@ -33,12 +33,12 @@ namespace Glyph.Graphics.Renderer
         {
             get
             {
-                TopLeftRectangle boundingBox = MathUtils.GetBoundingBox(Primitives.SelectMany(x => x.Vertices));
+                TopLeftRectangle boundingBox = MathUtils.GetBoundingBox(Meshes.SelectMany(x => x.Vertices));
                 return SceneNode.Transform(boundingBox);
             }
         }
 
-        public PrimitiveRenderer(SceneNode sceneNode, Func<GraphicsDevice> graphicsDeviceFunc)
+        public MeshRenderer(SceneNode sceneNode, Func<GraphicsDevice> graphicsDeviceFunc)
         {
             _graphicsDeviceFunc = graphicsDeviceFunc;
             SceneNode = sceneNode;
@@ -61,7 +61,7 @@ namespace Glyph.Graphics.Renderer
         [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         private void RefreshBuffers()
         {
-            int totalVertexCount = Primitives.Sum(x => x.VertexCount);
+            int totalVertexCount = Meshes.Sum(x => x.VertexCount);
             if (totalVertexCount == 0)
             {
                 _vertexArray = null;
@@ -75,18 +75,17 @@ namespace Glyph.Graphics.Renderer
 
             // Fill vertex array
             int i = 0;
-            foreach (IPrimitive primitive in Primitives)
+            foreach (IVisualMesh mesh in Meshes)
             {
-                primitive.CopyToVertexArray(_vertexArray, i);
-                i += primitive.VertexCount;
+                mesh.CopyToVertexArray(_vertexArray, i);
+                i += mesh.VertexCount;
             }
 
             // Skip index array if none provided
-            int totalIndexCount = Primitives.Sum(x => x.IndexCount);
+            int totalIndexCount = Meshes.Sum(x => x.IndexCount);
             if (totalIndexCount == 0)
             {
                 _indexArray = null;
-                //_indexBuffer = null;
                 return;
             }
 
@@ -96,16 +95,18 @@ namespace Glyph.Graphics.Renderer
 
             // Fill index array
             i = 0;
-            foreach (IPrimitive primitive in Primitives)
+            foreach (IVisualMesh mesh in Meshes)
             {
-                primitive.CopyToIndexArray(_indexArray, i);
-                i += primitive.IndexCount;
+                mesh.CopyToIndexArray(_indexArray, i);
+                i += mesh.IndexCount;
             }
         }
 
         protected override void Render(IDrawer drawer)
         {
             RefreshBuffers();
+            if (_vertexArray == null)
+                return;
 
             drawer.SpriteBatchStack.Push(null);
 
@@ -116,25 +117,25 @@ namespace Glyph.Graphics.Renderer
             _basicEffect.View = Matrix.CreateLookAt(Vector3.Backward, Vector3.Zero, Vector3.Up);
             _basicEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, 0, float.MaxValue);
 
-            // Draw primitives
+            // Draw meshes
             foreach (EffectPass pass in _basicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
 
                 int verticesIndex = 0;
                 int indicesIndex = 0;
-                foreach (IPrimitive primitive in Primitives)
+                foreach (IVisualMesh mesh in Meshes)
                 {
-                    if (primitive.Visible)
+                    if (mesh.Visible)
                     {
-                        if (primitive.IndexCount > 0)
-                            drawer.GraphicsDevice.DrawUserIndexedPrimitives(primitive.Type, _vertexArray, verticesIndex, primitive.VertexCount, _indexArray, indicesIndex, GetPrimitiveCount(primitive.Type, primitive.IndexCount));
+                        if (mesh.IndexCount > 0)
+                            drawer.GraphicsDevice.DrawUserIndexedPrimitives(mesh.Type, _vertexArray, verticesIndex, mesh.VertexCount, _indexArray, indicesIndex, GetPrimitiveCount(mesh.Type, mesh.IndexCount));
                         else
-                            drawer.GraphicsDevice.DrawUserPrimitives(primitive.Type, _vertexArray, verticesIndex, GetPrimitiveCount(primitive.Type, primitive.VertexCount));
+                            drawer.GraphicsDevice.DrawUserPrimitives(mesh.Type, _vertexArray, verticesIndex, GetPrimitiveCount(mesh.Type, mesh.VertexCount));
                     }
 
-                    verticesIndex += primitive.VertexCount;
-                    indicesIndex += primitive.IndexCount;
+                    verticesIndex += mesh.VertexCount;
+                    indicesIndex += mesh.IndexCount;
                 }
             }
 

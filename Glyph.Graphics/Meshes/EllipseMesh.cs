@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Glyph.Graphics.Primitives.Base;
-using Glyph.Graphics.Primitives.Utils;
+using Glyph.Graphics.Meshes.Base;
+using Glyph.Graphics.Meshes.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Graphics.Primitives
+namespace Glyph.Graphics.Meshes
 {
-    public class EllipsePrimitive : ProceduralPrimitiveBase
+    public class EllipseMesh : ProceduralMeshBase
     {
         private Vector2 _center;
         public Vector2 Center
@@ -128,16 +128,16 @@ namespace Glyph.Graphics.Primitives
         public bool HasInnerVoid => Thickness < Width && Thickness < Height;
         private bool Completed => AngleSize >= MathHelper.TwoPi;
 
-        public EllipsePrimitive()
+        public EllipseMesh()
         {
         }
 
-        public EllipsePrimitive(Vector2 center, float radius, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseMesh(Vector2 center, float radius, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
             : this(center, radius, radius, thickness, rotation, angleStart, angleSize, sampling)
         {
         }
 
-        public EllipsePrimitive(Vector2 center, float width, float height, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseMesh(Vector2 center, float width, float height, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
         {
             Center = center;
             Width = width;
@@ -149,22 +149,22 @@ namespace Glyph.Graphics.Primitives
             Sampling = sampling;
         }
 
-        public EllipsePrimitive(Color color, Vector2 center, float radius, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseMesh(Color color, Vector2 center, float radius, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
             : this(color, color, center, radius, radius, thickness, rotation, angleStart, angleSize, sampling)
         {
         }
 
-        public EllipsePrimitive(Color color, Vector2 center, float width, float height, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseMesh(Color color, Vector2 center, float width, float height, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
             : this(color, color, center, width, height, thickness, rotation, angleStart, angleSize, sampling)
         {
         }
 
-        public EllipsePrimitive(Color centerColor, Color borderColor, Vector2 center, float radius, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseMesh(Color centerColor, Color borderColor, Vector2 center, float radius, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
             : this(centerColor, borderColor, center, radius, radius, thickness, rotation, angleStart, angleSize, sampling)
         {
         }
 
-        public EllipsePrimitive(Color centerColor, Color borderColor, Vector2 center, float width, float height, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
+        public EllipseMesh(Color centerColor, Color borderColor, Vector2 center, float width, float height, float thickness = float.MaxValue, float rotation = 0, float angleStart = 0, float angleSize = MathHelper.TwoPi, int sampling = DefaultSampling)
             : this(center, width, height, thickness, rotation, angleStart, angleSize, sampling)
         {
             CenterColors = new[] { centerColor };
@@ -175,7 +175,7 @@ namespace Glyph.Graphics.Primitives
         {
             if (HasInnerVoid)
             {
-                foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(Center, Width - Thickness, Height - Thickness, Rotation, AngleStart, AngleSize, Sampling))
+                foreach (Vector2 point in MeshHelpers.GetEllipseOutlinePoints(Center, Width - Thickness, Height - Thickness, Rotation, AngleStart, AngleSize, Sampling))
                     yield return point;
             }
             else
@@ -183,7 +183,7 @@ namespace Glyph.Graphics.Primitives
                 yield return Center;
             }
 
-            foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(Center, Width, Height, Rotation, AngleStart, AngleSize, Sampling))
+            foreach (Vector2 point in MeshHelpers.GetEllipseOutlinePoints(Center, Width, Height, Rotation, AngleStart, AngleSize, Sampling))
                 yield return point;
         }
 
@@ -195,7 +195,7 @@ namespace Glyph.Graphics.Primitives
             {
                 float width = (Width - Thickness) / Width * 0.5f;
                 float height = (Height - Thickness) / Height * 0.5f;
-                foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(center, width, height, Rotation, AngleStart, AngleSize, Sampling))
+                foreach (Vector2 point in MeshHelpers.GetEllipseOutlinePoints(center, width, height, Rotation, AngleStart, AngleSize, Sampling))
                     yield return point;
             }
             else
@@ -203,13 +203,13 @@ namespace Glyph.Graphics.Primitives
                 yield return center;
             }
 
-            foreach (Vector2 point in PrimitiveHelpers.GetEllipseOutlinePoints(center, 0.5f, 0.5f, Rotation, AngleStart, AngleSize, Sampling))
+            foreach (Vector2 point in MeshHelpers.GetEllipseOutlinePoints(center, 0.5f, 0.5f, Rotation, AngleStart, AngleSize, Sampling))
                 yield return point;
         }
 
         protected override IEnumerable<int> GetRefreshedIndices()
         {
-            int n = PrimitiveHelpers.GetEllipseOutlinePointsCount(AngleSize, Sampling);
+            int n = MeshHelpers.GetEllipseOutlinePointsCount(AngleSize, Sampling);
             
             int i;
             if (HasInnerVoid)
@@ -256,13 +256,13 @@ namespace Glyph.Graphics.Primitives
 
         protected override int GetRefreshedVertexCount()
         {
-            int pointsCount = PrimitiveHelpers.GetEllipseOutlinePointsCount(AngleSize, Sampling);
+            int pointsCount = MeshHelpers.GetEllipseOutlinePointsCount(AngleSize, Sampling);
             return HasInnerVoid ? pointsCount * 2 : pointsCount + 1;
         }
 
         protected override int GetRefreshedIndexCount()
         {
-            int pointsCount = PrimitiveHelpers.GetEllipseOutlinePointsCount(AngleSize, Sampling);
+            int pointsCount = MeshHelpers.GetEllipseOutlinePointsCount(AngleSize, Sampling);
             return HasInnerVoid ? (pointsCount - 1) * 6 : pointsCount * 3;
         }
     }

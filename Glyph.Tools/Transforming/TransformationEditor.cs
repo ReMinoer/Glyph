@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Glyph.Core;
-using Glyph.Graphics.Primitives;
+using Glyph.Graphics.Meshes;
 using Glyph.Math.Shapes;
 using Glyph.Tools.Base;
 using Glyph.UI;
@@ -89,38 +89,38 @@ namespace Glyph.Tools.Transforming
 
             var positionHandle = Add<AdvancedPositionHandle>();
             positionHandle.Rectangle = new TopLeftRectangle(Vector2.Zero, new Vector2(1.5f, 1.5f) * u);
-            positionHandle.DefaultPrimitives.Add(new TopLeftRectangle(Vector2.Zero, new Vector2(1.5f, 1.5f) * u).ToPrimitive(Color.White * 0.25f));
-            positionHandle.DefaultPrimitives.Add(new LinePrimitive(Color.White * 0.5f, new Vector2(1.5f, 0) * u, new Vector2(1.5f, 1.5f) * u, new Vector2(0, 1.5f) * u));
+            positionHandle.DefaultMeshes.Add(new TopLeftRectangle(Vector2.Zero, new Vector2(1.5f, 1.5f) * u).ToMesh(Color.White * 0.25f));
+            positionHandle.DefaultMeshes.Add(new LineMesh(Color.White * 0.5f, new Vector2(1.5f, 0) * u, new Vector2(1.5f, 1.5f) * u, new Vector2(0, 1.5f) * u));
 
             var scaleHandle = Add<AdvancedScaleHandle>();
             scaleHandle.LocalPosition = new Vector2(1.5f, 1.5f) * u;
             scaleHandle.Rectangle = new CenteredRectangle(Vector2.Zero, new Vector2(1f, 1f) * u);
-            scaleHandle.DefaultPrimitives.Add(new LinePrimitive(Color.Black, new Vector2(0.5f, 0) * u, new Vector2(0.5f, 0.5f) * u, new Vector2(0, 0.5f) * u));
-            scaleHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Black, new Vector2(0.5f, 0.5f) * u, radius: cursorSize));
+            scaleHandle.DefaultMeshes.Add(new LineMesh(Color.Black, new Vector2(0.5f, 0) * u, new Vector2(0.5f, 0.5f) * u, new Vector2(0, 0.5f) * u));
+            scaleHandle.HoverMeshes.Add(new EllipseMesh(Color.Black, new Vector2(0.5f, 0.5f) * u, radius: cursorSize));
 
             var horizontalHandle = Add<AdvancedPositionHandle>();
             horizontalHandle.Rectangle = new CenteredRectangle(new Vector2(1.75f, 0) * u, new Vector2(3.5f, 2) * u);
             horizontalHandle.Axes = Axes.Horizontal;
-            horizontalHandle.DefaultPrimitives.Add(new LinePrimitive(Color.Red, Vector2.Zero, new Vector2(3, 0) * u));
-            horizontalHandle.DefaultPrimitives.Add(new EllipsePrimitive(Color.Red, new Vector2(3, 0) * u, u / 4, sampling: 3));
-            horizontalHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Red, Vector2.Zero, cursorSize));
-            horizontalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Red, -Vector2.UnitX * float.MaxValue, Vector2.Zero, Vector2.UnitX * float.MaxValue));
+            horizontalHandle.DefaultMeshes.Add(new LineMesh(Color.Red, Vector2.Zero, new Vector2(3, 0) * u));
+            horizontalHandle.DefaultMeshes.Add(new EllipseMesh(Color.Red, new Vector2(3, 0) * u, u / 4, sampling: 3));
+            horizontalHandle.HoverMeshes.Add(new EllipseMesh(Color.Red, Vector2.Zero, cursorSize));
+            horizontalHandle.GrabbedMeshes.Add(new LineMesh(Color.Red, -Vector2.UnitX * float.MaxValue, Vector2.Zero, Vector2.UnitX * float.MaxValue));
 
             var verticalHandle = Add<AdvancedPositionHandle>();
             verticalHandle.Rectangle = new CenteredRectangle(new Vector2(0, 1.75f) * u, new Vector2(2, 3.5f) * u);
             verticalHandle.Axes = Axes.Vertical;
-            verticalHandle.DefaultPrimitives.Add(new LinePrimitive(Color.Blue, Vector2.Zero, new Vector2(0, 3) * u));
-            verticalHandle.DefaultPrimitives.Add(new EllipsePrimitive(Color.Blue, new Vector2(0, 3) * u, u / 4, rotation: MathHelper.PiOver2, sampling: 3));
-            verticalHandle.HoverPrimitives.Add(new EllipsePrimitive(Color.Blue, Vector2.Zero, cursorSize));
-            verticalHandle.GrabbedPrimitives.Add(new LinePrimitive(Color.Blue, -Vector2.UnitY * float.MaxValue, Vector2.Zero, Vector2.UnitY * float.MaxValue));
+            verticalHandle.DefaultMeshes.Add(new LineMesh(Color.Blue, Vector2.Zero, new Vector2(0, 3) * u));
+            verticalHandle.DefaultMeshes.Add(new EllipseMesh(Color.Blue, new Vector2(0, 3) * u, u / 4, rotation: MathHelper.PiOver2, sampling: 3));
+            verticalHandle.HoverMeshes.Add(new EllipseMesh(Color.Blue, Vector2.Zero, cursorSize));
+            verticalHandle.GrabbedMeshes.Add(new LineMesh(Color.Blue, -Vector2.UnitY * float.MaxValue, Vector2.Zero, Vector2.UnitY * float.MaxValue));
 
             var rotationHandle = Add<AdvancedRotationHandle>();
             rotationHandle.Rectangle = new TopLeftRectangle(new Vector2(1, 1) * u, new Vector2(3, 3) * u);
-            rotationHandle.DefaultPrimitives.Add(new EllipseOutlinePrimitive(Color.Green, Vector2.Zero, radius, angleStart: MathHelper.ToRadians(15), angleSize: MathHelper.ToRadians(60)));
-            rotationHandle.GrabbedPrimitives.Add(new EllipseOutlinePrimitive(Color.Green, Vector2.Zero, radius, sampling: EllipsePrimitive.DefaultSampling * 2));
+            rotationHandle.DefaultMeshes.Add(new EllipseOutlineMesh(Color.Green, Vector2.Zero, radius, angleStart: MathHelper.ToRadians(15), angleSize: MathHelper.ToRadians(60)));
+            rotationHandle.GrabbedMeshes.Add(new EllipseOutlineMesh(Color.Green, Vector2.Zero, radius, sampling: EllipseMesh.DefaultSampling * 2));
 
-            EllipsePrimitive rotationCursor;
-            rotationHandle.HoverPrimitives.Add(rotationCursor = new EllipsePrimitive(Color.Green, Vector2.UnitY * radius, cursorSize));
+            EllipseMesh rotationCursor;
+            rotationHandle.HoverMeshes.Add(rotationCursor = new EllipseMesh(Color.Green, Vector2.UnitY * radius, cursorSize));
             rotationHandle.Schedulers.Update.Plan(_ =>
             {
                 if (_editedObject.OrientedReferential)

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Glyph.Graphics.Primitives.Utils;
+using Glyph.Graphics.Meshes.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Graphics.Primitives.Base
+namespace Glyph.Graphics.Meshes.Base
 {
-    public abstract class LineProceduralPrimitiveBase : ProceduralPrimitiveBase
+    public abstract class LineProceduralMeshBase : ProceduralMeshBase
     {
         protected abstract bool IsStrip { get; }
         public override sealed PrimitiveType Type => IsStrip ? PrimitiveType.LineStrip : PrimitiveType.LineList;
@@ -13,6 +13,6 @@ namespace Glyph.Graphics.Primitives.Base
         public Color[] Colors { get; set; }
         protected override Color GetColor(int vertexIndex) => Colors[vertexIndex % Colors.Length];
 
-        protected override IEnumerable<Vector2> GetRefreshedTextureCoordinates() => PrimitiveHelpers.GetOrthographicTextureCoordinates(this);
+        protected override IEnumerable<Vector2> GetRefreshedTextureCoordinates() => MeshHelpers.GetOrthographicTextureCoordinates(this);
     }
 }
