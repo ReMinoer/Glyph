@@ -2,7 +2,7 @@
 using System.Linq;
 using Diese.Collections.ReadOnly;
 using Glyph.Graphics.Meshes.Base;
-using Glyph.Graphics.Meshes.Utils;
+using Glyph.Graphics.TextureMappers;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
@@ -22,8 +22,12 @@ namespace Glyph.Graphics.Meshes
             set
             {
                 _shape = value;
-                _readOnlyVertices = new ReadOnlyList<Vector2>(GetVertices().ToArray());
-                _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(MeshHelpers.GetOrthographicTextureCoordinates(this).ToArray());
+
+                Vector2[] vertices = GetVertices().ToArray();
+                _readOnlyVertices = new ReadOnlyList<Vector2>(vertices);
+
+                Vector2[] textureCoordinates = NormalizedTextureMapper.Instance.GetVertexTextureCoordinates(vertices);
+                _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(textureCoordinates);
             }
         }
 

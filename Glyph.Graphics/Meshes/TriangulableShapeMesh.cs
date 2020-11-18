@@ -2,7 +2,7 @@
 using System.Linq;
 using Diese.Collections.ReadOnly;
 using Glyph.Graphics.Meshes.Base;
-using Glyph.Graphics.Meshes.Utils;
+using Glyph.Graphics.TextureMappers;
 using Glyph.Math;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,9 +23,17 @@ namespace Glyph.Graphics.Meshes
             set
             {
                 _shape = value;
-                _readOnlyVertices = new ReadOnlyList<Vector2>((_shape?.Vertices ?? Enumerable.Empty<Vector2>()).ToArray());
-                _readOnlyIndexes = _shape?.TriangulationIndices != null ? new ReadOnlyList<int>(_shape.TriangulationIndices.Cast<int>().ToArray()) : null;
-                _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(MeshHelpers.GetOrthographicTextureCoordinates(this).ToArray());
+
+                Vector2[] vertices = (_shape?.Vertices ?? Enumerable.Empty<Vector2>()).ToArray();
+                _readOnlyVertices = new ReadOnlyList<Vector2>(vertices);
+
+                if (_shape?.TriangulationIndices != null)
+                    _readOnlyIndexes = new ReadOnlyList<int>(_shape.TriangulationIndices.Cast<int>().ToArray());
+                else
+                    _readOnlyIndexes = null;
+
+                Vector2[] textureCoordinates = NormalizedTextureMapper.Instance.GetVertexTextureCoordinates(vertices);
+                _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(textureCoordinates);
             }
         }
 
@@ -34,7 +42,7 @@ namespace Glyph.Graphics.Meshes
         protected override IReadOnlyList<Vector2> ReadOnlyTextureCoordinates => _readOnlyTextureCoordinates;
 
         public override int VertexCount => Shape?.VertexCount ?? 0;
-        public override int IndexCount => Shape.TriangulationIndices == null ? 0 : Shape.StripTriangulation ? Shape.TriangleCount + 2 : Shape.TriangleCount * 3;
+        public override int TriangulationIndexCount => Shape.TriangulationIndices == null ? 0 : Shape.StripTriangulation ? Shape.TriangleCount + 2 : Shape.TriangleCount * 3;
         public override PrimitiveType Type => Shape != null && Shape.StripTriangulation ? PrimitiveType.TriangleStrip : PrimitiveType.TriangleList;
 
         public Color Color { get; set; }

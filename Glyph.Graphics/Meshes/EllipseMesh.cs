@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Meshes
 {
-    public class EllipseMesh : ProceduralMeshBase
+    public class EllipseMesh : FullyProceduralMeshBase
     {
         private Vector2 _center;
         public Vector2 Center
@@ -184,26 +184,6 @@ namespace Glyph.Graphics.Meshes
             }
 
             foreach (Vector2 point in MeshHelpers.GetEllipseOutlinePoints(Center, Width, Height, Rotation, AngleStart, AngleSize, Sampling))
-                yield return point;
-        }
-
-        protected override IEnumerable<Vector2> GetRefreshedTextureCoordinates()
-        {
-            var center = new Vector2(0.5f, 0.5f);
-
-            if (HasInnerVoid)
-            {
-                float width = (Width - Thickness) / Width * 0.5f;
-                float height = (Height - Thickness) / Height * 0.5f;
-                foreach (Vector2 point in MeshHelpers.GetEllipseOutlinePoints(center, width, height, Rotation, AngleStart, AngleSize, Sampling))
-                    yield return point;
-            }
-            else
-            {
-                yield return center;
-            }
-
-            foreach (Vector2 point in MeshHelpers.GetEllipseOutlinePoints(center, 0.5f, 0.5f, Rotation, AngleStart, AngleSize, Sampling))
                 yield return point;
         }
 

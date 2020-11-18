@@ -9,8 +9,8 @@ namespace Glyph.Graphics
         bool Visible { get; set; }
         PrimitiveType Type { get; }
         IEnumerable<Vector2> Vertices { get; }
-        IEnumerable<int> Indices { get; }
+        IEnumerable<int> TriangulationIndices { get; }
         int VertexCount { get; }
-        int IndexCount { get; }
+        int TriangulationIndexCount { get; }
     }
 }

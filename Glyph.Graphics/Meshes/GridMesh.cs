@@ -1,78 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Glyph.Graphics.Meshes.Base;
 using Glyph.Graphics.Meshes.Utils;
 using Glyph.Space;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulacra.Utils;
 
 namespace Glyph.Graphics.Meshes
 {
     public class GridMesh<T> : ProceduralMeshBase
+        where T : class, IDirtable
     {
-        public IGrid<T> Grid { get; set; }
-        public Func<int, int, T, bool> MeshingBehavior { get; set; }
+        private IDirtableGrid<T> _grid;
+        public IDirtableGrid<T> Grid
+        {
+            get => _grid;
+            set
+            {
+                if (_grid == value)
+                    return;
+
+                if (_grid != null)
+                    _grid.Dirtied -= OnGridDirtied;
+
+                _grid = value;
+                DirtyCaches();
+
+                if (_grid != null)
+                    _grid.Dirtied += OnGridDirtied;
+
+                void OnGridDirtied(object sender, EventArgs e) => DirtyCaches();
+            }
+        }
+
+        private Func<int, int, T, bool> _meshingBehavior;
+        public Func<int, int, T, bool> MeshingBehavior
+        {
+            get => _meshingBehavior;
+            set
+            {
+                if (_meshingBehavior == value)
+                    return;
+
+                _meshingBehavior = value;
+                DirtyCaches();
+            }
+        }
 
         public override PrimitiveType Type => PrimitiveType.TriangleList;
         protected override Color GetColor(int vertexIndex) => Color.White;
 
-        protected override IEnumerable<Vector2> GetRefreshedVertices()
+        protected override void RefreshCache(List<Vector2> vertices, List<int> indices)
         {
-            if (Grid == null)
-                yield break;
+            vertices.Clear();
+            indices.Clear();
 
-            var vertexRange = new IndexRange(Grid.Lengths().Select(x => x + 1).ToArray());
-
-            int[] indexes = vertexRange.GetResetIndex();
-            while (vertexRange.MoveIndex(indexes))
-                yield return Grid.ToWorldPoint(indexes);
-        }
-
-        protected override IEnumerable<Vector2> GetRefreshedTextureCoordinates()
-        {
-            if (Grid == null)
-                return Enumerable.Empty<Vector2>();
-
-            return MeshHelpers.GetOrthographicTextureCoordinates(this);
-        }
-
-        protected override IEnumerable<int> GetRefreshedIndices()
-        {
-            if (Grid == null)
-                yield break;
-
-            int[] indexes = Grid.GetResetIndex();
-            while (Grid.MoveIndex(indexes))
+            if (Grid != null)
             {
-                if (!MeshingBehavior(indexes[1], indexes[0], Grid[indexes]))
-                    continue;
+                List<Rectangle> rectangles = MeshHelpers.GetRectanglesFromArray(Grid, MeshingBehavior);
+                foreach (Rectangle rectangle in rectangles)
+                {
+                    AddVertex(vertices, indices, rectangle.Top, rectangle.Left);
+                    AddVertex(vertices, indices, rectangle.Top, rectangle.Right);
+                    AddVertex(vertices, indices, rectangle.Bottom, rectangle.Left);
 
-                yield return GetVertexIndex(indexes[0], indexes[1]);
-                yield return GetVertexIndex(indexes[0], indexes[1] + 1);
-                yield return GetVertexIndex(indexes[0] + 1, indexes[1]);
+                    AddVertex(vertices, indices, rectangle.Top, rectangle.Right);
+                    AddVertex(vertices, indices, rectangle.Bottom, rectangle.Right);
+                    AddVertex(vertices, indices, rectangle.Bottom, rectangle.Left);
+                }
+            }
+        }
 
-                yield return GetVertexIndex(indexes[0], indexes[1] + 1);
-                yield return GetVertexIndex(indexes[0] + 1, indexes[1] + 1);
-                yield return GetVertexIndex(indexes[0] + 1, indexes[1]);
+        private void AddVertex(List<Vector2> vertices, List<int> indices, int i, int j)
+        {
+            Vector2 vertex = Grid.ToWorldPoint(i, j);
+            int index = vertices.IndexOf(vertex);
+            if (index == -1)
+            {
+                index = vertices.Count;
+                vertices.Add(vertex);
             }
 
-            int GetVertexIndex(int i, int j) => i * (Grid.Dimension.Columns + 1) + j;
-        }
-
-        protected override sealed int GetRefreshedVertexCount()
-        {
-            if (Grid == null)
-                return 0;
-            return (Grid.Dimension.Rows + 1) * (Grid.Dimension.Columns + 1);
-        }
-
-        protected override sealed int GetRefreshedIndexCount()
-        {
-            if (Grid == null)
-                return 0;
-            return GetRefreshedIndices().Count();
+            indices.Add(index);
         }
     }
 }

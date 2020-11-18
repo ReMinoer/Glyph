@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Glyph.Composition;
@@ -18,13 +17,16 @@ namespace Glyph.Graphics.Renderer
     public class MeshRenderer : RendererBase, ILoadContent
     {
         private readonly Func<GraphicsDevice> _graphicsDeviceFunc;
-        private VertexPositionColor[] _vertexArray;
+        private VertexPositionColorTexture[] _vertexArray;
         private int[] _indexArray;
-        private BasicEffect _basicEffect;
+        private BasicEffect _defaultEffect;
 
         [Populatable, ResolveTargets(ResolveTargets.Fraternal)]
         public List<IVisualMeshProvider> MeshProviders { get; } = new List<IVisualMeshProvider>();
         public IEnumerable<IVisualMesh> Meshes => MeshProviders.SelectMany(x => x.Meshes);
+
+        [Resolvable]
+        public ISpriteSource TextureSource { get; set; }
 
         protected override ISceneNode SceneNode { get; }
         protected override float DepthProtected => SceneNode.Depth;
@@ -48,7 +50,7 @@ namespace Glyph.Graphics.Renderer
         {
             GraphicsDevice graphicsDevice = _graphicsDeviceFunc();
 
-            _basicEffect = new BasicEffect(graphicsDevice)
+            _defaultEffect = new BasicEffect(graphicsDevice)
             {
                 VertexColorEnabled = true
             };
@@ -58,7 +60,6 @@ namespace Glyph.Graphics.Renderer
             return Task.CompletedTask;
         }
 
-        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         private void RefreshBuffers()
         {
             int totalVertexCount = Meshes.Sum(x => x.VertexCount);
@@ -71,7 +72,7 @@ namespace Glyph.Graphics.Renderer
 
             // Resize vertex array if necessary
             if (totalVertexCount != _vertexArray?.Length)
-                _vertexArray = new VertexPositionColor[totalVertexCount];
+                _vertexArray = new VertexPositionColorTexture[totalVertexCount];
 
             // Fill vertex array
             int i = 0;
@@ -82,7 +83,7 @@ namespace Glyph.Graphics.Renderer
             }
 
             // Skip index array if none provided
-            int totalIndexCount = Meshes.Sum(x => x.IndexCount);
+            int totalIndexCount = Meshes.Sum(x => x.TriangulationIndexCount);
             if (totalIndexCount == 0)
             {
                 _indexArray = null;
@@ -98,7 +99,7 @@ namespace Glyph.Graphics.Renderer
             foreach (IVisualMesh mesh in Meshes)
             {
                 mesh.CopyToIndexArray(_indexArray, i);
-                i += mesh.IndexCount;
+                i += mesh.TriangulationIndexCount;
             }
         }
 
@@ -108,35 +109,96 @@ namespace Glyph.Graphics.Renderer
             if (_vertexArray == null)
                 return;
 
-            drawer.SpriteBatchStack.Push(null);
-
-            // Configure basic effect
+            GraphicsDevice graphicsDevice = drawer.GraphicsDevice;
             Quad rect = drawer.DisplayedRectangle;
 
-            _basicEffect.World = SceneNode.Matrix;
-            _basicEffect.View = Matrix.CreateLookAt(Vector3.Backward, Vector3.Zero, Vector3.Up);
-            _basicEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, 0, float.MaxValue);
+            // Configure default effect matrices
+            _defaultEffect.World = SceneNode.Matrix;
+            _defaultEffect.View = Matrix.CreateLookAt(Vector3.Backward, Vector3.Zero, Vector3.Up);
+            _defaultEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, 0, float.MaxValue);
 
-            // Draw meshes
-            foreach (EffectPass pass in _basicEffect.CurrentTechnique.Passes)
+            // Get texture
+            Texture2D texture = TextureSource?.Texture;
+            _defaultEffect.TextureEnabled = texture != null;
+
+            // Configure sampler states
+            drawer.SpriteBatchStack.Push(null);
+            graphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
+            int verticesIndex = 0;
+            int indicesIndex = 0;
+            Effect currentEffect = null;
+            EffectPass currentPass = null;
+
+            foreach (IVisualMesh mesh in Meshes)
             {
-                pass.Apply();
-
-                int verticesIndex = 0;
-                int indicesIndex = 0;
-                foreach (IVisualMesh mesh in Meshes)
+                // If mesh not visible, move indexes and go to next
+                if (!mesh.Visible)
                 {
-                    if (mesh.Visible)
+                    verticesIndex += mesh.VertexCount;
+                    indicesIndex += mesh.TriangulationIndexCount;
+                    continue;
+                }
+
+                bool meshIndexed = mesh.TriangulationIndexCount > 0;
+
+                foreach (IVisualMeshPart part in mesh.Parts)
+                {
+                    Effect effect = part.Effect;
+                    if (effect == null)
                     {
-                        if (mesh.IndexCount > 0)
-                            drawer.GraphicsDevice.DrawUserIndexedPrimitives(mesh.Type, _vertexArray, verticesIndex, mesh.VertexCount, _indexArray, indicesIndex, GetPrimitiveCount(mesh.Type, mesh.IndexCount));
-                        else
-                            drawer.GraphicsDevice.DrawUserPrimitives(mesh.Type, _vertexArray, verticesIndex, GetPrimitiveCount(mesh.Type, mesh.VertexCount));
+                        // If no effect provided, use default effect
+                        effect = _defaultEffect;
+                    }
+                    else if (effect != currentEffect)
+                    {
+                        // Configure effect matrices 
+                        IEffectMatrices effectMatrices = part.EffectMatrices;
+                        if (effectMatrices != null)
+                        {
+                            effectMatrices.World = _defaultEffect.World;
+                            effectMatrices.View = _defaultEffect.View;
+                            effectMatrices.Projection = _defaultEffect.Projection;
+                        }
+
+                        currentEffect = effect;
                     }
 
-                    verticesIndex += mesh.VertexCount;
-                    indicesIndex += mesh.IndexCount;
+                    foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+                    {
+                        if (pass != currentPass)
+                        {
+                            // Apply effect pass
+                            pass.Apply();
+
+                            // Set texture
+                            if (texture != null)
+                                graphicsDevice.Textures[0] = texture;
+
+                            currentPass = pass;
+                        }
+
+                        // Draw primitives
+                        if (meshIndexed)
+                        {
+                            int primitiveCount = GetPrimitiveCount(mesh.Type, part.TriangulationIndexCount);
+
+                            graphicsDevice.DrawUserIndexedPrimitives(mesh.Type, _vertexArray, verticesIndex, mesh.VertexCount, _indexArray, indicesIndex, primitiveCount);
+                            indicesIndex += part.TriangulationIndexCount;
+                        }
+                        else
+                        {
+                            int primitiveCount = GetPrimitiveCount(mesh.Type, part.VertexCount);
+
+                            graphicsDevice.DrawUserPrimitives(mesh.Type, _vertexArray, verticesIndex, primitiveCount);
+                            verticesIndex += part.VertexCount;
+                        }
+                    }
                 }
+
+                // If mesh indexed, move vertices index after all parts have been drawn.
+                if (meshIndexed)
+                    verticesIndex += mesh.VertexCount;
             }
 
             drawer.SpriteBatchStack.Pop();

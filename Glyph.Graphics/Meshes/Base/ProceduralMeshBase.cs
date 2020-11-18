@@ -1,39 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics.Meshes.Base
 {
-    public abstract class ProceduralMeshBase : MeshBase
+    public abstract class ProceduralMeshBase : TexturableMeshBase
     {
-        private Vector2[] _vertexCache;
-        private Vector2[] _textureCoordinatesCache;
-        private int[] _indexCache;
-        private IReadOnlyList<Vector2> _readOnlyVertexCache;
-        private IReadOnlyList<Vector2> _readOnlyTextureCoordinatesCache;
-        private IReadOnlyList<int> _readOnlyIndexCache;
-
-        private bool _dirtyVertices = true;
-        private bool _dirtyIndices = true;
-        private bool _dirtyVertexCount = true;
-        private bool _dirtyIndexCount = true;
+        private bool _dirtyCaches = true;
+        private readonly List<Vector2> _vertexCache;
+        private readonly List<int> _indexCache;
+        private readonly IReadOnlyList<Vector2> _readOnlyVertexCache;
+        private readonly IReadOnlyList<int> _readOnlyIndexCache;
 
         protected override IReadOnlyList<Vector2> ReadOnlyVertices
         {
             get
             {
-                RefreshVertices();
+                RefreshCache();
                 return _readOnlyVertexCache;
-            }
-        }
-
-        protected override IReadOnlyList<Vector2> ReadOnlyTextureCoordinates
-        {
-            get
-            {
-                RefreshVertices();
-                return _readOnlyTextureCoordinatesCache;
             }
         }
 
@@ -41,158 +25,54 @@ namespace Glyph.Graphics.Meshes.Base
         {
             get
             {
-                RefreshIndices();
+                RefreshCache();
                 return _readOnlyIndexCache;
             }
         }
 
-        private int _vertexCount;
         public override int VertexCount
         {
             get
             {
-                RefreshVertexCount();
-                return _vertexCount;
+                RefreshCache();
+                return _readOnlyVertexCache.Count;
             }
         }
 
-        private int _indexCount;
-        public override int IndexCount
+        public override int TriangulationIndexCount
         {
             get
             {
-                RefreshIndexCount();
-                return _indexCount;
+                RefreshCache();
+                return _readOnlyIndexCache.Count;
             }
         }
 
-        protected virtual bool Refresh()
+        protected ProceduralMeshBase()
         {
-            return RefreshVertexCount()
-                | RefreshIndexCount()
-                | RefreshVertices()
-                | RefreshIndices();
-        }
-
-        private bool RefreshVertexCount()
-        {
-            if (!_dirtyVertexCount)
-                return false;
-
-            _vertexCount = GetRefreshedVertexCount();
-            _dirtyVertexCount = false;
-
-            return true;
-        }
-
-        private bool RefreshIndexCount()
-        {
-            if (!_dirtyIndexCount)
-                return false;
-
-            _indexCount = GetRefreshedIndexCount();
-            _dirtyIndexCount = false;
-
-            return true;
-        }
-
-        protected virtual bool RefreshVertices()
-        {
-            if (!_dirtyVertices)
-                return false;
-
-            int i = 0;
-            _vertexCache = new Vector2[VertexCount];
-            foreach (Vector2 vertex in GetRefreshedVertices())
-            {
-                _vertexCache[i] = vertex;
-                i++;
-            }
+            _vertexCache = new List<Vector2>();
+            _indexCache = new List<int>();
 
             _readOnlyVertexCache = new ReadOnlyCollection<Vector2>(_vertexCache);
-            _dirtyVertices = false;
-
-            i = 0;
-            _textureCoordinatesCache = new Vector2[VertexCount];
-            foreach (Vector2 vertex in GetRefreshedTextureCoordinates())
-            {
-                _textureCoordinatesCache[i] = vertex;
-                i++;
-            }
-
-            _readOnlyTextureCoordinatesCache = new ReadOnlyCollection<Vector2>(_textureCoordinatesCache);
-            return true;
-        }
-
-        private bool RefreshIndices()
-        {
-            if (!_dirtyIndices)
-                return false;
-
-            _indexCache = new int[IndexCount];
-
-            IEnumerable<int> refreshedIndices = GetRefreshedIndices();
-            if (refreshedIndices != null)
-            {
-                int i = 0;
-                foreach (int index in refreshedIndices)
-                {
-                    _indexCache[i] = index;
-                    i++;
-                }
-            }
-
             _readOnlyIndexCache = new ReadOnlyCollection<int>(_indexCache);
-            _dirtyIndices = false;
-            return true;
         }
 
-        protected abstract int GetRefreshedVertexCount();
-        protected abstract int GetRefreshedIndexCount();
-        protected abstract IEnumerable<Vector2> GetRefreshedVertices();
-        protected abstract IEnumerable<Vector2> GetRefreshedTextureCoordinates();
-        protected abstract IEnumerable<int> GetRefreshedIndices();
-
-        protected void DirtyVertices()
+        protected override sealed void RefreshVertexCache() => RefreshCache();
+        private void RefreshCache()
         {
-            _dirtyVertices = true;
-            _dirtyVertexCount = true;
+            if (!_dirtyCaches)
+                return;
+
+            RefreshCache(_vertexCache, _indexCache);
+            _dirtyCaches = false;
         }
 
-        protected void DirtyIndices()
-        {
-            _dirtyIndices = true;
-            _dirtyIndexCount = true;
-        }
+        protected abstract void RefreshCache(List<Vector2> vertices, List<int> indices);
 
-        public override void CopyToVertexArray(VertexPosition[] vertexArray, int startIndex)
+        protected void DirtyCaches()
         {
-            Refresh();
-            base.CopyToVertexArray(vertexArray, startIndex);
-        }
-
-        public override void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex)
-        {
-            Refresh();
-            base.CopyToVertexArray(vertexArray, startIndex);
-        }
-
-        public override void CopyToVertexArray(VertexPositionColorTexture[] vertexArray, int startIndex)
-        {
-            Refresh();
-            base.CopyToVertexArray(vertexArray, startIndex);
-        }
-
-        public override void CopyToVertexArray(VertexPositionTexture[] vertexArray, int startIndex)
-        {
-            Refresh();
-            base.CopyToVertexArray(vertexArray, startIndex);
-        }
-
-        public override void CopyToIndexArray(int[] indexArray, int startIndex)
-        {
-            Refresh();
-            base.CopyToIndexArray(indexArray, startIndex);
+            _dirtyCaches = true;
+            DirtyTextureCoordinates();
         }
     }
 }
