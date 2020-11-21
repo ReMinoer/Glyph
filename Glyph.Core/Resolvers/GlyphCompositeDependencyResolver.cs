@@ -30,7 +30,7 @@ namespace Glyph.Core.Resolvers
             Local = new LocalDependencyResolver(context.LocalRegistry, context.LocalResolverParent);
             Local.Registry.Add(GlyphDependency.OnType<LocalDependencyResolver>().Using(Local));
 
-            foreach (Type nestedType in _composite.GetType().GetNestedTypes())
+            foreach (Type nestedType in _composite.GetType().GetNestedTypes().Where(x => x.GetConstructors().Length > 0))
                 Local.Registry.Add(GlyphDependency.OnType(nestedType));
         }
 
