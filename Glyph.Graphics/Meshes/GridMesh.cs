@@ -57,7 +57,9 @@ namespace Glyph.Graphics.Meshes
         }
 
         public override PrimitiveType Type => PrimitiveType.TriangleList;
-        protected override Color GetColor(int vertexIndex) => Color.White;
+
+        public Color Color { get; set; } = Color.White;
+        protected override Color GetColor(int vertexIndex) => Color;
 
         protected override void RefreshCache(List<Vector2> vertices, List<int> indices)
         {
