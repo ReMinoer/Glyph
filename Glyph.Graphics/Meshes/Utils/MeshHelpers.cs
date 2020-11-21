@@ -21,6 +21,12 @@ namespace Glyph.Graphics.Meshes.Utils
             return (int)System.Math.Ceiling(count);
         }
 
+        static public IEnumerable<Vector2> GetCircleOutlinePoints(Vector2 center, float radius, int sampling)
+            => GetCircleOutlinePoints(center, radius, 0, MathHelper.TwoPi, sampling);
+
+        static public IEnumerable<Vector2> GetCircleOutlinePoints(Vector2 center, float radius, float angleStart, float angleSize, int sampling)
+            => GetEllipseOutlinePoints(center, radius, radius, 0, angleStart, angleSize, sampling);
+
         static public IEnumerable<Vector2> GetEllipseOutlinePoints(Vector2 center, float width, float height, float rotation, float angleStart, float angleSize, int sampling)
         {
             rotation = MathHelper.WrapAngle(rotation);
