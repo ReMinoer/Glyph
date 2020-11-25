@@ -105,6 +105,22 @@ namespace Glyph.Composition.Modelization
 
         public override string ToString() => DisplayName;
 
+        protected bool SetSubData(ref IGlyphData subData, IGlyphData value)
+        {
+            if (subData == value)
+                return false;
+
+            if (subData != null)
+                SubData.Remove(subData);
+
+            subData = value;
+
+            if (subData != null)
+                SubData.Add(subData);
+
+            return true;
+        }
+
         protected override void DisposeBindedObject()
         {
             BindedObject?.Dispose();
