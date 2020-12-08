@@ -111,7 +111,7 @@ namespace Glyph.Composition.Modelization
 
         static public IBindingBuilder<TModel, TView, TCreated, TBindingCollection> CreateComponent<TModel, TView, TCreator, TCreated, TBindingCollection>(
             this IBindingBuilder<TModel, TView, TCreator, TBindingCollection> builder)
-            where TModel : IGlyphData, IHierarchicalData
+            where TModel : IGlyphData
             where TCreator : IGlyphCreator<TCreated>
             where TCreated : IGlyphComponent
         {
@@ -123,8 +123,13 @@ namespace Glyph.Composition.Modelization
                 mv.SerializationKnownTypes = m.SerializationKnownTypes;
                 mv.DependencyResolver = m.DependencyResolver;
 
-                mv.Instantiate();
-                return mv.BindedObject;
+                if (m.IsBinding)
+                {
+                    mv.Instantiate();
+                    return mv.BindedObject;
+                }
+                
+                return mv.Create();
             });
         }
 

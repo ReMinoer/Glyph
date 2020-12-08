@@ -42,8 +42,13 @@ namespace Glyph.Composition.Modelization
             creatorItem.DependencyResolver = model.DependencyResolver;
             creatorItem.SerializationKnownTypes = model.SerializationKnownTypes;
 
-            creatorItem.Instantiate();
-            return creatorItem.BindedObject;
+            if (model.IsBinding)
+            {
+                creatorItem.Instantiate();
+                return creatorItem.BindedObject;
+            }
+
+            return creatorItem.Create();
         }
 
         protected override TViewItem GetBindedViewItem(TView view, TModel model, TModelItem modelItem)
