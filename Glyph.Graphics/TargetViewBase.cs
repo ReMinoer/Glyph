@@ -34,7 +34,7 @@ namespace Glyph.Graphics
                 EffectManager.Size = value;
                 _fillingRectangle.Rectangle = new CenteredRectangle(Vector2.Zero, value);
 
-                Refresh();
+                RefreshTransformation();
                 SizeChanged?.Invoke(this, value);
             }
         }
@@ -51,12 +51,12 @@ namespace Glyph.Graphics
             _sceneNode.Refreshed += OnSceneNodeRefreshed;
         }
 
-        private void OnSceneNodeRefreshed(SceneNodeBase obj) => Refresh();
+        private void OnSceneNodeRefreshed(SceneNodeBase obj) => RefreshTransformation();
 
-        protected override void Refresh()
+        protected override void RefreshTransformation()
         {
             _shape = _sceneNode.Transformation.Transform(_fillingRenderer.Shape);
-            base.Refresh();
+            base.RefreshTransformation();
         }
 
         public override void Initialize()

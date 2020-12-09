@@ -28,11 +28,7 @@ namespace Glyph.Core.Base
                 if (_camera != null)
                     _camera.TransformationChanged += OnCameraTransformationChanged;
 
-                void OnCameraTransformationChanged(object sender = null, EventArgs e = null)
-                {
-                    DisplayedRectangle = Camera.Transform(Shape);
-                    RefreshInternal();
-                }
+                void OnCameraTransformationChanged(object sender = null, EventArgs e = null) => RefreshComputedProperties();
             }
         }
 
@@ -53,15 +49,16 @@ namespace Glyph.Core.Base
         public abstract event EventHandler<Vector2> SizeChanged;
         public event EventHandler TransformationChanged;
 
-        private void RefreshInternal()
+        protected virtual void RefreshTransformation()
         {
-            RenderMatrix = (Camera?.RenderTransformation.Matrix ?? Matrix.Identity) * Matrix.CreateTranslation((Shape.Size / 2).ToVector3());
+            RefreshComputedProperties();
+            TransformationChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void Refresh()
+        private void RefreshComputedProperties()
         {
-            RefreshInternal();
-            TransformationChanged?.Invoke(this, EventArgs.Empty);
+            DisplayedRectangle = Camera?.Transform(Shape) ?? new Quad();
+            RenderMatrix = (Camera?.RenderTransformation.Matrix ?? Matrix.Identity) * Matrix.CreateTranslation((Shape.Size / 2).ToVector3());
         }
 
         public bool IsVisibleOnView(Vector2 position)

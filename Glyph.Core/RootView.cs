@@ -30,7 +30,7 @@ namespace Glyph.Core
 
                 void DrawClientOnSizeChanged(Vector2 obj = default)
                 {
-                    Refresh();
+                    RefreshTransformation();
                     SizeChanged?.Invoke(this, Size);
                 }
             }
