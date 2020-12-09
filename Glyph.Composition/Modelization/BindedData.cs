@@ -115,9 +115,10 @@ namespace Glyph.Composition.Modelization
             _isBinding = false;
         }
 
-        protected bool SetSubData(ref IGlyphData subData, IGlyphData value)
+        protected bool SetSubData<TSubData>(ref TSubData subData, TSubData value)
+            where TSubData : IGlyphData
         {
-            if (subData == value)
+            if (EqualityComparer<TSubData>.Default.Equals(subData, value))
                 return false;
 
             if (subData != null)
