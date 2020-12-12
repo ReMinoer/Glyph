@@ -123,13 +123,11 @@ namespace Glyph.Composition.Modelization
                 mv.SerializationKnownTypes = m.SerializationKnownTypes;
                 mv.DependencyResolver = m.DependencyResolver;
 
-                if (m.IsBinding)
-                {
-                    mv.Instantiate();
-                    return mv.BindedObject;
-                }
-                
-                return mv.Create();
+                if (m.NotBinding)
+                    return mv.Create();
+
+                mv.Instantiate();
+                return mv.BindedObject;
             });
         }
 

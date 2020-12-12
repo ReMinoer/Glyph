@@ -83,8 +83,8 @@ namespace Glyph.Composition.Modelization
         [Browsable(false), IgnoreDataMember]
         public IEnumerable<Type> SerializationKnownTypes { get; set; }
 
-        private bool _isBinding;
-        bool IGlyphData.IsBinding => _isBinding;
+        private bool _notBinding;
+        bool IGlyphData.NotBinding => _notBinding;
 
         IGlyphComponent IGlyphData.BindedObject => BindedObject;
         protected override IEnumerable<IGlyphConfigurator<T>> SubConfiguratorsBase => SubConfigurators;
@@ -108,11 +108,12 @@ namespace Glyph.Composition.Modelization
 
         public override string ToString() => DisplayName;
 
-        public override void Instantiate()
+        public override T Create()
         {
-            _isBinding = true;
-            base.Instantiate();
-            _isBinding = false;
+            _notBinding = true;
+            T obj = base.Create();
+            _notBinding = false;
+            return obj;
         }
 
         protected bool SetSubData<TSubData>(ref TSubData subData, TSubData value)
