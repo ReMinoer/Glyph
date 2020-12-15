@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Diese;
 using Glyph.Composition.Messaging;
+using Glyph.Composition.Utils;
 using Glyph.Messaging;
 using Glyph.Observation.Properties;
 using Glyph.Resolver;
 using Stave;
+using Category = System.ComponentModel.CategoryAttribute;
 
 namespace Glyph.Composition.Base
 {
@@ -15,16 +17,25 @@ namespace Glyph.Composition.Base
     {
         protected readonly List<GlyphResolvableInjectable> Injectables;
 
+        [Category(ComponentCategory.Activation)]
         public virtual bool Enabled { get; set; } = true;
+
+        [Category(ComponentCategory.Activation)]
         public bool Active => Enabled && this.ParentQueue().All(x => x.Enabled);
 
+        [Category(ComponentCategory.Identification)]
         public Guid Id { get; }
+
+        [Category(ComponentCategory.Identification)]
         public string Name { get; set; }
+
+        [Category(ComponentCategory.Automation)]
         public ComponentRouterSystem Router { get; }
+
+        [Category(ComponentCategory.Activation)]
         public bool IsDisposed { get; private set; }
 
-        public event EventHandler Disposed;
-
+        [Category(ComponentCategory.Composition)]
         public IGlyphContainer Parent
         {
             get => ComponentImplementation.Parent;
@@ -61,6 +72,8 @@ namespace Glyph.Composition.Base
                 }
             }
         }
+
+        public event EventHandler Disposed;
 
         protected GlyphComponentBase()
         {

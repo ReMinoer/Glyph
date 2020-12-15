@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Diese;
 using Diese.Collections;
@@ -11,6 +11,7 @@ using Niddle;
 using Glyph.Composition;
 using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
+using Glyph.Composition.Utils;
 using Glyph.Core.Resolvers;
 using Glyph.Core.Scheduler;
 using Glyph.Math;
@@ -29,9 +30,16 @@ namespace Glyph.Core
         private readonly Dictionary<string, IGlyphComponent> _keyedComponents = new Dictionary<string, IGlyphComponent>();
         protected internal readonly GlyphCompositeDependencyResolver Resolver;
 
+        [Category(ComponentCategory.Automation)]
         public SchedulerHandler Schedulers { get; }
+
+        [Category(ComponentCategory.Activation)]
         public bool Visible { get; set; }
+
+        [Category(ComponentCategory.Automation)]
         public Predicate<IDrawer> DrawPredicate { get; set; }
+
+        [Category(ComponentCategory.Automation)]
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
 
         public GlyphObject(GlyphResolveContext context)

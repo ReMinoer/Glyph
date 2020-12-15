@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
+using Glyph.Composition.Utils;
 using Stave;
+using Category = System.ComponentModel.CategoryAttribute;
 
 namespace Glyph.Composition.Base
 {
     public abstract class GlyphContainerBase<TComponent> : GlyphComponentBase, IGlyphContainer<TComponent>
         where TComponent : class, IGlyphComponent
     {
+        [Category(ComponentCategory.Activation)]
         public bool IsFreeze { get; set; }
 
         internal abstract IContainer<IGlyphComponent, IGlyphContainer, TComponent> ContainerImplementation { get; }

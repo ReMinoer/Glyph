@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Diese.Collections.Observables.ReadOnly;
 using Glyph.Composition.Base;
+using Glyph.Composition.Utils;
 using Stave;
+using Category = System.ComponentModel.CategoryAttribute;
 
 namespace Glyph.Composition
 {
@@ -37,6 +39,7 @@ namespace Glyph.Composition
         internal override IContainer<IGlyphComponent, IGlyphContainer, TComponent> ContainerImplementation => _component;
         internal override IEnumerable<TComponent> ReadOnlyComponents => _component.Components;
 
+        [Category(ComponentCategory.Composition)]
         public IWrappedObservableCollection<TComponent> Components => _component.Components;
         
         public virtual void Add(TComponent item) => _component.Add(item);
