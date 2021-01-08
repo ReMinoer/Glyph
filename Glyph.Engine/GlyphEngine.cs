@@ -6,22 +6,20 @@ using Niddle;
 using Fingear;
 using Fingear.Inputs;
 using Glyph.Application;
-using Glyph.Audio;
 using Glyph.Content;
 using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Graphics;
 using Glyph.Messaging;
 using Glyph.Resolver;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using NLog;
 
 namespace Glyph.Engine
 {
     public class GlyphEngine
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ElapsedTime _elapsedTime = new ElapsedTime();
         private IGlyphClient _focusedClient;
         public bool IsInitialized { get; private set; }
@@ -30,6 +28,7 @@ namespace Glyph.Engine
         public bool IsPaused { get; private set; }
         public IDependencyRegistry Registry { get; }
         public IDependencyResolver Resolver { get; }
+        public ILogger Logger { get; }
         public RootView RootView { get; private set; }
         public ProjectionManager ProjectionManager { get; }
         public InputClientManager InputClientManager { get; }
@@ -41,7 +40,7 @@ namespace Glyph.Engine
         private IContentLibrary _contentLibrary;
         public IContentLibrary ContentLibrary
         {
-            get => _contentLibrary ?? (_contentLibrary = new ContentLibrary(_graphicsDeviceService));
+            get => _contentLibrary ?? (_contentLibrary = new ContentLibrary(_graphicsDeviceService, Logger));
         }
 
         private GlyphObject _root;
@@ -85,12 +84,14 @@ namespace Glyph.Engine
         public event Action Paused;
         public event Action<IGlyphClient> FocusChanged;
 
-        public GlyphEngine(IGraphicsDeviceService graphicsDeviceService, IContentLibrary contentLibrary, Action<IDependencyRegistry> dependencyConfigurator = null, params string[] args)
+        public GlyphEngine(IGraphicsDeviceService graphicsDeviceService, IContentLibrary contentLibrary, ILogger logger,
+            Action<IDependencyRegistry> dependencyConfigurator = null, params string[] args)
         {
-            Logger.Info("Engine arguments : " + string.Join(" ", args));
+            logger.LogInformation("Engine arguments : " + string.Join(" ", args));
 
             _graphicsDeviceService = graphicsDeviceService;
             _contentLibrary = contentLibrary;
+            Logger = logger;
 
             Registry = GlyphRegistry.BuildGlobalRegistry();
             dependencyConfigurator?.Invoke(Registry);
@@ -106,6 +107,7 @@ namespace Glyph.Engine
             InteractionManager = new InteractionManager();
 
             Registry.Add(GlyphDependency.OnType<GlyphEngine>().Using(this));
+            Registry.Add(GlyphDependency.OnType<ILogger>().Using(Logger));
             Registry.Add(GlyphDependency.OnType<RootView>().Using(RootView));
             Registry.Add(GlyphDependency.OnType<ProjectionManager>().Using(ProjectionManager));
             Registry.Add(GlyphDependency.OnType<IContentLibrary>().Using(ContentLibrary));

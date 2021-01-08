@@ -6,6 +6,7 @@ using Glyph.Graphics.Meshes;
 using Glyph.Graphics.Renderer;
 using Glyph.Math.Shapes;
 using Glyph.Tools;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Demos.MeshRendering
@@ -14,7 +15,7 @@ namespace Glyph.Demos.MeshRendering
     {
         static public void Main()
         {
-            using (var game = new GlyphGame(_ => new UnusedContentLibrary()))
+            using (var game = new GlyphGame(NullLogger.Instance, _ => new UnusedContentLibrary()))
             {
                 GlyphEngine engine = game.Engine;
                 GlyphObject root = engine.Root;

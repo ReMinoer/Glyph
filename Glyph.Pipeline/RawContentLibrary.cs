@@ -7,11 +7,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Glyph.Content;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Framework.Content.Pipeline.Builder;
-using NLog;
 using Simulacra.IO.Utils;
 using Simulacra.IO.Watching;
 
@@ -19,8 +19,6 @@ namespace Glyph.Pipeline
 {
     public class RawContentLibrary : ContentLibrary, IRawContentLibrary
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly PathWatcher _pathWatcher;
         private readonly PipelineManager _pipelineManager;
         private readonly SemaphoreSlim _pipelineSemaphore = new SemaphoreSlim(1);
@@ -28,8 +26,8 @@ namespace Glyph.Pipeline
         public string RawRootPath { get; }
         protected override string WorkingDirectory => RawRootPath;
 
-        public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, string rawRootPath, string cacheRootPath)
-            : base(graphicsDeviceService, Path.Combine(cacheRootPath, "bin"))
+        public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, ILogger logger, string rawRootPath, string cacheRootPath)
+            : base(graphicsDeviceService, logger, Path.Combine(cacheRootPath, "bin"))
         {
             Directory.CreateDirectory(cacheRootPath);
 

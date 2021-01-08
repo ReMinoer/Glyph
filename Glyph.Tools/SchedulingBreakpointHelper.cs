@@ -1,23 +1,17 @@
 ﻿using System.Diagnostics;
 using Diese;
 using Glyph.Composition.Delegates;
-using NLog;
 
 namespace Glyph.Tools
 {
     static public class SchedulingBreakpointHelper
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         static public InitializeDelegate Initialize(Predicate predicate = null)
         {
             return () =>
             {
-                if (predicate != null && !predicate())
-                    return;
-
-                Logger.Debug("Initialize breakpoint");
-                Debugger.Break();
+                if (predicate == null || predicate())
+                    Debugger.Break();
             };
         }
 
@@ -25,11 +19,8 @@ namespace Glyph.Tools
         {
             return async x =>
             {
-                if (predicate != null && !predicate())
-                    return;
-
-                Logger.Debug("LoadContent breakpoint");
-                Debugger.Break();
+                if (predicate == null || predicate())
+                    Debugger.Break();
             };
         }
 
@@ -37,11 +28,8 @@ namespace Glyph.Tools
         {
             return x =>
             {
-                if (predicate != null && !predicate())
-                    return;
-
-                Logger.Debug("Update breakpoint");
-                Debugger.Break();
+                if (predicate == null || predicate())
+                    Debugger.Break();
             };
         }
 
@@ -49,11 +37,8 @@ namespace Glyph.Tools
         {
             return x =>
             {
-                if (predicate != null && !predicate())
-                    return;
-
-                Logger.Debug("Draw breakpoint");
-                Debugger.Break();
+                if (predicate == null || predicate())
+                    Debugger.Break();
             };
         }
     }

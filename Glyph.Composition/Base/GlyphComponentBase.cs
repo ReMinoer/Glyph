@@ -8,6 +8,8 @@ using Glyph.Composition.Utils;
 using Glyph.Messaging;
 using Glyph.Observation.Properties;
 using Glyph.Resolver;
+using Microsoft.Extensions.Logging;
+using Niddle.Attributes;
 using Stave;
 using Category = System.ComponentModel.CategoryAttribute;
 
@@ -31,6 +33,10 @@ namespace Glyph.Composition.Base
 
         [Category(ComponentCategory.Automation)]
         public ComponentRouterSystem Router { get; }
+
+        [Resolvable]
+        [Category(ComponentCategory.Automation)]
+        public ILogger Logger { get; set; }
 
         [Category(ComponentCategory.Activation)]
         public bool IsDisposed { get; private set; }

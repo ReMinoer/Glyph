@@ -8,6 +8,7 @@ using Fingear.Inputs;
 using Fingear.Interactives;
 using Fingear.MonoGame;
 using Glyph.Core.Inputs;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -60,7 +61,7 @@ namespace Glyph.Engine
             }
         }
 
-        public GlyphGame(Func<IGraphicsDeviceService, IContentLibrary> contentLibraryCreator, Action<IDependencyRegistry> dependencyConfigurator = null)
+        public GlyphGame(ILogger logger, Func<IGraphicsDeviceService, IContentLibrary> contentLibraryCreator, Action<IDependencyRegistry> dependencyConfigurator = null)
         {
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnClientSizeChanged;
@@ -75,7 +76,7 @@ namespace Glyph.Engine
             _windowSize = new Point(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);
             _lastWindowSize = WindowSize;
 
-            Engine = new GlyphEngine(GraphicsDeviceManager, contentLibraryCreator(GraphicsDeviceManager), dependencyConfigurator);
+            Engine = new GlyphEngine(GraphicsDeviceManager, contentLibraryCreator(GraphicsDeviceManager), logger, dependencyConfigurator);
             Engine.Stopped += OnEngineStopped;
             Engine.FocusedClient = this;
             

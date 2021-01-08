@@ -3,13 +3,11 @@ using System.Linq;
 using Fingear.Inputs;
 using Fingear.MonoGame;
 using Glyph.Composition;
-using NLog;
 
 namespace Glyph.Tools
 {
     public class InputLogger : GlyphComponent, IUpdate
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public Predicate<IInput> InputFilter { get; set; }
 
         public InputLogger()

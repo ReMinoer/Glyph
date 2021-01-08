@@ -17,6 +17,7 @@ using Glyph.Core.Scheduler;
 using Glyph.Math;
 using Glyph.Messaging;
 using Glyph.Resolver;
+using Microsoft.Extensions.Logging;
 using Taskete;
 
 namespace Glyph.Core
@@ -51,6 +52,7 @@ namespace Glyph.Core
             
             Resolver.Local.Registry.Add(GlyphDependency.OnType<TrackingRouter>().Using(Router.Local));
 
+            Logger = Resolver.Resolve<ILogger>();
             Schedulers = new SchedulerHandler(compositeResolver.Global);
         }
 

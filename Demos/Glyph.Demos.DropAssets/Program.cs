@@ -13,9 +13,12 @@ using Glyph.Graphics;
 using Glyph.Graphics.Renderer;
 using Glyph.Pipeline;
 using Glyph.Tools;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using NLog.Extensions.Logging;
 
 namespace Glyph.Demos.DropAssets
 {
@@ -43,8 +46,9 @@ namespace Glyph.Demos.DropAssets
         static public void Main()
         {
             AllocConsole();
+            ILogger logger = new NLogLoggerProvider().CreateLogger(nameof(DropAssets));
 
-            using (_game = new GlyphGame(x => _rawContentLibrary = new RawContentLibrary(x, ContentPath, CachePath)))
+            using (_game = new GlyphGame(logger, x => _rawContentLibrary = new RawContentLibrary(x, logger, ContentPath, CachePath)))
             {
                 _form = (Form)Control.FromHandle(_game.Window.Handle);
                 _form.AllowDrop = true;

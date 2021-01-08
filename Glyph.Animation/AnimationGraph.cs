@@ -7,7 +7,6 @@ using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Resolver;
 using Niddle.Attributes;
-using NLog;
 using OverGraphed;
 
 namespace Glyph.Animation
@@ -24,8 +23,6 @@ namespace Glyph.Animation
     public class AnimationGraph<T, TState> : GlyphContainer<IAnimationPlayer>, IAnimationGraph<T, TState>
         where T : class
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly AutoGraph<Vertex, Transition> _graph;
         private readonly Dictionary<TState, Vertex> _states;
         private readonly ReadOnlyDictionary<TState, Vertex> _readOnlyStates;

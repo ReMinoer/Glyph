@@ -5,14 +5,12 @@ using Fingear;
 using Fingear.Controls;
 using Fingear.Interactives;
 using Glyph.Composition;
-using NLog;
 using Stave;
 
 namespace Glyph.Tools
 {
     public class ControlLogger : GlyphComponent, IUpdate
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly InteractionManager _interactionManager;
         private readonly HashSet<IControl> _activateControls;
         public Predicate<IInteractive> InteractiveFilter { get; set; }

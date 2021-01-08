@@ -4,34 +4,36 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using NLog;
 using Simulacra.IO.Utils;
 
 namespace Glyph.Content
 {
     public class ContentLibrary : IContentLibrary
     {
-        static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly ConcurrentDictionary<string, IAsset> _assetCache = new ConcurrentDictionary<string, IAsset>(new PathComparer());
         private readonly ConcurrentDictionary<string, ContentManager> _usedContentManagers = new ConcurrentDictionary<string, ContentManager>(new PathComparer());
         private readonly ContentManagerPool _contentManagerPool;
 
         private readonly IGraphicsDeviceService _graphicsDeviceService;
+        protected readonly ILogger Logger;
+
         private readonly SemaphoreSlim _effectLock = new SemaphoreSlim(1);
 
         public string RootPath { get; }
         protected virtual string WorkingDirectory => RootPath;
         string IContentLibrary.WorkingDirectory => WorkingDirectory;
 
-        public ContentLibrary(IGraphicsDeviceService graphicsDeviceService, string rootPath = null)
+        public ContentLibrary(IGraphicsDeviceService graphicsDeviceService, ILogger logger, string rootPath = null)
         {
             _graphicsDeviceService = graphicsDeviceService;
-            var serviceProvider = new ServiceProvider(graphicsDeviceService);
+            Logger = logger;
 
             RootPath = rootPath ?? "Content";
+
+            var serviceProvider = new ServiceProvider(graphicsDeviceService);
             _contentManagerPool = new ContentManagerPool(serviceProvider, RootPath);
         }
 
