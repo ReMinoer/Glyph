@@ -5,6 +5,7 @@ using System.Linq;
 using Diese;
 using Glyph.Composition.Messaging;
 using Glyph.Composition.Utils;
+using Glyph.Logging;
 using Glyph.Messaging;
 using Glyph.Observation.Properties;
 using Glyph.Resolver;
@@ -15,7 +16,8 @@ using Category = System.ComponentModel.CategoryAttribute;
 
 namespace Glyph.Composition.Base
 {
-    public abstract class GlyphComponentBase : ConfigurableNotifyPropertyChanged, IGlyphComponent
+
+    public abstract class GlyphComponentBase : ConfigurableNotifyPropertyChanged, IGlyphComponent, ILogging
     {
         protected readonly List<GlyphResolvableInjectable> Injectables;
 
@@ -33,10 +35,6 @@ namespace Glyph.Composition.Base
 
         [Category(ComponentCategory.Automation)]
         public ComponentRouterSystem Router { get; }
-
-        [Resolvable]
-        [Category(ComponentCategory.Automation)]
-        public ILogger Logger { get; set; }
 
         [Category(ComponentCategory.Activation)]
         public bool IsDisposed { get; private set; }
@@ -79,6 +77,15 @@ namespace Glyph.Composition.Base
             }
         }
 
+        private readonly CategoryLogger _categoryLogger;
+        protected ILogger Logger => _categoryLogger;
+
+        [Resolvable]
+        ILogger ILogging.Logger
+        {
+            set => _categoryLogger.Logger = value;
+        }
+
         public event EventHandler Disposed;
 
         protected GlyphComponentBase()
@@ -88,6 +95,7 @@ namespace Glyph.Composition.Base
             Id = Guid.NewGuid();
             Name = type.GetDisplayName();
             Router = new ComponentRouterSystem(this);
+            _categoryLogger = new CategoryLogger(type.GetDisplayName());
 
             Injectables = GlyphDependency.ResolvableMembersCache.ForType(type, ResolveTargets.Parent | ResolveTargets.Fraternal).ToList();
         }

@@ -52,7 +52,6 @@ namespace Glyph.Core
             
             Resolver.Local.Registry.Add(GlyphDependency.OnType<TrackingRouter>().Using(Router.Local));
 
-            Logger = Resolver.Resolve<ILogger>();
             Schedulers = new SchedulerHandler(compositeResolver.Global);
         }
 

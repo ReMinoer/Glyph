@@ -5,6 +5,7 @@ using System.Reflection;
 using Diese.Collections;
 using Niddle;
 using Niddle.Attributes.Base;
+using Niddle.Utils;
 
 namespace Glyph.Resolver
 {
@@ -36,11 +37,8 @@ namespace Glyph.Resolver
 
         public IEnumerable<GlyphResolvableInjectable> ForTypeAndTargetInternal(Type type)
         {
-            foreach (FieldInfo fieldInfo in type.GetRuntimeFields())
+            foreach (FieldInfo fieldInfo in type.GetAccessibleFields())
             {
-                if (!fieldInfo.IsPublic)
-                    continue;
-
                 if (IsResolvableMember(fieldInfo, out ResolveTargets memberTargets))
                     yield return new GlyphResolvableInjectable
                     {
@@ -49,12 +47,8 @@ namespace Glyph.Resolver
                     };
             }
 
-            foreach (PropertyInfo propertyInfo in type.GetRuntimeProperties())
+            foreach (PropertyInfo propertyInfo in type.GetAccessibleProperties())
             {
-                if ((propertyInfo.SetMethod == null || !propertyInfo.SetMethod.IsPublic)
-                    && (propertyInfo.GetMethod == null || !propertyInfo.GetMethod.IsPublic))
-                    continue;
-
                 if (IsResolvableMember(propertyInfo, out ResolveTargets memberTargets))
                     yield return new GlyphResolvableInjectable
                     {
