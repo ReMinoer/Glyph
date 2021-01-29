@@ -66,7 +66,7 @@ namespace Glyph.Graphics
         public void CleanFirstRender(GraphicsDevice graphicsDevice)
         {
             graphicsDevice.SetRenderTarget(_spriteTargetA.RenderTarget);
-            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.Stencil, Color.Pink, 0, 0);
+            graphicsDevice.Clear(Color.Transparent);
         }
 
         public void Prepare(IDrawer drawer)
@@ -96,7 +96,7 @@ namespace Glyph.Graphics
                 }
 
                 drawer.GraphicsDevice.SetRenderTarget(output);
-                drawer.GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.Stencil, Color.Pink, 0, 0);
+                drawer.GraphicsDevice.Clear(Color.Transparent);
 
                 drawer.SpriteBatchStack.Push(new SpriteBatchContext {SpriteSortMode = SpriteSortMode.Immediate});
                 try

@@ -6,16 +6,17 @@ namespace Glyph
 {
     public class SpriteBatchContext : ICloneable
     {
-        public SpriteSortMode SpriteSortMode { get; set; }
-        public BlendState BlendState { get; set; }
-        public SamplerState SamplerState { get; set; }
-        public DepthStencilState DepthStencilState { get; set; }
-        public RasterizerState RasterizerState { get; set; }
+        public SpriteSortMode SpriteSortMode { get; set; } = SpriteSortMode.Deferred;
+        public BlendState BlendState { get; set; } = BlendState.AlphaBlend;
+        public SamplerState SamplerState { get; set; } = SamplerState.LinearClamp;
+        public DepthStencilState DepthStencilState { get; set; } = DepthStencilState.None;
+        public RasterizerState RasterizerState { get; set; } = RasterizerState.CullCounterClockwise;
         public Effect Effect { get; set; }
-        public Matrix? TransformMatrix { get; set; }
+        public Matrix TransformMatrix { get; set; } = Matrix.Identity;
 
-        static public SpriteBatchContext None => null;
-        static public SpriteBatchContext Default => new SpriteBatchContext();
+        public SpriteBatchContext()
+        {
+        }
 
         public SpriteBatchContext Clone()
         {

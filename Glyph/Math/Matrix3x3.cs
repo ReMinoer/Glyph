@@ -79,6 +79,11 @@ namespace Glyph.Math
             return new Matrix(m.M11, m.M12, 0, m.M13, m.M21, m.M22, 0, m.M23, 0, 0, 1, 0, m.M31, m.M32, 0, m.M33);
         }
 
+        public Matrix ToMatrix4X4(float depth = 0)
+        {
+            return new Matrix(M11, M12, 0, M13, M21, M22, 0, M23, 0, 0, 1, 0, M31, M32, depth, M33);
+        }
+
         public override string ToString() => $"({M11} {M12} {M13}) ({M21} {M22} {M23}) ({M31} {M32} {M33})";
 
         public override bool Equals(object obj)

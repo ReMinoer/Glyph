@@ -12,11 +12,18 @@ namespace Glyph
         static public void Info(this ILogger logger, string message) => Log(logger, LogLevel.Information, message);
         static public void Warning(this ILogger logger, string message) => Log(logger, LogLevel.Warning, message);
         static public void Error(this ILogger logger, string message) => Log(logger, LogLevel.Error, message);
+        static public void Error(this ILogger logger, Exception exception, string message) => Log(logger, LogLevel.Error, exception, message);
         static public void Critical(this ILogger logger, string message) => Log(logger, LogLevel.Critical, message);
+        static public void Critical(this ILogger logger, Exception exception, string message) => Log(logger, LogLevel.Critical, exception, message);
 
         static private void Log(ILogger logger, LogLevel level, string message)
         {
             logger.Log(level, message);
+        }
+
+        static private void Log(ILogger logger, LogLevel level, Exception exception, string message)
+        {
+            logger.Log(level, exception, message);
         }
 
         static public void Trace<TCategory>(this ILogger logger, string message) => Log<TCategory>(logger, LogLevel.Trace, message);

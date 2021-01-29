@@ -93,6 +93,7 @@ namespace Glyph.Graphics
             var spriteBatchContext = new SpriteBatchContext
             {
                 SpriteSortMode = SpriteSortMode.BackToFront,
+                DepthStencilState = DepthStencilState.Default,
                 TransformMatrix = RenderMatrix
             };
 

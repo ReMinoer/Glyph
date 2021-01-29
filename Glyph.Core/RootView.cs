@@ -48,7 +48,15 @@ namespace Glyph.Core
             if (!this.Displayed(drawer, drawer.Client))
                 return;
 
-            var spriteBatchContext = new SpriteBatchContext { SpriteSortMode = SpriteSortMode.BackToFront, TransformMatrix = RenderMatrix };
+            Viewport viewport = drawer.GraphicsDevice.Viewport;
+
+            var spriteBatchContext = new SpriteBatchContext
+            {
+                SpriteSortMode = SpriteSortMode.BackToFront,
+                DepthStencilState = DepthStencilState.Default,
+                TransformMatrix = RenderMatrix
+            };
+
             drawer.SpriteBatchStack.Push(spriteBatchContext);
             drawer.Root?.Draw(drawer);
             drawer.SpriteBatchStack.Pop();

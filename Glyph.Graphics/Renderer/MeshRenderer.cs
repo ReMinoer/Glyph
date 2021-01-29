@@ -60,6 +60,12 @@ namespace Glyph.Graphics.Renderer
             return Task.CompletedTask;
         }
 
+        public override void Dispose()
+        {
+            _defaultEffect?.Dispose();
+            base.Dispose();
+        }
+
         private void RefreshBuffers()
         {
             int totalVertexCount = Meshes.Sum(x => x.VertexCount);
@@ -113,17 +119,11 @@ namespace Glyph.Graphics.Renderer
             Quad rect = drawer.DisplayedRectangle;
 
             // Configure default effect matrices
-            _defaultEffect.World = SceneNode.Matrix;
+            _defaultEffect.World = SceneNode.Matrix.ToMatrix4X4(SceneNode.Depth);
             _defaultEffect.View = Matrix.CreateLookAt(Vector3.Backward, Vector3.Zero, Vector3.Up);
-            _defaultEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, 0, float.MaxValue);
+            _defaultEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, 0, 1);
 
-            // Get texture
-            Texture2D texture = TextureSource?.Texture;
-            _defaultEffect.TextureEnabled = texture != null;
-
-            // Configure sampler states
             drawer.SpriteBatchStack.Push(null);
-            graphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
             int verticesIndex = 0;
             int indicesIndex = 0;
@@ -149,6 +149,9 @@ namespace Glyph.Graphics.Renderer
                     {
                         // If no effect provided, use default effect
                         effect = _defaultEffect;
+
+                        // Enable texture if necessary
+                        _defaultEffect.TextureEnabled = true;//material.Textures.Count > 0;
                     }
                     else if (effect != currentEffect)
                     {
@@ -170,13 +173,20 @@ namespace Glyph.Graphics.Renderer
                         {
                             // Apply effect pass
                             pass.Apply();
-
-                            // Set texture
-                            if (texture != null)
-                                graphicsDevice.Textures[0] = texture;
-
                             currentPass = pass;
                         }
+
+                        // Interesting links:
+                        // http://www.shawnhargreaves.com/blog/spritebatch-billboards-in-a-3d-world.html
+                        // https://github.com/MonoGame/MonoGame/blob/3e65abb158de2e07c72d0831dd971f594ff76a18/MonoGame.Framework/Graphics/Effect/SpriteEffect.cs#L71
+                        // https://community.monogame.net/t/solved-drawing-primitives-and-spritebatch/10015/4
+
+                        graphicsDevice.Textures[0] = TextureSource.Texture;
+                        graphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
+                        graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                        graphicsDevice.BlendState = BlendState.AlphaBlend;
+                        graphicsDevice.DepthStencilState = DepthStencilState.None;
 
                         // Draw primitives
                         if (meshIndexed)
