@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
-using Diese;
 using Diese.Collections;
 using Diese.Diagnostics;
 using Niddle;
@@ -17,8 +17,7 @@ using Glyph.Core.Scheduler;
 using Glyph.Math;
 using Glyph.Messaging;
 using Glyph.Resolver;
-using Microsoft.Extensions.Logging;
-using Taskete;
+using Taskete.Rules;
 
 namespace Glyph.Core
 {
@@ -52,7 +51,7 @@ namespace Glyph.Core
             
             Resolver.Local.Registry.Add(GlyphDependency.OnType<TrackingRouter>().Using(Router.Local));
 
-            Schedulers = new SchedulerHandler(compositeResolver.Global);
+            Schedulers = new SchedulerHandler(context.GlobalResolver);
         }
 
         public T Add<T>()
@@ -89,12 +88,9 @@ namespace Glyph.Core
             base.Add(item);
 
             if (glyphObject != null)
-            {
-                Schedulers.AssignComponent(glyphObject);
                 glyphObject.Resolver.Parent = this;
-            }
-            else
-                Schedulers.AssignComponent(item);
+            
+            Schedulers.PlanComponent(item);
 
             if (_initialized)
                 item.Initialize();
@@ -159,10 +155,7 @@ namespace Glyph.Core
 
             _keyedComponents.Remove(x => x.Value == item);
 
-            if (item is GlyphObject glyphObject)
-                Schedulers.RemoveComponent(glyphObject);
-            else
-                Schedulers.RemoveComponent(item);
+            Schedulers.UnplanComponent(item);
 
             return true;
         }
@@ -175,10 +168,13 @@ namespace Glyph.Core
 
         public override sealed void Clear()
         {
-            base.Clear();
+            foreach (IGlyphComponent component in Components)
+                Schedulers.UnplanComponent(component);
 
             _keyedComponents.Clear();
-            Schedulers.ClearComponents();
+
+            base.Clear();
+
         }
 
         public override sealed void Initialize()
@@ -186,12 +182,12 @@ namespace Glyph.Core
             if (IsDisposed)
                 return;
 
-            foreach (InitializeDelegate initialize in Schedulers.Initialize.Planning.ToArray())
+            foreach (IInitializeTask task in Schedulers.Initialize.Schedule)
             {
                 if (IsDisposed)
                     return;
 
-                initialize();
+                task.Initialize();
             }
 
             _initialized = true;
@@ -201,8 +197,8 @@ namespace Glyph.Core
         {
             if (IsDisposed)
                 return;
-            
-            await Task.WhenAll(Schedulers.LoadContent.Planning.Select(async x => await x(contentLibrary)).ToArray());
+
+            await Schedulers.LoadContent.RunScheduleAsync(contentLibrary);
             _contentLoaded = true;
         }
 
@@ -211,54 +207,225 @@ namespace Glyph.Core
             if (IsDisposed || !Enabled)
                 return;
 
-            foreach (UpdateDelegate update in Schedulers.Update.Planning.ToArray())
+            foreach (IUpdateTask task in Schedulers.Update.Schedule)
             {
                 if (IsDisposed || !Enabled)
                     return;
 
-                using (UpdateWatchTree.Start($"{update.Target?.GetType().GetDisplayName()} -- {update.Method.Name}"))
-                    update(elapsedTime);
+                //using (UpdateWatchTree.Start($"{task.Target?.GetType().GetDisplayName()} -- {update.Method.Name}"))
+                    task.Update(elapsedTime);
             }
         }
-        
+
         public void Draw(IDrawer drawer)
         {
             if (IsDisposed || !this.Displayed(drawer, drawer.Client))
                 return;
 
-            foreach (DrawDelegate draw in Schedulers.Draw.Planning.ToArray())
-                draw(drawer);
+            foreach (IDrawTask task in Schedulers.Draw.Schedule)
+                task.Draw(drawer);
         }
-        
+
         IArea IBoxedComponent.Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));
+    }
 
-        public class SchedulerHandler : GlyphSchedulerHandler
+    public class SchedulerHandler
+    {
+        public GlyphObjectScheduler<IInitializeTask, InitializeDelegate> Initialize { get; }
+        public AsyncGlyphObjectScheduler<ILoadContentTask, LoadContentDelegate, IContentLibrary> LoadContent { get; }
+        public GlyphObjectScheduler<IUpdateTask, UpdateDelegate> Update { get; }
+        public GlyphObjectScheduler<IDrawTask, DrawDelegate> Draw { get; }
+
+        public SchedulerHandler(IDependencyResolver resolver)
         {
-            private readonly IDependencyResolver _resolver;
-            public GlyphScheduler<IGlyphComponent, InitializeDelegate> Initialize { get; }
-            public GlyphScheduler<ILoadContent, LoadContentDelegate> LoadContent { get; }
-            public GlyphScheduler<IUpdate, UpdateDelegate> Update { get; }
-            public GlyphScheduler<IDraw, DrawDelegate> Draw { get; }
+            var initializeScheduler = new GlyphScheduler<IInitializeTask>();
+            var loadContentScheduler = new AsyncGlyphScheduler<ILoadContentTask, IContentLibrary>((x, contentLibrary, _) => x.LoadContent(contentLibrary));
+            var updateScheduler = new GlyphScheduler<IUpdateTask>();
+            var drawScheduler = new GlyphScheduler<IDrawTask>();
 
-            public SchedulerHandler(IDependencyResolver resolver)
+            resolver.Resolve<Action<GlyphScheduler<IInitializeTask>>>().Invoke(initializeScheduler);
+            resolver.Resolve<Action<AsyncGlyphScheduler<ILoadContentTask, IContentLibrary>>>().Invoke(loadContentScheduler);
+            resolver.Resolve<Action<GlyphScheduler<IUpdateTask>>>().Invoke(updateScheduler);
+            resolver.Resolve<Action<GlyphScheduler<IDrawTask>>>().Invoke(drawScheduler);
+
+            Initialize = new GlyphObjectScheduler<IInitializeTask, InitializeDelegate>(initializeScheduler, x => new InitializeTask(x));
+            LoadContent = new AsyncGlyphObjectScheduler<ILoadContentTask, LoadContentDelegate, IContentLibrary>(loadContentScheduler, x => new LoadContentTask(x));
+            Update = new GlyphObjectScheduler<IUpdateTask, UpdateDelegate>(updateScheduler, x => new UpdateTask(x));
+            Draw = new GlyphObjectScheduler<IDrawTask, DrawDelegate>(drawScheduler, x => new DrawTask(x));
+        }
+
+        public void PlanComponent(IGlyphComponent component)
+        {
+            Initialize.Plan(component);
+            if (component is ILoadContent loadContent)
+                LoadContent.Plan(loadContent);
+            if (component is IUpdate update)
+                Update.Plan(update);
+            if (component is IDraw draw)
+                Draw.Plan(draw);
+        }
+
+        public void UnplanComponent(IGlyphComponent component)
+        {
+            Initialize.Unplan(component);
+            if (component is ILoadContent loadContent)
+                LoadContent.Unplan(loadContent);
+            if (component is IUpdate update)
+                Update.Unplan(update);
+            if (component is IDraw draw)
+                Draw.Unplan(draw);
+        }
+
+        public class InitializeTask : IInitializeTask
+        {
+            private readonly InitializeDelegate _taskDelegate;
+            public InitializeTask(InitializeDelegate taskDelegate) => _taskDelegate = taskDelegate;
+            public void Initialize() => _taskDelegate();
+        }
+
+        public class LoadContentTask : ILoadContentTask
+        {
+            private readonly LoadContentDelegate _taskDelegate;
+            public LoadContentTask(LoadContentDelegate taskDelegate) => _taskDelegate = taskDelegate;
+            public Task LoadContent(IContentLibrary contentLibrary) => _taskDelegate(contentLibrary);
+        }
+
+        public class UpdateTask : IUpdateTask
+        {
+            private readonly UpdateDelegate _taskDelegate;
+            public UpdateTask(UpdateDelegate taskDelegate) => _taskDelegate = taskDelegate;
+            public void Update(ElapsedTime elapsedTime) => _taskDelegate(elapsedTime);
+        }
+
+        public class DrawTask : IDrawTask
+        {
+            private readonly DrawDelegate _taskDelegate;
+            public DrawTask(DrawDelegate taskDelegate) => _taskDelegate = taskDelegate;
+            public void Draw(IDrawer drawer) => _taskDelegate(drawer);
+        }
+    }
+
+    public class GlyphObjectScheduler<T, TDelegate> : GlyphObjectSchedulerBase<T, TDelegate>
+    {
+        private readonly GlyphScheduler<T> _glyphScheduler;
+        public IEnumerable<T> Schedule => _glyphScheduler.Schedule;
+
+        public GlyphObjectScheduler(GlyphScheduler<T> glyphScheduler, Func<TDelegate, T> delegateToTaskFunc)
+            : base(glyphScheduler, delegateToTaskFunc)
+        {
+            _glyphScheduler = glyphScheduler;
+        }
+    }
+
+    public class AsyncGlyphObjectScheduler<T, TDelegate, TParam> : GlyphObjectSchedulerBase<T, TDelegate>
+    {
+        private readonly AsyncGlyphScheduler<T, TParam> _glyphScheduler;
+
+        public AsyncGlyphObjectScheduler(AsyncGlyphScheduler<T, TParam> glyphScheduler, Func<TDelegate, T> delegateToTaskFunc)
+            : base(glyphScheduler, delegateToTaskFunc)
+        {
+            _glyphScheduler = glyphScheduler;
+        }
+
+        public Task RunScheduleAsync(TParam param) => _glyphScheduler.RunScheduleAsync(param);
+        public Task RunScheduleAsync(TParam param, CancellationToken cancellationToken) => _glyphScheduler.RunScheduleAsync(param, cancellationToken);
+    }
+
+    public abstract class GlyphObjectSchedulerBase<T, TDelegate>
+        : IGlyphScheduler<T, GlyphObjectSchedulerBase<T, TDelegate>.ItemController, GlyphObjectSchedulerBase<T, TDelegate>.TypeController>
+    {
+        private GlyphSchedulerBase<T> _glyphScheduler;
+
+        private readonly Dictionary<TDelegate, T> _delegateDictionary = new Dictionary<TDelegate, T>();
+        private readonly Func<TDelegate, T> _delegateToTaskFunc;
+
+        public GlyphObjectSchedulerBase(GlyphSchedulerBase<T> glyphScheduler, Func<TDelegate, T> delegateToTaskFunc)
+        {
+            _glyphScheduler = glyphScheduler;
+            _delegateToTaskFunc = delegateToTaskFunc;
+        }
+
+        public ItemController Plan(TDelegate taskDelegate) => Plan(GetTask(taskDelegate));
+        public ItemController Plan(T task)
+        {
+            _glyphScheduler.Plan(task);
+            return new ItemController(this, _glyphScheduler, task);
+        }
+        void IGlyphScheduler<T>.Plan(T task)
+        {
+            _glyphScheduler.Plan(task);
+        }
+
+        public TypeController Plan<TTasks>() => Plan(typeof(TTasks));
+        public TypeController Plan(Type taskType) => new TypeController(this, _glyphScheduler, taskType);
+
+        public void Unplan(T task) => _glyphScheduler.Unplan(task);
+
+        private T GetTask(TDelegate taskDelegate)
+        {
+            if (_delegateDictionary.TryGetValue(taskDelegate, out T task))
+                return task;
+
+            task = _delegateToTaskFunc(taskDelegate);
+            _delegateDictionary.Add(taskDelegate, task);
+            return task;
+        }
+
+        public class ItemController : GlyphSchedulerBase<T>.ItemController<ItemController>
+        {
+            private readonly GlyphObjectSchedulerBase<T, TDelegate> _glyphObjectScheduler;
+
+            public ItemController(GlyphObjectSchedulerBase<T, TDelegate> glyphObjectScheduler, GlyphSchedulerBase<T> glyphScheduler, params T[] controlledTasks)
+                : base(glyphScheduler, controlledTasks)
             {
-                _resolver = resolver;
-
-                Initialize = AddScheduler<IGlyphComponent, InitializeDelegate>();
-                LoadContent = AddScheduler<ILoadContent, LoadContentDelegate>();
-                Update = AddScheduler<IUpdate, UpdateDelegate>();
-                Draw = AddScheduler<IDraw, DrawDelegate>();
+                _glyphObjectScheduler = glyphObjectScheduler;
             }
 
-            public GlyphScheduler<TInterface, TDelegate> AddScheduler<TInterface, TDelegate>()
-                where TInterface : class, IGlyphComponent
-            {
-                var glyphScheduler = _resolver
-                    .WithLink<IReadOnlyScheduler<Predicate<object>>, IReadOnlyScheduler<Predicate<object>>>(typeof(TInterface))
-                    .Resolve<GlyphScheduler<TInterface, TDelegate>>();
+            protected override ItemController Controller => this;
 
-                Schedulers.Add(glyphScheduler);
-                return glyphScheduler;
+            public ItemController Before(TDelegate taskDelegate, float? weight = null)
+            {
+                T task = _glyphObjectScheduler.GetTask(taskDelegate);
+                AddTask(task);
+                AddRule(DependencyRule<T>.New(ControlledTasks, new[] { task }), weight);
+                return this;
+            }
+
+            public ItemController After(TDelegate taskDelegate, float? weight = null)
+            {
+                T task = _glyphObjectScheduler.GetTask(taskDelegate);
+                AddTask(task);
+                AddRule(DependencyRule<T>.New(new[] { task }, ControlledTasks), weight);
+                return this;
+            }
+        }
+
+        public class TypeController : GlyphSchedulerBase<T>.TypeController<TypeController>
+        {
+            private readonly GlyphObjectSchedulerBase<T, TDelegate> _glyphObjectScheduler;
+
+            public TypeController(GlyphObjectSchedulerBase<T, TDelegate> glyphObjectScheduler, GlyphSchedulerBase<T> glyphScheduler, Type taskType)
+                : base(glyphScheduler, taskType)
+            {
+                _glyphObjectScheduler = glyphObjectScheduler;
+            }
+
+            protected override TypeController Controller => this;
+
+            public TypeController Before(TDelegate taskDelegate, float? weight = null)
+            {
+                T task = _glyphObjectScheduler.GetTask(taskDelegate);
+                AddTask(task);
+                AddRule(DependencyRule<T>.New(ControlledTypedGroup, new[] { task }), weight);
+                return this;
+            }
+
+            public TypeController After(TDelegate taskDelegate, float? weight = null)
+            {
+                T task = _glyphObjectScheduler.GetTask(taskDelegate);
+                AddTask(task);
+                AddRule(DependencyRule<T>.New(new[] { task }, ControlledTypedGroup), weight);
+                return this;
             }
         }
     }

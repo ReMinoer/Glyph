@@ -1,13 +1,21 @@
-using Glyph.Composition;
-using Taskete;
+using System;
 
 namespace Glyph.Core.Scheduler
 {
-    public interface IGlyphScheduler<out TController, in TInterface, TDelegate> : IScheduler<TController, TDelegate>, IGlyphSchedulerAssigner
-        where TController : IGlyphSchedulerController<TController, TInterface, TDelegate>
-        where TInterface : IGlyphComponent
+    public interface IGlyphScheduler
     {
-        TController Plan(TInterface item);
-        void Unplan(TInterface item);
+    }
+
+    public interface IGlyphScheduler<in T> : IGlyphScheduler
+    {
+        void Plan(T task);
+        void Unplan(T task);
+    }
+
+    public interface IGlyphScheduler<in T, out TItemController, out TTypeController> : IGlyphScheduler<T>
+    {
+        new TItemController Plan(T task);
+        TTypeController Plan<TTasks>();
+        TTypeController Plan(Type taskType);
     }
 }

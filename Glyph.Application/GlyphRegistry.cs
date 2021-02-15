@@ -54,29 +54,18 @@ namespace Glyph.Application
 
                 #endregion
 
-                #region Composition & Scheduling
-
-                Type<GlyphScheduler<IGlyphComponent, InitializeDelegate>>(),
-                Type<GlyphScheduler<ILoadContent, LoadContentDelegate>>(),
-                Type<GlyphScheduler<IUpdate, UpdateDelegate>>(),
-                Type<GlyphScheduler<IDraw, DrawDelegate>>(),
-
-                Type<IReadOnlyScheduler<Predicate<object>>>().Keyed(typeof(IGlyphComponent)).Using(GlyphSchedulerProfiles.Instance.Initialize),
-                Type<IReadOnlyScheduler<Predicate<object>>>().Keyed(typeof(ILoadContent)).Using(GlyphSchedulerProfiles.Instance.LoadContent),
-                Type<IReadOnlyScheduler<Predicate<object>>>().Keyed(typeof(IUpdate)).Using(GlyphSchedulerProfiles.Instance.Update),
-                Type<IReadOnlyScheduler<Predicate<object>>>().Keyed(typeof(IDraw)).Using(GlyphSchedulerProfiles.Instance.Draw),
-
-                Type<Func<IGlyphComponent, InitializeDelegate>>().Using(x => x.Initialize),
-                Type<Func<ILoadContent, LoadContentDelegate>>().Using(x => x.LoadContent),
-                Type<Func<IUpdate, UpdateDelegate>>().Using(x => x.Update),
-                Type<Func<IDraw, DrawDelegate>>().Using(x => x.Draw),
-
-                Type<Func<GlyphObject, InitializeDelegate>>().Using(x => x.Initialize),
-                Type<Func<GlyphObject, LoadContentDelegate>>().Using(x => x.LoadContent),
-                Type<Func<GlyphObject, UpdateDelegate>>().Using(x => x.Update),
-                Type<Func<GlyphObject, DrawDelegate>>().Using(x => x.Draw),
+                #region Composition
 
                 Type<GlyphObject>(),
+
+                #endregion
+
+                #region Scheduling
+                
+                Type<Action<GlyphScheduler<IInitializeTask>>>().Using(DefaultGlyphSchedulerRules.Setup),
+                Type<Action<AsyncGlyphScheduler<ILoadContentTask, IContentLibrary>>>().Using(DefaultGlyphSchedulerRules.Setup),
+                Type<Action<GlyphScheduler<IUpdateTask>>>().Using(DefaultGlyphSchedulerRules.Setup),
+                Type<Action<GlyphScheduler<IDrawTask>>>().Using(DefaultGlyphSchedulerRules.Setup),
 
                 #endregion
 

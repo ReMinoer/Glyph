@@ -1,15 +1,14 @@
 using System;
-using Taskete.Controllers;
 
 namespace Glyph.Core.Scheduler
 {
-    public interface IGlyphSchedulerController<out TController, in TInterface, in TDelegate> : IRelativeController<TController, TDelegate>, IPriorityController<TController>
+    public interface IGlyphSchedulerController<in T, out TController>
     {
-        TController Before(TInterface item);
-        TController After(TInterface item);
-        TController Before<T>() where T : TInterface;
-        TController After<T>() where T : TInterface;
-        TController Before(Type type);
-        TController After(Type type);
+        TController Before(T item, float? weight = null);
+        TController After(T item, float? weight = null);
+        TController Before<TItems>(float? weight = null);
+        TController After<TItems>(float? weight = null);
+        TController Before(Type type, float? weight = null);
+        TController After(Type type, float? weight = null);
     }
 }

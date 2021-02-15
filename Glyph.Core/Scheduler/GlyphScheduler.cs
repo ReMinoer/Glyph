@@ -1,203 +1,285 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using Glyph.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 using Taskete;
-using Taskete.Controllers;
+using Taskete.Rules;
+using Taskete.Schedulers;
+using Taskete.Utils;
 
 namespace Glyph.Core.Scheduler
 {
-    public class GlyphScheduler<TInterface, TDelegate> : SchedulerBase<GlyphScheduler<TInterface, TDelegate>.Controller, TDelegate>, IGlyphScheduler<GlyphScheduler<TInterface, TDelegate>.Controller, TInterface, TDelegate>
-        where TInterface : class, IGlyphComponent
+    public class GlyphScheduler<T> : GlyphSchedulerBase<T>
     {
-        private readonly Func<TInterface, TDelegate> _interfaceToDelegate;
-        private readonly Func<GlyphObject, TDelegate> _glyphObjectToDelegate;
+        private readonly LinearScheduler<T> _scheduler;
+        public IEnumerable<T> Schedule => _scheduler.Schedule;
 
-        public GlyphScheduler(IReadOnlyScheduler<Predicate<object>> schedulerProfile, Func<TInterface, TDelegate> interfaceToDelegate, Func<GlyphObject, TDelegate> glyphObjectToDelegate)
+        public GlyphScheduler()
+            : base(new LinearScheduler<T>())
         {
-            if (!typeof(TDelegate).IsSubclassOf(typeof(Delegate)))
-                throw new InvalidOperationException(typeof(TDelegate).Name + " is not a delegate type");
+            _scheduler = (LinearScheduler<T>)Scheduler;
+        }
+    }
 
-            _interfaceToDelegate = interfaceToDelegate;
-            _glyphObjectToDelegate = glyphObjectToDelegate;
+    public class AsyncGlyphScheduler<T, TParam> : GlyphSchedulerBase<T>
+    {
+        private readonly AsyncScheduler<T, TParam> _scheduler;
 
-            ApplyProfile(schedulerProfile.Graph);
+        public AsyncGlyphScheduler(Func<T, TParam, CancellationToken, Task> awaitableSelector)
+            : base(new AsyncScheduler<T, TParam>(awaitableSelector))
+        {
+            _scheduler = (AsyncScheduler<T, TParam>)Scheduler;
         }
 
-        new public Controller Plan(TDelegate item)
-        {
-            base.Plan(item);
+        public Task RunScheduleAsync(TParam param) => _scheduler.RunScheduleAsync(param);
+        public Task RunScheduleAsync(TParam param, CancellationToken cancellationToken) => _scheduler.RunScheduleAsync(param, cancellationToken);
+    }
 
-            return CreateController(ItemsVertex[item]);
+    public abstract class GlyphSchedulerBase<T> : IGlyphScheduler<T, GlyphSchedulerBase<T>.ItemController, GlyphSchedulerBase<T>.TypeController>
+    {
+        protected IScheduler<T> Scheduler { get; }
+
+        protected readonly TypedGroupDictionary TypedGroups = new TypedGroupDictionary();
+        protected readonly PriorityGroupDictionary PriorityGroups = new PriorityGroupDictionary();
+        public float DefaultWeight { get; set; }
+
+        public GlyphSchedulerBase(IScheduler<T> scheduler)
+        {
+            PriorityGroups.Add(Priority.Low, new PriorityGroup());
+            PriorityGroups.Add(Priority.Normal, new PriorityGroup());
+            PriorityGroups.Add(Priority.High, new PriorityGroup());
+
+            Scheduler = scheduler;
+            scheduler.Rules.Add(DependencyRule<T>.New(PriorityGroups[Priority.High], PriorityGroups[Priority.Normal]));
+            scheduler.Rules.Add(DependencyRule<T>.New(PriorityGroups[Priority.Normal], PriorityGroups[Priority.Low]));
         }
 
-        protected override Controller CreateController(SchedulerGraph<TDelegate>.Vertex vertex)
+        public ItemController Plan(T task)
         {
-            return new Controller(this, vertex, _interfaceToDelegate);
+            AddTask(task);
+            return GetItemController(task);
         }
 
-        public Controller Plan(TInterface item)
-        {
-            return Plan(_interfaceToDelegate(item));
-        }
+        void IGlyphScheduler<T>.Plan(T task) => AddTask(task);
 
-        public void Unplan(TInterface item)
+        private void AddTask(T task)
         {
-            Unplan(_interfaceToDelegate(item));
-        }
-
-        void IGlyphSchedulerAssigner.AssignComponent(IGlyphComponent component)
-        {
-            var castedComponent = component as TInterface;
-            if (castedComponent != null)
-                Add(castedComponent, _interfaceToDelegate);
-        }
-
-        void IGlyphSchedulerAssigner.AssignComponent(GlyphObject glyphObject)
-        {
-            Add(glyphObject, _glyphObjectToDelegate);
-        }
-
-        protected void Add<T>(T item, Func<T, TDelegate> delegateFunc)
-        {
-            TDelegate delegateItem = delegateFunc(item);
-
-            if (ItemsVertex.ContainsKey(delegateItem))
+            if (Scheduler.Tasks.Contains(task))
                 return;
 
-            SchedulerGraph<TDelegate>.Vertex vertex = SchedulerGraph.Vertices.FirstOrDefault(x => x.Predicate != null && x.Predicate(item));
-            if (vertex != null)
-            {
-                ItemsVertex.Add(delegateItem, vertex);
-                vertex.Items.Add(delegateItem);
-            }
-            else
-                AddItemVertex(delegateItem);
+            Scheduler.Tasks.Add(task);
 
-            Refresh();
+            foreach (TypedGroup typedGroup in TypedGroups.GetAllValues(task.GetType()))
+                typedGroup.Add(task);
+
+            PriorityGroups[Priority.Normal].Add(task);
         }
 
-        void IGlyphSchedulerAssigner.RemoveComponent(IGlyphComponent component)
+        public TypeController Plan<TTasks>() => Plan(typeof(TTasks));
+        public TypeController Plan(Type taskType) => GetTypeController(taskType);
+
+        public void Unplan(T task)
         {
-            var castedComponent = component as TInterface;
-            if (castedComponent != null)
-                Remove(_interfaceToDelegate(castedComponent));
+            foreach (PriorityGroup priorityGroup in PriorityGroups.Values)
+                priorityGroup.Remove(task);
+            foreach (TypedGroup typedGroup in TypedGroups.GetAllValues(task.GetType()))
+                typedGroup.Remove(task);
+
+            Scheduler.Tasks.Remove(task);
         }
 
-        void IGlyphSchedulerAssigner.RemoveComponent(GlyphObject glyphObject)
+        protected ItemController GetItemController(T task) => new ItemController(this, task);
+        protected TypeController GetTypeController(Type taskType) => new TypeController(this, taskType);
+
+        public class ItemController : ItemController<ItemController>
         {
-            Remove(_glyphObjectToDelegate(glyphObject));
+            public ItemController(GlyphSchedulerBase<T> glyphScheduler, params T[] controlledTasks)
+                : base(glyphScheduler, controlledTasks) { }
+
+            protected override ItemController Controller => this;
         }
 
-        void IGlyphSchedulerAssigner.ClearComponents()
+        public abstract class ItemController<TController> : ControllerBase<TController>
         {
-            Clear();
+            protected readonly T[] ControlledTasks;
+            protected Priority Priority;
+
+            public ItemController(GlyphSchedulerBase<T> glyphScheduler, params T[] controlledTasks)
+                : base(glyphScheduler)
+            {
+                ControlledTasks = controlledTasks;
+                Priority = Priority.Normal;
+            }
+
+            public override TController Before(T item, float? weight = null)
+            {
+                AddTask(item);
+                AddRule(DependencyRule<T>.New(ControlledTasks, new[] { item }), weight);
+                return Controller;
+            }
+
+            public override TController After(T item, float? weight = null)
+            {
+                AddTask(item);
+                AddRule(DependencyRule<T>.New(new[] { item }, ControlledTasks), weight);
+                return Controller;
+            }
+
+            public override TController Before(Type type, float? weight = null)
+            {
+                AddRule(DependencyRule<T>.New(ControlledTasks, GetOrAddTypedGroup(type)), weight);
+                return Controller;
+            }
+
+            public override TController After(Type type, float? weight = null)
+            {
+                AddRule(DependencyRule<T>.New(GetOrAddTypedGroup(type), ControlledTasks), weight);
+                return Controller;
+            }
+
+            public TController AtStart()
+            {
+                SwitchPriorityGroup(Priority.High);
+                return Controller;
+            }
+
+            public TController AtEnd()
+            {
+                SwitchPriorityGroup(Priority.Low);
+                return Controller;
+            }
+
+            private void SwitchPriorityGroup(Priority priority)
+            {
+                foreach (T controlledTask in ControlledTasks)
+                    PriorityGroups[Priority].Remove(controlledTask);
+
+                Priority = priority;
+
+                foreach (T controlledTask in ControlledTasks)
+                    PriorityGroups[Priority].Add(controlledTask);
+            }
         }
-        
-        public class Controller : IGlyphSchedulerController<Controller, TInterface, TDelegate>
+
+        public class TypeController : TypeController<TypeController>
         {
-            private readonly PriorityController<Controller, TDelegate> _priorityController;
-            private readonly RelativeController<Controller, TDelegate> _relativeController;
-            private readonly SchedulerBase<Controller, TDelegate> _scheduler;
-            private readonly Func<TInterface, TDelegate> _interfaceToDelegate;
+            public TypeController(GlyphSchedulerBase<T> glyphScheduler, Type type)
+                : base(glyphScheduler, type) { }
 
-            public Controller(SchedulerBase<Controller, TDelegate> scheduler, SchedulerGraph<TDelegate>.Vertex vertex, Func<TInterface, TDelegate> interfaceToDelegate)
+            protected override TypeController Controller => this;
+        }
+
+        public abstract class TypeController<TController> : ControllerBase<TController>
+        {
+            protected readonly TypedGroup ControlledTypedGroup;
+
+            public TypeController(GlyphSchedulerBase<T> glyphScheduler, Type type)
+                : base(glyphScheduler)
             {
-                _priorityController = new PriorityController<Controller, TDelegate>(scheduler, vertex);
-                _relativeController = new RelativeController<Controller, TDelegate>(scheduler, vertex);
-
-                _scheduler = scheduler;
-                _interfaceToDelegate = interfaceToDelegate;
+                ControlledTypedGroup = GetOrAddTypedGroup(type);
             }
 
-            public Controller Before(TInterface item)
+            public override TController Before(T item, float? weight = null)
             {
-                Before(_interfaceToDelegate(item));
-                return this;
+                AddTask(item);
+                AddRule(DependencyRule<T>.New(ControlledTypedGroup, new[] { item }), weight);
+                return Controller;
             }
 
-            public Controller After(TInterface item)
+            public override TController After(T item, float? weight = null)
             {
-                After(_interfaceToDelegate(item));
-                return this;
+                AddTask(item);
+                AddRule(DependencyRule<T>.New(new[] { item }, ControlledTypedGroup), weight);
+                return Controller;
             }
 
-            public Controller Before<T>()
-                where T : TInterface
+            public override TController Before(Type type, float? weight = null)
             {
-                foreach (TDelegate item in _scheduler.Items.Where(x => (x as Delegate)?.Target is T).ToArray())
-                    Before(item);
-
-                return this;
+                AddRule(DependencyRule<T>.New(ControlledTypedGroup, GetOrAddTypedGroup(type)), weight);
+                return Controller;
             }
 
-            public Controller After<T>()
-                where T : TInterface
+            public override TController After(Type type, float? weight = null)
             {
-                foreach (TDelegate item in _scheduler.Items.Where(x => (x as Delegate)?.Target is T).ToArray())
-                    After(item);
+                AddRule(DependencyRule<T>.New(GetOrAddTypedGroup(type), ControlledTypedGroup), weight);
+                return Controller;
+            }
+        }
 
-                return this;
+        public abstract class ControllerBase<TController> : IGlyphSchedulerController<T, TController>
+        {
+            private readonly GlyphSchedulerBase<T> _glyphScheduler;
+
+            protected IScheduler<T> Scheduler => _glyphScheduler.Scheduler;
+            protected TypedGroupDictionary TypedGroups => _glyphScheduler.TypedGroups;
+            protected PriorityGroupDictionary PriorityGroups => _glyphScheduler.PriorityGroups;
+            protected float DefaultWeight => _glyphScheduler.DefaultWeight;
+
+            protected ControllerBase(GlyphSchedulerBase<T> glyphScheduler)
+            {
+                _glyphScheduler = glyphScheduler;
             }
 
-            public Controller Before(Type type)
-            {
-                foreach (TDelegate item in _scheduler.Items.Where(x => x is Delegate itemDelegate && type.IsInstanceOfType(itemDelegate.Target)).ToArray())
-                    Before(item);
+            protected abstract TController Controller { get; }
 
-                return this;
+            public abstract TController Before(T item, float? weight = null);
+            public abstract TController After(T item, float? weight = null);
+            public abstract TController Before(Type type, float? weight = null);
+            public abstract TController After(Type type, float? weight = null);
+
+            public TController Before<TItems>(float? weight = null) => Before(typeof(TItems), weight);
+            public TController After<TItems>(float? weight = null) => After(typeof(TItems), weight);
+
+            protected void AddTask(T task)
+            {
+                if (!Scheduler.Tasks.Contains(task))
+                    Scheduler.Tasks.Add(task);
             }
 
-            public Controller After(Type type)
+            protected void AddRule(DependencyRule<T> rule, float? weight = null)
             {
-                foreach (TDelegate item in _scheduler.Items.Where(x => x is Delegate itemDelegate && type.IsInstanceOfType(itemDelegate.Target)).ToArray())
-                    After(item);
-
-                return this;
+                rule.Weight = weight ?? DefaultWeight;
+                Scheduler.Rules.Add(rule);
             }
 
-            public Controller After(TDelegate item)
+            protected TypedGroup GetOrAddTypedGroup(Type type)
             {
-                _relativeController.After(item);
-                return this;
-            }
+                if (!TypedGroups.TryGetValue(type, out TypedGroup typedGroup))
+                {
+                    typedGroup = new TypedGroup();
+                    foreach (T task in Scheduler.Tasks.Where(x => type.IsInstanceOfType(x)))
+                        typedGroup.Add(task);
 
-            public Controller Before(TDelegate item)
-            {
-                _relativeController.Before(item);
-                return this;
-            }
+                    TypedGroups.Add(type, typedGroup);
+                }
 
-            public Controller AtEnd()
-            {
-                _priorityController.AtEnd();
-                return this;
+                return typedGroup;
             }
+        }
 
-            public Controller AtStart()
-            {
-                _priorityController.AtStart();
-                return this;
-            }
+        public class TypedGroupDictionary : AssignableTypeDictionary<TypedGroup>
+        {
+        }
 
-            void IRelativeController<TDelegate>.Before(TDelegate item)
-            {
-                _relativeController.Before(item);
-            }
+        public class TypedGroup : ObservableCollection<T>
+        {
+        }
 
-            void IRelativeController<TDelegate>.After(TDelegate item)
-            {
-                _relativeController.After(item);
-            }
+        public enum Priority
+        {
+            Low,
+            Normal,
+            High
+        }
 
-            void IPriorityController.AtStart()
-            {
-                _priorityController.AtStart();
-            }
+        public class PriorityGroupDictionary : Dictionary<Priority, PriorityGroup>
+        {
+        }
 
-            void IPriorityController.AtEnd()
-            {
-                _priorityController.AtEnd();
-            }
+        public class PriorityGroup : ObservableCollection<T>
+        {
         }
     }
 }

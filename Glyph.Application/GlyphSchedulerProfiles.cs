@@ -1,82 +1,115 @@
 ﻿using System;
+using System.Collections.Generic;
 using Glyph.Animation;
 using Glyph.Animation.Motors.Base;
 using Glyph.Animation.Trajectories.Players;
 using Glyph.Audio;
+using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Colliders;
 using Glyph.Core.Layers;
+using Glyph.Core.Scheduler;
 using Glyph.Graphics;
 using Glyph.Graphics.Renderer.Base;
 using Glyph.Graphics.Shapes;
 using Glyph.Particles;
 using Glyph.Scripting;
-using Taskete;
 
 namespace Glyph.Application
 {
-    public class GlyphSchedulerProfiles
+    static public class DefaultGlyphSchedulerRules
     {
-        static private GlyphSchedulerProfiles _instance;
-        static public GlyphSchedulerProfiles Instance => _instance ?? (_instance = new GlyphSchedulerProfiles());
-
-        public IReadOnlyScheduler<Predicate<object>> Initialize { get; }
-        public IReadOnlyScheduler<Predicate<object>> LoadContent { get; }
-        public IReadOnlyScheduler<Predicate<object>> Update { get; }
-        public IReadOnlyScheduler<Predicate<object>> Draw { get; }
-
-        private GlyphSchedulerProfiles()
+        static public void Setup(GlyphScheduler<IInitializeTask> scheduler)
         {
-            var initialize = new Scheduler<Predicate<object>>();
-            initialize.Plan(x => x is SceneNode);
-            initialize.Plan(x => x is PositionBinding);
-            initialize.Plan(x => x is ILayerRoot);
-            initialize.Plan(x => x is ITrajectoryPlayer);
-            initialize.Plan(x => x is MotorBase);
-            initialize.Plan(x => x is Motion);
+            AddSequence(scheduler)
 
-            initialize.Plan(x => x is ISpriteSource);
-            initialize.Plan(x => x is SpriteTransformer);
-            initialize.Plan(x => x is SpriteAnimator);
-            initialize.Plan(x => x is RendererBase);
+                .BeginWith<SceneNode>()
+                .Then<PositionBinding>()
+                .Then<ILayerRoot>()
+                .Then<ITrajectoryPlayer>()
+                .Then<MotorBase>()
+                .Then<Motion>()
 
-            initialize.Plan(x => x is SongPlayer);
-            initialize.Plan(x => x is SoundListener);
-            initialize.Plan(x => x is SoundEmitter);
+                .Then<ISpriteSource>()
+                .Then<SpriteTransformer>()
+                .Then<SpriteAnimator>()
+                .Then<RendererBase>()
 
-            initialize.Plan(x => x is ParticleEmitter);
+                .Then<SongPlayer>()
+                .Then<SoundListener>()
+                .Then<SoundEmitter>()
 
-            initialize.Plan(x => x is ICollider);
-            initialize.Plan(x => x is SpriteArea);
+                .Then<ParticleEmitter>()
 
-            initialize.Plan(x => x is Trigger);
-            initialize.Plan(x => x is Actor);
-            
-            var loadContent = new Scheduler<Predicate<object>>();
-            loadContent.Plan(x => x is SpriteLoader);
-            loadContent.Plan(x => x is ShapedSpriteBase);
-            loadContent.Plan(x => x is SongPlayer);
+                .Then<ICollider>()
+                .Then<SpriteArea>()
 
-            var update = new Scheduler<Predicate<object>>();
-            update.Plan(x => x is PositionBinding);
-            update.Plan(x => x is ITrajectoryPlayer);
-            update.Plan(x => x is MotorBase);
-            update.Plan(x => x is Motion);
+                .Then<Trigger>()
+                .Then<Actor>();
+        }
 
-            update.Plan(x => x is SpriteAnimator);
-            update.Plan(x => x is SongPlayer);
-            update.Plan(x => x is ICollider);
-            update.Plan(x => x is ParticleEmitter);
-            update.Plan(x => x is Actor);
+        static public void Setup(AsyncGlyphScheduler<ILoadContentTask, IContentLibrary> scheduler)
+        {
+            AddSequence(scheduler)
 
-            var draw = new Scheduler<Predicate<object>>();
-            draw.Plan(x => x is RendererBase);
-            draw.Plan(x => x is ParticleEmitter);
+                .BeginWith<SpriteLoader>()
+                .Then<ShapedSpriteBase>()
+                .Then<SongPlayer>();
+        }
 
-            Initialize = new ReadOnlyScheduler<Predicate<object>>(initialize);
-            LoadContent = new ReadOnlyScheduler<Predicate<object>>(loadContent);
-            Update = new ReadOnlyScheduler<Predicate<object>>(update);
-            Draw = new ReadOnlyScheduler<Predicate<object>>(draw);
+        static public void Setup(GlyphScheduler<IUpdateTask> scheduler)
+        {
+            AddSequence(scheduler)
+
+                .BeginWith<PositionBinding>()
+                .Then<ITrajectoryPlayer>()
+                .Then<MotorBase>()
+                .Then<Motion>()
+
+                .Then<SpriteAnimator>()
+                .Then<SongPlayer>()
+                .Then<ICollider>()
+                .Then<ParticleEmitter>()
+                .Then<Actor>();
+        }
+
+        static public void Setup(GlyphScheduler<IDrawTask> scheduler)
+        {
+            AddSequence(scheduler)
+
+                .BeginWith<RendererBase>()
+                .Then<ParticleEmitter>();
+        }
+
+        static private SequenceController<TTask> AddSequence<TTask>(GlyphSchedulerBase<TTask> scheduler) => new SequenceController<TTask>(scheduler);
+
+        private class SequenceController<TTask>
+        {
+            private readonly GlyphSchedulerBase<TTask> _scheduler;
+            private readonly List<Type> _previousTypes = new List<Type>();
+
+            public SequenceController(GlyphSchedulerBase<TTask> scheduler)
+            {
+                _scheduler = scheduler;
+            }
+
+            public SequenceController<TTask> BeginWith<TNext>() => BeginWith(typeof(TNext));
+            public SequenceController<TTask> BeginWith(Type firstType)
+            {
+                _previousTypes.Clear();
+                _previousTypes.Add(firstType);
+                return this;
+            }
+
+            public SequenceController<TTask> Then<TNext>() => Then(typeof(TNext));
+            public SequenceController<TTask> Then(Type nextType)
+            {
+                foreach (Type previousType in _previousTypes)
+                    _scheduler.Plan(nextType).After(previousType, weight: -1);
+
+                _previousTypes.Add(nextType);
+                return this;
+            }
         }
     }
 }

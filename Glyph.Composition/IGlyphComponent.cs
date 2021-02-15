@@ -4,8 +4,13 @@ using Stave;
 
 namespace Glyph.Composition
 {
+    public interface IInitializeTask
+    {
+        void Initialize();
+    }
+
     // TODO : Add instantiating & disposing router as injectable properties
-    public interface IGlyphComponent : IComponent<IGlyphComponent, IGlyphContainer>, IDisposable, INotifyDisposed
+    public interface IGlyphComponent : IComponent<IGlyphComponent, IGlyphContainer>, IInitializeTask, IDisposable, INotifyDisposed
     {
         bool Enabled { get; set; }
         bool Active { get; }
@@ -13,6 +18,5 @@ namespace Glyph.Composition
         string Name { get; set; }
         ComponentRouterSystem Router { get; }
         bool IsDisposed { get; }
-        void Initialize();
     }
 }
