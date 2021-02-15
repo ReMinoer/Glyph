@@ -181,7 +181,7 @@ namespace Glyph.Graphics.Renderer
                         // https://github.com/MonoGame/MonoGame/blob/3e65abb158de2e07c72d0831dd971f594ff76a18/MonoGame.Framework/Graphics/Effect/SpriteEffect.cs#L71
                         // https://community.monogame.net/t/solved-drawing-primitives-and-spritebatch/10015/4
 
-                        graphicsDevice.Textures[0] = TextureSource.Texture;
+                        graphicsDevice.Textures[0] = TextureSource?.Texture;
                         graphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
                         graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
