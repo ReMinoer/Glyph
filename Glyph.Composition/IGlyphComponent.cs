@@ -1,14 +1,10 @@
 ﻿using System;
 using Glyph.Composition.Messaging;
+using Glyph.Scheduling;
 using Stave;
 
 namespace Glyph.Composition
 {
-    public interface IInitializeTask
-    {
-        void Initialize();
-    }
-
     // TODO : Add instantiating & disposing router as injectable properties
     public interface IGlyphComponent : IComponent<IGlyphComponent, IGlyphContainer>, IInitializeTask, IDisposable, INotifyDisposed
     {

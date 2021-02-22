@@ -48,8 +48,6 @@ namespace Glyph.Core
             if (!this.Displayed(drawer, drawer.Client))
                 return;
 
-            Viewport viewport = drawer.GraphicsDevice.Viewport;
-
             var spriteBatchContext = new SpriteBatchContext
             {
                 SpriteSortMode = SpriteSortMode.BackToFront,

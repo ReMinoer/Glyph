@@ -2,109 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Glyph.Composition;
-using Glyph.Composition.Delegates;
 using Taskete;
 using Taskete.Rules;
-using Taskete.Schedulers;
 using Taskete.Utils;
 
-namespace Glyph.Core.Scheduler
+namespace Glyph.Scheduling.Base
 {
-    public class InitializeScheduler : GlyphScheduler<IInitializeTask, InitializeDelegate>
-    {
-        public InitializeScheduler()
-            : base(x => new InitializeTask(x)) { }
-    }
-
-    public class LoadContentScheduler : AsyncGlyphScheduler<ILoadContentTask, LoadContentDelegate, IContentLibrary>
-    {
-        public LoadContentScheduler()
-            : base(x => new LoadContentTask(x), (x, contentLibrary, _) => x.LoadContent(contentLibrary)) { }
-    }
-
-    public class UpdateScheduler : GlyphScheduler<IUpdateTask, UpdateDelegate>
-    {
-        public UpdateScheduler()
-            : base(x => new UpdateTask(x)) { }
-    }
-
-    public class DrawScheduler : GlyphScheduler<IDrawTask, DrawDelegate>
-    {
-        public DrawScheduler()
-            : base(x => new DrawTask(x)) {}
-    }
-
-    public class DelegateTaskBase<TDelegate>
-        where TDelegate : Delegate
-    {
-        protected readonly TDelegate TaskDelegate;
-        public DelegateTaskBase(TDelegate taskDelegate) => TaskDelegate = taskDelegate;
-
-        public override string ToString() => $"{TaskDelegate.Method.DeclaringType?.Name}.{TaskDelegate.Method.Name} - {TaskDelegate.Target}";
-    }
-
-    public class InitializeTask : DelegateTaskBase<InitializeDelegate>, IInitializeTask
-    {
-        public InitializeTask(InitializeDelegate taskDelegate)
-            : base(taskDelegate) { }
-
-        public void Initialize() => TaskDelegate();
-    }
-
-    public class LoadContentTask : DelegateTaskBase<LoadContentDelegate>, ILoadContentTask
-    {
-        public LoadContentTask(LoadContentDelegate taskDelegate)
-            : base(taskDelegate) { }
-
-        public Task LoadContent(IContentLibrary contentLibrary) => TaskDelegate(contentLibrary);
-    }
-
-    public class UpdateTask : DelegateTaskBase<UpdateDelegate>, IUpdateTask
-    {
-        public UpdateTask(UpdateDelegate taskDelegate)
-            : base(taskDelegate) { }
-
-        public bool Active => true;
-        public void Update(ElapsedTime elapsedTime) => TaskDelegate(elapsedTime);
-    }
-
-    public class DrawTask : DelegateTaskBase<DrawDelegate>, IDrawTask
-    {
-        public DrawTask(DrawDelegate taskDelegate)
-            : base(taskDelegate) { }
-
-        public void Draw(IDrawer drawer) => TaskDelegate(drawer);
-    }
-
-    public class GlyphScheduler<T, TDelegate> : GlyphSchedulerBase<T, TDelegate>
-    {
-        private readonly LinearScheduler<T> _scheduler;
-        public IEnumerable<T> Schedule => _scheduler.Schedule;
-
-        public GlyphScheduler(Func<TDelegate, T> delegateToTaskFunc)
-            : base(new LinearScheduler<T>(), delegateToTaskFunc)
-        {
-            _scheduler = (LinearScheduler<T>)Scheduler;
-        }
-    }
-
-    public class AsyncGlyphScheduler<T, TDelegate, TParam> : GlyphSchedulerBase<T, TDelegate>
-    {
-        private readonly AsyncScheduler<T, TParam> _scheduler;
-
-        public AsyncGlyphScheduler(Func<TDelegate, T> delegateToTaskFunc, Func<T, TParam, CancellationToken, Task> awaitableSelector)
-            : base(new AsyncScheduler<T, TParam>(awaitableSelector), delegateToTaskFunc)
-        {
-            _scheduler = (AsyncScheduler<T, TParam>)Scheduler;
-        }
-
-        public Task RunScheduleAsync(TParam param) => _scheduler.RunScheduleAsync(param);
-        public Task RunScheduleAsync(TParam param, CancellationToken cancellationToken) => _scheduler.RunScheduleAsync(param, cancellationToken);
-    }
-
     public abstract class GlyphSchedulerBase<T, TDelegate> : IGlyphScheduler<T, TDelegate, GlyphSchedulerBase<T, TDelegate>.Controller, GlyphSchedulerBase<T, TDelegate>.Controller>
     {
         protected IScheduler<T> Scheduler { get; }
@@ -282,7 +185,7 @@ namespace Glyph.Core.Scheduler
             }
         }
 
-        public class TypedGroupDictionary : AssignableTypeDictionary<TypedGroup>
+        protected class TypedGroupDictionary : AssignableTypeDictionary<TypedGroup>
         {
         }
 

@@ -10,14 +10,14 @@ using Diese.Collections;
 using Diese.Diagnostics;
 using Niddle;
 using Glyph.Composition;
-using Glyph.Composition.Delegates;
 using Glyph.Composition.Exceptions;
 using Glyph.Composition.Utils;
 using Glyph.Core.Resolvers;
-using Glyph.Core.Scheduler;
 using Glyph.Math;
 using Glyph.Messaging;
 using Glyph.Resolver;
+using Glyph.Scheduling;
+using Glyph.Scheduling.Base;
 
 namespace Glyph.Core
 {

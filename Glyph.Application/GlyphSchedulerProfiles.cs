@@ -7,11 +7,12 @@ using Glyph.Audio;
 using Glyph.Core;
 using Glyph.Core.Colliders;
 using Glyph.Core.Layers;
-using Glyph.Core.Scheduler;
 using Glyph.Graphics;
 using Glyph.Graphics.Renderer.Base;
 using Glyph.Graphics.Shapes;
 using Glyph.Particles;
+using Glyph.Scheduling;
+using Glyph.Scheduling.Base;
 using Glyph.Scripting;
 
 namespace Glyph.Application

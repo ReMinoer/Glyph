@@ -1,13 +1,14 @@
 ﻿using Glyph.Math.Shapes;
+using Glyph.Scheduling;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Glyph.Composition
+namespace Glyph
 {
     public interface IDrawer
     {
         IDrawClient Client { get; }
-        IDraw Root { get; }
+        IDrawTask Root { get; }
         SpriteBatchStack SpriteBatchStack { get; }
         GraphicsDevice GraphicsDevice { get; }
         RenderTarget2D DefaultRenderTarget { get; }

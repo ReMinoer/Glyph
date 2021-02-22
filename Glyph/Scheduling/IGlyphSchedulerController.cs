@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Glyph.Core.Scheduler
+namespace Glyph.Scheduling
 {
     public interface IGlyphSchedulerController<in T, out TController>
     {

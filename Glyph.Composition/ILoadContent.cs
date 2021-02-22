@@ -1,12 +1,7 @@
-using System.Threading.Tasks;
+using Glyph.Scheduling;
 
 namespace Glyph.Composition
 {
-    public interface ILoadContentTask
-    {
-        Task LoadContent(IContentLibrary contentLibrary);
-    }
-
     public interface ILoadContent : IGlyphComponent, ILoadContentTask
     {
     }

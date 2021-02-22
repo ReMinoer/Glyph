@@ -8,7 +8,6 @@
     <ProjectReference Include="..\External\Fingear\External\Stave\Stave\Stave.csproj" />
     <ProjectReference Include="..\External\Fingear\External\Taskete\Diese %28Taskete%29\Diese %28Taskete%29.csproj" />
     <ProjectReference Include="..\External\Fingear\External\Taskete\External\OverGraphed\OverGraphed\OverGraphed.csproj" />
-    <ProjectReference Include="..\External\Fingear\External\Taskete\Taskete\Taskete.csproj" />
     <ProjectReference Include="..\External\Fingear\Fingear.MonoGame\Fingear.MonoGame.csproj" />
     <ProjectReference Include="..\External\Fingear\Fingear\Fingear.csproj" />
     <ProjectReference Include="..\External\Simulacra\External\Niddle\Niddle\Niddle.csproj" />

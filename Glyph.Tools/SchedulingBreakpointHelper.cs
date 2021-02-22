@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Diese;
-using Glyph.Composition.Delegates;
+using Glyph.Scheduling;
 
 namespace Glyph.Tools
 {

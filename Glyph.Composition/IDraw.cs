@@ -1,13 +1,9 @@
 using System;
 using Diese.Collections;
+using Glyph.Scheduling;
 
 namespace Glyph.Composition
 {
-    public interface IDrawTask
-    {
-        void Draw(IDrawer drawer);
-    }
-
     public interface IDraw : IGlyphComponent, IDrawTask
     {
         bool Visible { get; set; }
