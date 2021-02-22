@@ -4,12 +4,12 @@ using Fingear.MonoGame;
 using Glyph.Animation;
 using Glyph.Animation.Motors;
 using Glyph.Audio;
-using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Colliders;
 using Glyph.Core.Inputs;
 using Glyph.Core.Layers;
 using Glyph.Core.Resolvers;
+using Glyph.Core.Schedulers;
 using Glyph.Core.Tracking;
 using Glyph.Graphics;
 using Glyph.Graphics.Particles;
@@ -29,7 +29,6 @@ using Glyph.UI;
 using Glyph.UI.Menus;
 using Glyph.UI.Simple;
 using Niddle.Dependencies.Builders;
-using Taskete;
 
 namespace Glyph.Application
 {
@@ -61,10 +60,15 @@ namespace Glyph.Application
 
                 #region Scheduling
                 
-                Type<Action<InitializeScheduler>>().Using(DefaultGlyphSchedulerRules.Setup),
-                Type<Action<LoadContentScheduler>>().Using(DefaultGlyphSchedulerRules.Setup),
-                Type<Action<UpdateScheduler>>().Using(DefaultGlyphSchedulerRules.Setup),
-                Type<Action<DrawScheduler>>().Using(DefaultGlyphSchedulerRules.Setup),
+                Type<InitializeScheduler>().Creating(InitializeScheduler),
+                Type<LoadContentScheduler>().Creating(LoadContentScheduler),
+                Type<UpdateScheduler>().Creating(UpdateScheduler).AsSingleton(),
+                Type<DrawScheduler>().Creating(DrawScheduler),
+
+                Type<InitializeComponentScheduler>(),
+                Type<LoadContentComponentScheduler>(),
+                Type<UpdateComponentScheduler>(),
+                Type<DrawComponentScheduler>(),
 
                 #endregion
 
@@ -232,6 +236,11 @@ namespace Glyph.Application
             registry.Add(Type<IDependencyRegistry>().Using(registry));
             return registry;
         }
+
+        static private InitializeScheduler InitializeScheduler() => DefaultGlyphSchedulerRules.Setup(new InitializeScheduler());
+        static private LoadContentScheduler LoadContentScheduler() => DefaultGlyphSchedulerRules.Setup(new LoadContentScheduler());
+        static private UpdateScheduler UpdateScheduler() => DefaultGlyphSchedulerRules.Setup(new UpdateScheduler());
+        static private DrawScheduler DrawScheduler() => DefaultGlyphSchedulerRules.Setup(new DrawScheduler());
 
         static public DependencyRegistry BuildLocalRegistry()
         {

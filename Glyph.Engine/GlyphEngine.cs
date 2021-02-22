@@ -106,8 +106,7 @@ namespace Glyph.Engine
             InputClientManager = new InputClientManager();
             InteractionManager = new InteractionManager();
 
-            UpdateScheduler = new UpdateScheduler();
-            resolver.Resolve<Action<UpdateScheduler>>().Invoke(UpdateScheduler);
+            UpdateScheduler = resolver.Resolve<UpdateScheduler>();
 
             Registry.Add(GlyphDependency.OnType<GlyphEngine>().Using(this));
             Registry.Add(GlyphDependency.OnType<ILogger>().Using(Logger));
@@ -116,7 +115,6 @@ namespace Glyph.Engine
             Registry.Add(GlyphDependency.OnType<IContentLibrary>().Using(ContentLibrary));
             Registry.Add(GlyphDependency.OnType<InputClientManager>().Using(InputClientManager));
             Registry.Add(GlyphDependency.OnType<InteractionManager>().Using(InteractionManager));
-            Registry.Add(GlyphDependency.OnType<UpdateScheduler>().Using(UpdateScheduler));
             Registry.Add(GlyphDependency.OnType<Func<GraphicsDevice>>().Using(() =>
             {
                 if (FocusedClient != null)

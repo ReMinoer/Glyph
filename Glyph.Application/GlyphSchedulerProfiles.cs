@@ -19,7 +19,7 @@ namespace Glyph.Application
 {
     static public class DefaultGlyphSchedulerRules
     {
-        static public void Setup(InitializeScheduler scheduler)
+        static public InitializeScheduler Setup(InitializeScheduler scheduler)
         {
             AddSequence(scheduler)
 
@@ -46,18 +46,22 @@ namespace Glyph.Application
 
                 .Then<Trigger>()
                 .Then<Actor>();
+
+            return scheduler;
         }
 
-        static public void Setup(LoadContentScheduler scheduler)
+        static public LoadContentScheduler Setup(LoadContentScheduler scheduler)
         {
             AddSequence(scheduler)
 
                 .BeginWith<SpriteLoader>()
                 .Then<ShapedSpriteBase>()
                 .Then<SongPlayer>();
+
+            return scheduler;
         }
 
-        static public void Setup(UpdateScheduler scheduler)
+        static public UpdateScheduler Setup(UpdateScheduler scheduler)
         {
             AddSequence(scheduler)
 
@@ -71,14 +75,18 @@ namespace Glyph.Application
                 .Then<ICollider>()
                 .Then<ParticleEmitter>()
                 .Then<Actor>();
+
+            return scheduler;
         }
 
-        static public void Setup(DrawScheduler scheduler)
+        static public DrawScheduler Setup(DrawScheduler scheduler)
         {
             AddSequence(scheduler)
 
                 .BeginWith<RendererBase>()
                 .Then<ParticleEmitter>();
+
+            return scheduler;
         }
 
         static private SequenceController<TTask, TDelegate> AddSequence<TTask, TDelegate>(GlyphSchedulerBase<TTask, TDelegate> scheduler)
