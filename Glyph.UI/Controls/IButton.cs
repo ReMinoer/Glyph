@@ -3,7 +3,7 @@ using Glyph.Composition;
 
 namespace Glyph.UI.Controls
 {
-    public interface IButton : IControl, ILoadContent, IUpdate
+    public interface IButton : IControl, ILoadContent
     {
         Text Text { get; }
         IFrame Frame { get; }

@@ -62,10 +62,10 @@ namespace Glyph.Application
 
                 #region Scheduling
                 
-                Type<Action<GlyphScheduler<IInitializeTask>>>().Using(DefaultGlyphSchedulerRules.Setup),
-                Type<Action<AsyncGlyphScheduler<ILoadContentTask, IContentLibrary>>>().Using(DefaultGlyphSchedulerRules.Setup),
-                Type<Action<GlyphScheduler<IUpdateTask>>>().Using(DefaultGlyphSchedulerRules.Setup),
-                Type<Action<GlyphScheduler<IDrawTask>>>().Using(DefaultGlyphSchedulerRules.Setup),
+                Type<Action<InitializeScheduler>>().Using(DefaultGlyphSchedulerRules.Setup),
+                Type<Action<LoadContentScheduler>>().Using(DefaultGlyphSchedulerRules.Setup),
+                Type<Action<UpdateScheduler>>().Using(DefaultGlyphSchedulerRules.Setup),
+                Type<Action<DrawScheduler>>().Using(DefaultGlyphSchedulerRules.Setup),
 
                 #endregion
 

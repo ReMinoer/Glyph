@@ -50,7 +50,7 @@ namespace Glyph.Particles
             var particlesToRemove = new List<IParticle>();
             foreach (IParticle particle in _particles)
             {
-                particle.Update(elapsedTime);
+                //particle.Update(elapsedTime);
 
                 if (!particle.Ended)
                     continue;
@@ -73,9 +73,11 @@ namespace Glyph.Particles
                 Components.Add(particle);
                 _particles.Add(particle);
 
-                float startTime = spawnTime * elapsedTime.Scale - elapsedTime.GetDelta(this);
+                float startTime = spawnTime * elapsedTime.Scale;
+                //float startTime = spawnTime * elapsedTime.Scale - elapsedTime.GetDelta(this);
+
                 particle.TimeOffset = startTime;
-                particle.Update(elapsedTime);
+                //particle.Update(elapsedTime);
             }
         }
 

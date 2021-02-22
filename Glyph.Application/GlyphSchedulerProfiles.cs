@@ -4,7 +4,6 @@ using Glyph.Animation;
 using Glyph.Animation.Motors.Base;
 using Glyph.Animation.Trajectories.Players;
 using Glyph.Audio;
-using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Colliders;
 using Glyph.Core.Layers;
@@ -19,7 +18,7 @@ namespace Glyph.Application
 {
     static public class DefaultGlyphSchedulerRules
     {
-        static public void Setup(GlyphScheduler<IInitializeTask> scheduler)
+        static public void Setup(InitializeScheduler scheduler)
         {
             AddSequence(scheduler)
 
@@ -48,7 +47,7 @@ namespace Glyph.Application
                 .Then<Actor>();
         }
 
-        static public void Setup(AsyncGlyphScheduler<ILoadContentTask, IContentLibrary> scheduler)
+        static public void Setup(LoadContentScheduler scheduler)
         {
             AddSequence(scheduler)
 
@@ -57,7 +56,7 @@ namespace Glyph.Application
                 .Then<SongPlayer>();
         }
 
-        static public void Setup(GlyphScheduler<IUpdateTask> scheduler)
+        static public void Setup(UpdateScheduler scheduler)
         {
             AddSequence(scheduler)
 
@@ -73,7 +72,7 @@ namespace Glyph.Application
                 .Then<Actor>();
         }
 
-        static public void Setup(GlyphScheduler<IDrawTask> scheduler)
+        static public void Setup(DrawScheduler scheduler)
         {
             AddSequence(scheduler)
 
@@ -81,28 +80,29 @@ namespace Glyph.Application
                 .Then<ParticleEmitter>();
         }
 
-        static private SequenceController<TTask> AddSequence<TTask>(GlyphSchedulerBase<TTask> scheduler) => new SequenceController<TTask>(scheduler);
+        static private SequenceController<TTask, TDelegate> AddSequence<TTask, TDelegate>(GlyphSchedulerBase<TTask, TDelegate> scheduler)
+            => new SequenceController<TTask, TDelegate>(scheduler);
 
-        private class SequenceController<TTask>
+        private class SequenceController<TTask, TDelegate>
         {
-            private readonly GlyphSchedulerBase<TTask> _scheduler;
+            private readonly GlyphSchedulerBase<TTask, TDelegate> _scheduler;
             private readonly List<Type> _previousTypes = new List<Type>();
 
-            public SequenceController(GlyphSchedulerBase<TTask> scheduler)
+            public SequenceController(GlyphSchedulerBase<TTask, TDelegate> scheduler)
             {
                 _scheduler = scheduler;
             }
 
-            public SequenceController<TTask> BeginWith<TNext>() => BeginWith(typeof(TNext));
-            public SequenceController<TTask> BeginWith(Type firstType)
+            public SequenceController<TTask, TDelegate> BeginWith<TNext>() where TNext : TTask => BeginWith(typeof(TNext));
+            public SequenceController<TTask, TDelegate> BeginWith(Type firstType)
             {
                 _previousTypes.Clear();
                 _previousTypes.Add(firstType);
                 return this;
             }
 
-            public SequenceController<TTask> Then<TNext>() => Then(typeof(TNext));
-            public SequenceController<TTask> Then(Type nextType)
+            public SequenceController<TTask, TDelegate> Then<TNext>() where TNext : TTask => Then(typeof(TNext));
+            public SequenceController<TTask, TDelegate> Then(Type nextType)
             {
                 foreach (Type previousType in _previousTypes)
                     _scheduler.Plan(nextType).After(previousType, weight: -1);

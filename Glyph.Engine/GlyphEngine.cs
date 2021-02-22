@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,9 +7,11 @@ using Niddle;
 using Fingear;
 using Fingear.Inputs;
 using Glyph.Application;
+using Glyph.Composition;
 using Glyph.Content;
 using Glyph.Core;
 using Glyph.Core.Inputs;
+using Glyph.Core.Scheduler;
 using Glyph.Graphics;
 using Glyph.Messaging;
 using Glyph.Resolver;
@@ -33,6 +36,7 @@ namespace Glyph.Engine
         public ProjectionManager ProjectionManager { get; }
         public InputClientManager InputClientManager { get; }
         public InteractionManager InteractionManager { get; }
+        public UpdateScheduler UpdateScheduler { get; }
         private SpriteBatch _spriteBatch;
 
         private readonly IGraphicsDeviceService _graphicsDeviceService;
@@ -106,6 +110,9 @@ namespace Glyph.Engine
             InputClientManager = new InputClientManager();
             InteractionManager = new InteractionManager();
 
+            UpdateScheduler = new UpdateScheduler();
+            resolver.Resolve<Action<UpdateScheduler>>().Invoke(UpdateScheduler);
+
             Registry.Add(GlyphDependency.OnType<GlyphEngine>().Using(this));
             Registry.Add(GlyphDependency.OnType<ILogger>().Using(Logger));
             Registry.Add(GlyphDependency.OnType<RootView>().Using(RootView));
@@ -113,6 +120,7 @@ namespace Glyph.Engine
             Registry.Add(GlyphDependency.OnType<IContentLibrary>().Using(ContentLibrary));
             Registry.Add(GlyphDependency.OnType<InputClientManager>().Using(InputClientManager));
             Registry.Add(GlyphDependency.OnType<InteractionManager>().Using(InteractionManager));
+            Registry.Add(GlyphDependency.OnType<UpdateScheduler>().Using(UpdateScheduler));
             Registry.Add(GlyphDependency.OnType<Func<GraphicsDevice>>().Using(() =>
             {
                 if (FocusedClient != null)
@@ -162,15 +170,8 @@ namespace Glyph.Engine
 
         public void Update()
         {
-            using (GlyphObject.UpdateWatchTree.Start("Root"))
-                Root?.Update(_elapsedTime);
-
-            if (GlyphObject.UpdateWatchTree.Enabled)
-            {
-                using (var streamWriter = new StreamWriter("watchtree_" + DateTime.Now.ToString("yyyy-dd-M_HH-mm-ss")))
-                    GlyphObject.UpdateWatchTree.Results.First().Value.WriteAsCsv(streamWriter);
-                GlyphObject.UpdateWatchTree.Enabled = false;
-            }
+            foreach (IUpdateTask updateTask in UpdateScheduler.Schedule)
+                updateTask.Update(_elapsedTime);
         }
 
         public void BeginDraw()
