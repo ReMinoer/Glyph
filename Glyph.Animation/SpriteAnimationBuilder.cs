@@ -71,7 +71,7 @@ namespace Glyph.Animation
                 time += Intervals[i];
             }
 
-            animationBuilder[time] = (ref int animatable, float advance) => animatable = Frames[0];
+            animationBuilder[time] = (ref int animatable, float advance) => animatable = Frames[Frames.Length - 1];
             animationBuilder.Loop = Loop;
 
             return animationBuilder.Create();
