@@ -10,6 +10,8 @@ namespace Glyph.Composition
     {
         bool Enabled { get; set; }
         bool Active { get; }
+        bool Visible { get; set; }
+        bool Rendered { get; }
         Guid Id { get; }
         string Name { get; set; }
         ComponentRouterSystem Router { get; }

@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using Diese.Collections;
-using Glyph.Composition;
 using Glyph.Core;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Particles
 {
-    public sealed class ParticleEmitter : GlyphContainer, IUpdate, IDraw, ITimeUnscalable
+    public sealed class ParticleEmitter : GlyphObject, ITimeUnscalable
     {
         private readonly SceneNode _sceneNode;
         private readonly List<IParticle> _particles;
         private readonly Period _period;
-        public bool Visible { get; set; }
-        public Predicate<IDrawer> DrawPredicate { get; set; }
-        public IFilter<IDrawClient> DrawClientFilter { get; set; }
         public Func<IParticle> Factory { get; set; }
         public bool UseUnscaledTime { get; set; }
 
@@ -30,20 +26,19 @@ namespace Glyph.Particles
             set { _sceneNode.LocalPosition = value; }
         }
 
-        public ParticleEmitter(SceneNode parentNode)
+        public ParticleEmitter(GlyphResolveContext context)
+            : base(context)
         {
-            Enabled = true;
+            _sceneNode = Add<SceneNode>();
 
-            Components.Add(_sceneNode = new SceneNode(parentNode));
             _period = new Period();
             _particles = new List<IParticle>();
+
+            Schedulers.Update.Plan(Update);
         }
 
-        public void Update(ElapsedTime elapsedTime)
+        private void Update(ElapsedTime elapsedTime)
         {
-            if (!Enabled)
-                return;
-
             float[] spawnTimes;
             _period.Update(elapsedTime.GameTime, out spawnTimes);
 
@@ -61,7 +56,7 @@ namespace Glyph.Particles
 
             foreach (IParticle particleToRemove in particlesToRemove)
             {
-                Components.Remove(particleToRemove);
+                Remove(particleToRemove);
                 _particles.Remove(particleToRemove);
             }
 
@@ -70,7 +65,7 @@ namespace Glyph.Particles
                 IParticle particle = Factory();
                 particle.SceneNode.SetParent(_sceneNode);
 
-                Components.Add(particle);
+                Add(particle);
                 _particles.Add(particle);
 
                 float startTime = spawnTime * elapsedTime.Scale;
@@ -79,15 +74,6 @@ namespace Glyph.Particles
                 particle.TimeOffset = startTime;
                 //particle.Update(elapsedTime);
             }
-        }
-
-        public void Draw(IDrawer drawer)
-        {
-            if (!this.Displayed(drawer, drawer.Client, _sceneNode))
-                return;
-
-            foreach (IParticle particle in _particles)
-                particle.Draw(drawer);
         }
     }
 }

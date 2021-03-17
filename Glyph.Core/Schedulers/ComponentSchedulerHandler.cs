@@ -10,14 +10,14 @@ namespace Glyph.Core.Schedulers
         public InitializeComponentScheduler Initialize { get; }
         public LoadContentComponentScheduler LoadContent { get; }
         public UpdateComponentScheduler Update { get; }
-        public DrawComponentScheduler Draw { get; }
+        public DrawScheduler Draw { get; }
 
         public ComponentSchedulerHandler(IDependencyResolver resolver)
         {
             Initialize = resolver.Resolve<InitializeComponentScheduler>();
             LoadContent = resolver.Resolve<LoadContentComponentScheduler>();
             Update = resolver.Resolve<UpdateComponentScheduler>();
-            Draw = resolver.Resolve<DrawComponentScheduler>();
+            Draw = resolver.Resolve<DrawScheduler>();
         }
 
         public void PlanComponent(IGlyphComponent component)
@@ -58,12 +58,6 @@ namespace Glyph.Core.Schedulers
     public class UpdateComponentScheduler : ComponentScheduler<IUpdateTask, UpdateDelegate>
     {
         public UpdateComponentScheduler(UpdateScheduler scheduler)
-            : base(scheduler) { }
-    }
-
-    public class DrawComponentScheduler : ComponentScheduler<IDrawTask, DrawDelegate>
-    {
-        public DrawComponentScheduler(DrawScheduler scheduler)
             : base(scheduler) { }
     }
 }

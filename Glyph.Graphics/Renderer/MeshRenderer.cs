@@ -29,7 +29,6 @@ namespace Glyph.Graphics.Renderer
         public ISpriteSource TextureSource { get; set; }
 
         protected override ISceneNode SceneNode { get; }
-        protected override float DepthProtected => SceneNode.Depth;
 
         public override IArea Area
         {
@@ -44,6 +43,8 @@ namespace Glyph.Graphics.Renderer
         {
             _graphicsDeviceFunc = graphicsDeviceFunc;
             SceneNode = sceneNode;
+
+            SubscribeDepthChanged(sceneNode);
         }
 
         public Task LoadContent(IContentLibrary contentLibrary)
@@ -109,7 +110,7 @@ namespace Glyph.Graphics.Renderer
             }
         }
 
-        protected override void Render(IDrawer drawer)
+        public override void Draw(IDrawer drawer)
         {
             RefreshBuffers();
             if (_vertexArray == null)
@@ -121,7 +122,7 @@ namespace Glyph.Graphics.Renderer
             // Configure default effect matrices
             _defaultEffect.World = SceneNode.Matrix.ToMatrix4X4(SceneNode.Depth);
             _defaultEffect.View = Matrix.CreateLookAt(Vector3.Backward, Vector3.Zero, Vector3.Up);
-            _defaultEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, 0, 1);
+            _defaultEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, int.MinValue, int.MaxValue);
 
             drawer.SpriteBatchStack.Push(null);
 

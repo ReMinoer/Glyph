@@ -7,10 +7,11 @@ using Glyph.Scheduling.Base;
 namespace Glyph.Core.Schedulers.Base
 {
     public abstract class ComponentSchedulerBase<T, TDelegate>
-        : IGlyphScheduler<T, TDelegate, ComponentSchedulerBase<T, TDelegate>.TaskController, ComponentSchedulerBase<T, TDelegate>.Controller>
+        : IGlyphDelegateScheduler<T, TDelegate, ComponentSchedulerBase<T, TDelegate>.TaskController, ComponentSchedulerBase<T, TDelegate>.Controller>
+        where T : class
     {
         private readonly GlyphSchedulerBase<T, TDelegate> _glyphScheduler;
-        private IGlyphScheduler<T, TDelegate> GlyphScheduler => _glyphScheduler;
+        private IGlyphDelegateScheduler<T, TDelegate> GlyphScheduler => _glyphScheduler;
 
         private readonly PriorityGroupDictionary _priorityGroups = new PriorityGroupDictionary();
 
@@ -36,9 +37,11 @@ namespace Glyph.Core.Schedulers.Base
 
         public TaskController Plan(IEnumerable<T> tasks)
         {
-            GlyphScheduler.Plan(tasks);
             foreach (T task in tasks)
+            {
+                GlyphScheduler.Plan(task);
                 InitPriority(task);
+            }
 
             return new TaskController(this, _glyphScheduler, tasks);
         }
@@ -54,8 +57,7 @@ namespace Glyph.Core.Schedulers.Base
         }
 
         void IGlyphScheduler<T>.Plan(T task) => Plan(task);
-        void IGlyphScheduler<T>.Plan(IEnumerable<T> tasks) => Plan(tasks);
-        void IGlyphScheduler<T, TDelegate>.Plan(TDelegate taskDelegate) => Plan(taskDelegate);
+        void IGlyphDelegateScheduler<T, TDelegate>.Plan(TDelegate taskDelegate) => Plan(taskDelegate);
 
         public Controller Plan<TTasks>() => Plan(typeof(TTasks));
         public Controller Plan(Type taskType) => new Controller(this, _glyphScheduler, _glyphScheduler.GetOrAddTypedGroup(taskType));
@@ -126,7 +128,7 @@ namespace Glyph.Core.Schedulers.Base
             }
         }
 
-        public abstract class ControllerBase<TController> : GlyphSchedulerBase<T, TDelegate>.ControllerBase<TController>
+        public abstract class ControllerBase<TController> : GlyphSchedulerBase<T, TDelegate>.ControllerBase<TController, T>
         {
             protected readonly ComponentSchedulerBase<T, TDelegate> ComponentScheduler;
 

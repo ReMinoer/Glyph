@@ -6,6 +6,7 @@ namespace Glyph.Scheduling
 
     public interface IUpdateTask
     {
+        bool Active { get; }
         void Update(ElapsedTime elapsedTime);
     }
 

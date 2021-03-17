@@ -6,6 +6,7 @@ using Glyph.Core.Base;
 using Glyph.Graphics.Renderer;
 using Glyph.Math;
 using Glyph.Math.Shapes;
+using Glyph.Scheduling;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -15,13 +16,16 @@ namespace Glyph.Graphics
     {
         private Quad _shape;
         protected readonly SceneNode _sceneNode;
+        protected readonly ReadOnlySceneNode _readOnlySceneNode;
         protected readonly FillingRectangle _fillingRectangle;
         protected readonly FillingRenderer _fillingRenderer;
 
         public ViewEffectManager EffectManager { get; }
         protected override Quad Shape => _shape;
         public Texture2D Output => EffectManager.Texture;
-        public ISceneNode SceneNode => new ReadOnlySceneNode(_sceneNode);
+
+        protected override float RenderDepth => SceneNode.Depth;
+        protected override ISceneNode SceneNode => _readOnlySceneNode;
 
         public Vector2 Size
         {
@@ -40,6 +44,7 @@ namespace Glyph.Graphics
         }
 
         public override event EventHandler<Vector2> SizeChanged;
+        public override event EventHandler RenderDepthChanged;
 
         protected TargetViewBase(Func<GraphicsDevice> graphicsDeviceFunc)
         {
@@ -48,10 +53,13 @@ namespace Glyph.Graphics
             Components.Add(_fillingRectangle = new FillingRectangle(_sceneNode));
             Components.Add(_fillingRenderer = new FillingRenderer(_fillingRectangle, EffectManager));
 
+            _readOnlySceneNode = new ReadOnlySceneNode(_sceneNode);
             _sceneNode.Refreshed += OnSceneNodeRefreshed;
+            _sceneNode.DepthChanged += OnSceneNodeDepthChanged;
         }
-
+        
         private void OnSceneNodeRefreshed(SceneNodeBase obj) => RefreshTransformation();
+        private void OnSceneNodeDepthChanged(object sender, EventArgs e) => RenderDepthChanged?.Invoke(this, EventArgs.Empty);
 
         protected override void RefreshTransformation()
         {
@@ -82,7 +90,7 @@ namespace Glyph.Graphics
 
             RenderTargetBinding[] renderTargetsBackup = drawer.GraphicsDevice.GetRenderTargets();
 
-            var newDrawer = new Drawer(drawer.SpriteBatchStack, drawer.Client, drawer.Root, Camera.GetSceneNode().RootNode())
+            var newDrawer = new Drawer(drawer.DrawScheduler, drawer.SpriteBatchStack, drawer.Client, Camera.GetSceneNode().RootNode())
             {
                 CurrentView = this
             };
@@ -98,7 +106,9 @@ namespace Glyph.Graphics
             };
 
             newDrawer.SpriteBatchStack.Push(spriteBatchContext);
-            newDrawer.Root?.Draw(newDrawer);
+
+            newDrawer.Render();
+
             EffectManager.Apply(newDrawer);
             newDrawer.SpriteBatchStack.Pop();
 

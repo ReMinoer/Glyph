@@ -5,6 +5,7 @@ using Taskete.Schedulers;
 namespace Glyph.Scheduling.Base
 {
     public class GlyphScheduler<T, TDelegate> : GlyphSchedulerBase<T, TDelegate>
+        where T : class
     {
         private readonly LinearScheduler<T> _scheduler;
         public IEnumerable<T> Schedule => _scheduler.Schedule;

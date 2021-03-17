@@ -46,6 +46,9 @@ namespace Glyph.Core.Base
             get => _localDepth;
             set
             {
+                if (_localDepth.EpsilonEquals(value))
+                    return;
+
                 _localDepth = value;
                 Refresh();
             }
@@ -56,6 +59,9 @@ namespace Glyph.Core.Base
             get => _depth;
             set
             {
+                if (_depth.EpsilonEquals(value))
+                    return;
+
                 SetWorldDepth(value);
                 Refresh();
             }
@@ -65,6 +71,7 @@ namespace Glyph.Core.Base
 
         public event Action<SceneNodeBase> Refreshed;
         public event EventHandler<ISceneNode> ParentNodeChanged;
+        public event EventHandler DepthChanged;
         protected event EventHandler TransformationChanged;
 
         event EventHandler ITransformer.TransformationChanged
@@ -197,12 +204,15 @@ namespace Glyph.Core.Base
 
         protected void RefreshFrom(Referential childStaticReferential)
         {
+            bool transformationChanged = false;
+            bool depthChanged = false;
+
             if (ParentNode == null)
             {
-                _position = _transformation.Translation;
-                _rotation = _transformation.Rotation;
-                _scale = _transformation.Scale;
-                _depth = _localDepth;
+                transformationChanged |= Set(ref _position, _transformation.Translation);
+                transformationChanged |= Set(ref _rotation, _transformation.Rotation);
+                transformationChanged |= Set(ref _scale, _transformation.Scale);
+                depthChanged |= Set(ref _depth, _localDepth);
                 Matrix = _transformation.Matrix;
             }
             else
@@ -210,14 +220,14 @@ namespace Glyph.Core.Base
                 switch (childStaticReferential)
                 {
                     case Referential.Local:
-                        _position = ParentNode.Matrix * _transformation.Translation;
-                        _rotation = MathHelper.WrapAngle(ParentNode.Rotation + _transformation.Rotation);
-                        _scale = ParentNode.Scale * _transformation.Scale;
-                        _depth = ParentNode.Depth + _localDepth;
+                        transformationChanged |= Set(ref _position, ParentNode.Matrix * _transformation.Translation);
+                        transformationChanged |= Set(ref _rotation, MathHelper.WrapAngle(ParentNode.Rotation + _transformation.Rotation));
+                        transformationChanged |= Set(ref _scale, ParentNode.Scale * _transformation.Scale);
+                        depthChanged |= Set(ref _depth, ParentNode.Depth + _localDepth);
                         break;
                     case Referential.World:
-                        _transformation.RefreshMatrix(ParentNode.Matrix.Inverse * _position, _rotation - ParentNode.Rotation, _scale / ParentNode.Scale);
-                        _localDepth = _depth - ParentNode.Depth;
+                        transformationChanged |= _transformation.RefreshMatrix(ParentNode.Matrix.Inverse * _position, _rotation - ParentNode.Rotation, _scale / ParentNode.Scale);
+                        depthChanged |= Set(ref _localDepth, _depth - ParentNode.Depth);
                         break;
                     default:
                         throw new NotSupportedException();
@@ -229,8 +239,24 @@ namespace Glyph.Core.Base
             foreach (ISceneNode childNode in _childrenNodes)
                 childNode.Refresh();
 
-            Refreshed?.Invoke(this);
-            TransformationChanged?.Invoke(this, EventArgs.Empty);
+            if (transformationChanged || depthChanged)
+                Refreshed?.Invoke(this);
+
+            if (transformationChanged)
+                TransformationChanged?.Invoke(this, EventArgs.Empty);
+
+            if (depthChanged)
+                DepthChanged?.Invoke(this, EventArgs.Empty);
+
+            bool Set<T>(ref T variable, T value)
+                where T : struct
+            {
+                if (variable.Equals(value))
+                    return false;
+
+                variable = value;
+                return true;
+            }
         }
 
         void ISceneNode.LinkChild(ISceneNode child, Referential childStaticReferential)

@@ -5,6 +5,7 @@ using Glyph.Scheduling.Base;
 namespace Glyph.Core.Schedulers.Base
 {
     public class AsyncComponentScheduler<T, TDelegate, TParam> : ComponentSchedulerBase<T, TDelegate>
+        where T : class
     {
         private readonly AsyncGlyphScheduler<T, TDelegate, TParam> _glyphScheduler;
 

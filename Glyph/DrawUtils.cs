@@ -1,10 +1,12 @@
-﻿namespace Glyph.Composition
+﻿using Glyph.Scheduling;
+
+namespace Glyph
 {
     static public class DrawUtils
     {
-        static public bool Displayed(this IDraw draw, IDrawer drawer = null, IDrawClient drawClient = null, ISceneNode sceneRoot = null)
+        static public bool Displayed(this IDrawTask draw, IDrawer drawer = null, IDrawClient drawClient = null, ISceneNode sceneRoot = null)
         {
-            return draw.Visible
+            return draw.Rendered
                 && (drawer == null
                     || (sceneRoot == null || drawer.DrawPredicate(sceneRoot))
                         && (draw.DrawPredicate == null || draw.DrawPredicate(drawer)))

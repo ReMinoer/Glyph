@@ -63,12 +63,12 @@ namespace Glyph.Application
                 Type<InitializeScheduler>().Creating(InitializeScheduler),
                 Type<LoadContentScheduler>().Creating(LoadContentScheduler),
                 Type<UpdateScheduler>().Creating(UpdateScheduler).AsSingleton(),
-                Type<DrawScheduler>().Creating(DrawScheduler),
+                Type<DrawScheduler>().AsSingleton(),
+                Type<RenderScheduler>(),
 
                 Type<InitializeComponentScheduler>(),
                 Type<LoadContentComponentScheduler>(),
                 Type<UpdateComponentScheduler>(),
-                Type<DrawComponentScheduler>(),
 
                 #endregion
 
@@ -177,8 +177,6 @@ namespace Glyph.Application
                 Type<CircleCollider>(),
                 Generic(typeof(GridCollider<>)),
 
-                Type<ColliderComposite>(),
-
                 #endregion
 
                 #region Scripting
@@ -240,7 +238,6 @@ namespace Glyph.Application
         static private InitializeScheduler InitializeScheduler() => DefaultGlyphSchedulerRules.Setup(new InitializeScheduler());
         static private LoadContentScheduler LoadContentScheduler() => DefaultGlyphSchedulerRules.Setup(new LoadContentScheduler());
         static private UpdateScheduler UpdateScheduler() => DefaultGlyphSchedulerRules.Setup(new UpdateScheduler());
-        static private DrawScheduler DrawScheduler() => DefaultGlyphSchedulerRules.Setup(new DrawScheduler());
 
         static public DependencyRegistry BuildLocalRegistry()
         {

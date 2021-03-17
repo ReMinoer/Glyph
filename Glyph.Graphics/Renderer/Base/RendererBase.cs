@@ -3,35 +3,51 @@ using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Math;
-using Glyph.Resolver;
-using Niddle.Attributes;
+using Glyph.Scheduling;
 
 namespace Glyph.Graphics.Renderer.Base
 {
     public abstract class RendererBase : GlyphComponent, IDraw, IBoxedComponent
     {
-        protected abstract float DepthProtected { get; }
-        protected abstract ISceneNode SceneNode { get; }
+        protected virtual float RenderDepthOverride => SceneNode.Depth;
+        float IDrawTask.RenderDepth => RenderDepthOverride;
 
-        public bool Visible { get; set; } = true;
+        protected abstract ISceneNode SceneNode { get; }
+        ISceneNode IDrawTask.SceneNode => SceneNode;
+
         public Predicate<IDrawer> DrawPredicate { get; set; }
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
 
         public abstract IArea Area { get; }
-        
-        [Resolvable, ResolveTargets(ResolveTargets.Parent)]
-        public IDraw DrawableParent { get; set; }
 
-        public virtual void Draw(IDrawer drawer)
+        public abstract void Draw(IDrawer drawer);
+
+        public event EventHandler RenderDepthChanged;
+        private ISceneNode _depthSubscription;
+
+        protected void SubscribeDepthChanged(ISceneNode sceneNode)
         {
-            if (!this.Displayed(drawer, drawer.Client, SceneNode)
-                || DrawableParent != null && !DrawableParent.Visible
-                || !DepthManager.VisibilityPredicate(DepthProtected))
-                return;
+            UnsubscribeDepthChanged();
 
-            Render(drawer);
+            sceneNode.DepthChanged += OnSceneNodeDepthChanged;
+            _depthSubscription = sceneNode;
         }
 
-        protected abstract void Render(IDrawer drawer);
+        private void UnsubscribeDepthChanged()
+        {
+            if (_depthSubscription == null)
+                return;
+
+            _depthSubscription.DepthChanged -= OnSceneNodeDepthChanged;
+            _depthSubscription = null;
+        }
+
+        private void OnSceneNodeDepthChanged(object sender, EventArgs e) => RenderDepthChanged?.Invoke(this, EventArgs.Empty);
+
+        public override void Dispose()
+        {
+            UnsubscribeDepthChanged();
+            base.Dispose();
+        }
     }
 }

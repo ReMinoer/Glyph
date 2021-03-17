@@ -27,6 +27,12 @@ namespace Glyph.Composition.Base
         [Category(ComponentCategory.Activation)]
         public bool Active => Enabled && this.ParentQueue().All(x => x.Enabled);
 
+        [Category(ComponentCategory.Activation)]
+        public virtual bool Visible { get; set; } = true;
+
+        [Category(ComponentCategory.Activation)]
+        public bool Rendered => Visible && this.ParentQueue().All(x => x.Visible);
+
         [Category(ComponentCategory.Identification)]
         public Guid Id { get; }
 

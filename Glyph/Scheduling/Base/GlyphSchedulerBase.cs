@@ -8,11 +8,13 @@ using Taskete.Utils;
 
 namespace Glyph.Scheduling.Base
 {
-    public abstract class GlyphSchedulerBase<T, TDelegate> : IGlyphScheduler<T, TDelegate, GlyphSchedulerBase<T, TDelegate>.Controller, GlyphSchedulerBase<T, TDelegate>.Controller>
+    public abstract class GlyphSchedulerBase<T, TDelegate>
+        : IGlyphDelegateScheduler<T, TDelegate, GlyphSchedulerBase<T, TDelegate>.Controller, GlyphSchedulerBase<T, TDelegate>.Controller>
+        where T : class
     {
         protected IScheduler<T> Scheduler { get; }
 
-        private readonly Dictionary<TDelegate, T> _delegateDictionary = new Dictionary<TDelegate, T>();
+        protected readonly Dictionary<TDelegate, T> DelegateDictionary = new Dictionary<TDelegate, T>();
         private readonly Func<TDelegate, T> _delegateToTaskFunc;
 
         protected readonly TypedGroupDictionary TypedGroups = new TypedGroupDictionary();
@@ -40,8 +42,7 @@ namespace Glyph.Scheduling.Base
         public Controller Plan(TDelegate taskDelegate) => Plan(GetOrAddDelegateTask(taskDelegate));
 
         void IGlyphScheduler<T>.Plan(T task) => Plan(task);
-        void IGlyphScheduler<T>.Plan(IEnumerable<T> tasks) => Plan(tasks);
-        void IGlyphScheduler<T, TDelegate>.Plan(TDelegate taskDelegate) => Plan(taskDelegate);
+        void IGlyphDelegateScheduler<T, TDelegate>.Plan(TDelegate taskDelegate) => Plan(taskDelegate);
 
         private void AddTask(T task)
         {
@@ -70,18 +71,18 @@ namespace Glyph.Scheduling.Base
             T task = GetDelegateTask(taskDelegate);
             Unplan(task);
 
-            _delegateDictionary.Remove(taskDelegate);
+            DelegateDictionary.Remove(taskDelegate);
         }
 
-        public T GetDelegateTask(TDelegate taskDelegate) => _delegateDictionary[taskDelegate];
+        public T GetDelegateTask(TDelegate taskDelegate) => DelegateDictionary[taskDelegate];
 
-        private T GetOrAddDelegateTask(TDelegate taskDelegate)
+        protected T GetOrAddDelegateTask(TDelegate taskDelegate)
         {
-            if (_delegateDictionary.TryGetValue(taskDelegate, out T task))
+            if (DelegateDictionary.TryGetValue(taskDelegate, out T task))
                 return task;
 
             task = _delegateToTaskFunc(taskDelegate);
-            _delegateDictionary.Add(taskDelegate, task);
+            DelegateDictionary.Add(taskDelegate, task);
             return task;
         }
 
@@ -99,7 +100,7 @@ namespace Glyph.Scheduling.Base
             return typedGroup;
         }
 
-        public class Controller : ControllerBase<Controller>
+        public class Controller : ControllerBase<Controller, T>
         {
             public Controller(GlyphSchedulerBase<T, TDelegate> glyphScheduler, IEnumerable<T> controlledTasks)
                 : base(glyphScheduler, controlledTasks) { }
@@ -107,12 +108,15 @@ namespace Glyph.Scheduling.Base
             protected override Controller ReturnedController => this;
         }
 
-        public abstract class ControllerBase<TController> : IGlyphSchedulerController<T, TController>
+        public abstract class ControllerBase<TController, TControlled> : IGlyphSchedulerController<T, TController>
+            where TControlled : class, T
         {
             protected readonly GlyphSchedulerBase<T, TDelegate> GlyphScheduler;
-            protected readonly IEnumerable<T> ControlledTasks;
+            protected readonly IEnumerable<TControlled> ControlledTasks;
 
-            protected ControllerBase(GlyphSchedulerBase<T, TDelegate> glyphScheduler, IEnumerable<T> controlledTasks)
+            private DependencyRule<T> _lastRule;
+
+            protected ControllerBase(GlyphSchedulerBase<T, TDelegate> glyphScheduler, IEnumerable<TControlled> controlledTasks)
             {
                 GlyphScheduler = glyphScheduler;
                 ControlledTasks = controlledTasks;
@@ -120,57 +124,69 @@ namespace Glyph.Scheduling.Base
 
             protected abstract TController ReturnedController { get; }
 
-            public TController Before(T task, float? weight = null)
+            public TController Before(T task)
             {
                 AddTask(task);
 
-                AddRule(new DependencyRule<T>(ControlledTasks, new[] { task }), weight);
+                AddRule(new DependencyRule<T>(ControlledTasks, new[] { task }));
                 return ReturnedController;
             }
 
-            public TController After(T task, float? weight = null)
+            public TController After(T task)
             {
                 AddTask(task);
 
-                AddRule(new DependencyRule<T>(new[] { task }, ControlledTasks), weight);
+                AddRule(new DependencyRule<T>(new[] { task }, ControlledTasks));
                 return ReturnedController;
             }
 
-            public TController Before(IEnumerable<T> tasks, float? weight = null)
+            public TController Before(IEnumerable<T> tasks)
             {
                 foreach (T task in tasks)
                     AddTask(task);
 
-                AddRule(new DependencyRule<T>(ControlledTasks, tasks), weight);
+                AddRule(new DependencyRule<T>(ControlledTasks, tasks));
                 return ReturnedController;
             }
 
-            public TController After(IEnumerable<T> tasks, float? weight = null)
+            public TController After(IEnumerable<T> tasks)
             {
                 foreach (T task in tasks)
                     AddTask(task);
 
-                AddRule(new DependencyRule<T>(tasks, ControlledTasks), weight);
+                AddRule(new DependencyRule<T>(tasks, ControlledTasks));
                 return ReturnedController;
             }
 
-            public TController Before(TDelegate taskDelegate, float? weight = null) => Before(GlyphScheduler.GetDelegateTask(taskDelegate), weight);
-            public TController After(TDelegate taskDelegate, float? weight = null) => After(GlyphScheduler.GetDelegateTask(taskDelegate), weight);
+            public TController Before(TDelegate taskDelegate) => Before(GlyphScheduler.GetDelegateTask(taskDelegate));
+            public TController After(TDelegate taskDelegate) => After(GlyphScheduler.GetDelegateTask(taskDelegate));
 
-            public TController Before(Type type, float? weight = null)
+            public TController Before(Type type)
             {
-                AddRule(new DependencyRule<T>(ControlledTasks, GlyphScheduler.GetOrAddTypedGroup(type)), weight);
+                AddRule(new DependencyRule<T>(ControlledTasks, GlyphScheduler.GetOrAddTypedGroup(type)));
                 return ReturnedController;
             }
 
-            public TController After(Type type, float? weight = null)
+            public TController After(Type type)
             {
-                AddRule(new DependencyRule<T>(GlyphScheduler.GetOrAddTypedGroup(type), ControlledTasks), weight);
+                AddRule(new DependencyRule<T>(GlyphScheduler.GetOrAddTypedGroup(type), ControlledTasks));
                 return ReturnedController;
             }
 
-            public TController Before<TItems>(float? weight = null) => Before(typeof(TItems), weight);
-            public TController After<TItems>(float? weight = null) => After(typeof(TItems), weight);
+            public TController Before<TItems>() => Before(typeof(TItems));
+            public TController After<TItems>() => After(typeof(TItems));
+
+            public TController WithWeight(float weight)
+            {
+                _lastRule.Weight = weight;
+                return ReturnedController;
+            }
+
+            public TController Mandatory()
+            {
+                _lastRule.MustBeApplied = true;
+                return ReturnedController;
+            }
 
             protected void AddTask(T task)
             {
@@ -178,10 +194,12 @@ namespace Glyph.Scheduling.Base
                     GlyphScheduler.Scheduler.Tasks.Add(task);
             }
 
-            protected void AddRule(DependencyRule<T> rule, float? weight = null)
+            protected void AddRule(DependencyRule<T> rule)
             {
-                rule.Weight = weight ?? GlyphScheduler.DefaultWeight;
+                rule.Weight = GlyphScheduler.DefaultWeight;
                 GlyphScheduler.Scheduler.Rules.Add(rule);
+
+                _lastRule = rule;
             }
         }
 

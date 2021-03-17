@@ -27,6 +27,7 @@ namespace Glyph
         void LinkChild(ISceneNode child, Referential childStaticReferential = Referential.World);
         void UnlinkChild(ISceneNode child);
         void Refresh();
+        event EventHandler DepthChanged;
         event EventHandler<ISceneNode> ParentNodeChanged;
     }
 }

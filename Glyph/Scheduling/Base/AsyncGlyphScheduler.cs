@@ -6,6 +6,7 @@ using Taskete.Schedulers;
 namespace Glyph.Scheduling.Base
 {
     public class AsyncGlyphScheduler<T, TDelegate, TParam> : GlyphSchedulerBase<T, TDelegate>
+        where T : class
     {
         private readonly AsyncScheduler<T, TParam> _scheduler;
 

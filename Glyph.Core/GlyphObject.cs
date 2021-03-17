@@ -18,7 +18,7 @@ using Glyph.Scheduling;
 
 namespace Glyph.Core
 {
-    public class GlyphObject : GlyphComposite, IGlyphCompositeResolver, ILoadContent, IDraw, IBoxedComponent, IInterpreter
+    public class GlyphObject : GlyphComposite, IGlyphCompositeResolver, ILoadContent, IBoxedComponent, IInterpreter
     {
         private bool _initialized;
         private bool _contentLoaded;
@@ -195,15 +195,6 @@ namespace Glyph.Core
 
             await Schedulers.LoadContent.RunScheduleAsync(contentLibrary);
             _contentLoaded = true;
-        }
-
-        public void Draw(IDrawer drawer)
-        {
-            if (IsDisposed || !this.Displayed(drawer, drawer.Client))
-                return;
-
-            foreach (IDrawTask task in Schedulers.Draw.Schedule)
-                task.Draw(drawer);
         }
 
         IArea IBoxedComponent.Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));

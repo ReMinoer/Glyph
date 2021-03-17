@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Math;
 using Glyph.Tools.Transforming;
@@ -13,7 +12,7 @@ namespace Glyph.Tools.Base
         IDrawClient RaycastClient { get; set; }
     }
 
-    public interface IHandle<TController> : IHandle, IDraw, IIntegratedEditor<TController>
+    public interface IHandle<TController> : IHandle, IIntegratedEditor<TController>
     {
         new TController EditedObject { get; set; }
     }

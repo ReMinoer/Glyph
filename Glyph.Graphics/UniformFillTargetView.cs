@@ -1,22 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using Diese.Collections;
-using Glyph.Composition;
-using Glyph.Core;
+﻿using Glyph.Core;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class UniformFillTargetView : GlyphContainer, ILoadContent, IDraw
+    public class UniformFillTargetView : GlyphObject
     {
         private readonly Camera _parentCamera;
         private IView _parentView;
         public TargetView UniformView { get; }
-
-        public bool Visible { get; set; } = true;
-        public Predicate<IDrawer> DrawPredicate { get; set; }
-        public IFilter<IDrawClient> DrawClientFilter { get; set; }
 
         public IView ParentView
         {
@@ -54,10 +45,11 @@ namespace Glyph.Graphics
             }
         }
 
-        public UniformFillTargetView(Func<GraphicsDevice> graphicsDeviceFunc)
+        public UniformFillTargetView(GlyphResolveContext context)
+            : base(context)
         {
-            Components.Add(_parentCamera = new Camera());
-            Components.Add(UniformView = new TargetView(graphicsDeviceFunc));
+            _parentCamera = Add<Camera>();
+            UniformView = Add<TargetView>();
         }
 
         private void ParentViewOnSizeChanged(object sender, Vector2 e)
@@ -73,26 +65,6 @@ namespace Glyph.Graphics
                     : ParentView.Size.Y / UniformView.Size.Y;
             else
                 _parentCamera.Zoom = 1;
-        }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-            _parentCamera.Initialize();
-            UniformView.Initialize();
-        }
-
-        public async Task LoadContent(IContentLibrary contentLibrary)
-        {
-            await UniformView.LoadContent(contentLibrary);
-        }
-
-        public void Draw(IDrawer drawer)
-        {
-            if (!this.Displayed(drawer, drawer.Client, this.GetSceneNode()))
-                return;
-
-            UniformView.Draw(drawer);
         }
     }
 }

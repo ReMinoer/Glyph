@@ -1,10 +1,9 @@
 ﻿using Glyph.Animation;
-using Glyph.Composition;
 using Glyph.Core;
 
 namespace Glyph.UI
 {
-    public interface IControl : IDraw
+    public interface IControl
     {
         SceneNode SceneNode { get; }
         Motion Motion { get; }

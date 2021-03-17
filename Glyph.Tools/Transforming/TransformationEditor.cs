@@ -146,10 +146,10 @@ namespace Glyph.Tools.Transforming
                 scaleHandle
             };
 
-            Schedulers.Draw.Plan(horizontalHandle).After(positionHandle);
-            Schedulers.Draw.Plan(verticalHandle).After(positionHandle);
-            Schedulers.Draw.Plan(scaleHandle).After(positionHandle);
-            Schedulers.Draw.Plan(positionHandle).After(rotationHandle);
+            //Schedulers.Draw.Plan(horizontalHandle).After(positionHandle);
+            //Schedulers.Draw.Plan(verticalHandle).After(positionHandle);
+            //Schedulers.Draw.Plan(scaleHandle).After(positionHandle);
+            //Schedulers.Draw.Plan(positionHandle).After(rotationHandle);
         }
     }
 }

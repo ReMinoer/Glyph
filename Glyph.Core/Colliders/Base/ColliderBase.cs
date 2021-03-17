@@ -31,6 +31,8 @@ namespace Glyph.Core.Colliders.Base
             set { SceneNode.Position = value; }
         }
 
+        bool ICollider.Active => Active;
+
         public event Action<Collision> Colliding;
         public event Action<Collision> Collided;
 

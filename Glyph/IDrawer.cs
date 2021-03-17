@@ -7,8 +7,8 @@ namespace Glyph
 {
     public interface IDrawer
     {
+        DrawScheduler DrawScheduler { get; }
         IDrawClient Client { get; }
-        IDrawTask Root { get; }
         SpriteBatchStack SpriteBatchStack { get; }
         GraphicsDevice GraphicsDevice { get; }
         RenderTarget2D DefaultRenderTarget { get; }
@@ -16,5 +16,7 @@ namespace Glyph
         Vector2 ViewSize { get; }
         Matrix ViewMatrix { get; }
         bool DrawPredicate(ISceneNode sceneNode);
+        void Render();
+        void RenderView();
     }
 }

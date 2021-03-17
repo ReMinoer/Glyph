@@ -1,5 +1,4 @@
 ﻿using System;
-using Glyph.Composition;
 using Glyph.Core.Base;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
@@ -39,7 +38,11 @@ namespace Glyph.Core
         public Vector2 Size => DrawClient?.Size ?? Vector2.Zero;
         protected override Quad Shape => new CenteredRectangle(Vector2.Zero, Size);
 
+        protected override float RenderDepth => 0;
+        protected override ISceneNode SceneNode => null;
+
         public override event EventHandler<Vector2> SizeChanged;
+        public override event EventHandler RenderDepthChanged;
 
         public override void Draw(IDrawer drawer)
         {
@@ -56,7 +59,7 @@ namespace Glyph.Core
             };
 
             drawer.SpriteBatchStack.Push(spriteBatchContext);
-            drawer.Root?.Draw(drawer);
+            drawer.Render();
             drawer.SpriteBatchStack.Pop();
         }
     }

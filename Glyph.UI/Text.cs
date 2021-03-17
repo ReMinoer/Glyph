@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Glyph.Animation;
-using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Graphics;
 using Microsoft.Xna.Framework;
@@ -26,7 +25,7 @@ namespace Glyph.UI
             Motion = Add<Motion>();
 
             Schedulers.LoadContent.Plan(LoadContentLocal);
-            Schedulers.Draw.Plan(DrawLocal);
+            Schedulers.Draw.Plan(DrawLocal).InScene(SceneNode);
         }
 
         public async Task LoadContentLocal(IContentLibrary contentLibrary)

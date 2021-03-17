@@ -3,6 +3,7 @@ using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Math;
 using Glyph.Math.Shapes;
+using Glyph.Scheduling;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Core.Base
@@ -32,7 +33,7 @@ namespace Glyph.Core.Base
             }
         }
 
-        public bool Visible { get; set; } = true;
+        public RenderScheduler RenderScheduler { get; } = new RenderScheduler();
         public Predicate<IDrawer> DrawPredicate { get; set; }
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
         public Matrix RenderMatrix { get; private set; } = Matrix.Identity;
@@ -46,8 +47,15 @@ namespace Glyph.Core.Base
         IArea IBoxedComponent.Area => Shape;
         Vector2 IView.Size => Shape.Size;
 
+        protected abstract float RenderDepth { get; }
+        float IDrawTask.RenderDepth => RenderDepth;
+
+        protected abstract ISceneNode SceneNode { get; }
+        ISceneNode IDrawTask.SceneNode => SceneNode;
+
         public abstract event EventHandler<Vector2> SizeChanged;
         public event EventHandler TransformationChanged;
+        public abstract event EventHandler RenderDepthChanged;
 
         protected virtual void RefreshTransformation()
         {

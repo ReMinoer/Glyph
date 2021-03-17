@@ -32,6 +32,12 @@ namespace Glyph.Core.Base
             remove => SceneNode.TransformationChanged -= value;
         }
 
+        public event EventHandler DepthChanged
+        {
+            add => SceneNode.DepthChanged += value;
+            remove => SceneNode.DepthChanged -= value;
+        }
+
         public event EventHandler<ISceneNode> ParentNodeChanged
         {
             add => SceneNode.ParentNodeChanged += value;

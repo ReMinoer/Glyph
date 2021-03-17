@@ -1,4 +1,4 @@
-﻿using Glyph.Composition;
+﻿using System;
 using Glyph.Graphics.Renderer.Base;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -11,8 +11,7 @@ namespace Glyph.Graphics.Renderer
     {
         private readonly FillingRectangle _fillingRectangle;
         protected override ISceneNode SceneNode => _fillingRectangle.SceneNode;
-
-        protected override float DepthProtected => SceneNode.Depth;
+        
         public Quad Shape => _fillingRectangle.Rectangle;
         public override IArea Area => _fillingRectangle.Rectangle;
 
@@ -20,6 +19,7 @@ namespace Glyph.Graphics.Renderer
             : base(source)
         {
             _fillingRectangle = fillingRectangle;
+            SubscribeDepthChanged(_fillingRectangle.SceneNode);
         }
 
         protected override void Render(IDrawer drawer)

@@ -1,4 +1,4 @@
-﻿using Glyph.Composition;
+﻿using System;
 using Glyph.Core;
 using Glyph.Graphics.Renderer.Base;
 using Glyph.Math;
@@ -12,11 +12,6 @@ namespace Glyph.Graphics.Renderer
     {
         private readonly SceneNode _sceneNode;
         protected override ISceneNode SceneNode => _sceneNode;
-
-        protected override float DepthProtected
-        {
-            get { return _sceneNode.Depth; }
-        }
 
         public override IArea Area
         {
@@ -37,6 +32,7 @@ namespace Glyph.Graphics.Renderer
             : base(source)
         {
             _sceneNode = sceneNode;
+            SubscribeDepthChanged(_sceneNode);
         }
 
         protected override void Render(IDrawer drawer)

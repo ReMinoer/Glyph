@@ -116,15 +116,22 @@ namespace Glyph.Math
             RefreshMatrix();
         }
 
-        public void RefreshMatrix(Vector2? translation, float? rotation, float? scale)
+        public bool RefreshMatrix(Vector2? translation, float? rotation, float? scale)
         {
+            if ((translation?.Equals(_translation) ?? true)
+                && (rotation?.EpsilonEquals(_rotation) ?? true)
+                && (scale?.EpsilonEquals(_scale) ?? true))
+                return false;
+
             if (translation.HasValue)
                 _translation = translation.Value;
             if (rotation.HasValue)
                 _rotation = MathHelper.WrapAngle(rotation.Value);
             if (scale.HasValue)
                 _scale = scale.Value;
+
             RefreshMatrix();
+            return true;
         }
 
         private void RefreshMatrix()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Niddle;
 using Fingear;
@@ -32,7 +33,10 @@ namespace Glyph.Engine
         public ProjectionManager ProjectionManager { get; }
         public InputClientManager InputClientManager { get; }
         public InteractionManager InteractionManager { get; }
+
         public UpdateScheduler UpdateScheduler { get; }
+        public DrawScheduler DrawScheduler { get; }
+
         private SpriteBatch _spriteBatch;
 
         private readonly IGraphicsDeviceService _graphicsDeviceService;
@@ -107,6 +111,7 @@ namespace Glyph.Engine
             InteractionManager = new InteractionManager();
 
             UpdateScheduler = resolver.Resolve<UpdateScheduler>();
+            DrawScheduler = resolver.Resolve<DrawScheduler>();
 
             Registry.Add(GlyphDependency.OnType<GlyphEngine>().Using(this));
             Registry.Add(GlyphDependency.OnType<ILogger>().Using(Logger));
@@ -164,7 +169,7 @@ namespace Glyph.Engine
 
         public void Update()
         {
-            foreach (IUpdateTask updateTask in UpdateScheduler.Schedule)
+            foreach (IUpdateTask updateTask in UpdateScheduler.Schedule.Where(x => x.Active))
                 updateTask.Update(_elapsedTime);
         }
 
@@ -174,7 +179,7 @@ namespace Glyph.Engine
 
         public void Draw(IDrawClient drawClient)
         {
-            var drawer = new Drawer(new SpriteBatchStack(_spriteBatch), drawClient, Root, RootView.Camera.GetSceneNode().RootNode())
+            var drawer = new Drawer(DrawScheduler, new SpriteBatchStack(_spriteBatch), drawClient, RootView.Camera.GetSceneNode().RootNode())
             {
                 CurrentView = RootView
             };

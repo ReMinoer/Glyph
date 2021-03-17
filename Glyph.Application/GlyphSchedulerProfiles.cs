@@ -73,26 +73,17 @@ namespace Glyph.Application
                 .Then<SpriteAnimator>()
                 .Then<SongPlayer>()
                 .Then<ICollider>()
-                .Then<ParticleEmitter>()
                 .Then<Actor>();
 
             return scheduler;
         }
 
-        static public DrawScheduler Setup(DrawScheduler scheduler)
-        {
-            AddSequence(scheduler)
-
-                .BeginWith<RendererBase>()
-                .Then<ParticleEmitter>();
-
-            return scheduler;
-        }
-
         static private SequenceController<TTask, TDelegate> AddSequence<TTask, TDelegate>(GlyphSchedulerBase<TTask, TDelegate> scheduler)
+            where TTask : class
             => new SequenceController<TTask, TDelegate>(scheduler);
 
         private class SequenceController<TTask, TDelegate>
+            where TTask : class
         {
             private readonly GlyphSchedulerBase<TTask, TDelegate> _scheduler;
             private readonly List<Type> _previousTypes = new List<Type>();
@@ -114,7 +105,7 @@ namespace Glyph.Application
             public SequenceController<TTask, TDelegate> Then(Type nextType)
             {
                 foreach (Type previousType in _previousTypes)
-                    _scheduler.Plan(nextType).After(previousType, weight: -1);
+                    _scheduler.Plan(nextType).After(previousType).WithWeight(-1);
 
                 _previousTypes.Add(nextType);
                 return this;

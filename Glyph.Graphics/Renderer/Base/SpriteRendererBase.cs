@@ -22,7 +22,9 @@ namespace Glyph.Graphics.Renderer.Base
             if (Source.Texture == null)
                 return;
 
-            base.Draw(drawer);
+            Render(drawer);
         }
+
+        protected abstract void Render(IDrawer drawer);
     }
 }
