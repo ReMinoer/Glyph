@@ -14,6 +14,6 @@ namespace Glyph.Scheduling
         TController Before(Type type);
         TController After(Type type);
         TController WithWeight(float weight);
-        TController Mandatory();
+        TController Optional();
     }
 }

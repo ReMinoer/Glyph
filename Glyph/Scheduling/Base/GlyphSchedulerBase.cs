@@ -26,13 +26,8 @@ namespace Glyph.Scheduling.Base
             _delegateToTaskFunc = delegateToTaskFunc;
         }
 
-        public Controller Plan(T task)
-        {
-            AddTask(task);
-            return new Controller(this, new[] { task });
-        }
-
-        public Controller Plan(IEnumerable<T> tasks)
+        public Controller Plan(T task) => Plan(new[] {task});
+        public virtual Controller Plan(IEnumerable<T> tasks)
         {
             foreach (T task in tasks)
                 AddTask(task);
@@ -182,9 +177,9 @@ namespace Glyph.Scheduling.Base
                 return ReturnedController;
             }
 
-            public TController Mandatory()
+            public TController Optional()
             {
-                _lastRule.MustBeApplied = true;
+                _lastRule.MustBeApplied = false;
                 return ReturnedController;
             }
 
@@ -196,9 +191,10 @@ namespace Glyph.Scheduling.Base
 
             protected void AddRule(DependencyRule<T> rule)
             {
+                rule.MustBeApplied = true;
                 rule.Weight = GlyphScheduler.DefaultWeight;
-                GlyphScheduler.Scheduler.Rules.Add(rule);
 
+                GlyphScheduler.Scheduler.Rules.Add(rule);
                 _lastRule = rule;
             }
         }
