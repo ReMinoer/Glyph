@@ -98,7 +98,7 @@ namespace Glyph.Graphics
                 drawer.GraphicsDevice.SetRenderTarget(output);
                 drawer.GraphicsDevice.Clear(Color.Transparent);
 
-                drawer.SpriteBatchStack.Push(new SpriteBatchContext {SpriteSortMode = SpriteSortMode.Immediate});
+                drawer.SpriteBatchStack.Push(new SpriteBatchContext());
                 try
                 {
                     effect.Apply(drawer);

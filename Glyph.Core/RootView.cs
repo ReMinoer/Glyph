@@ -53,8 +53,6 @@ namespace Glyph.Core
 
             var spriteBatchContext = new SpriteBatchContext
             {
-                SpriteSortMode = SpriteSortMode.BackToFront,
-                DepthStencilState = DepthStencilState.Default,
                 TransformMatrix = RenderMatrix
             };
 
