@@ -6,7 +6,13 @@ namespace Glyph.Math.Shapes
     {
         static public Vector2 NormalizedCoordinates(this Vector2 point, TopLeftRectangle referential)
         {
-            return (point - referential.Position) / referential.Size;
+            Vector2 result = (point - referential.Position) / referential.Size;
+            if (float.IsNaN(result.X))
+                result = result.SetX(0);
+            if (float.IsNaN(result.Y))
+                result = result.SetY(0);
+
+            return result;
         }
 
         static public TopLeftRectangle NormalizedCoordinates(this TopLeftRectangle rectangle, TopLeftRectangle referential)

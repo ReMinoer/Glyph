@@ -122,7 +122,7 @@ namespace Glyph.Graphics.Renderer
             // Configure default effect matrices
             _defaultEffect.World = SceneNode.Matrix.ToMatrix4X4(SceneNode.Depth);
             _defaultEffect.View = Matrix.CreateLookAt(Vector3.Backward, Vector3.Zero, Vector3.Up);
-            _defaultEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, int.MinValue, int.MaxValue);
+            _defaultEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, float.MinValue / 2, float.MaxValue / 2);
 
             drawer.SpriteBatchStack.Push(null);
 
@@ -152,7 +152,7 @@ namespace Glyph.Graphics.Renderer
                         effect = _defaultEffect;
 
                         // Enable texture if necessary
-                        _defaultEffect.TextureEnabled = true;//material.Textures.Count > 0;
+                        _defaultEffect.TextureEnabled = TextureSource?.Texture != null;//material.Textures.Count > 0;
                     }
                     else if (effect != currentEffect)
                     {
