@@ -122,8 +122,16 @@ namespace Glyph.Core
             ProjectionManager.IOptionsController<Transformation> projectionController = _projectionManager.ProjectFrom(_anchorNode).To(this);
             if (ProjectionConfiguration != null)
                 projectionController = ProjectionConfiguration(projectionController);
-            
-            Transformation worldTransformation = projectionController.First().Value;
+
+            Projection<Transformation> projection = projectionController.FirstOrDefault();
+            if (projection == null)
+            {
+                _transformation = Transformation.Identity;
+                RefreshFrom(Referential.Local);
+                return;
+            }
+
+            Transformation worldTransformation = projection.Value;
             //Transformation worldTransformation = projectionController.First(x => x.TransformerPath.SequenceEqual(TransformerPath)).Value;
 
             _position = worldTransformation.Translation;
