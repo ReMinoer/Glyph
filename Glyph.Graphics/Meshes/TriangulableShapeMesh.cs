@@ -14,11 +14,7 @@ namespace Glyph.Graphics.Meshes
         public TTriangulableShape Shape
         {
             get => _shape;
-            set
-            {
-                _shape = value;
-                DirtyCaches();
-            }
+            set => SetAndDirtyCachesOnChanged(ref _shape, value);
         }
 
         public override PrimitiveType Type => Shape != null && Shape.StripTriangulation ? PrimitiveType.TriangleStrip : PrimitiveType.TriangleList;

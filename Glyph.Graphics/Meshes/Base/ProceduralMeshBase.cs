@@ -74,5 +74,14 @@ namespace Glyph.Graphics.Meshes.Base
             _dirtyCaches = true;
             DirtyTextureCoordinates();
         }
+
+        protected void SetAndDirtyCachesOnChanged<T>(ref T field, T value)
+        {
+            if (Equals(field, value))
+                return;
+
+            field = value;
+            DirtyCaches();
+        }
     }
 }
