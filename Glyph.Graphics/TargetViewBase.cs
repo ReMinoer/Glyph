@@ -90,7 +90,7 @@ namespace Glyph.Graphics
 
             RenderTargetBinding[] renderTargetsBackup = drawer.GraphicsDevice.GetRenderTargets();
 
-            var newDrawer = new Drawer(drawer.DrawScheduler, drawer.SpriteBatchStack, drawer.Client, Camera.GetSceneNode().RootNode())
+            var newDrawer = new Drawer(drawer, Camera.GetSceneNode().RootNode())
             {
                 CurrentView = this
             };

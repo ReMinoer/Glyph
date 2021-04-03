@@ -15,6 +15,8 @@ namespace Glyph
         Quad DisplayedRectangle { get; }
         Vector2 ViewSize { get; }
         Matrix ViewMatrix { get; }
+        Matrix SpriteBatchMatrix { get; }
+        Matrix GetWorldViewProjectionMatrix(ISceneNode sceneNode);
         bool DrawPredicate(ISceneNode sceneNode);
         void Render();
         void RenderView();
