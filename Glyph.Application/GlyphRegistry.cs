@@ -154,6 +154,8 @@ namespace Glyph.Application
                 Type<MeshRenderer>(),
                 Type<MeshesComponent>(),
 
+                Type<EffectLoader>(),
+
                 Generic(typeof(MappingRenderer<>)),
 
                 #endregion

@@ -26,6 +26,9 @@ namespace Glyph.Pipeline
         public string RawRootPath { get; }
         protected override string WorkingDirectory => RawRootPath;
 
+        public string FxCompilerPath { get; set; }
+        public string FxProfile { get; set; } = "DirectX_11";
+
         public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, ILogger logger, string rawRootPath, string cacheRootPath)
             : base(graphicsDeviceService, logger, Path.Combine(cacheRootPath, "bin"))
         {
@@ -41,6 +44,28 @@ namespace Glyph.Pipeline
                 Profile = GraphicsProfile.HiDef,
                 Platform = TargetPlatform.Windows
             };
+
+            FxCompilerPath = ResolveFxCompilerPath();
+        }
+
+        static private string ResolveFxCompilerPath()
+        {
+            string ComputePath(Environment.SpecialFolder programFilesFolder)
+            {
+                return Path.Combine(Environment.GetFolderPath(programFilesFolder), @"MSBuild\\MonoGame\\v3.0\\Tools\\2MGFX.exe");
+            }
+
+            string path = ComputePath(Environment.SpecialFolder.Programs);
+            if (File.Exists(path))
+                return path;
+            path = ComputePath(Environment.SpecialFolder.ProgramFilesX86);
+            if (File.Exists(path))
+                return path;
+            path = ComputePath(Environment.SpecialFolder.ProgramFiles);
+            if (File.Exists(path))
+                return path;
+
+            return null;
         }
 
         protected override IAsset<T> CreateAsset<T>(string assetPath, LoadDelegate<T> loadDelegate)
@@ -74,7 +99,7 @@ namespace Glyph.Pipeline
 
         protected override async Task<Effect> LoadEffect(string assetPath, CancellationToken cancellationToken)
         {
-            if (await CopyEffect(assetPath))
+            if (await CompileEffect(assetPath))
                 return await base.LoadEffect(assetPath, cancellationToken);
             return null;
         }
@@ -135,24 +160,65 @@ namespace Glyph.Pipeline
             throw new NoProcessorException(assetPath);
         }
 
-        private async Task<bool> CopyEffect(string assetPath)
+        private async Task<bool> CompileEffect(string assetPath)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             try
             {
-                string inputPath = Path.GetFullPath(Path.Combine(RawRootPath, assetPath + ".mgfx"));
+                string inputPath = Path.GetFullPath(Path.Combine(RawRootPath, assetPath + ".fx"));
                 if (!File.Exists(inputPath))
                     return false; //throw new AssetNotFoundException(assetPath);
 
-                string outputPath = Path.GetFullPath(Path.Combine(RootPath, inputPath.Substring(RawRootPath.Length + 1)));
+                string outputPath = Path.ChangeExtension(Path.GetFullPath(Path.Combine(RootPath, inputPath.Substring(RawRootPath.Length + 1))), ".mgfx");
                 string outputFolderPath = Path.GetDirectoryName(outputPath);
                 if (outputFolderPath != null)
                     Directory.CreateDirectory(outputFolderPath);
 
-                await Task.Run(() => File.Copy(inputPath, outputPath, overwrite: true));
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = FxCompilerPath,
+                    Arguments = $"\"{inputPath}\" \"{outputPath}\" /Profile:{FxProfile}",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true
+                };
 
-                Logger.Info($"Copied {assetPath} ({stopwatch.ElapsedMilliseconds} ms)");
+                var process = new Process
+                {
+                    StartInfo = processStartInfo
+                };
+
+                await Task.Run(() =>
+                {
+                    process.Start();
+                    process.WaitForExit();
+                });
+
+                if (process.ExitCode != 0)
+                {
+                    string rootPathToRemove = RawRootPath.Replace("\\", "\\\\") + "\\\\";
+
+                    var errorMessages = new List<string>();
+                    while (true)
+                    {
+                        string error = await process.StandardError.ReadLineAsync();
+                        if (error == null)
+                            break;
+                        if (string.IsNullOrWhiteSpace(error))
+                            continue;
+
+                        errorMessages.Add(error.Replace(rootPathToRemove, ""));
+                    }
+
+                    Logger.Error($"Failed to compile {assetPath} (Profile: {FxProfile})");
+                    foreach (string errorMessage in errorMessages)
+                        Logger.Error(errorMessage);
+
+                    return false;
+                }
+                
+                Logger.Info($"Compiled {assetPath} ({stopwatch.ElapsedMilliseconds} ms, Profile: {FxProfile})");
                 return true;
             }
             finally
