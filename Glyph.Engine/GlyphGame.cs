@@ -122,8 +122,8 @@ namespace Glyph.Engine
 
             Engine.HandleInput();
 
-            if (!IsActive)
-                return;
+            //if (!IsActive)
+            //    return;
 
             Engine.Update();
         }
