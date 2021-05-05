@@ -109,7 +109,7 @@ namespace Glyph.UI.Guide
 
         private void HandleInput(ElapsedTime elapsedTime)
         {
-            bool isGamePadUsed = InputManager.Instance.InputSources.AnyOfType<GamePadSource>();
+            bool isGamePadUsed = InputManager.Instance.PressedInputSources.AnyOfType<GamePadSource>();
             if (IsGamePadUsed == isGamePadUsed)
                 return;
 
