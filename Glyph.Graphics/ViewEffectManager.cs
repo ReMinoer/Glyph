@@ -78,7 +78,7 @@ namespace Glyph.Graphics
         public void Apply(IDrawer drawer)
         {
             _renderStep = 0;
-            foreach (IEffectComponent effect in Effects.SelectMany(x => x.ChildrenQueue()))
+            foreach (IEffectComponent effect in Effects.SelectMany(x => x.AllChildren()))
             {
                 if (!effect.Enabled)
                     continue;

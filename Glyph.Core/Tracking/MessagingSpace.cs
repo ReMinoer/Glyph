@@ -64,7 +64,7 @@ namespace Glyph.Core.Tracking
         private void Interpret(ICompositionMessage<T> message)
         {
             Add(message.Instance);
-            foreach (T child in message.Instance.ChildrenQueue().OfType<T>())
+            foreach (T child in message.Instance.AllChildren().OfType<T>())
                 Add(child);
         }
 
@@ -81,7 +81,7 @@ namespace Glyph.Core.Tracking
         private void Interpret(IDecompositionMessage<T> message)
         {
             Remove(message.Instance);
-            foreach (T child in message.Instance.ChildrenQueue().OfType<T>())
+            foreach (T child in message.Instance.AllChildren().OfType<T>())
                 Remove(child);
         }
 

@@ -27,7 +27,7 @@ namespace Glyph.Tools
             if (!Enabled)
                 return;
 
-            foreach (IInteractive interactive in _interactionManager.Root.ChildrenQueue().Where(x => x.Enabled))
+            foreach (IInteractive interactive in _interactionManager.Root.AllChildren().Where(x => x.Enabled))
             {
                 if (InteractiveFilter != null && !InteractiveFilter(interactive))
                     continue;

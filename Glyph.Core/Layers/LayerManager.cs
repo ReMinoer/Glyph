@@ -36,7 +36,7 @@ namespace Glyph.Core.Layers
         public ILayerRoot<TLayer> GetLayerRoot(IGlyphComponent component)
         {
             foreach (ILayerRoot<TLayer> layerRoot in _layers.Keys)
-                if (layerRoot.Parent.ChildrenQueue().Contains(component))
+                if (layerRoot.Parent.AllChildren().Contains(component))
                     return layerRoot;
 
             return null;

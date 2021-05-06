@@ -7,39 +7,36 @@ namespace Glyph
 {
     static public class SceneNodeExtension
     {
-        static private IEnumerable<ISceneNode> GetChildrenNodes(ISceneNode x) => x.Children;
-        static private ISceneNode GetParentNode(ISceneNode x) => x.ParentNode;
-
-        static public IEnumerable<ISceneNode> ChildrenNodesQueueExclusive(this ISceneNode sceneNode)
+        static public IEnumerable<ISceneNode> AllChildNodes(this ISceneNode sceneNode)
         {
             if (sceneNode == null)
                 return Enumerable.Empty<ISceneNode>();
 
-            return Tree.BreadthFirstExclusive(sceneNode, GetChildrenNodes);
+            return Tree.BreadthFirstExclusive(sceneNode, x => x.Children);
         }
 
-        static public IEnumerable<ISceneNode> ChildrenNodesQueue(this ISceneNode sceneNode)
+        static public IEnumerable<ISceneNode> AndAllChildNodes(this ISceneNode sceneNode)
         {
             if (sceneNode == null)
                 return Enumerable.Empty<ISceneNode>();
 
-            return Tree.BreadthFirst(sceneNode, GetChildrenNodes);
+            return Tree.BreadthFirst(sceneNode, x => x.Children);
         }
         
-        static public IEnumerable<ISceneNode> ParentNodeQueueExclusive(this ISceneNode sceneNode)
+        static public IEnumerable<ISceneNode> AllParentNodes(this ISceneNode sceneNode)
         {
             if (sceneNode == null)
                 return Enumerable.Empty<ISceneNode>();
 
-            return Sequence.AggregateExclusive(sceneNode, GetParentNode);
+            return Sequence.AggregateExclusive(sceneNode, x => x.ParentNode);
         }
 
-        static public IEnumerable<ISceneNode> ParentNodeQueue(this ISceneNode sceneNode)
+        static public IEnumerable<ISceneNode> AndAllParentNodes(this ISceneNode sceneNode)
         {
             if (sceneNode == null)
                 return Enumerable.Empty<ISceneNode>();
 
-            return Sequence.Aggregate(sceneNode, GetParentNode);
+            return Sequence.Aggregate(sceneNode, x => x.ParentNode);
         }
 
         static public ISceneNode RootNode(this ISceneNode sceneNode)
@@ -64,12 +61,12 @@ namespace Glyph
             Stack<ISceneNode> descendants = null;
 
             ISceneNode sharedParent = null;
-            foreach (ISceneNode ascendant in sceneNode.ParentNodeQueueExclusive())
+            foreach (ISceneNode ascendant in sceneNode.AllParentNodes())
             {
                 if (descendants == null)
                 {
                     descendants = new Stack<ISceneNode>();
-                    foreach (ISceneNode descendant in space.ParentNodeQueue())
+                    foreach (ISceneNode descendant in space.AndAllParentNodes())
                     {
                         if (ascendant.Represent(descendant))
                         {
@@ -92,7 +89,7 @@ namespace Glyph
             }
 
             if (descendants == null)
-                descendants = new Stack<ISceneNode>(space.ParentNodeQueue());
+                descendants = new Stack<ISceneNode>(space.AndAllParentNodes());
             else if (sharedParent != null && descendants.Count > 0)
                 while (descendants.Pop() != sharedParent) { }
 

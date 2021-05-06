@@ -108,9 +108,9 @@ namespace Glyph.Tools
             if (areaComparison != 0)
                 return -areaComparison;
 
-            if (first.ParentQueue().Contains<IGlyphComponent>(second))
+            if (first.AllParents().Contains<IGlyphComponent>(second))
                 return 1;
-            if (second.ParentQueue().Contains<IGlyphComponent>(first))
+            if (second.AllParents().Contains<IGlyphComponent>(first))
                 return -1;
 
             return 0;

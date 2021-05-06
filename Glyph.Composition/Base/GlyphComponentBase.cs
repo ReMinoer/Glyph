@@ -25,13 +25,13 @@ namespace Glyph.Composition.Base
         public virtual bool Enabled { get; set; } = true;
 
         [Category(ComponentCategory.Activation)]
-        public bool Active => Enabled && this.ParentQueue().All(x => x.Enabled);
+        public bool Active => Enabled && this.AllParents().All(x => x.Enabled);
 
         [Category(ComponentCategory.Activation)]
         public virtual bool Visible { get; set; } = true;
 
         [Category(ComponentCategory.Activation)]
-        public bool Rendered => Visible && this.ParentQueue().All(x => x.Visible);
+        public bool Rendered => Visible && this.AllParents().All(x => x.Visible);
 
         [Category(ComponentCategory.Identification)]
         public Guid Id { get; }
@@ -59,7 +59,7 @@ namespace Glyph.Composition.Base
                     IMessage decompositionMessage = MessageHelper.BuildGeneric(typeof(DecompositionMessage<>), GetType(), t => t.GetConstructors().First(), this, Parent);
                     Router.Send(decompositionMessage);
 
-                    foreach (IGlyphComponent child in this.ChildrenQueue())
+                    foreach (IGlyphComponent child in this.AllChildren())
                     {
                         decompositionMessage = MessageHelper.BuildGeneric(typeof(DecompositionMessage<>), child.GetType(), t => t.GetConstructors().First(), child, child.Parent);
                         child.Router.Send(decompositionMessage);
@@ -74,7 +74,7 @@ namespace Glyph.Composition.Base
                     IMessage compositionMessage = MessageHelper.BuildGeneric(typeof(CompositionMessage<>), GetType(), t => t.GetConstructors().First(), this, Parent);
                     Router.Send(compositionMessage);
 
-                    foreach (IGlyphComponent child in this.ChildrenQueue())
+                    foreach (IGlyphComponent child in this.AllChildren())
                     {
                         compositionMessage = MessageHelper.BuildGeneric(typeof(CompositionMessage<>), child.GetType(), t => t.GetConstructors().First(), child, child.Parent);
                         child.Router.Send(compositionMessage);
@@ -127,7 +127,7 @@ namespace Glyph.Composition.Base
                 if ((injectable.Targets & ResolveTargets.BrowseAllAncestors) == 0)
                     continue;
 
-                if (e.LinkedChild.ParentQueue().Any(parent => InjectParentContext(injectable, parent)))
+                if (e.LinkedChild.AllParents().Any(parent => InjectParentContext(injectable, parent)))
                     injected.Add(injectable);
             }
 

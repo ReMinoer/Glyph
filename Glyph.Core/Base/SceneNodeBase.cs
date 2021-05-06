@@ -99,7 +99,7 @@ namespace Glyph.Core.Base
             if (IsInitialized || Parent == null)
                 return;
 
-            if (Parent.ParentQueue().SelectMany(x => x.Components).AnyOfType(out SceneNodeBase parentNode))
+            if (Parent.AllParents().SelectMany(x => x.Components).AnyOfType(out SceneNodeBase parentNode))
                 SetParent(parentNode, Referential.Local);
         }
 
