@@ -193,6 +193,9 @@ namespace Glyph.Engine
 
         public void Start()
         {
+            if (IsStarted && !IsPaused)
+                return;
+
             IsStarted = true;
             IsPaused = false;
             _elapsedTime.Resume();
@@ -203,6 +206,9 @@ namespace Glyph.Engine
 
         public void Stop()
         {
+            if (!IsStarted)
+                return;
+
             IsStarted = false;
             IsPaused = false;
             _elapsedTime.Pause();
@@ -213,11 +219,20 @@ namespace Glyph.Engine
 
         public void Pause()
         {
+            if (IsPaused)
+                return;
+
             IsPaused = true;
             _elapsedTime.Pause();
             Logger.Info("Pause engine");
 
             Paused?.Invoke();
+        }
+
+        public void PauseOnNextFrame()
+        {
+            Pause();
+            _elapsedTime.RequestNextFrame();
         }
     }
 }

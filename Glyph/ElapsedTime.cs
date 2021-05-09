@@ -5,6 +5,8 @@ namespace Glyph
 {
     public class ElapsedTime
     {
+        private bool _requestNextFrame;
+
         public GameTime GameTime { get; private set; }
         public bool IsPaused { get; private set; }
         public TimeSpan Total { get; private set; }
@@ -20,7 +22,7 @@ namespace Glyph
 
         public void Update(GameTime gameTime)
         {
-            if (IsPaused)
+            if (IsPaused && !_requestNextFrame)
             {
                 Delta = 0;
                 UnscaledDelta = 0;
@@ -46,6 +48,8 @@ namespace Glyph
                 Total += new TimeSpan((long)(gameTime.ElapsedGameTime.Ticks * Scale));
                 Delta = UnscaledDelta * Scale;
             }
+
+            _requestNextFrame = false;
         }
 
         public float GetDelta(ITimeUnscalable unscalable)
@@ -67,6 +71,11 @@ namespace Glyph
                 return;
 
             IsPaused = false;
+        }
+
+        public void RequestNextFrame()
+        {
+            _requestNextFrame = true;
         }
     }
 }
