@@ -22,7 +22,7 @@ namespace Glyph.Core
     {
         private bool _initialized;
         private bool _contentLoaded;
-        private readonly Dictionary<string, IGlyphComponent> _keyedComponents = new Dictionary<string, IGlyphComponent>();
+        private readonly Dictionary<object, IGlyphComponent> _keyedComponents = new Dictionary<object, IGlyphComponent>();
         protected internal readonly GlyphCompositeDependencyResolver Resolver;
 
         [Category(ComponentCategory.Automation)]
@@ -94,14 +94,15 @@ namespace Glyph.Core
                 Task.Run(async () => await loadingItem.LoadContent(Resolver.Resolve<IContentLibrary>())).Wait();
         }
 
-        public IGlyphComponent GetKeyedComponent(string key)
+        public T GetKeyedComponent<T>(object key)
+            where T : class, IGlyphComponent
         {
-            return _keyedComponents.TryGetValue(key, out IGlyphComponent component) ? component : null;
+            return _keyedComponents.TryGetValue(key, out IGlyphComponent component) ? (T)component : default(T);
         }
 
-        public bool SetKeyedComponent(string key, IGlyphComponent component)
+        public bool SetKeyedComponent(object key, IGlyphComponent component)
         {
-            IGlyphComponent currentComponent = GetKeyedComponent(key);
+            IGlyphComponent currentComponent = GetKeyedComponent<IGlyphComponent>(key);
             if (component == currentComponent)
                 return false;
 
@@ -113,7 +114,8 @@ namespace Glyph.Core
 
             if (component != null)
             {
-                Add(component);
+                if (!Contains(component))
+                    Add(component);
                 _keyedComponents[key] = component;
             }
 
@@ -169,7 +171,15 @@ namespace Glyph.Core
             _keyedComponents.Clear();
 
             base.Clear();
+        }
 
+        public void ClearAndDisposeComponents()
+        {
+            IGlyphComponent[] components = Components.ToArray();
+            Clear();
+
+            foreach (IGlyphComponent component in components)
+                component.Dispose();
         }
 
         public override sealed void Initialize()
