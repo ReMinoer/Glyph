@@ -10,13 +10,6 @@ namespace Glyph.Tests.Math
     static public class MathUtilsTest
     {
         [Test]
-        static public void FloatEquals()
-        {
-            Assert.IsTrue(MathUtils.FloatEquals(0, 0));
-            Assert.IsFalse(MathUtils.FloatEquals(float.Epsilon, 0));
-        }
-
-        [Test]
         static public void GetBoundingBox()
         {
             var pointA = new Vector2(-2, 1);

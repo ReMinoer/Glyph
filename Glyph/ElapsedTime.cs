@@ -38,7 +38,7 @@ namespace Glyph
             UnscaledTotal += gameTime.ElapsedGameTime;
             UnscaledDelta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (Scale >= 1 + float.Epsilon && Scale <= 1 - float.Epsilon)
+            if (Scale.EpsilonEquals(1))
             {
                 Total += gameTime.ElapsedGameTime;
                 Delta = UnscaledDelta;

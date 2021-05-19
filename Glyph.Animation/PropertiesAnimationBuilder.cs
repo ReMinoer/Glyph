@@ -117,7 +117,7 @@ namespace Glyph.Animation
             float x = a;
             float y = b;
 
-            while (!MathUtils.FloatEquals(x,y))
+            while (!x.EpsilonEquals(y, EpsilonUnit.Second))
             {
                 if (x < y)
                     x += a;

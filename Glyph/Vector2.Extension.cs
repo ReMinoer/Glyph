@@ -7,13 +7,12 @@ namespace Glyph
     {
         static public bool EpsilonEquals(this Vector2 value, Vector2 other)
         {
-            Vector2 diff = value - other;
-            return System.Math.Abs(diff.X) < float.Epsilon && System.Math.Abs(diff.Y) < float.Epsilon;
+            return (value - other).EqualsZero();
         }
 
         static public bool EqualsZero(this Vector2 value)
         {
-            return System.Math.Abs(value.X) < float.Epsilon && System.Math.Abs(value.Y) < float.Epsilon;
+            return value.X.EqualsZero() && value.Y.EqualsZero();
         }
 
         static public Vector2 Normalized(this Vector2 value)

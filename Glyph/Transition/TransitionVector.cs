@@ -118,7 +118,7 @@ namespace Glyph.Transition
         {
             get
             {
-                if (!(System.Math.Abs(_duration - _tempDuration) > float.Epsilon) || (!IsEnd && !IsWaiting))
+                if (_duration.EpsilonEquals(_tempDuration) || (!IsEnd && !IsWaiting))
                     return _duration;
 
                 _duration = _tempDuration;
@@ -132,7 +132,7 @@ namespace Glyph.Transition
                 _tempDuration = value;
                 _isAttributeInit[2] = true;
 
-                if (!(System.Math.Abs(_duration - _tempDuration) > float.Epsilon) || (!IsEnd && !IsWaiting))
+                if (_duration.EpsilonEquals(_tempDuration) || (!IsEnd && !IsWaiting))
                     return;
 
                 _duration = _tempDuration;
@@ -157,7 +157,7 @@ namespace Glyph.Transition
         {
             get
             {
-                if (!(System.Math.Abs(_delay - _tempDelay) > float.Epsilon) || (IsWaiting && _isInit))
+                if (_delay.EpsilonEquals(_tempDelay) || (IsWaiting && _isInit))
                     return _delay;
 
                 _delay = _tempDelay;
@@ -168,7 +168,7 @@ namespace Glyph.Transition
             {
                 _tempDelay = value;
 
-                if (!(System.Math.Abs(_delay - _tempDelay) > float.Epsilon) || (IsWaiting && _isInit))
+                if (_delay.EpsilonEquals(_tempDelay) || (IsWaiting && _isInit))
                     return;
 
                 _delay = _tempDelay;
@@ -196,7 +196,7 @@ namespace Glyph.Transition
 
         public bool IsWaiting
         {
-            get { return _elapsedDelay < _delay || System.Math.Abs(ElapsedTime) < float.Epsilon; }
+            get { return _elapsedDelay < _delay || ElapsedTime.EqualsZero(); }
         }
 
         private bool IsAllAttributesInit
