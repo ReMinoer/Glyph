@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public sealed class SpriteSheetSplit : GlyphComposite<SpriteSheet>, ISpriteSheet, ILoadContent
+    public sealed class SpriteSheetSplit : GlyphComposite<SpriteSheet>, ISpriteSheet, ILoadContent, IUpdate
     {
         private readonly IContentLibrary _contentLibrary;
         private bool _loadedContent;
@@ -51,16 +51,22 @@ namespace Glyph.Graphics
         
         public void Add(string assetPath)
         {
-            Add(new SpriteSheet(_contentLibrary)
+            var spriteSheet = new SpriteSheet(_contentLibrary)
             {
                 AssetPath = assetPath
-            });
+            };
+            spriteSheet.Loaded += OnSpriteSheetLoaded;
+
+            Add(spriteSheet);
         }
 
         public async Task LoadContent(IContentLibrary contentLibrary)
         {
             await Task.WhenAll(Components.Select(async x => await x.LoadContent(contentLibrary)));
-            
+        }
+
+        private void OnSpriteSheetLoaded(ISpriteSource obj)
+        {
             if (Carver != null)
                 foreach (SpriteSheet spriteSheet in Components)
                     spriteSheet.ApplyCarver(Carver);
@@ -130,6 +136,12 @@ namespace Glyph.Graphics
         {
             public Texture2D Texture { get; set; }
             public Rectangle Rectangle { get; set; }
+        }
+
+        public void Update(ElapsedTime elapsedTime)
+        {
+            foreach (SpriteSheet spriteSheet in Components)
+                spriteSheet.Update(elapsedTime);
         }
     }
 }

@@ -90,42 +90,46 @@ namespace Glyph.Content
 
         protected virtual Task<T> Load<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            ContentManager contentManager = _contentManagerPool.GetContentManager();
+            Stopwatch stopwatch = null;
             try
             {
-                T content = loadingFunc(contentManager, assetPath);
-
                 cancellationToken.ThrowIfCancellationRequested();
 
-                _usedContentManagers.TryAdd(assetPath, contentManager);
-                LogLoadingTime(assetPath, stopwatch);
+                stopwatch = Stopwatch.StartNew();
+                ContentManager contentManager = _contentManagerPool.GetContentManager();
+                try
+                {
+                    T content = loadingFunc(contentManager, assetPath);
 
-                return Task.FromResult(content);
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    _usedContentManagers.TryAdd(assetPath, contentManager);
+                    LogLoadingTime(assetPath, stopwatch);
+
+                    return Task.FromResult(content);
+                }
+                catch (Exception)
+                {
+                    TryReconditionContentManager(assetPath);
+                    throw;
+                }
             }
-            catch (Exception e)
+            catch (OperationCanceledException)
             {
-                TryReconditionContentManager(assetPath);
-
-                if (e is OperationCanceledException)
-                    LogCancellationTime(assetPath, stopwatch);
-
+                LogCancellationTime(assetPath, stopwatch);
                 throw;
             }
         }
 
         protected virtual async Task<Effect> LoadEffect(string assetPath, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            await _effectLock.WaitAsync(cancellationToken);
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
+            Stopwatch stopwatch = null;
             try
             {
+                await _effectLock.WaitAsync(cancellationToken);
+
+                stopwatch = Stopwatch.StartNew();
+
                 string effectFilePath = Path.Combine(RootPath, assetPath + ".mgfx");
 
                 using (FileStream fileStream = File.OpenRead(effectFilePath))
@@ -160,8 +164,8 @@ namespace Glyph.Content
 
         private void LogCancellationTime(string assetRelativePath, Stopwatch stopwatch)
         {
-            stopwatch.Stop();
-            Logger.Info($"Loading {assetRelativePath} cancelled ({stopwatch.ElapsedMilliseconds} ms)");
+            stopwatch?.Stop();
+            Logger.Info($"Canceled loading of {assetRelativePath} ({stopwatch?.ElapsedMilliseconds ?? 0} ms)");
         }
 
         private void OnAssetContentChanged(object sender, EventArgs e)

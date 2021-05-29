@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class SpriteSheet : GlyphContainer, ISpriteSheet, ILoadContent
+    public class SpriteSheet : GlyphContainer, ISpriteSheet, ILoadContent, IUpdate
     {
         private readonly SpriteLoader _spriteLoader;
         private int _currentFrame;
@@ -44,6 +44,8 @@ namespace Glyph.Graphics
         public SpriteSheet(IContentLibrary contentLibrary)
         {
             _spriteLoader = new SpriteLoader(contentLibrary);
+            _spriteLoader.Loaded += OnSpriteLoaded;
+
             Components.Add(_spriteLoader);
 
             Frames = new List<Rectangle>();
@@ -52,7 +54,10 @@ namespace Glyph.Graphics
         public async Task LoadContent(IContentLibrary contentLibrary)
         {
             await _spriteLoader.LoadContent(contentLibrary);
+        }
 
+        private void OnSpriteLoaded(ISpriteSource obj)
+        {
             if (Carver != null)
                 ApplyCarver(Carver);
 
@@ -96,6 +101,11 @@ namespace Glyph.Graphics
             Rectangle = FramesCount > 0
                 ? GetFrameRectangle(CurrentFrame)
                 : Microsoft.Xna.Framework.Rectangle.Empty;
+        }
+
+        public void Update(ElapsedTime elapsedTime)
+        {
+            _spriteLoader.Update(elapsedTime);
         }
     }
 }

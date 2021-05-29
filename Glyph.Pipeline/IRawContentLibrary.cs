@@ -5,7 +5,7 @@ namespace Glyph.Pipeline
 {
     public interface IRawContentLibrary : IContentLibrary
     {
-        ICollection<string> GetRawFilesPaths(string assetPath);
         IEnumerable<string> GetSupportedFileExtensions(Type type);
+        void CleanCookedAssets();
     }
 }
