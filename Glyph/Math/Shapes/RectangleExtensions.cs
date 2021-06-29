@@ -144,5 +144,21 @@ namespace Glyph.Math.Shapes
 
             return inner;
         }
+
+        static public TopLeftRectangle Inflate(this TopLeftRectangle rectangle, Vector2 amount) => Inflate((CenteredRectangle)rectangle, amount.X, amount.Y);
+        static public TopLeftRectangle Inflate(this TopLeftRectangle rectangle, float widthAmount, float heightAmount) => Inflate((CenteredRectangle)rectangle, widthAmount, heightAmount);
+        static public CenteredRectangle Inflate(this CenteredRectangle rectangle, Vector2 amount) => Inflate(rectangle, amount.X, amount.Y);
+        static public CenteredRectangle Inflate(this CenteredRectangle rectangle, float widthAmount, float heightAmount)
+        {
+            float width = rectangle.Width + widthAmount;
+            if (width < 0)
+                width = 0;
+
+            float height = rectangle.Height + heightAmount;
+            if (height < 0)
+                height = 0;
+
+            return new CenteredRectangle(rectangle.Center, width, height);
+        }
     }
 }

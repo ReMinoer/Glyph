@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using Glyph.Animation;
 using Glyph.Animation.Motors.Base;
+using Glyph.Animation.Parallax;
 using Glyph.Animation.Trajectories.Players;
 using Glyph.Audio;
 using Glyph.Core;
 using Glyph.Core.Colliders;
-using Glyph.Core.Layers;
 using Glyph.Graphics;
 using Glyph.Graphics.Renderer.Base;
 using Glyph.Graphics.Shapes;
@@ -25,7 +25,8 @@ namespace Glyph.Application
 
                 .BeginWith<SceneNode>()
                 .Then<PositionBinding>()
-                .Then<ILayerRoot>()
+                .Then<ParallaxRoot>()
+                .Then<ParallaxLayer>()
                 .Then<ITrajectoryPlayer>()
                 .Then<MotorBase>()
                 .Then<Motion>()
@@ -66,6 +67,7 @@ namespace Glyph.Application
             AddSequence(scheduler)
 
                 .BeginWith<PositionBinding>()
+                .Then<ParallaxLayer>()
                 .Then<ITrajectoryPlayer>()
                 .Then<MotorBase>()
                 .Then<Motion>()

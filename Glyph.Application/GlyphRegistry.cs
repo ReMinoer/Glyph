@@ -3,11 +3,11 @@ using Niddle;
 using Fingear.MonoGame;
 using Glyph.Animation;
 using Glyph.Animation.Motors;
+using Glyph.Animation.Parallax;
 using Glyph.Audio;
 using Glyph.Core;
 using Glyph.Core.Colliders;
 using Glyph.Core.Inputs;
-using Glyph.Core.Layers;
 using Glyph.Core.Resolvers;
 using Glyph.Core.Schedulers;
 using Glyph.Core.Tracking;
@@ -24,6 +24,7 @@ using Glyph.Scripting;
 using Glyph.Tools;
 using Glyph.Tools.Brushing.Controllers;
 using Glyph.Tools.Brushing.Decorators.Cursors;
+using Glyph.Tools.Parallax;
 using Glyph.Tools.Transforming;
 using Glyph.UI;
 using Glyph.UI.Menus;
@@ -94,9 +95,6 @@ namespace Glyph.Application
                 Type<AnchoredSceneNode>(),
                 Type<PositionBinding>(),
 
-                Generic(typeof(LayerRoot<>)),
-                Generic(typeof(ILayerRoot<>)).LinkedTo(typeof(LayerRoot<>)),
-
                 Type<Camera>(),
                 Type<TargetView>(),
                 Type<FillView>(),
@@ -120,6 +118,9 @@ namespace Glyph.Application
                 Type<MeasurableTrajectoryMotor>(),
                 Generic(typeof(AnimationGraph<,>)),
                 Generic(typeof(AnimationPlayer<>)),
+
+                Type<ParallaxRoot>(),
+                Type<ParallaxLayer>(),
 
                 #endregion
 
@@ -214,6 +215,8 @@ namespace Glyph.Application
                 Type<EngineCursorBrushController>(),
                 Type<DataCursorBrushController>(),
                 Type<GridCursor>(),
+
+                Type<ParallaxManipulator>(),
 
                 #endregion
 

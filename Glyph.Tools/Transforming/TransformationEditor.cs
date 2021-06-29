@@ -3,21 +3,20 @@ using Glyph.Core;
 using Glyph.Graphics.Meshes;
 using Glyph.Math.Shapes;
 using Glyph.Tools.Base;
-using Glyph.UI;
+using Glyph.Tools.Transforming.Base;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class TransformationEditor : GlyphObject, IIntegratedEditor<IAnchoredTransformationController>
+    public class TransformationEditor : AnchoredEditorBase<IAnchoredTransformationController>
     {
         public const float Unit = 100;
-
-        private readonly AnchoredSceneNode _anchoredSceneNode;
+        
         private readonly List<AdvancedPositionHandle> _positionHandles;
         private readonly List<AdvancedRotationHandle> _rotationHandles;
         private readonly List<AdvancedScaleHandle> _scaleHandles;
 
-        private IEnumerable<IHandle> Handles
+        protected override IEnumerable<IHandle> Handles
         {
             get
             {
@@ -29,60 +28,20 @@ namespace Glyph.Tools.Transforming
                     yield return handle;
             }
         }
-
-        private IAnchoredTransformationController _editedObject;
-        public IAnchoredTransformationController EditedObject
-        {
-            get => _editedObject;
-            set
-            {
-                _editedObject = value;
-                _anchoredSceneNode.AnchorNode = _editedObject.Anchor;
-                _anchoredSceneNode.IgnoreRotation = !_editedObject.OrientedReferential;
-
-                ConfigureHandles(_positionHandles, _editedObject.PositionController);
-                ConfigureHandles(_rotationHandles, _editedObject.RotationController);
-                ConfigureHandles(_scaleHandles, _editedObject.ScaleController);
-
-                void ConfigureHandles<THandle, TController>(IEnumerable<THandle> handles, TController controller)
-                    where THandle : class, IHandle<TController>
-                {
-                    bool hasController = controller != null;
-                    foreach (THandle handle in handles)
-                    {
-                        handle.EditedObject = controller;
-                        handle.Enabled = hasController;
-                        handle.Visible = hasController;
-                    }
-                }
-            }
-        }
         
-        object IIntegratedEditor.EditedObject => EditedObject;
-
-        private IDrawClient _raycastClient;
-        public IDrawClient RaycastClient
+        public override IAnchoredTransformationController EditedObject
         {
-            get => _raycastClient;
+            get => base.EditedObject;
             set
             {
-                _raycastClient = value;
-
-                foreach (IHandle handle in Handles)
-                    handle.RaycastClient = _raycastClient;
+                base.EditedObject = value;
+                AnchoredSceneNode.IgnoreRotation = !EditedObject.OrientedReferential;
             }
         }
 
         public TransformationEditor(GlyphResolveContext context)
             : base(context)
         {
-            _anchoredSceneNode = Add<AnchoredSceneNode>();
-            _anchoredSceneNode.IgnoreRotation = true;
-            _anchoredSceneNode.IgnoreScale = true;
-            _anchoredSceneNode.ProjectionConfiguration = x => x.WithViewDepthMax(1);
-
-            Add<UserInterface>();
-
             const float u = Unit;
             const float cursorSize = u / 16;
             float radius = (new Vector2(2.5f, 2.5f) * u).Length();
@@ -123,8 +82,8 @@ namespace Glyph.Tools.Transforming
             rotationHandle.HoverMeshes.Add(rotationCursor = new EllipseMesh(Color.Green, Vector2.UnitY * radius, cursorSize));
             rotationHandle.Schedulers.Update.Plan(_ =>
             {
-                if (_editedObject.OrientedReferential)
-                    rotationCursor.Center = _anchoredSceneNode.AnchorNode.Rotation.ToRotatedVector() * radius;
+                if (EditedObject.OrientedReferential)
+                    rotationCursor.Center = AnchoredSceneNode.AnchorNode.Rotation.ToRotatedVector() * radius;
                 else
                     rotationCursor.Center = Vector2.UnitX * radius;
             });
@@ -145,11 +104,25 @@ namespace Glyph.Tools.Transforming
             {
                 scaleHandle
             };
+        }
 
-            //Schedulers.Draw.Plan(horizontalHandle).After(positionHandle);
-            //Schedulers.Draw.Plan(verticalHandle).After(positionHandle);
-            //Schedulers.Draw.Plan(scaleHandle).After(positionHandle);
-            //Schedulers.Draw.Plan(positionHandle).After(rotationHandle);
+        protected override void AssignEditedObjectToHandles(IAnchoredTransformationController editedObject)
+        {
+            ConfigureHandles(_positionHandles, EditedObject.PositionController);
+            ConfigureHandles(_rotationHandles, EditedObject.RotationController);
+            ConfigureHandles(_scaleHandles, EditedObject.ScaleController);
+        }
+
+        static private void ConfigureHandles<THandle, TController>(IEnumerable<THandle> handles, TController controller)
+            where THandle : class, IHandle<TController>
+        {
+            bool hasController = controller != null;
+            foreach (THandle handle in handles)
+            {
+                handle.EditedObject = controller;
+                handle.Enabled = hasController;
+                handle.Visible = hasController;
+            }
         }
     }
 }

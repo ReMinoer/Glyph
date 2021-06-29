@@ -1,4 +1,5 @@
-﻿using Glyph.Core;
+﻿using System;
+using Glyph.Core;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Tools.Transforming.Base;
@@ -12,6 +13,7 @@ namespace Glyph.Tools.Transforming
         private Vector2 _relativeGrabPosition;
 
         public Axes Axes { get; set; } = Axes.Both;
+        public Func<Vector2, Vector2> Revaluation { get; set; }
 
         public AdvancedPositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context, projectionManager)
@@ -29,6 +31,9 @@ namespace Glyph.Tools.Transforming
         protected override void OnDragging(Vector2 projectedCursorPosition)
         {
             projectedCursorPosition -= _relativeGrabPosition;
+
+            if (Revaluation != null)
+                projectedCursorPosition = Revaluation(projectedCursorPosition);
 
             switch (Axes)
             {
