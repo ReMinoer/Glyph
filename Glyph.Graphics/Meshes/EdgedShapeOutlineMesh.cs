@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Diese.Collections.ReadOnly;
 using Glyph.Graphics.Meshes.Base;
@@ -21,6 +22,9 @@ namespace Glyph.Graphics.Meshes
             get => _shape;
             set
             {
+                if (_shape.Equals(value))
+                    return;
+
                 _shape = value;
 
                 Vector2[] vertices = GetVertices().ToArray();
@@ -34,12 +38,19 @@ namespace Glyph.Graphics.Meshes
         protected override IReadOnlyList<Vector2> ReadOnlyVertices => _readOnlyVertices;
         protected override IReadOnlyList<Vector2> ReadOnlyTextureCoordinates => _readOnlyTextureCoordinates;
         protected override IReadOnlyList<int> ReadOnlyIndices => null;
-        public override int VertexCount => Shape.VertexCount + 1;
 
         protected override bool IsStrip => true;
 
         public EdgedShapeOutlineMesh()
         {
+            _readOnlyVertices = new ReadOnlyList<Vector2>(Array.Empty<Vector2>());
+            _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(Array.Empty<Vector2>());
+        }
+
+        public EdgedShapeOutlineMesh(Color color)
+            : this()
+        {
+            Colors = new[] { color };
         }
 
         public EdgedShapeOutlineMesh(TEdgedShape shape)
@@ -48,8 +59,8 @@ namespace Glyph.Graphics.Meshes
         }
 
         public EdgedShapeOutlineMesh(Color color, TEdgedShape shape)
-            : this(shape)
         {
+            Shape = shape;
             Colors = new[] { color };
         }
 
