@@ -23,7 +23,7 @@ namespace Glyph.Core
         private bool _initialized;
         private bool _contentLoaded;
         private readonly Dictionary<object, IGlyphComponent> _keyedComponents = new Dictionary<object, IGlyphComponent>();
-        protected internal readonly GlyphCompositeDependencyResolver Resolver;
+        public GlyphCompositeDependencyResolver Resolver { get; }
 
         [Category(ComponentCategory.Automation)]
         public ComponentSchedulerHandler Schedulers { get; }
@@ -36,6 +36,8 @@ namespace Glyph.Core
 
         [Category(ComponentCategory.Automation)]
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
+
+        public IArea Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));
 
         public GlyphObject(GlyphResolveContext context)
         {
@@ -206,7 +208,5 @@ namespace Glyph.Core
             await Schedulers.LoadContent.RunScheduleAsync(contentLibrary);
             _contentLoaded = true;
         }
-
-        IArea IBoxedComponent.Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));
     }
 }
