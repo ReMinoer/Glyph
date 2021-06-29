@@ -10,11 +10,12 @@ namespace Glyph.Core
     {
         // TODO: Update scene node parent when changing camera parent
         private readonly SceneNode _sceneNode;
-        private float _zoom;
-        
+        public ISceneNode SceneNode { get; }
+
         private ITransformation Transformation { get; set; }
         public ITransformation RenderTransformation { get; private set; }
 
+        private float _zoom;
         public float Zoom
         {
             get => _zoom;
@@ -40,8 +41,17 @@ namespace Glyph.Core
             set => _sceneNode.LocalRotation = value;
         }
 
-        public Vector2 Position => _sceneNode.Position;
-        public float Rotation => _sceneNode.Rotation;
+        public Vector2 Position
+        {
+            get => _sceneNode.Position;
+            set => _sceneNode.Position = value;
+        }
+
+        public float Rotation
+        {
+            get => _sceneNode.Rotation;
+            set => _sceneNode.Rotation = value;
+        }
 
         Vector2 ITransformation.Translation => Transformation.Translation;
         float ITransformation.Rotation => Transformation.Rotation;
@@ -53,6 +63,8 @@ namespace Glyph.Core
         public Camera()
         {
             Components.Add(_sceneNode = new SceneNode());
+
+            SceneNode = new ReadOnlySceneNode(_sceneNode);
             Zoom = 1f;
 
             _sceneNode.Refreshed += OnSceneNodeRefreshed;
