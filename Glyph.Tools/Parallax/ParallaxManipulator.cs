@@ -142,11 +142,17 @@ namespace Glyph.Tools.Parallax
                 ISceneNode handleReferential = AnchoredSceneNode;
                 ISceneNode parallaxReferential = Settings.ParallaxRoot.Referential;
 
-                Vector2 parallaxPosition = _projectionManager.ProjectFromPosition(handleReferential, handlePosition).To(parallaxReferential).First().Value;
-                Vector2 clampedParallaxPosition = parallaxPosition.ClampToRectangle(Settings.MainLayerRectangle.Inflate(-Settings.DisplayedSize));
-                Vector2 clampedHandlePosition = _projectionManager.ProjectFromPosition(parallaxReferential, clampedParallaxPosition).To(handleReferential).First().Value;
+                Vector2? parallaxPosition = _projectionManager.ProjectFromPosition(handleReferential, handlePosition).To(parallaxReferential).FirstOrDefault()?.Value;
+                if (parallaxPosition is null)
+                    return handlePosition;
 
-                return clampedHandlePosition;
+                Vector2 clampedParallaxPosition = parallaxPosition.Value.ClampToRectangle(Settings.MainLayerRectangle.Inflate(-Settings.DisplayedSize));
+
+                Vector2? clampedHandlePosition = _projectionManager.ProjectFromPosition(parallaxReferential, clampedParallaxPosition).To(handleReferential).FirstOrDefault()?.Value;
+                if (clampedHandlePosition is null)
+                    return handlePosition;
+
+                return clampedHandlePosition.Value;
             }
 
             private void UpdateDisplayedRectangleOutline(ElapsedTime elapsedTime)
