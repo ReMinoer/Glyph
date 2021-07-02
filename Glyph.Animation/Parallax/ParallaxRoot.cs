@@ -17,13 +17,22 @@ namespace Glyph.Animation.Parallax
 
         public void UpdateLayer(ParallaxLayer layer)
         {
+            if (PointOfView == null)
+            {
+                layer.LocalPosition = layer.StartLocalPosition;
+                return;
+            }
+
             float layerDepth = layer.Depth;
             if (layerDepth < MinimumDepth)
                 layerDepth = MinimumDepth;
 
             float depthDifference = layerDepth - Referential.Depth;
             if (depthDifference.EqualsZero())
+            {
+                layer.LocalPosition = layer.StartLocalPosition;
                 return;
+            }
 
             float minDepthDifference = MinimumDepth - Referential.Depth;
             float parallaxCoefficient = depthDifference / minDepthDifference;

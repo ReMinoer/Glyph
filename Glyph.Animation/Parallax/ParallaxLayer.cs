@@ -30,6 +30,8 @@ namespace Glyph.Animation.Parallax
         {
             base.Initialize();
             StartLocalPosition = LocalPosition;
+
+            ParallaxRoot.UpdateLayer(this);
         }
 
         public void Update(ElapsedTime elapsedTime)
