@@ -37,7 +37,7 @@ namespace Glyph.Core
         [Category(ComponentCategory.Automation)]
         public IFilter<IDrawClient> DrawClientFilter { get; set; }
 
-        public IArea Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));
+        public virtual IArea Area => MathUtils.GetBoundingBox(Components.OfType<IBoxedComponent>().Select(x => x.Area));
 
         public GlyphObject(GlyphResolveContext context)
         {
