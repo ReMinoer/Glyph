@@ -18,12 +18,6 @@ namespace Glyph.Space
         public Vector2 Delta => _grid.Delta;
         public GridDimension Dimension => _grid.Dimension;
 
-        public ITransformation Transformation
-        {
-            get => _grid.Transformation;
-            set => _grid.Transformation = value;
-        }
-
         public bool HasLowEntropy => _grid.HasLowEntropy;
         public IEnumerable<T> Values => _grid.Values;
         public IEnumerable<IGridCase<T>> SignificantCases => _grid.SignificantCases;

@@ -38,7 +38,17 @@ namespace Glyph.Space
         }
 
         public Vector2 Delta { get; set; }
-        public Quad Shape => Transformation.Transform(new TopLeftRectangle(Vector2.Zero, Delta * Dimension));
+        public Quad Shape
+        {
+            get
+            {
+                var shape = new TopLeftRectangle(Vector2.Zero, Delta * Dimension);
+                if (Transformation != null)
+                    return Transformation.Transform(shape);
+
+                return shape;
+            }
+        }
 
         public bool IsVoid => (Dimension.Columns == 0 && Dimension.Rows == 0) || Delta == Vector2.Zero;
         public TopLeftRectangle BoundingBox => Shape.BoundingBox;
@@ -76,16 +86,18 @@ namespace Glyph.Space
 
         public Vector2 ToWorldPoint(Point gridPoint)
         {
-            if (Transformation != null)
-                return Transformation.Transform(Delta.Integrate(gridPoint));
+            Vector2 worldPoint = Delta.Integrate(gridPoint);
 
-            return Delta.Integrate(gridPoint);
+            if (Transformation != null)
+                return Transformation.Transform(worldPoint);
+
+            return worldPoint;
         }
 
         public Point ToGridPoint(Vector2 worldPoint)
         {
             if (Transformation != null)
-                return Delta.Discretize(Transformation.InverseTransform(worldPoint));
+                worldPoint = Transformation.InverseTransform(worldPoint);
 
             return Delta.Discretize(worldPoint); 
         }
@@ -102,11 +114,7 @@ namespace Glyph.Space
         public override sealed GridDimension Dimension
         {
             get => new GridDimension(_data.Lengths[1], _data.Lengths[0]);
-            set
-            {
-                _data.Resize(value.ToArray(), keepValues: true, _defaultCellValueFactory);
-                base.Dimension = value;
-            }
+            set => Resize(value.ToArray());
         }
 
         public GridDimension Capacities
@@ -119,24 +127,29 @@ namespace Glyph.Space
         protected override IEnumerable<IGridCase<T>> SignificantCasesProtected => new Enumerable<IGridCase<T>>(new Enumerator(this));
 
         public Grid(int columns, int rows, Vector2 delta, Func<T, int[], T> defaultCellValueFactory = null)
-            : base(columns, rows, delta)
+            : this(new TwoDimensionArray<T>(new T[rows, columns]), delta, defaultCellValueFactory)
         {
-            _data = new TwoDimensionArray<T>(new T[rows, columns]);
-            _defaultCellValueFactory = defaultCellValueFactory;
-
             _data.Fill(_defaultCellValueFactory ?? ((_, __) => default));
         }
 
-        public Grid(TwoDimensionArray<T> data, Vector2 delta)
+        public Grid(TwoDimensionArray<T> data, Vector2 delta, Func<T, int[], T> defaultCellValueFactory = null)
             : base(data.Lengths[1], data.Lengths[0], delta)
         {
             _data = data;
+            _defaultCellValueFactory = defaultCellValueFactory;
+
+            _data.ArrayChanged += OnArrayChanged;
+        }
+
+        private void OnArrayChanged(object sender, ArrayChangedEventArgs e)
+        {
+            if (e.Action == ArrayChangedAction.Resize)
+                base.Dimension = new GridDimension(e.NewLengths[1], e.NewLengths[0]);
         }
 
         public override void Resize(int[] newLengths, bool keepValues = true, Func<T, int[], T> valueFactory = null)
         {
             _data.Resize(newLengths, keepValues, valueFactory ?? _defaultCellValueFactory);
-            base.Dimension = new GridDimension(newLengths[1], newLengths[0]);
         }
 
         protected override T GetValue(int i, int j) => _data[i, j];

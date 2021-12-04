@@ -18,11 +18,6 @@ namespace Glyph.Space
 
         public GridDimension Dimension => Grid.Dimension;
         public Vector2 Delta => Grid.Delta;
-        public ITransformation Transformation
-        {
-            get => Grid.Transformation;
-            set => Grid.Transformation = value;
-        }
 
         public bool HasLowEntropy => Grid.HasLowEntropy;
 

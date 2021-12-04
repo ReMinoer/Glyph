@@ -118,12 +118,6 @@ namespace Glyph.Space
             set => _gridImplementation.Delta = value;
         }
 
-        public ITransformation Transformation
-        {
-            get => _gridImplementation.Transformation;
-            set => _gridImplementation.Transformation = value;
-        }
-
         public bool IsVoid => _gridImplementation.IsVoid;
         public IEnumerable<IGridCase<T>> DirtiedCases => _readOnlyDirtiedCases;
         public TopLeftRectangle BoundingBox => _gridImplementation.BoundingBox;

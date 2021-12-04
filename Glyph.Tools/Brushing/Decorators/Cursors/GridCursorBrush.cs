@@ -37,7 +37,7 @@ namespace Glyph.Tools.Brushing.Decorators.Cursors
         {
             base.Update(canvas, args, paint);
 
-            _gridCursor.Rectangle = canvas.Transformation.Transform(new CenteredRectangle(args.GridPoint.ToVector2() * canvas.Delta + canvas.Delta / 2, canvas.Delta * Size.ToVector2()));
+            _gridCursor.Rectangle = canvas.ToWorldRange(args.GridPoint.X, args.GridPoint.Y, Size.X, Size.Y);
         }
 
         public override void StartApply(TCanvas canvas, TArgs args, TPaint paint)
