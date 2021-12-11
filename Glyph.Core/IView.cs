@@ -15,5 +15,6 @@ namespace Glyph.Core
         Matrix RenderMatrix { get; }
         RenderScheduler RenderScheduler { get; }
         event EventHandler<Vector2> SizeChanged;
+        event EventHandler<ICamera> CameraChanged;
     }
 }

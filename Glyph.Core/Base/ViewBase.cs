@@ -29,6 +29,8 @@ namespace Glyph.Core.Base
                 if (_camera != null)
                     _camera.TransformationChanged += OnCameraTransformationChanged;
 
+                CameraChanged?.Invoke(this, _camera);
+
                 void OnCameraTransformationChanged(object sender = null, EventArgs e = null) => RefreshComputedProperties();
             }
         }
@@ -54,6 +56,7 @@ namespace Glyph.Core.Base
         ISceneNode IDrawTask.SceneNode => SceneNode;
 
         public abstract event EventHandler<Vector2> SizeChanged;
+        public event EventHandler<ICamera> CameraChanged;
         public event EventHandler TransformationChanged;
         public abstract event EventHandler RenderDepthChanged;
 
