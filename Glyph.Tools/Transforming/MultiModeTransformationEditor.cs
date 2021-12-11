@@ -31,6 +31,12 @@ namespace Glyph.Tools.Transforming
             set => _transformationEditor.RaycastClient = value;
         }
 
+        public ISceneNode ParentNode
+        {
+            get => _transformationEditor.ParentNode;
+            set => _transformationEditor.ParentNode = value;
+        }
+
         private int _selectedModeIndex;
         public int SelectedModeIndex
         {

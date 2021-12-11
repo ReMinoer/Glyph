@@ -40,6 +40,12 @@ namespace Glyph.Tools.Transforming.Base
                     handle.RaycastClient = _raycastClient;
             }
         }
+        
+        public ISceneNode ParentNode
+        {
+            get => AnchoredSceneNode.ParentNode;
+            set => AnchoredSceneNode.SetParent(value);
+        }
 
         protected AnchoredEditorBase(GlyphResolveContext context)
             : base(context)
