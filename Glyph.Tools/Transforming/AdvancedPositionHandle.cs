@@ -3,13 +3,15 @@ using Glyph.Core;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Tools.Transforming.Base;
+using Microsoft.Xna.Framework;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Glyph.Tools.Transforming
 {
-    public class AdvancedPositionHandle : AdvancedHandleBase<IAnchoredPositionController>
+    public abstract class AdvancedPositionHandle<TController> : AdvancedHandleBase<TController>
+        where TController : IAnchoredController
     {
-        private Vector2 _startPosition;
+        protected Vector2 _startPosition;
         private Vector2 _relativeGrabPosition;
 
         public Axes Axes { get; set; } = Axes.Both;
@@ -24,7 +26,7 @@ namespace Glyph.Tools.Transforming
         {
             base.OnGrabbed(cursorPosition);
 
-            _startPosition = EditedObject.Position;
+            _startPosition = GetPosition();
             _relativeGrabPosition = ProjectToTargetScene(cursorPosition - _sceneNode.Position + _sceneNode.LocalPosition);
         }
         
@@ -38,13 +40,13 @@ namespace Glyph.Tools.Transforming
             switch (Axes)
             {
                 case Axes.Both:
-                    EditedObject.Position = projectedCursorPosition;
+                    SetPosition(projectedCursorPosition);
                     break;
                 case Axes.Horizontal:
-                    EditedObject.Position = GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitX);
+                    SetPosition(GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitX));
                     break;
                 case Axes.Vertical:
-                    EditedObject.Position = GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitY);
+                    SetPosition(GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitY));
                     break;
             }
         }
@@ -57,7 +59,77 @@ namespace Glyph.Tools.Transforming
         protected override void OnCancelled()
         {
             base.OnCancelled();
-            EditedObject.Position = _startPosition;
+            SetPosition(_startPosition);
+        }
+
+        protected abstract Vector2 GetPosition();
+        protected abstract void SetPosition(Vector2 position);
+    }
+
+    public class AdvancedPositionHandle : AdvancedPositionHandle<IAnchoredPositionController>
+    {
+        public AdvancedPositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
+            : base(context, projectionManager) {}
+
+        protected override Vector2 GetPosition() => EditedObject.Position;
+        protected override void SetPosition(Vector2 position) => EditedObject.Position = position;
+    }
+
+    public class AdvancedRectangleBorderPositionHandle : AdvancedPositionHandle<IAnchoredRectangleController>
+    {
+        private Vector2 _startSize;
+        public Axes AxesEditedFromOrigin { get; set; }
+
+        public AdvancedRectangleBorderPositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
+            : base(context, projectionManager) { }
+
+        protected override void OnGrabbed(Vector2 cursorPosition)
+        {
+            base.OnGrabbed(cursorPosition);
+
+            _startSize = EditedObject.SizeController.Size;
+        }
+
+        protected override Vector2 GetPosition()
+        {
+            return EditedObject.PositionController.Position;
+        }
+
+        protected override void SetPosition(Vector2 position)
+        {
+            Vector2 diff = position - _startPosition;
+
+            Vector2 computedPosition;
+            Vector2 computedSize;
+            switch (AxesEditedFromOrigin)
+            {
+                case Axes.Both:
+                    computedPosition = position;
+                    computedSize = _startSize + new Vector2(-diff.X, -diff.Y);
+                    break;
+                case Axes.Horizontal:
+                    computedPosition = EditedObject.PositionController.Position.SetX(position.X);
+                    computedSize = _startSize + new Vector2(-diff.X, diff.Y);
+                    break;
+                case Axes.Vertical:
+                    computedPosition = EditedObject.PositionController.Position.SetY(position.Y);
+                    computedSize = _startSize + new Vector2(diff.X, -diff.Y);
+                    break;
+                case Axes.None:
+                    computedPosition = EditedObject.PositionController.Position;
+                    computedSize = _startSize + diff;
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+
+            computedSize = new Vector2(MathHelper.Max(computedSize.X, 0), MathHelper.Max(computedSize.Y, 0));
+            computedPosition = new Vector2(
+                computedSize.X > 0 ? computedPosition.X : _startPosition.X + _startSize.X,
+                computedSize.Y > 0 ? computedPosition.Y : _startPosition.Y + _startSize.Y);
+
+            EditedObject.PositionController.Position = computedPosition;
+            EditedObject.SizeController.Size = computedSize;
         }
     }
 }

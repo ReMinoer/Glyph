@@ -48,4 +48,23 @@ namespace Glyph.Tools.Transforming
         new IAnchoredRotationController RotationController { get; }
         new IAnchoredScaleController ScaleController { get; }
     }
+
+    public interface ISizeController
+    {
+        Vector2 Size { get; set; }
+    }
+
+    public interface IAnchoredSizeController : ISizeController, IAnchoredController
+    {
+    }
+
+    public interface IRectangleController : ITransformationController
+    {
+        ISizeController SizeController { get; }
+    }
+
+    public interface IAnchoredRectangleController : IAnchoredTransformationController, IRectangleController
+    {
+        new IAnchoredSizeController SizeController { get; }
+    }
 }

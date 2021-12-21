@@ -145,6 +145,9 @@ namespace Glyph.Graphics.Renderer
 
                 foreach (IVisualMeshPart part in mesh.Parts)
                 {
+                    if (part.VertexCount == 0)
+                        continue;
+
                     Effect effect = part.Effect;
                     if (effect == null)
                     {
@@ -217,6 +220,9 @@ namespace Glyph.Graphics.Renderer
 
         static private int GetPrimitiveCount(PrimitiveType primitiveType, int vertexCount)
         {
+            if (vertexCount == 0)
+                return 0;
+
             switch (primitiveType)
             {
                 case PrimitiveType.TriangleList: return vertexCount / 3;

@@ -1,45 +1,19 @@
-﻿using System.Collections.Generic;
-using Glyph.Core;
-using Glyph.Tools.Base;
-using Glyph.UI;
+﻿using Glyph.Core;
 
 namespace Glyph.Tools.Transforming.Base
 {
-    public abstract class AnchoredEditorBase<TController> : GlyphObject, IIntegratedEditor<TController>
+    public abstract class AnchoredEditorBase<TController> : IntegratedEditorBase<TController>
         where TController : IAnchoredController
     {
         protected readonly AnchoredSceneNode AnchoredSceneNode;
 
-        protected abstract IEnumerable<IHandle> Handles { get; }
-
-        private TController _editedObject;
-        public virtual TController EditedObject
+        protected override void AssignEditedObject(TController editedObject)
         {
-            get => _editedObject;
-            set
-            {
-                _editedObject = value;
-                AnchoredSceneNode.AnchorNode = _editedObject.Anchor;
-
-                AssignEditedObjectToHandles(_editedObject);
-            }
+            AnchoredSceneNode.AnchorNode = editedObject.Anchor;
+            AssignEditedObjectToHandles(editedObject);
         }
 
-        object IIntegratedEditor.EditedObject => EditedObject;
         protected abstract void AssignEditedObjectToHandles(TController editedObject);
-
-        private IDrawClient _raycastClient;
-        public IDrawClient RaycastClient
-        {
-            get => _raycastClient;
-            set
-            {
-                _raycastClient = value;
-
-                foreach (IHandle handle in Handles)
-                    handle.RaycastClient = _raycastClient;
-            }
-        }
         
         public ISceneNode ParentNode
         {
@@ -54,8 +28,6 @@ namespace Glyph.Tools.Transforming.Base
             AnchoredSceneNode.IgnoreRotation = true;
             AnchoredSceneNode.IgnoreScale = true;
             AnchoredSceneNode.ProjectionConfiguration = x => x.WithViewDepthMax(1);
-
-            Add<UserInterface>();
         }
     }
 }

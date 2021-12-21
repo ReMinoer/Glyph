@@ -207,6 +207,9 @@ namespace Glyph.Application
                 Type<AdvancedScaleHandle>(),
                 Type<SimplePositionHandle>(),
 
+                Type<RectangleEditor>(),
+                Type<AdvancedRectangleBorderPositionHandle>(),
+
                 Type<ShapedObjectSelector>(),
 
                 Type<InputLogger>(),
