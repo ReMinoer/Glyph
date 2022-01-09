@@ -7,7 +7,7 @@ namespace Glyph.Tools.Transforming.Base
 {
     public abstract class IntegratedEditorBase<TController> : GlyphObject, IIntegratedEditor<TController>
     {
-        protected abstract IEnumerable<IHandle> Handles { get; }
+        public abstract IEnumerable<IHandle> Handles { get; }
 
         private TController _editedObject;
         public virtual TController EditedObject

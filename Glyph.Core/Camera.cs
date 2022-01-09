@@ -77,8 +77,8 @@ namespace Glyph.Core
 
         public Vector2 Transform(Vector2 position) => Transformation.Transform(position);
         public Vector2 InverseTransform(Vector2 position) => Transformation.InverseTransform(position);
-        public Transformation Transform(Transformation transformation) => Transformation.Transform(transformation);
-        public Transformation InverseTransform(Transformation transformation) => Transformation.InverseTransform(transformation);
+        public ITransformation Transform(ITransformation transformation) => Transformation.Transform(transformation);
+        public ITransformation InverseTransform(ITransformation transformation) => Transformation.InverseTransform(transformation);
 
         private void Refresh()
         {

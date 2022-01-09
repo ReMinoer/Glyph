@@ -8,54 +8,6 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class RectangleEditor : AnchoredEditorBase<IAnchoredRectangleController>
-    {
-        public const float Unit = 100;
-
-        private readonly List<AdvancedRectangleBorderPositionHandle> _handles = new List<AdvancedRectangleBorderPositionHandle>();
-        protected override IEnumerable<IHandle> Handles => _handles;
-
-        public RectangleEditor(GlyphResolveContext context)
-            : base(context)
-        {
-            const float u = Unit;
-
-            var topLeftHandle = Add<AdvancedRectangleBorderPositionHandle>();
-            topLeftHandle.Axes = Axes.Both;
-            topLeftHandle.AxesEditedFromOrigin = Axes.Both;
-            topLeftHandle.Rectangle = new TopLeftRectangle(new Vector2(-1, -1) * u, new Vector2(1, 1) * u);
-            AddHandle(topLeftHandle);
-
-            var leftHandle = Add<AdvancedRectangleBorderPositionHandle>();
-            leftHandle.Axes = Axes.Horizontal;
-            leftHandle.AxesEditedFromOrigin = Axes.Horizontal;
-            leftHandle.Rectangle = new TopLeftRectangle(new Vector2(-1, 0) * u, new Vector2(1, 1) * u);
-            AddHandle(leftHandle);
-
-            var topHandle = Add<AdvancedRectangleBorderPositionHandle>();
-            topHandle.Axes = Axes.Vertical;
-            topHandle.AxesEditedFromOrigin = Axes.Vertical;
-            topHandle.Rectangle = new TopLeftRectangle(new Vector2(0, -1) * u, new Vector2(1, 1) * u);
-            AddHandle(topHandle);
-        }
-
-        private void AddHandle(AdvancedRectangleBorderPositionHandle handle)
-        {
-            handle.DefaultMeshes.Add(handle.Rectangle.ToMesh(Color.White * 0.25f));
-            handle.DefaultMeshes.Add(handle.Rectangle.ToOutlineMesh(Color.White));
-
-            _handles.Add(handle);
-        }
-
-        protected override void AssignEditedObjectToHandles(IAnchoredRectangleController editedObject)
-        {
-            foreach (AdvancedRectangleBorderPositionHandle handle in _handles)
-            {
-                handle.EditedObject = EditedObject;
-            }
-        }
-    }
-
     public class TransformationEditor : AnchoredEditorBase<IAnchoredTransformationController>
     {
         public const float Unit = 100;
@@ -64,7 +16,7 @@ namespace Glyph.Tools.Transforming
         private readonly List<AdvancedRotationHandle> _rotationHandles;
         private readonly List<AdvancedScaleHandle> _scaleHandles;
 
-        protected override IEnumerable<IHandle> Handles
+        public override IEnumerable<IHandle> Handles
         {
             get
             {

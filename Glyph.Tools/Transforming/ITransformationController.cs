@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Glyph.Math.Shapes;
+using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
@@ -49,22 +50,12 @@ namespace Glyph.Tools.Transforming
         new IAnchoredScaleController ScaleController { get; }
     }
 
-    public interface ISizeController
+    public interface IRectangleController
     {
-        Vector2 Size { get; set; }
+        TopLeftRectangle Rectangle { get; set; }
     }
 
-    public interface IAnchoredSizeController : ISizeController, IAnchoredController
+    public interface IAnchoredRectangleController : IRectangleController, IAnchoredController
     {
-    }
-
-    public interface IRectangleController : ITransformationController
-    {
-        ISizeController SizeController { get; }
-    }
-
-    public interface IAnchoredRectangleController : IAnchoredTransformationController, IRectangleController
-    {
-        new IAnchoredSizeController SizeController { get; }
     }
 }

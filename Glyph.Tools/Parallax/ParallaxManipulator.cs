@@ -91,7 +91,7 @@ namespace Glyph.Tools.Parallax
             private readonly AdvancedPositionHandle _positionHandle;
             private readonly EdgedShapeOutlineMesh<CenteredRectangle> _displayedRectangleOutline;
 
-            protected override IEnumerable<IHandle> Handles
+            public override IEnumerable<IHandle> Handles
             {
                 get
                 {

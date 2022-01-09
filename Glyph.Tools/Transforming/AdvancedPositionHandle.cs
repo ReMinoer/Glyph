@@ -12,7 +12,7 @@ namespace Glyph.Tools.Transforming
         where TController : IAnchoredController
     {
         protected Vector2 _startPosition;
-        private Vector2 _relativeGrabPosition;
+        protected Vector2 _relativeGrabPosition;
 
         public Axes Axes { get; set; } = Axes.Both;
         public Func<Vector2, Vector2> Revaluation { get; set; }
@@ -78,6 +78,7 @@ namespace Glyph.Tools.Transforming
     public class AdvancedRectangleBorderPositionHandle : AdvancedPositionHandle<IAnchoredRectangleController>
     {
         private Vector2 _startSize;
+        private Vector2 _startCursorProjectedPosition;
         public Axes AxesEditedFromOrigin { get; set; }
 
         public AdvancedRectangleBorderPositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
@@ -87,49 +88,47 @@ namespace Glyph.Tools.Transforming
         {
             base.OnGrabbed(cursorPosition);
 
-            _startSize = EditedObject.SizeController.Size;
+            _startSize = EditedObject.Rectangle.Size;
+            _startCursorProjectedPosition = ProjectToTargetScene(cursorPosition) - _relativeGrabPosition;
         }
 
         protected override Vector2 GetPosition()
         {
-            return EditedObject.PositionController.Position;
+            return EditedObject.Rectangle.Position;
         }
 
         protected override void SetPosition(Vector2 position)
         {
-            Vector2 diff = position - _startPosition;
+            Vector2 clampedPosition = new Vector2(MathHelper.Min(position.X, EditedObject.Rectangle.Right), MathHelper.Min(position.Y, EditedObject.Rectangle.Bottom));
+            Vector2 positionDiff = position - _startCursorProjectedPosition;
 
             Vector2 computedPosition;
             Vector2 computedSize;
             switch (AxesEditedFromOrigin)
             {
                 case Axes.Both:
-                    computedPosition = position;
-                    computedSize = _startSize + new Vector2(-diff.X, -diff.Y);
+                    computedPosition = clampedPosition;
+                    computedSize = _startSize - positionDiff;
                     break;
                 case Axes.Horizontal:
-                    computedPosition = EditedObject.PositionController.Position.SetX(position.X);
-                    computedSize = _startSize + new Vector2(-diff.X, diff.Y);
+                    computedPosition = EditedObject.Rectangle.Position.SetX(clampedPosition.X);
+                    computedSize = _startSize + new Vector2(-positionDiff.X, positionDiff.Y);
                     break;
                 case Axes.Vertical:
-                    computedPosition = EditedObject.PositionController.Position.SetY(position.Y);
-                    computedSize = _startSize + new Vector2(diff.X, -diff.Y);
+                    computedPosition = EditedObject.Rectangle.Position.SetY(clampedPosition.Y);
+                    computedSize = _startSize + new Vector2(positionDiff.X, -positionDiff.Y);
                     break;
                 case Axes.None:
-                    computedPosition = EditedObject.PositionController.Position;
-                    computedSize = _startSize + diff;
+                    computedPosition = EditedObject.Rectangle.Position;
+                    computedSize = _startSize + positionDiff;
                     break;
                 default:
                     throw new NotSupportedException();
             }
 
-            computedSize = new Vector2(MathHelper.Max(computedSize.X, 0), MathHelper.Max(computedSize.Y, 0));
-            computedPosition = new Vector2(
-                computedSize.X > 0 ? computedPosition.X : _startPosition.X + _startSize.X,
-                computedSize.Y > 0 ? computedPosition.Y : _startPosition.Y + _startSize.Y);
+            Vector2 correctedComputedSize = new Vector2(MathHelper.Max(computedSize.X, 0), MathHelper.Max(computedSize.Y, 0));
 
-            EditedObject.PositionController.Position = computedPosition;
-            EditedObject.SizeController.Size = computedSize;
+            EditedObject.Rectangle = new TopLeftRectangle(computedPosition, correctedComputedSize);
         }
     }
 }
