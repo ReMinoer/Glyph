@@ -12,6 +12,7 @@ namespace Glyph.Core
     {
         private readonly ProjectionManager _projectionManager;
         private ISceneNode _anchorNode;
+        private ITransformation _anchorTransformation;
         private ITransformer[] _projectionPath;
 
         private bool _ignoreRotation;
@@ -61,6 +62,25 @@ namespace Glyph.Core
             }
         }
 
+        public ITransformation AnchorTransformation
+        {
+            get => _anchorTransformation;
+            set
+            {
+                if (_anchorTransformation == value)
+                    return;
+
+                if (_anchorTransformation != null)
+                    _anchorTransformation.TransformationChanged -= OnAnchorTransformationChanged;
+
+                _anchorTransformation = value;
+                Refresh();
+
+                if (_anchorTransformation != null)
+                    _anchorTransformation.TransformationChanged += OnAnchorTransformationChanged;
+            }
+        }
+
         public ITransformer[] TransformerPath
         {
             get => _projectionPath;
@@ -87,7 +107,7 @@ namespace Glyph.Core
             }
         }
         
-        public Func<ProjectionManager.IOptionsController<Transformation>, ProjectionManager.IOptionsController<Transformation>> ProjectionConfiguration { get; set; }
+        public Func<ProjectionManager.IOptionsController<ITransformation>, ProjectionManager.IOptionsController<ITransformation>> ProjectionConfiguration { get; set; }
 
         public Transformation LocalTransformation => _transformation;
         public Vector2 LocalPosition => LocalTransformation.Translation;
@@ -119,11 +139,11 @@ namespace Glyph.Core
                 return;
             }
 
-            ProjectionManager.IOptionsController<Transformation> projectionController = _projectionManager.ProjectFrom(_anchorNode).To(this);
+            ProjectionManager.IOptionsController<ITransformation> projectionController = _projectionManager.ProjectFrom(_anchorNode, _anchorTransformation ?? _anchorNode).To(this);
             if (ProjectionConfiguration != null)
                 projectionController = ProjectionConfiguration(projectionController);
 
-            Projection<Transformation> projection = projectionController.FirstOrDefault();
+            Projection<ITransformation> projection = projectionController.FirstOrDefault();
             if (projection == null)
             {
                 _transformation = Transformation.Identity;
@@ -131,7 +151,7 @@ namespace Glyph.Core
                 return;
             }
 
-            Transformation worldTransformation = projection.Value;
+            ITransformation worldTransformation = projection.Value;
             //Transformation worldTransformation = projectionController.First(x => x.TransformerPath.SequenceEqual(TransformerPath)).Value;
 
             _position = worldTransformation.Translation;
@@ -142,7 +162,14 @@ namespace Glyph.Core
         }
 
         private void Refresh(object sender, EventArgs args) => Refresh();
-        private void OnAnchorNodeTransformationChanged(object sender, EventArgs e) => Refresh();
+
+        private void OnAnchorNodeTransformationChanged(object sender, EventArgs e)
+        {
+            if (AnchorTransformation is null)
+                Refresh();
+        }
+
+        private void OnAnchorTransformationChanged(object sender, EventArgs e) => Refresh();
 
         public override void Dispose()
         {

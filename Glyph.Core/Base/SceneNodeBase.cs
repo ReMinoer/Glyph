@@ -277,7 +277,7 @@ namespace Glyph.Core.Base
 
         public Vector2 Transform(Vector2 position) => new Transformation(_position, _rotation, _scale).Transform(position);
         public Vector2 InverseTransform(Vector2 position) => new Transformation(_position, _rotation, _scale).InverseTransform(position);
-        public Transformation Transform(Transformation transformation) => new Transformation(_position, _rotation, _scale).Transform(transformation);
-        public Transformation InverseTransform(Transformation transformation) => new Transformation(_position, _rotation, _scale).InverseTransform(transformation);
+        public ITransformation Transform(ITransformation transformation) => new Transformation(_position, _rotation, _scale).Transform(transformation);
+        public ITransformation InverseTransform(ITransformation transformation) => new Transformation(_position, _rotation, _scale).InverseTransform(transformation);
     }
 }

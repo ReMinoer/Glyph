@@ -35,8 +35,8 @@ namespace Glyph.Math
 
             public Vector2 Transform(Vector2 position) => _transformer.InverseTransform(position);
             public Vector2 InverseTransform(Vector2 position) => _transformer.Transform(position);
-            public Transformation Transform(Transformation transformation) => _transformer.InverseTransform(transformation);
-            public Transformation InverseTransform(Transformation transformation) => _transformer.Transform(transformation);
+            public ITransformation Transform(ITransformation transformation) => _transformer.InverseTransform(transformation);
+            public ITransformation InverseTransform(ITransformation transformation) => _transformer.Transform(transformation);
         }
 
         static public IEdgedShape Transform(this ITransformer transformer, IEdgedShape shape)

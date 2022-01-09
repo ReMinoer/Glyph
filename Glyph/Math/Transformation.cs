@@ -71,7 +71,7 @@ namespace Glyph.Math
         public Vector2 Transform(Vector2 position) => Matrix * position;
         public Vector2 InverseTransform(Vector2 position) => Matrix.Inverse * position;
 
-        public Transformation Transform(Transformation transformation)
+        public ITransformation Transform(ITransformation transformation)
         {
             Vector2 translation = transformation.Translation;
             float rotation = transformation.Rotation;
@@ -84,7 +84,7 @@ namespace Glyph.Math
             return new Transformation(translation, rotation, scale);
         }
 
-        public Transformation InverseTransform(Transformation transformation)
+        public ITransformation InverseTransform(ITransformation transformation)
         {
             Vector2 translation = transformation.Translation;
             float rotation = transformation.Rotation;

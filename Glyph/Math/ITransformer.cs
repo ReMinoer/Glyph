@@ -7,8 +7,8 @@ namespace Glyph.Math
     {
         Vector2 Transform(Vector2 position);
         Vector2 InverseTransform(Vector2 position);
-        Transformation Transform(Transformation transformation);
-        Transformation InverseTransform(Transformation transformation);
+        ITransformation Transform(ITransformation transformation);
+        ITransformation InverseTransform(ITransformation transformation);
         event EventHandler TransformationChanged;
     }
 }

@@ -74,22 +74,16 @@ namespace Glyph.Core
                 _sceneRoots.Remove(sceneNode);
         }
 
-        public IProjectionController<Transformation> ProjectFrom(IView view, Transformation transformationOnView)
+        public IProjectionController<ITransformation> ProjectFrom(IView view, ITransformation transformationOnView)
         {
             ProjectionGraph graph = BuildProjectionGraph();
-            return new ProjectionBuilder<Transformation>(graph.GetViewVertex(view), transformationOnView, new TransformationProjectionVisitor(), graph);
+            return new ProjectionBuilder<ITransformation>(graph.GetViewVertex(view), transformationOnView, new TransformationProjectionVisitor(), graph);
         }
 
-        public IProjectionController<Transformation> ProjectFrom(ISceneNode sceneNode, Transformation transformation)
+        public IProjectionController<ITransformation> ProjectFrom(ISceneNode sceneNode, ITransformation transformation)
         {
             ProjectionGraph graph = BuildProjectionGraph();
-            return new ProjectionBuilder<Transformation>(graph.GetSceneVertex(sceneNode), transformation, new TransformationProjectionVisitor(), graph);
-        }
-
-        public IProjectionController<Transformation> ProjectFrom(ISceneNode sceneNode)
-        {
-            ProjectionGraph graph = BuildProjectionGraph();
-            return new ProjectionBuilder<Transformation>(graph.GetSceneVertex(sceneNode), sceneNode.Transformation, new TransformationProjectionVisitor(), graph);
+            return new ProjectionBuilder<ITransformation>(graph.GetSceneVertex(sceneNode), transformation, new TransformationProjectionVisitor(), graph);
         }
 
         public IProjectionController<Vector2> ProjectFromPosition(IView view, Vector2 positionOnView)
@@ -104,11 +98,8 @@ namespace Glyph.Core
             return new ProjectionBuilder<Vector2>(graph.GetSceneVertex(sceneNode), position, new PositionProjectionVisitor(), graph);
         }
 
-        public IProjectionController<Vector2> ProjectFromPosition(ISceneNode sceneNode)
-        {
-            ProjectionGraph graph = BuildProjectionGraph();
-            return new ProjectionBuilder<Vector2>(graph.GetSceneVertex(sceneNode), sceneNode.Position, new PositionProjectionVisitor(), graph);
-        }
+        public IProjectionController<ITransformation> ProjectFrom(ISceneNode sceneNode) => ProjectFrom(sceneNode, sceneNode.Transformation);
+        public IProjectionController<Vector2> ProjectFromPosition(ISceneNode sceneNode) => ProjectFromPosition(sceneNode, sceneNode.Position);
 
         private ProjectionGraph BuildProjectionGraph()
         {
@@ -310,8 +301,8 @@ namespace Glyph.Core
             public abstract IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, GraphDirection direction);
             public abstract Vector2 Transform(Vector2 position);
             public abstract Vector2 InverseTransform(Vector2 position);
-            public abstract Transformation Transform(Transformation transformation);
-            public abstract Transformation InverseTransform(Transformation transformation);
+            public abstract ITransformation Transform(ITransformation transformation);
+            public abstract ITransformation InverseTransform(ITransformation transformation);
             public event EventHandler TransformationChanged;
         }
 
@@ -327,7 +318,7 @@ namespace Glyph.Core
                 return position;
             }
 
-            public override Transformation Transform(Transformation transformation)
+            public override ITransformation Transform(ITransformation transformation)
             {
                 IView view = Start.View;
                 transformation = view.Transform(transformation);
@@ -343,7 +334,7 @@ namespace Glyph.Core
                 return position;
             }
 
-            public override Transformation InverseTransform(Transformation transformation)
+            public override ITransformation InverseTransform(ITransformation transformation)
             {
                 IView view = Start.View;
                 transformation = view.Camera.InverseTransform(transformation);
@@ -369,7 +360,7 @@ namespace Glyph.Core
                 return position;
             }
 
-            public override Transformation Transform(Transformation transformation)
+            public override ITransformation Transform(ITransformation transformation)
             {
                 IView view = End.View;
 
@@ -395,7 +386,7 @@ namespace Glyph.Core
                 return position;
             }
 
-            public override Transformation InverseTransform(Transformation transformation)
+            public override ITransformation InverseTransform(ITransformation transformation)
             {
                 IView view = End.View;
 
@@ -417,7 +408,7 @@ namespace Glyph.Core
             }
         }
 
-        public class TransformationProjectionVisitor : ProjectionVisitor<Transformation>
+        public class TransformationProjectionVisitor : ProjectionVisitor<ITransformation>
         {
             public TransformationProjectionVisitor()
                 : base((t, x) => t.Transform(x), (t, x) => t.InverseTransform(x), (a, x) => a.ContainsPoint(x.Translation))

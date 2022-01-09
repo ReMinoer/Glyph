@@ -80,17 +80,17 @@ namespace Glyph.Core.Base
         public Vector2 Transform(Vector2 position) => position - Shape.Size / 2;
         public Vector2 InverseTransform(Vector2 position) => position + Shape.Size / 2;
 
-        public Transformation Transform(Transformation transformation)
+        public ITransformation Transform(ITransformation transformation)
         {
             var result = new Transformation(transformation);
-            transformation.Translation -= Shape.Size / 2;
+            result.Translation -= Shape.Size / 2;
             return result;
         }
 
-        public Transformation InverseTransform(Transformation transformation)
+        public ITransformation InverseTransform(ITransformation transformation)
         {
             var result = new Transformation(transformation);
-            transformation.Translation += Shape.Size / 2;
+            result.Translation += Shape.Size / 2;
             return result;
         }
 
