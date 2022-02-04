@@ -1,21 +1,22 @@
 ﻿using Glyph.Core;
+using Glyph.Math.Shapes;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class AdvancedPositionHandle : AdvancedPositionHandleBase<IAnchoredPositionController>
+    public class AdvancedRectanglePositionHandle : AdvancedPositionHandleBase<IAnchoredRectangleController>
     {
         public bool KeyboardEnabled { get; set; }
 
-        public AdvancedPositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
+        public AdvancedRectanglePositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context, projectionManager)
         {
             _userInterface.DirectionChanged += OnDirectionChanged;
         }
 
-        protected override Vector2 GetPosition() => EditedObject.Position;
-        protected override void SetPosition(Vector2 position) => EditedObject.Position = position;
+        protected override Vector2 GetPosition() => EditedObject.Rectangle.Position;
+        protected override void SetPosition(Vector2 position) => EditedObject.Rectangle = new TopLeftRectangle(position, EditedObject.Rectangle.Size);
 
         private void OnDirectionChanged(object sender, HandlableDirectionEventArgs e)
         {

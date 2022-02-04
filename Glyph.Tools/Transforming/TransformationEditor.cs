@@ -50,6 +50,7 @@ namespace Glyph.Tools.Transforming
             positionHandle.Rectangle = new TopLeftRectangle(Vector2.Zero, new Vector2(1.5f, 1.5f) * u);
             positionHandle.DefaultMeshes.Add(new TopLeftRectangle(Vector2.Zero, new Vector2(1.5f, 1.5f) * u).ToMesh(Color.White * 0.25f));
             positionHandle.DefaultMeshes.Add(new LineMesh(Color.White * 0.5f, new Vector2(1.5f, 0) * u, new Vector2(1.5f, 1.5f) * u, new Vector2(0, 1.5f) * u));
+            positionHandle.KeyboardEnabled = true;
 
             var scaleHandle = Add<AdvancedScaleHandle>();
             scaleHandle.LocalPosition = new Vector2(1.5f, 1.5f) * u;
