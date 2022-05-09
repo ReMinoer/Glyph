@@ -7,7 +7,6 @@ using Glyph.Core;
 using Glyph.Core.Inputs;
 using Glyph.Core.Tracking;
 using Glyph.Math.Shapes;
-using Glyph.Messaging;
 using Glyph.Resolver;
 using Glyph.Space;
 using Glyph.UI;
@@ -18,33 +17,18 @@ namespace Glyph.Tools
 {
     public class ShapedObjectSelector : GlyphContainer
     {
-        //static private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private readonly MessagingSpace<IBoxedComponent> _messagingSpace;
         private readonly InputClientManager _inputClientManager;
-        private IBoxedComponent _selection;
         private UserInterface _userInterface;
         
         public ReadOnlySpace<IBoxedComponent> Space { get; }
+        public IBoxedComponent Selection { get; set; }
         public IFilter<IInputClient> ClientFilter { get; set; }
         
         public Predicate<IBoxedComponent> Filter
         {
             get => _messagingSpace.Filter;
             set => _messagingSpace.Filter = value;
-        }
-
-        public IBoxedComponent Selection
-        {
-            get => _selection;
-            set
-            {
-                if (_selection == value)
-                    return;
-
-                _selection = value;
-                SelectionChanged?.Invoke(this, _selection);
-            }
         }
         
         [Resolvable, ResolveTargets(ResolveTargets.Fraternal | ResolveTargets.BrowseAllAncestors)]
@@ -65,11 +49,11 @@ namespace Glyph.Tools
 
         public event EventHandler<IBoxedComponent> SelectionChanged;
 
-        public ShapedObjectSelector(InputClientManager inputClientManager, ISubscribableRouter router, IPartitioner partitioner = null)
+        public ShapedObjectSelector(InputClientManager inputClientManager, IGlyphComponent root, IPartitioner partitioner = null)
         {
             _inputClientManager = inputClientManager;
 
-            _messagingSpace = new MessagingSpace<IBoxedComponent>(router, x => x.Area.BoundingBox, partitioner);
+            _messagingSpace = new MessagingSpace<IBoxedComponent>(root, x => x.Area.BoundingBox, partitioner);
             Space = new ReadOnlySpace<IBoxedComponent>(_messagingSpace);
         }
 
@@ -82,7 +66,6 @@ namespace Glyph.Tools
                 return;
 
             e.Handle();
-            //Logger.Debug($"Pick position: {e.CursorPosition}");
 
             IEnumerable<IBoxedComponent> inRange = _messagingSpace.GetAllItemsInRange(new CenteredRectangle(e.CursorPosition, 1, 1));
             if (Filter != null)
@@ -91,9 +74,18 @@ namespace Glyph.Tools
             IBoxedComponent[] array = inRange as IBoxedComponent[] ?? inRange.ToArray();
 
             if (array.Length != 0)
-                Selection = array.MaxBy(x => x, CompareBoxedComponentByRelevance);
+                SetSelection(array.MaxBy(x => x, CompareBoxedComponentByRelevance));
             else
-                Selection = null;
+                SetSelection(null);
+        }
+
+        private void SetSelection(IBoxedComponent selection)
+        {
+            if (Selection == selection)
+                return;
+
+            Selection = selection;
+            SelectionChanged?.Invoke(this, selection);
         }
 
         private int CompareBoxedComponentByRelevance(IBoxedComponent first, IBoxedComponent second)
