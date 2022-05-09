@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Glyph.Core;
 using Glyph.Graphics.Meshes;
 using Glyph.Math.Shapes;
@@ -8,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
-    public class TransformationEditor : AnchoredEditorBase<IAnchoredTransformationController>
+    public class TransformationEditor : AnchoredEditorBase<IAnchoredTransformationController>, IHandle<IAnchoredTransformationController>
     {
         public const float Unit = 100;
         
@@ -38,6 +39,21 @@ namespace Glyph.Tools.Transforming
                 AnchoredSceneNode.IgnoreRotation = !EditedObject.OrientedReferential;
             }
         }
+
+        public Func<Vector2, Vector2> Revaluation
+        {
+            get => _positionHandles[0].Revaluation;
+            set
+            {
+                foreach (AdvancedPositionHandle positionHandle in _positionHandles)
+                    positionHandle.Revaluation = value;
+            }
+        }
+
+        public event EventHandler Grabbed;
+        public event EventHandler Dragging;
+        public event EventHandler Released;
+        public event EventHandler Cancelled;
 
         public TransformationEditor(GlyphResolveContext context)
             : base(context)
@@ -105,7 +121,42 @@ namespace Glyph.Tools.Transforming
             {
                 scaleHandle
             };
+
+            SubscribeHandles();
         }
+
+        public override void Dispose()
+        {
+            UnsubscribeHandles();
+            base.Dispose();
+        }
+
+        private void SubscribeHandles()
+        {
+            foreach (IHandle handle in Handles)
+            {
+                handle.Grabbed += OnGrabbed;
+                handle.Dragging += OnDragging;
+                handle.Released += OnReleased;
+                handle.Cancelled += OnCancelled;
+            }
+        }
+
+        private void UnsubscribeHandles()
+        {
+            foreach (IHandle handle in Handles)
+            {
+                handle.Cancelled -= OnCancelled;
+                handle.Released -= OnReleased;
+                handle.Dragging -= OnDragging;
+                handle.Grabbed -= OnGrabbed;
+            }
+        }
+
+        private void OnGrabbed(object sender, EventArgs e) => Grabbed?.Invoke(this, EventArgs.Empty);
+        private void OnDragging(object sender, EventArgs e) => Dragging?.Invoke(this, EventArgs.Empty);
+        private void OnReleased(object sender, EventArgs e) => Released?.Invoke(this, EventArgs.Empty);
+        private void OnCancelled(object sender, EventArgs e) => Cancelled?.Invoke(this, EventArgs.Empty);
 
         protected override void AssignEditedObjectToHandles(IAnchoredTransformationController editedObject)
         {

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Glyph.Core;
 using Glyph.Math;
 using Glyph.Tools.Transforming;
@@ -10,6 +11,10 @@ namespace Glyph.Tools.Base
     public interface IHandle : IIntegratedEditor
     {
         IDrawClient RaycastClient { get; set; }
+        event EventHandler Grabbed;
+        event EventHandler Dragging;
+        event EventHandler Released;
+        event EventHandler Cancelled;
     }
 
     public interface IHandle<TController> : IHandle, IIntegratedEditor<TController>
@@ -24,7 +29,7 @@ namespace Glyph.Tools.Base
         protected readonly SceneNode _sceneNode;
         protected readonly UserInterface _userInterface;
         
-        protected bool Grabbed { get; private set; }
+        protected bool IsGrabbed { get; private set; }
 
         public IDrawClient RaycastClient { get; set; }
 
@@ -45,6 +50,11 @@ namespace Glyph.Tools.Base
             set => _sceneNode.LocalRotation = value;
         }
 
+        public event EventHandler Grabbed;
+        public event EventHandler Dragging;
+        public event EventHandler Released;
+        public event EventHandler Cancelled;
+
         protected HandleBase(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context)
         {
@@ -61,42 +71,46 @@ namespace Glyph.Tools.Base
 
         private void OnTouchStarted(object sender, HandlableTouchEventArgs e)
         {
-            Grabbed = false;
+            IsGrabbed = false;
             
             if (!Active || !Area.ContainsPoint(e.CursorPosition))
                 return;
             
             e.Handle();
 
-            Grabbed = true;
+            IsGrabbed = true;
             OnGrabbed(e.CursorPosition);
+            Grabbed?.Invoke(this, EventArgs.Empty);
         }
         
         private void OnTouching(object sender, CursorEventArgs e)
         {
-            if (!Grabbed)
+            if (!IsGrabbed)
                 return;
             
             Vector2 targetScenePosition = ProjectToTargetScene(e.CursorPosition);
             OnDragging(targetScenePosition);
+            Dragging?.Invoke(this, EventArgs.Empty);
         }
         
         private void OnTouchEnded(object sender, CursorEventArgs args)
         {
-            if (!Grabbed)
+            if (!IsGrabbed)
                 return;
 
-            Grabbed = false;
+            IsGrabbed = false;
             OnReleased();
+            Released?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnCancelled(object sender, HandlableEventArgs e)
         {
-            if (!Grabbed)
+            if (!IsGrabbed)
                 return;
-            
-            Grabbed = false;
+
+            IsGrabbed = false;
             OnCancelled();
+            Cancelled?.Invoke(this, EventArgs.Empty);
         }
 
         protected abstract void OnGrabbed(Vector2 cursorPosition);

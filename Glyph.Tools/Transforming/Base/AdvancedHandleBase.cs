@@ -35,7 +35,7 @@ namespace Glyph.Tools.Transforming.Base
 
         private void OnCursorMoved(object sender, CursorEventArgs e)
         {
-            HoverMeshes.Visible = Grabbed || Area.ContainsPoint(e.CursorPosition);
+            HoverMeshes.Visible = IsGrabbed || Area.ContainsPoint(e.CursorPosition);
         }
 
         protected override void OnGrabbed(Vector2 cursorPosition)

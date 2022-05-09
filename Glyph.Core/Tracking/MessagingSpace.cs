@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Diese.Collections;
 using Diese.Collections.ReadOnly;
+using Glyph.Composition;
 using Glyph.Composition.Messaging;
 using Glyph.Math;
 using Glyph.Math.Shapes;
@@ -16,6 +18,7 @@ namespace Glyph.Core.Tracking
     public class MessagingSpace<T> : ISpace<T>, IMessagingCollection<T>, IDisposable
         where T : class, IBoxedComponent
     {
+        private readonly IGlyphComponent _root;
         private readonly ISubscribableRouter _router;
         private readonly Space<T> _space;
         private readonly List<T> _newInstances;
@@ -32,20 +35,25 @@ namespace Glyph.Core.Tracking
         public event Action<T> Registered;
         public event Action<T> Unregistered;
 
-        public MessagingSpace(ISubscribableRouter router, Func<T, Vector2> getPoint, IPartitioner partitioner = null)
-            : this(router, getPoint, x => new CenteredRectangle(getPoint(x), 0, 0), partitioner)
+        public MessagingSpace(IGlyphComponent root, Func<T, Vector2> getPoint, IPartitioner partitioner = null)
+            : this(root, getPoint, x => new CenteredRectangle(getPoint(x), 0, 0), partitioner)
         {
         }
         
-        public MessagingSpace(ISubscribableRouter router, Func<T, TopLeftRectangle> getBox, IPartitioner partitioner = null)
-            : this(router, x => getBox(x).Center, getBox, partitioner)
+        public MessagingSpace(IGlyphComponent root, Func<T, TopLeftRectangle> getBox, IPartitioner partitioner = null)
+            : this(root, x => getBox(x).Center, getBox, partitioner)
         {
         }
 
-        public MessagingSpace(ISubscribableRouter router, Func<T, Vector2> getPoint, Func<T, TopLeftRectangle> getBox, IPartitioner partitioner = null)
+        public MessagingSpace(IGlyphComponent root, Func<T, Vector2> getPoint, Func<T, TopLeftRectangle> getBox, IPartitioner partitioner = null)
         {
-            _router = router;
+            _root = root;
+            _router = root.Router;
+
             _space = new Space<T>(getPoint, getBox, partitioner);
+            foreach (T child in root.AndAllChildren().OfType<T>())
+                _space.Add(child);
+
             _newInstances = new List<T>();
             NewInstances = new ReadOnlyCollection<T>(_newInstances);
 
@@ -63,13 +71,15 @@ namespace Glyph.Core.Tracking
 
         private void Interpret(ICompositionMessage<T> message)
         {
-            Add(message.Instance);
+            TryAdd(message.Instance);
             foreach (T child in message.Instance.AllChildren().OfType<T>())
-                Add(child);
+                TryAdd(child);
         }
 
-        private void Add(T instance)
+        private void TryAdd(T instance)
         {
+            if (!instance.AllParents().Contains(_root))
+                return;
             if (Filter != null && !Filter(instance))
                 return;
 

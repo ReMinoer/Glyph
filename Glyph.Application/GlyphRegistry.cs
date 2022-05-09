@@ -25,6 +25,7 @@ using Glyph.Tools;
 using Glyph.Tools.Brushing.Controllers;
 using Glyph.Tools.Brushing.Decorators.Cursors;
 using Glyph.Tools.Parallax;
+using Glyph.Tools.Snapping;
 using Glyph.Tools.Transforming;
 using Glyph.UI;
 using Glyph.UI.Menus;
@@ -210,6 +211,8 @@ namespace Glyph.Application
                 Type<RectangleEditor>(),
                 Type<AdvancedRectanglePositionHandle>(),
                 Type<AdvancedRectangleBorderPositionHandle>(),
+
+                Type<InputModifiers>(),
 
                 Type<ShapedObjectSelector>(),
 
