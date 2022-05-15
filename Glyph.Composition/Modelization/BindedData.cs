@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Diese;
+using Diese.Collections.Observables;
 using Diese.Collections.Observables.ReadOnly;
 using Glyph.Composition.Modelization.Base;
 using Niddle;
@@ -59,7 +61,13 @@ namespace Glyph.Composition.Modelization
         public SubDataCollection<IGlyphData> SubData { get; }
 
         [Browsable(false), IgnoreDataMember]
+        public SubDataSourceCollection<IGlyphData> SubDataSources { get; }
+
+        [Browsable(false), IgnoreDataMember]
         public IReadOnlyObservableCollection<IGlyphData> Children { get; }
+
+        [Browsable(false), IgnoreDataMember]
+        public IReadOnlyObservableCollection<IReadOnlyObservableCollection<IGlyphData>> ChildrenSources { get; }
 
         protected override IDependencyResolver DependencyResolver
         {
@@ -100,10 +108,13 @@ namespace Glyph.Composition.Modelization
 
             SubConfigurators = new SubDataCollection<IGlyphConfigurator<T>>(this);
             SubData = new SubDataCollection<IGlyphData>(this);
+            SubDataSources = new SubDataSourceCollection<IGlyphData>(this);
 
-            var readOnlySubConfiguratos = new EnumerableReadOnlyObservableCollection<IGlyphData>(SubConfigurators);
+            var readOnlySubConfigurators = new EnumerableReadOnlyObservableCollection<IGlyphData>(SubConfigurators);
             var readOnlySubData = new ReadOnlyObservableCollection<IGlyphData>(SubData);
-            Children = new CompositeReadOnlyObservableCollection<IGlyphData>(readOnlySubData, readOnlySubConfiguratos);
+
+            Children = new CompositeReadOnlyObservableCollection<IGlyphData>(readOnlySubData, readOnlySubConfigurators);
+            ChildrenSources = new ReadOnlyObservableCollection<IReadOnlyObservableCollection<IGlyphData>>(SubDataSources);
         }
 
         public override string ToString() => DisplayName;
@@ -116,7 +127,7 @@ namespace Glyph.Composition.Modelization
             return obj;
         }
 
-        protected bool SetSubData<TSubData>(ref TSubData subData, TSubData value)
+        protected bool SetSubData<TSubData>(ref TSubData subData, TSubData value, [CallerMemberName] string propertyName = null)
             where TSubData : IGlyphData
         {
             if (EqualityComparer<TSubData>.Default.Equals(subData, value))

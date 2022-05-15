@@ -12,6 +12,7 @@ namespace Glyph.Composition.Modelization
         bool NotBinding { get; }
         new IGlyphComponent BindedObject { get; }
         IReadOnlyObservableCollection<IGlyphData> Children { get; }
+        IReadOnlyObservableCollection<IReadOnlyObservableCollection<IGlyphData>> ChildrenSources { get; }
         IEnumerable<Type> SerializationKnownTypes { get; set; }
     }
 }

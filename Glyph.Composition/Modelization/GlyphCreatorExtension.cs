@@ -1,4 +1,5 @@
-﻿using Diese.Collections;
+﻿using System.Linq;
+using Diese.Collections;
 using Stave;
 
 namespace Glyph.Composition.Modelization
@@ -11,7 +12,7 @@ namespace Glyph.Composition.Modelization
                 return null;
 
             foreach (IGlyphComponent parent in component.AndAllParents())
-                if (Tree.BreadthFirst(root, x => x.Children).Any(x => x.BindedObject == parent, out IGlyphData data))
+                if (Tree.BreadthFirst(root, x => x.Children.Concat(x.ChildrenSources.SelectMany(y => y))).Any(x => x.BindedObject == parent, out IGlyphData data))
                     return data;
 
             return null;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml;
@@ -134,7 +135,7 @@ namespace Glyph.Composition.Modelization
         static public void ToBindedComposite<TModel, TView, TModelItem>(this ICollectionBindingBuilder<TModel, TView, TModelItem, TModelItem> builder)
             where TModel : IGlyphData, IHierarchicalData
             where TView : IGlyphComposite<IGlyphComponent>
-            where TModelItem : IGlyphCreator<IGlyphComponent>
+            where TModelItem : class, IGlyphCreator<IGlyphComponent>
         {
             builder.ToComposite(v => v);
         }
@@ -143,12 +144,13 @@ namespace Glyph.Composition.Modelization
             this ICollectionBindingBuilder<TModel, TView, TModelItem, TModelItem> builder,
             Func<TView, IGlyphComposite<IGlyphComponent>> compositeGetter)
             where TModel : IGlyphData, IHierarchicalData
-            where TModelItem : IGlyphCreator<IGlyphComponent>
+            where TModelItem : class, IGlyphCreator<IGlyphComponent>
         {
             builder.BindingCollection.Add(builder.ReferencePropertyName, new OneWayFactoryBinding<TModel, TView, TModelItem, IGlyphComponent>(
                 builder.ReferenceGetter,
                 (m, mi, v) => mi,
-                compositeGetter)
+                compositeGetter,
+                builder.ReferencePropertyName)
                 .AsSubscriptionBinding(builder.SubscriptionGetter));
         }
     }
