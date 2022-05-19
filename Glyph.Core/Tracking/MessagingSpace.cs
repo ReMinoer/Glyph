@@ -35,13 +35,18 @@ namespace Glyph.Core.Tracking
         public event Action<T> Registered;
         public event Action<T> Unregistered;
 
-        public MessagingSpace(IGlyphComponent root, Func<T, Vector2> getPoint, IPartitioner partitioner = null)
-            : this(root, getPoint, x => new CenteredRectangle(getPoint(x), 0, 0), partitioner)
+        public MessagingSpace(IGlyphComponent root, IPartitioner partitioner = null)
+            : this(root, x => x.Area.BoundingBox, partitioner)
         {
         }
-        
+
         public MessagingSpace(IGlyphComponent root, Func<T, TopLeftRectangle> getBox, IPartitioner partitioner = null)
             : this(root, x => getBox(x).Center, getBox, partitioner)
+        {
+        }
+
+        public MessagingSpace(IGlyphComponent root, Func<T, Vector2> getPoint, IPartitioner partitioner = null)
+            : this(root, getPoint, x => new CenteredRectangle(getPoint(x), 0, 0), partitioner)
         {
         }
 

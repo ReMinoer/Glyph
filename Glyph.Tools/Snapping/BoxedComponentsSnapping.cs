@@ -15,7 +15,7 @@ namespace Glyph.Tools.Snapping
 
         public BoxedComponentsSnapping(IGlyphComponent root)
         {
-            _boxedComponentSpace = new MessagingSpace<IBoxedComponent>(root, x => x.Area.BoundingBox);
+            _boxedComponentSpace = new MessagingSpace<IBoxedComponent>(root);
         }
 
         public void Dispose()
@@ -48,8 +48,8 @@ namespace Glyph.Tools.Snapping
             {
                 if (boxedComponent is null)
                 {
-                    CheckHorizontalSide(newPosition.X, ref horizontalSnap);
-                    CheckVerticalSide(newPosition.Y, ref verticalSnap);
+                    CheckHorizontalSide(oldPosition.X, ref horizontalSnap);
+                    CheckVerticalSide(oldPosition.Y, ref verticalSnap);
                 }
                 else
                 {

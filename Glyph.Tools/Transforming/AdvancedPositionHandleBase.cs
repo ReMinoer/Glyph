@@ -33,21 +33,20 @@ namespace Glyph.Tools.Transforming
         {
             projectedCursorPosition -= _relativeGrabPosition;
 
+            switch (Axes)
+            {
+                case Axes.Horizontal:
+                    projectedCursorPosition = GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitX);
+                    break;
+                case Axes.Vertical:
+                    projectedCursorPosition = GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitY);
+                    break;
+            }
+
             if (Revaluation != null)
                 projectedCursorPosition = Revaluation(projectedCursorPosition);
 
-            switch (Axes)
-            {
-                case Axes.Both:
-                    SetPosition(projectedCursorPosition);
-                    break;
-                case Axes.Horizontal:
-                    SetPosition(GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitX));
-                    break;
-                case Axes.Vertical:
-                    SetPosition(GetClosestPointOnAxis(projectedCursorPosition, Vector2.UnitY));
-                    break;
-            }
+            SetPosition(projectedCursorPosition);
         }
 
         private Vector2 GetClosestPointOnAxis(Vector2 position, Vector2 axis)
