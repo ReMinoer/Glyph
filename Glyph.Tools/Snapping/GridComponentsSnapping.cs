@@ -66,7 +66,7 @@ namespace Glyph.Tools.Snapping
                     float newSidePosition = newPosition.X + sideGap;
 
                     IEnumerable<float> snappedPositions = gridSnapped != null
-                        ? gridSnapped.GetHorizontalSnappedPositions(newPosition)
+                        ? gridSnapped.GetHorizontalSnappedPositions(newPosition.SetX(newSidePosition))
                         : new[] { gridComponent.Grid.ToWorldPoint(gridComponent.Grid.ToGridPoint(newPosition.SetX(newSidePosition))).X };
 
                     foreach (float snappedPosition in snappedPositions)
@@ -90,7 +90,7 @@ namespace Glyph.Tools.Snapping
                     float newSidePosition = newPosition.Y + sideGap;
 
                     IEnumerable<float> snappedPositions = gridSnapped != null
-                        ? gridSnapped.GetVerticalSnappedPositions(newPosition)
+                        ? gridSnapped.GetVerticalSnappedPositions(newPosition.SetY(newSidePosition))
                         : new[] { gridComponent.Grid.ToWorldPoint(gridComponent.Grid.ToGridPoint(newPosition.SetY(newSidePosition))).Y };
 
                     foreach (float snappedPosition in snappedPositions)
