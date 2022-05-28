@@ -1,7 +1,9 @@
-﻿using Glyph.Composition;
+﻿using System.Linq;
+using Glyph.Composition;
 using Glyph.Core.Schedulers.Base;
 using Glyph.Scheduling;
 using Niddle;
+using Stave;
 
 namespace Glyph.Core.Schedulers
 {
@@ -27,7 +29,9 @@ namespace Glyph.Core.Schedulers
                 LoadContent.Plan(loadContent);
             if (component is IUpdate update)
                 Update.Plan(update);
-            if (component is IDraw draw)
+
+            // BUG: Inaccurate
+            foreach (IDraw draw in component.AndAllChildren().OfType<IDraw>())
                 Draw.Plan(draw);
         }
 
@@ -38,7 +42,9 @@ namespace Glyph.Core.Schedulers
                 LoadContent.Unplan(loadContent);
             if (component is IUpdate update)
                 Update.Unplan(update);
-            if (component is IDraw draw)
+
+            // BUG: Inaccurate
+            foreach (IDraw draw in component.AndAllChildren().OfType<IDraw>())
                 Draw.Unplan(draw);
         }
     }

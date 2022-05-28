@@ -149,13 +149,13 @@ namespace Glyph.Core
 
         public override sealed bool Remove(IGlyphComponent item)
         {
-            if (!Contains(item) || !base.Remove(item))
+            if (!Contains(item))
                 return false;
 
+            Schedulers.UnplanComponent(item);
             _keyedComponents.Remove(x => x.Value == item);
 
-            Schedulers.UnplanComponent(item);
-
+            base.Remove(item);
             return true;
         }
 
