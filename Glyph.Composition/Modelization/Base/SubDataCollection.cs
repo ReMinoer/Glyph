@@ -10,8 +10,8 @@ namespace Glyph.Composition.Modelization.Base
     public class SubDataCollection<TGlyphData> : IObservableCollection<TGlyphData>
         where TGlyphData : IGlyphData
     {
-        private readonly IObservableCollection<TGlyphData> _collectionImplementation;
         private readonly IDependencyResolverClient _parentData;
+        private readonly IObservableCollection<TGlyphData> _collectionImplementation;
 
         public int Count => _collectionImplementation.Count;
         bool ICollection<TGlyphData>.IsReadOnly => _collectionImplementation.IsReadOnly;
@@ -21,9 +21,9 @@ namespace Glyph.Composition.Modelization.Base
 
         public SubDataCollection(IDependencyResolverClient parentData)
         {
-            _collectionImplementation = new ObservableCollection<TGlyphData>();
             _parentData = parentData;
 
+            _collectionImplementation = new ObservableCollection<TGlyphData>();
             _collectionImplementation.PropertyChanged += OnPropertyChanged;
             _collectionImplementation.CollectionChanged += OnCollectionChanged;
         }

@@ -1,60 +1,133 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using Diese.Collections.Observables;
-using Diese.Collections.Observables.ReadOnly;
 using Simulacra.Injection;
 
 namespace Glyph.Composition.Modelization.Base
 {
-    public class SubDataSourceCollection<TGlyphData> : IObservableCollection<IReadOnlyObservableCollection<TGlyphData>>
-        where TGlyphData : class, IGlyphData
+    public class SubDataSourceCollection : IObservableCollection<IGlyphDataChildrenSource>
     {
-        private readonly IObservableCollection<IReadOnlyObservableCollection<TGlyphData>> _collectionImplementation;
+        private readonly IObservableCollection<IGlyphDataChildrenSource> _collectionImplementation;
         private readonly IDependencyResolverClient _parentData;
+        private readonly Dictionary<INotifyCollectionChanged, IGlyphDataChildrenSource> _sourceByNotifier;
 
         public int Count => _collectionImplementation.Count;
-        bool ICollection<IReadOnlyObservableCollection<TGlyphData>>.IsReadOnly => _collectionImplementation.IsReadOnly;
+        bool ICollection<IGlyphDataChildrenSource>.IsReadOnly => _collectionImplementation.IsReadOnly;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         public SubDataSourceCollection(IDependencyResolverClient parentData)
         {
-            _collectionImplementation = new ObservableCollection<IReadOnlyObservableCollection<TGlyphData>>();
+            _collectionImplementation = new ObservableCollection<IGlyphDataChildrenSource>();
             _parentData = parentData;
+            _sourceByNotifier = new Dictionary<INotifyCollectionChanged, IGlyphDataChildrenSource>();
 
             _collectionImplementation.PropertyChanged += OnPropertyChanged;
             _collectionImplementation.CollectionChanged += OnCollectionChanged;
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) => PropertyChanged?.Invoke(sender, e);
-        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            foreach (IReadOnlyObservableCollection<TGlyphData> newItem in e.NewItems)
-                foreach (TGlyphData subItem in newItem)
-                    subItem.DependencyResolver = _parentData.DependencyResolver;
-
-            CollectionChanged?.Invoke(sender, e);
-        }
-
-        public void Add(IReadOnlyObservableCollection<TGlyphData> item)
+        public void Add(IGlyphDataChildrenSource item)
         {
             _collectionImplementation.Add(item);
-
-            if (item is null)
-                return;
-
-            foreach (TGlyphData subItem in item)
-                subItem.DependencyResolver = _parentData.DependencyResolver;
+            RegisterSource(item);
         }
 
-        public bool Remove(IReadOnlyObservableCollection<TGlyphData> item) => _collectionImplementation.Remove(item);
-        public void Clear() => _collectionImplementation.Clear();
-        public bool Contains(IReadOnlyObservableCollection<TGlyphData> item) => _collectionImplementation.Contains(item);
-        public void CopyTo(IReadOnlyObservableCollection<TGlyphData>[] array, int arrayIndex) => _collectionImplementation.CopyTo(array, arrayIndex);
-        public IEnumerator<IReadOnlyObservableCollection<TGlyphData>> GetEnumerator() => _collectionImplementation.GetEnumerator();
+        public bool Remove(IGlyphDataChildrenSource item)
+        {
+            UnregisterSource(item);
+            return _collectionImplementation.Remove(item);
+        }
+
+        public void Clear()
+        {
+            foreach (IGlyphDataChildrenSource childrenSource in _collectionImplementation)
+                UnregisterSource(childrenSource);
+
+            _collectionImplementation.Clear();
+        }
+
+        public bool Contains(IGlyphDataChildrenSource item) => _collectionImplementation.Contains(item);
+        public void CopyTo(IGlyphDataChildrenSource[] array, int arrayIndex) => throw new NotSupportedException();
+        public IEnumerator<IGlyphDataChildrenSource> GetEnumerator() => _collectionImplementation.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_collectionImplementation).GetEnumerator();
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e) => PropertyChanged?.Invoke(sender, e);
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => CollectionChanged?.Invoke(sender, e);
+
+        private void RegisterSource(IGlyphDataChildrenSource childrenSource)
+        {
+            if (childrenSource is null)
+                return;
+            
+            foreach (IGlyphData child in childrenSource.Children)
+                RegisterChild(child, childrenSource);
+
+            _sourceByNotifier[childrenSource.ChildrenNotifier] = childrenSource;
+            childrenSource.ChildrenNotifier.CollectionChanged += OnChildrenCollectionChanged;
+        }
+
+        private void UnregisterSource(IGlyphDataChildrenSource childrenSource)
+        {
+            if (childrenSource is null)
+                return;
+
+            childrenSource.ChildrenNotifier.CollectionChanged -= OnChildrenCollectionChanged;
+            _sourceByNotifier.Remove(childrenSource.ChildrenNotifier);
+
+            foreach (IGlyphData child in childrenSource.Children)
+                UnregisterChild(child);
+        }
+
+        private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            IGlyphDataChildrenSource childrenSource = _sourceByNotifier[(INotifyCollectionChanged)sender];
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    RegisterChildren(e.NewItems, childrenSource);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    UnregisterChildren(e.OldItems);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    UnregisterChildren(e.OldItems);
+                    RegisterChildren(e.NewItems, childrenSource);
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    UnregisterChildren(childrenSource.Children);
+                    break;
+            }
+        }
+
+        private void RegisterChildren(IEnumerable children, IGlyphDataChildrenSource childrenSource)
+        {
+            foreach (IGlyphData child in children)
+                RegisterChild(child, childrenSource);
+        }
+
+        private void UnregisterChildren(IEnumerable children)
+        {
+            foreach (IGlyphData child in children)
+                UnregisterChild(child);
+        }
+
+        private void RegisterChild(IGlyphData child, IGlyphDataChildrenSource childrenSource)
+        {
+            child.ParentSource = childrenSource;
+            child.DependencyResolver = _parentData.DependencyResolver;
+        }
+
+        private void UnregisterChild(IGlyphData child)
+        {
+            child.ParentSource = null;
+            child.DependencyResolver = null;
+        }
     }
 }

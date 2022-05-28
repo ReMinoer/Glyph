@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using Diese.Collections;
-using Diese.Collections.Observables.ReadOnly;
-using PropertyChanged;
 using Simulacra.Binding.Collection.Base;
 
 namespace Glyph.Composition.Modelization
@@ -32,13 +32,13 @@ namespace Glyph.Composition.Modelization
             base.SetView(model, view);
 
             if (!model.NotBinding)
-                model.SubDataSources.Add(new NamedReadOnlyObservableCollection<IGlyphData>(_propertyName, _referenceGetter(model)));
+                model.SubDataSources.Add(new ChildrenSource(_propertyName, _referenceGetter(model)));
         }
 
         protected override void ResetView(TModel model, TView view)
         {
             if (!model.NotBinding)
-                model.SubDataSources.Remove(x => x.ToString() == _propertyName);
+                model.SubDataSources.Remove(x => x.PropertyName == _propertyName);
 
             base.ResetView(model, view);
         }
@@ -77,18 +77,26 @@ namespace Glyph.Composition.Modelization
             return _creatorItemGetter(model, modelItem, view).BindedObject;
         }
 
-        [DoNotNotify]
-        public class NamedReadOnlyObservableCollection<TItem> : EnumerableReadOnlyObservableCollection<TItem>
+        public class ChildrenSource : IGlyphDataChildrenSource
         {
-            private readonly string _name;
+            private readonly IList _list;
+            public string PropertyName { get; }
+            public IEnumerable<IGlyphData> Children { get; }
+            public INotifyCollectionChanged ChildrenNotifier { get; }
 
-            public NamedReadOnlyObservableCollection(string name, IEnumerable<TItem> enumerable)
-                : base(enumerable)
+            public ChildrenSource(string propertyName,
+                IEnumerable<IGlyphData> children)
             {
-                _name = name;
+                PropertyName = propertyName;
+                Children = children;
+                _list = children as IList;
+                ChildrenNotifier = children as INotifyCollectionChanged;
             }
 
-            public override string ToString() => _name;
+            public void Remove(IGlyphData item)
+            {
+                _list?.Remove(item);
+            }
         }
     }
 }

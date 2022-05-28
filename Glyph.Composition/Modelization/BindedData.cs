@@ -61,13 +61,16 @@ namespace Glyph.Composition.Modelization
         public SubDataCollection<IGlyphData> SubData { get; }
 
         [Browsable(false), IgnoreDataMember]
-        public SubDataSourceCollection<IGlyphData> SubDataSources { get; }
+        public SubDataSourceCollection SubDataSources { get; }
 
         [Browsable(false), IgnoreDataMember]
         public IReadOnlyObservableCollection<IGlyphData> Children { get; }
 
         [Browsable(false), IgnoreDataMember]
-        public IReadOnlyObservableCollection<IReadOnlyObservableCollection<IGlyphData>> ChildrenSources { get; }
+        public IReadOnlyObservableCollection<IGlyphDataChildrenSource> ChildrenSources { get; }
+
+        [Browsable(false), IgnoreDataMember]
+        public IGlyphDataSource ParentSource { get; set; }
 
         protected override IDependencyResolver DependencyResolver
         {
@@ -108,13 +111,13 @@ namespace Glyph.Composition.Modelization
 
             SubConfigurators = new SubDataCollection<IGlyphConfigurator<T>>(this);
             SubData = new SubDataCollection<IGlyphData>(this);
-            SubDataSources = new SubDataSourceCollection<IGlyphData>(this);
+            SubDataSources = new SubDataSourceCollection(this);
 
             var readOnlySubConfigurators = new EnumerableReadOnlyObservableCollection<IGlyphData>(SubConfigurators);
             var readOnlySubData = new ReadOnlyObservableCollection<IGlyphData>(SubData);
 
             Children = new CompositeReadOnlyObservableCollection<IGlyphData>(readOnlySubData, readOnlySubConfigurators);
-            ChildrenSources = new ReadOnlyObservableCollection<IReadOnlyObservableCollection<IGlyphData>>(SubDataSources);
+            ChildrenSources = new ReadOnlyObservableCollection<IGlyphDataChildrenSource>(SubDataSources);
         }
 
         public override string ToString() => DisplayName;
@@ -127,19 +130,25 @@ namespace Glyph.Composition.Modelization
             return obj;
         }
 
-        protected bool SetSubData<TSubData>(ref TSubData subData, TSubData value, [CallerMemberName] string propertyName = null)
-            where TSubData : IGlyphData
+        protected bool SetSubData<TSubData>(ref TSubData subData, TSubData value, Action<TSubData> assign, [CallerMemberName] string propertyName = null)
+            where TSubData : class, IGlyphData
         {
             if (EqualityComparer<TSubData>.Default.Equals(subData, value))
                 return false;
 
             if (subData != null)
+            {
+                subData.ParentSource = null;
                 SubData.Remove(subData);
+            }
 
             subData = value;
 
             if (subData != null)
+            {
                 SubData.Add(subData);
+                subData.ParentSource = new PropertySource(_ => assign(null), propertyName);
+            }
 
             return true;
         }
@@ -155,6 +164,23 @@ namespace Glyph.Composition.Modelization
 
             _isDisposed = true;
             Disposed?.Invoke(this, EventArgs.Empty);
+        }
+
+        public class PropertySource : IGlyphDataPropertySource
+        {
+            private readonly Action<IGlyphData> _setSubData;
+            public string PropertyName { get; }
+
+            public PropertySource(Action<IGlyphData> setSubData, string propertyName)
+            {
+                _setSubData = setSubData;
+                PropertyName = propertyName;
+            }
+
+            public void Remove(IGlyphData item)
+            {
+                _setSubData(item);
+            }
         }
     }
 }
