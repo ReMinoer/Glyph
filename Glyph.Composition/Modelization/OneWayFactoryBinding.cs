@@ -93,10 +93,9 @@ namespace Glyph.Composition.Modelization
                 ChildrenNotifier = children as INotifyCollectionChanged;
             }
 
-            public void Remove(IGlyphData item)
-            {
-                _list?.Remove(item);
-            }
+            public int IndexOf(IGlyphData data) => _list?.IndexOf(data) ?? -1;
+            public void Set(int index, IGlyphData data) => _list?.Insert(index, data);
+            public void Unset(int index) => _list?.RemoveAt(index);
         }
     }
 }

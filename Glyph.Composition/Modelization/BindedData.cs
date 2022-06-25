@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Diese;
-using Diese.Collections.Observables;
 using Diese.Collections.Observables.ReadOnly;
 using Glyph.Composition.Modelization.Base;
 using Niddle;
@@ -130,7 +129,7 @@ namespace Glyph.Composition.Modelization
             return obj;
         }
 
-        protected bool SetSubData<TSubData>(ref TSubData subData, TSubData value, Action<TSubData> assign, [CallerMemberName] string propertyName = null)
+        protected bool SetSubData<TSubData>(ref TSubData subData, TSubData value, Func<TSubData> getData, Action<TSubData> setData, [CallerMemberName] string propertyName = null)
             where TSubData : class, IGlyphData
         {
             if (EqualityComparer<TSubData>.Default.Equals(subData, value))
@@ -147,7 +146,7 @@ namespace Glyph.Composition.Modelization
             if (subData != null)
             {
                 SubData.Add(subData);
-                subData.ParentSource = new PropertySource(_ => assign(null), propertyName);
+                subData.ParentSource = new PropertySource<TSubData>(getData, setData, propertyName);
             }
 
             return true;
@@ -165,22 +164,42 @@ namespace Glyph.Composition.Modelization
             _isDisposed = true;
             Disposed?.Invoke(this, EventArgs.Empty);
         }
+    }
 
-        public class PropertySource : IGlyphDataPropertySource
+    public class PropertySource<TSubData> : IGlyphDataPropertySource
+        where TSubData : class, IGlyphData
+    {
+        private readonly Func<TSubData> _getSubData;
+        private readonly Action<TSubData> _setSubData;
+        public string PropertyName { get; }
+
+        public PropertySource(Func<TSubData> getSubData, Action<TSubData> setSubData, string propertyName)
         {
-            private readonly Action<IGlyphData> _setSubData;
-            public string PropertyName { get; }
+            _getSubData = getSubData;
+            _setSubData = setSubData;
+            PropertyName = propertyName;
+        }
 
-            public PropertySource(Action<IGlyphData> setSubData, string propertyName)
-            {
-                _setSubData = setSubData;
-                PropertyName = propertyName;
-            }
+        public int IndexOf(IGlyphData data)
+        {
+            TSubData currentSubData = _getSubData();
+            return currentSubData == data ? 0 : -1;
+        }
 
-            public void Remove(IGlyphData item)
-            {
-                _setSubData(item);
-            }
+        public void Set(int index, IGlyphData data)
+        {
+            if (index != 0)
+                throw new ArgumentException("Index should be 0.");
+
+            _setSubData((TSubData)data);
+        }
+
+        public void Unset(int index)
+        {
+            if (index != 0)
+                throw new ArgumentException("Index should be 0.");
+
+            _setSubData(null);
         }
     }
 }

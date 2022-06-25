@@ -20,7 +20,9 @@ namespace Glyph.Composition.Modelization
 
     public interface IGlyphDataSource
     {
-        void Remove(IGlyphData item);
+        int IndexOf(IGlyphData data);
+        void Set(int index, IGlyphData data);
+        void Unset(int index);
     }
 
     public interface IGlyphDataPropertySource : IGlyphDataSource
