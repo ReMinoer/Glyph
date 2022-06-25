@@ -22,6 +22,9 @@ namespace Glyph.Tools.Transforming
             IAnchoredRectangleController editedObject = EditedObject;
             Vector2 previousPosition = _startPosition;
 
+            if (position == previousPosition)
+                return;
+
             undoRedoStack.Execute($"Set rectangle position to {position}.",
                 () => editedObject.Rectangle = new TopLeftRectangle(position, editedObject.Rectangle.Size),
                 () => editedObject.Rectangle = new TopLeftRectangle(previousPosition, editedObject.Rectangle.Size));

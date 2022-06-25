@@ -50,6 +50,9 @@ namespace Glyph.Tools.Transforming
             IAnchoredRotationController editedObject = EditedObject;
             float newRotation = _lastRotation;
             float previousRotation = _startRotation;
+            
+            if (newRotation.EpsilonEquals(previousRotation))
+                return;
 
             UndoRedoStack.Push($"Set rotation to {newRotation}.",
                 () => editedObject.Rotation = newRotation,

@@ -47,6 +47,9 @@ namespace Glyph.Tools.Transforming
             float newScale = _lastScale;
             float previousScale = _startScale;
 
+            if (newScale.EpsilonEquals(previousScale))
+                return;
+
             UndoRedoStack.Push($"Set scale to {newScale}.",
                 () => editedObject.Scale = newScale,
                 () => editedObject.Scale = previousScale);

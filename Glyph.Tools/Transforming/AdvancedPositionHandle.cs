@@ -20,6 +20,9 @@ namespace Glyph.Tools.Transforming
         {
             IAnchoredPositionController editedObject = EditedObject;
             Vector2 previousPosition = _startPosition;
+            
+            if (position == previousPosition)
+                return;
 
             undoRedoStack.Execute($"Set position to {position}.",
                 () => editedObject.Position = position,

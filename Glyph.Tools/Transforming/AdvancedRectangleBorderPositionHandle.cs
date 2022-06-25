@@ -65,6 +65,9 @@ namespace Glyph.Tools.Transforming
             var newRectangle = new TopLeftRectangle(computedPosition, correctedComputedSize);
             var previousRectangle = new TopLeftRectangle(_startPosition, _startSize);
 
+            if (newRectangle.Equals(previousRectangle))
+                return;
+
             undoRedoStack.Execute($"Set rectangle bounds to {newRectangle}.",
                 () => editedObject.Rectangle = newRectangle,
                 () => editedObject.Rectangle = previousRectangle);
