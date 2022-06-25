@@ -1,5 +1,6 @@
 ﻿using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
+using Glyph.Tools.UndoRedo;
 
 namespace Glyph.Tools.Brushing.Grid.Brushes
 {
@@ -11,9 +12,11 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
             return paint.CanApply(canvas, args);
         }
 
-        public override void EndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint)
+        public override void EndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint, IUndoRedoStack undoRedoStack)
         {
-            paint.Apply(canvas, args);
+            var actionBatch = new UndoRedoActionBatch($"Apply paint {paint} with brush {this} on canvas {canvas}.");
+            paint.Apply(canvas, args, actionBatch);
+            undoRedoStack?.Push(actionBatch);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using Glyph.Core;
+using Glyph.Tools.UndoRedo;
+using Niddle.Attributes;
 
 namespace Glyph.Tools.Brushing.Controllers.Base
 {
@@ -47,6 +49,9 @@ namespace Glyph.Tools.Brushing.Controllers.Base
         }
 
         public bool ApplyingBrush { get; private set; }
+
+        [Resolvable]
+        public IUndoRedoStack UndoRedoStack { get; set; }
 
         object IIntegratedEditor.EditedObject => Canvas;
         TCanvas IIntegratedEditor<TCanvas>.EditedObject => Canvas;
@@ -97,7 +102,7 @@ namespace Glyph.Tools.Brushing.Controllers.Base
 
                     if (Brush.CanEndApply(Canvas, args, Paint))
                     {
-                        Brush.EndApply(Canvas, args, Paint);
+                        Brush.EndApply(Canvas, args, Paint, UndoRedoStack);
 
                         OnApplyEnded(args);
                         ApplyEnded?.Invoke(this, EventArgs.Empty);

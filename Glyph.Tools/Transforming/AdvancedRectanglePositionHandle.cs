@@ -1,5 +1,6 @@
 ﻿using Glyph.Core;
 using Glyph.Math.Shapes;
+using Glyph.Tools.UndoRedo;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
 
@@ -16,7 +17,15 @@ namespace Glyph.Tools.Transforming
         }
 
         protected override Vector2 GetPosition() => EditedObject.Rectangle.Position;
-        protected override void SetPosition(Vector2 position) => EditedObject.Rectangle = new TopLeftRectangle(position, EditedObject.Rectangle.Size);
+        protected override void SetPosition(Vector2 position, IUndoRedoStack undoRedoStack = null)
+        {
+            IAnchoredRectangleController editedObject = EditedObject;
+            Vector2 previousPosition = _startPosition;
+
+            undoRedoStack.Execute($"Set rectangle position to {position}.",
+                () => editedObject.Rectangle = new TopLeftRectangle(position, editedObject.Rectangle.Size),
+                () => editedObject.Rectangle = new TopLeftRectangle(previousPosition, editedObject.Rectangle.Size));
+        }
 
         private void OnDirectionChanged(object sender, HandlableDirectionEventArgs e)
         {

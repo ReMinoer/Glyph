@@ -1,4 +1,5 @@
 ﻿using Glyph.Composition;
+using Glyph.Tools.UndoRedo;
 using Niddle;
 
 namespace Glyph.Tools.Brushing
@@ -16,7 +17,7 @@ namespace Glyph.Tools.Brushing
         void StartApply(TCanvas canvas, TArgs args, TPaint paint);
         void UpdateApply(TCanvas canvas, TArgs args, TPaint paint);
         bool CanEndApply(TCanvas canvas, TArgs args, TPaint paint);
-        void EndApply(TCanvas canvas, TArgs args, TPaint paint);
+        void EndApply(TCanvas canvas, TArgs args, TPaint paint, IUndoRedoStack undoRedoStack);
         void OnInvalidStart(TCanvas canvas, TArgs args, TPaint paint);
         void OnCancellation(TCanvas canvas, TArgs args, TPaint paint);
         void OnInvalidEnd(TCanvas canvas, TArgs args, TPaint paint);

@@ -1,6 +1,7 @@
 ﻿using System;
 using Glyph.Core;
 using Glyph.Math.Shapes;
+using Glyph.Tools.UndoRedo;
 using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
@@ -29,7 +30,7 @@ namespace Glyph.Tools.Transforming
             return EditedObject.Rectangle.Position;
         }
 
-        protected override void SetPosition(Vector2 position)
+        protected override void SetPosition(Vector2 position, IUndoRedoStack undoRedoStack = null)
         {
             Vector2 clampedPosition = new Vector2(MathHelper.Min(position.X, EditedObject.Rectangle.Right), MathHelper.Min(position.Y, EditedObject.Rectangle.Bottom));
             Vector2 positionDiff = position - _startCursorProjectedPosition;
@@ -60,7 +61,13 @@ namespace Glyph.Tools.Transforming
 
             Vector2 correctedComputedSize = new Vector2(MathHelper.Max(computedSize.X, 0), MathHelper.Max(computedSize.Y, 0));
 
-            EditedObject.Rectangle = new TopLeftRectangle(computedPosition, correctedComputedSize);
+            IAnchoredRectangleController editedObject = EditedObject;
+            var newRectangle = new TopLeftRectangle(computedPosition, correctedComputedSize);
+            var previousRectangle = new TopLeftRectangle(_startPosition, _startSize);
+
+            undoRedoStack.Execute($"Set rectangle bounds to {newRectangle}.",
+                () => editedObject.Rectangle = newRectangle,
+                () => editedObject.Rectangle = previousRectangle);
         }
     }
 }

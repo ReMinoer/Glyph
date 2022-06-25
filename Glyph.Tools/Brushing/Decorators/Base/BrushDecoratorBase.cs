@@ -1,4 +1,5 @@
 ﻿using Glyph.Composition;
+using Glyph.Tools.UndoRedo;
 using Niddle;
 
 namespace Glyph.Tools.Brushing.Decorators.Base
@@ -21,7 +22,7 @@ namespace Glyph.Tools.Brushing.Decorators.Base
         public virtual void StartApply(TCanvas canvas, TArgs args, TPaint paint) => Brush.StartApply(GetCanvas(canvas), GetArgs(canvas, args), GetPaint(canvas, args, paint));
         public virtual void UpdateApply(TCanvas canvas, TArgs args, TPaint paint) => Brush.UpdateApply(GetCanvas(canvas), GetArgs(canvas, args), GetPaint(canvas, args, paint));
         public virtual bool CanEndApply(TCanvas canvas, TArgs args, TPaint paint) => Brush.CanEndApply(GetCanvas(canvas), GetArgs(canvas, args), GetPaint(canvas, args, paint));
-        public virtual void EndApply(TCanvas canvas, TArgs args, TPaint paint) => Brush.EndApply(GetCanvas(canvas), GetArgs(canvas, args), GetPaint(canvas, args, paint));
+        public virtual void EndApply(TCanvas canvas, TArgs args, TPaint paint, IUndoRedoStack undoRedoStack) => Brush.EndApply(GetCanvas(canvas), GetArgs(canvas, args), GetPaint(canvas, args, paint), undoRedoStack);
         public virtual void OnInvalidStart(TCanvas canvas, TArgs args, TPaint paint) => Brush.OnInvalidStart(GetCanvas(canvas), GetArgs(canvas, args), GetPaint(canvas, args, paint));
         public virtual void OnCancellation(TCanvas canvas, TArgs args, TPaint paint) => Brush.OnCancellation(GetCanvas(canvas), GetArgs(canvas, args), GetPaint(canvas, args, paint));
         public virtual void OnInvalidEnd(TCanvas canvas, TArgs args, TPaint paint) => Brush.OnInvalidEnd(GetCanvas(canvas), GetArgs(canvas, args), GetPaint(canvas, args, paint));

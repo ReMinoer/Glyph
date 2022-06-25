@@ -1,4 +1,5 @@
 ﻿using Glyph.Core;
+using Glyph.Tools.UndoRedo;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
 
@@ -15,7 +16,15 @@ namespace Glyph.Tools.Transforming
         }
 
         protected override Vector2 GetPosition() => EditedObject.Position;
-        protected override void SetPosition(Vector2 position) => EditedObject.Position = position;
+        protected override void SetPosition(Vector2 position, IUndoRedoStack undoRedoStack = null)
+        {
+            IAnchoredPositionController editedObject = EditedObject;
+            Vector2 previousPosition = _startPosition;
+
+            undoRedoStack.Execute($"Set position to {position}.",
+                () => editedObject.Position = position,
+                () => editedObject.Position = previousPosition);
+        }
 
         private void OnDirectionChanged(object sender, HandlableDirectionEventArgs e)
         {

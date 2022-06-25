@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
+using Glyph.Tools.UndoRedo;
 using Microsoft.Xna.Framework;
 using Simulacra.Utils;
 
@@ -15,6 +17,7 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
 
         private Point _previousGridPoint;
         private Vector2 _previousWorldPoint;
+        private UndoRedoActionBatch _undoRedoActionBatch;
 
         public ContinuousGridBrush(Point? size = null)
         {
@@ -26,6 +29,7 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
         {
             _previousGridPoint = args.GridPoint;
             _previousWorldPoint = args.WorldPoint;
+            _undoRedoActionBatch = new UndoRedoActionBatch($"Apply paint {paint} with brush {this} on canvas {canvas}.");
 
             TryApply(canvas, args, paint);
         }
@@ -57,11 +61,16 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
 
                         var cellArgs = new GridBrushArgs(gridPoint, worldPoint);
                         if (paint.CanApply(canvas, cellArgs))
-                            paint.Apply(canvas, cellArgs);
+                            paint.Apply(canvas, cellArgs, _undoRedoActionBatch);
                     }
             }
         }
-        
+
+        public override void EndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint, IUndoRedoStack undoRedoStack)
+        {
+            undoRedoStack?.Push(_undoRedoActionBatch);
+        }
+
         public override bool CanEndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint) => true;
     }
 }

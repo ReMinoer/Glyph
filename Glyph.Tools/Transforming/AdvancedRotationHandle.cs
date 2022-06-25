@@ -1,13 +1,19 @@
 ﻿using Glyph.Core;
 using Glyph.Tools.Transforming.Base;
+using Glyph.Tools.UndoRedo;
 using Microsoft.Xna.Framework;
+using Niddle.Attributes;
 
 namespace Glyph.Tools.Transforming
 {
     public class AdvancedRotationHandle : AdvancedHandleBase<IAnchoredRotationController>
     {
         private float _startRotation;
+        private float _lastRotation;
         private float _relativeRotation;
+
+        [Resolvable]
+        public IUndoRedoStack UndoRedoStack { get; set; }
 
         public AdvancedRotationHandle(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context, projectionManager)
@@ -30,8 +36,24 @@ namespace Glyph.Tools.Transforming
             float? cursorRotation = (projectedCursorPosition - pivotPosition).ToRotation();
             if (!cursorRotation.HasValue)
                 return;
-            
-            EditedObject.Rotation = _startRotation + cursorRotation.Value - _relativeRotation;
+
+            var newRotation = _startRotation + cursorRotation.Value - _relativeRotation;
+
+            EditedObject.Rotation = newRotation;
+            _lastRotation = newRotation;
+        }
+
+        protected override void OnReleased()
+        {
+            base.OnReleased();
+
+            IAnchoredRotationController editedObject = EditedObject;
+            float newRotation = _lastRotation;
+            float previousRotation = _startRotation;
+
+            UndoRedoStack.Push($"Set rotation to {newRotation}.",
+                () => editedObject.Rotation = newRotation,
+                () => editedObject.Rotation = previousRotation);
         }
 
         protected override void OnCancelled()
