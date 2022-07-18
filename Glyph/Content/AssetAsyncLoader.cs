@@ -12,6 +12,7 @@ namespace Glyph.Content
         private CancellationTokenSource _loadingCancellation;
 
         private bool _needUpdate;
+        private object _contentLock = new object();
         private T _newContent;
 
         private IAsset<T> _asset;
@@ -53,8 +54,11 @@ namespace Glyph.Content
                 else
                 {
                     // Need immediate update if new content is null
-                    _newContent = null;
-                    _needUpdate = true;
+                    lock (_contentLock)
+                    {
+                        _newContent = null;
+                        _needUpdate = true;
+                    }
                 }
             }
         }
@@ -93,18 +97,25 @@ namespace Glyph.Content
 
             // Throw if cancellation before assigning any new content
             cancellationToken.ThrowIfCancellationRequested();
-            _newContent = content;
-            _needUpdate = true;
+
+            lock (_contentLock)
+            {
+                _newContent = content;
+                _needUpdate = true;
+            }
         }
 
         public bool UpdateContent(ref T content)
         {
-            if (!_needUpdate)
-                return false;
+            lock (_contentLock)
+            {
+                if (!_needUpdate)
+                    return false;
 
-            _needUpdate = false;
-            content = _newContent;
-            return true;
+                _needUpdate = false;
+                content = _newContent;
+                return true;
+            }
         }
     }
 }
