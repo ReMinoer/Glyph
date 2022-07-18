@@ -16,21 +16,9 @@ namespace Glyph.Composition
         protected GlyphContainer()
         {
             _component = new SealedOrderedComposite<IGlyphComponent, IGlyphContainer, TComponent>(this);
-            HierarchyChanged += OnHierarchyChanged;
-            HierarchyComponentAdded += OnHierarchyComponentAdded;
-
             ReadOnlyComponents = new ReadOnlyCollection<TComponent>(Components);
-        }
 
-        public override void Dispose()
-        {
-            HierarchyComponentAdded -= OnHierarchyComponentAdded;
-            HierarchyChanged -= OnHierarchyChanged;
-
-            foreach (TComponent component in ReadOnlyComponents)
-                component.Dispose();
-
-            base.Dispose();
+            SetupContextInjection();
         }
 
         private readonly SealedOrderedComposite<IGlyphComponent, IGlyphContainer, TComponent> _component;

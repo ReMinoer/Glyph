@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,11 +18,11 @@ namespace Glyph.Resolver
 
     public class GlyphResolvableMemberCache : IResolvableMembersProvider<object>
     {
-        private readonly Dictionary<Type, GlyphResolvableInjectable[]> _cache;
+        private readonly ConcurrentDictionary<Type, GlyphResolvableInjectable[]> _cache;
 
         public GlyphResolvableMemberCache()
         {
-            _cache = new Dictionary<Type, GlyphResolvableInjectable[]>();
+            _cache = new ConcurrentDictionary<Type, GlyphResolvableInjectable[]>();
         }
 
         public IEnumerable<IResolvableInjectable<object, object, object>> ForType<T>() => ForType(typeof(T));
@@ -29,10 +30,7 @@ namespace Glyph.Resolver
         public IEnumerable<GlyphResolvableInjectable> ForType<T>(ResolveTargets targets) => ForType(typeof(T), targets);
         public IEnumerable<GlyphResolvableInjectable> ForType(Type type, ResolveTargets targets)
         {
-            if (!_cache.TryGetValue(type, out GlyphResolvableInjectable[] resolvableInjectables))
-                _cache[type] = resolvableInjectables = ForTypeAndTargetInternal(type).ToArray();
-
-            return resolvableInjectables.Where(x => (x.Targets & targets) != 0);
+            return _cache.GetOrAdd(type, x => ForTypeAndTargetInternal(x).ToArray()).Where(x => (x.Targets & targets) != 0);
         }
 
         public IEnumerable<GlyphResolvableInjectable> ForTypeAndTargetInternal(Type type)

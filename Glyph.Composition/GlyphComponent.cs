@@ -3,23 +3,14 @@ using Stave;
 
 namespace Glyph.Composition
 {
-    public class GlyphComponent : GlyphComponentBase
+    public abstract class GlyphComponent : GlyphComponentBase
     {
         internal override sealed IComponent<IGlyphComponent, IGlyphContainer> ComponentImplementation { get; }
 
         public GlyphComponent()
         {
             ComponentImplementation = new Component<IGlyphComponent, IGlyphContainer>(this);
-            HierarchyChanged += OnHierarchyChanged;
-            HierarchyComponentAdded += OnHierarchyComponentAdded;
-        }
-
-        public override void Dispose()
-        {
-            HierarchyComponentAdded -= OnHierarchyComponentAdded;
-            HierarchyChanged -= OnHierarchyChanged;
-
-            base.Dispose();
+            SetupContextInjection();
         }
     }
 }

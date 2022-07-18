@@ -15,6 +15,5 @@ namespace Glyph.Composition
         Guid Id { get; }
         string Name { get; set; }
         ComponentRouterSystem Router { get; }
-        bool IsDisposed { get; }
     }
 }

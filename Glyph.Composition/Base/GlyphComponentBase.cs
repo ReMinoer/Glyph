@@ -8,7 +8,6 @@ using Glyph.Composition.Utils;
 using Glyph.Logging;
 using Glyph.Messaging;
 using Glyph.Observation.Properties;
-using Glyph.Resolver;
 using Microsoft.Extensions.Logging;
 using Niddle.Attributes;
 using Stave;
@@ -19,8 +18,6 @@ namespace Glyph.Composition.Base
 
     public abstract class GlyphComponentBase : ConfigurableNotifyPropertyChanged, IGlyphComponent, ILogging
     {
-        protected readonly List<GlyphResolvableInjectable> Injectables;
-
         [Category(ComponentCategory.Activation)]
         public virtual bool Enabled { get; set; } = true;
 
@@ -83,6 +80,8 @@ namespace Glyph.Composition.Base
             }
         }
 
+        private readonly GlyphComponentContextInjection _contextInjection;
+
         private readonly CategoryLogger _categoryLogger;
         protected ILogger Logger => _categoryLogger;
 
@@ -101,84 +100,14 @@ namespace Glyph.Composition.Base
             Id = Guid.NewGuid();
             Name = type.GetDisplayName();
             Router = new ComponentRouterSystem(this);
+
+            _contextInjection = new GlyphComponentContextInjection(this);
             _categoryLogger = new CategoryLogger(type.GetDisplayName());
-
-            Injectables = GlyphDependency.ResolvableMembersCache.ForType(type, ResolveTargets.Parent | ResolveTargets.Fraternal).ToList();
         }
 
-        protected void OnHierarchyChanged(object sender, IHierarchyChangedEventArgs<IGlyphComponent, IGlyphContainer> e)
+        internal void SetupContextInjection()
         {
-            if (Injectables.Count == 0)
-                return;
-
-            if (e.LinkedParent == null)
-                return;
-
-            var injected = new List<GlyphResolvableInjectable>();
-
-            foreach (GlyphResolvableInjectable injectable in Injectables)
-            {
-                if (e.LinkedChild == this && InjectParentContext(injectable, e.LinkedParent))
-                {
-                    injected.Add(injectable);
-                    continue;
-                }
-
-                if ((injectable.Targets & ResolveTargets.BrowseAllAncestors) == 0)
-                    continue;
-
-                if (e.LinkedChild.AllParents().Any(parent => InjectParentContext(injectable, parent)))
-                    injected.Add(injectable);
-            }
-
-            foreach (GlyphResolvableInjectable injectableToRemove in injected)
-                Injectables.Remove(injectableToRemove);
-
-            bool InjectParentContext(GlyphResolvableInjectable injectable, IGlyphContainer parent)
-            {
-                if ((injectable.Targets & ResolveTargets.Parent) != 0 && injectable.ResolvableInjectable.Type.IsInstanceOfType(parent))
-                {
-                    injectable.ResolvableInjectable.Inject(this, parent);
-                    return true;
-                }
-
-                if ((injectable.Targets & ResolveTargets.Fraternal) == 0)
-                    return false;
-
-                foreach (IGlyphComponent parentComponent in parent.Components.Where(x => x != this && injectable.ResolvableInjectable.Type.IsInstanceOfType(x)))
-                {
-                    injectable.ResolvableInjectable.Inject(this, parentComponent);
-                    return true;
-                }
-
-                return false;
-            }
-        }
-
-        protected void OnHierarchyComponentAdded(object sender, IHierarchyComponentAddedEventArgs<IGlyphComponent, IGlyphContainer> e)
-        {
-            if (Injectables.Count == 0)
-                return;
-
-            var injected = new List<GlyphResolvableInjectable>();
-
-            foreach (GlyphResolvableInjectable injectable in Injectables)
-            {
-                if ((injectable.Targets & ResolveTargets.Fraternal) == 0)
-                    continue;
-                if ((injectable.Targets & ResolveTargets.BrowseAllAncestors) == 0 && e.Parent != Parent)
-                    continue;
-                if (e.NewComponent == this)
-                    continue;
-                if (!injectable.ResolvableInjectable.Type.IsInstanceOfType(e.NewComponent))
-                    continue;
-
-                injectable.ResolvableInjectable.Inject(this, e.NewComponent);
-                injected.Add(injectable);
-            }
-
-            foreach (GlyphResolvableInjectable injectableToRemove in injected)
-                Injectables.Remove(injectableToRemove);
+            _contextInjection.Setup();
         }
 
         public virtual void Initialize() { }
@@ -186,7 +115,7 @@ namespace Glyph.Composition.Base
 
         public override void Dispose()
         {
-            HierarchyChanged -= OnHierarchyChanged;
+            _contextInjection.Dispose();
 
             IMessage disposingMessage = MessageHelper.BuildGeneric(typeof(DisposingMessage<>), GetType(), t => t.GetConstructors().First(), this);
             Router.Send(disposingMessage);
@@ -218,10 +147,10 @@ namespace Glyph.Composition.Base
             remove => ComponentImplementation.HierarchyChanged -= value;
         }
 
-        public event Event<IHierarchyComponentAddedEventArgs<IGlyphComponent, IGlyphContainer>> HierarchyComponentAdded
+        public event Event<IComponentsChangedEventArgs<IGlyphComponent, IGlyphContainer>> HierarchyComponentsChanged
         {
-            add => ComponentImplementation.HierarchyComponentAdded += value;
-            remove => ComponentImplementation.HierarchyComponentAdded -= value;
+            add => ComponentImplementation.HierarchyComponentsChanged += value;
+            remove => ComponentImplementation.HierarchyComponentsChanged -= value;
         }
 
         event Event<IComponent> IComponent.ParentChanged
@@ -248,16 +177,16 @@ namespace Glyph.Composition.Base
             remove => ComponentImplementationT1.HierarchyChanged -= value;
         }
 
-        event Event<IHierarchyComponentAddedEventArgs> IComponent.HierarchyComponentAdded
+        event Event<IComponentsChangedEventArgs> IComponent.HierarchyComponentsChanged
         {
-            add => ComponentImplementationT0.HierarchyComponentAdded += value;
-            remove => ComponentImplementationT0.HierarchyComponentAdded -= value;
+            add => ComponentImplementationT0.HierarchyComponentsChanged += value;
+            remove => ComponentImplementationT0.HierarchyComponentsChanged -= value;
         }
 
-        event Event<IHierarchyComponentAddedEventArgs<IGlyphComponent>> IComponent<IGlyphComponent>.HierarchyComponentAdded
+        event Event<IComponentsChangedEventArgs<IGlyphComponent>> IComponent<IGlyphComponent>.HierarchyComponentsChanged
         {
-            add => ComponentImplementationT1.HierarchyComponentAdded += value;
-            remove => ComponentImplementationT1.HierarchyComponentAdded -= value;
+            add => ComponentImplementationT1.HierarchyComponentsChanged += value;
+            remove => ComponentImplementationT1.HierarchyComponentsChanged -= value;
         }
     }
 }

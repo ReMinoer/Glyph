@@ -16,6 +16,14 @@ namespace Glyph.Composition.Base
 
         internal abstract IEnumerable<TComponent> ReadOnlyComponents { get; }
         IEnumerable<TComponent> IContainer<IGlyphComponent, IGlyphContainer, TComponent>.Components => ReadOnlyComponents;
+        
+        public override void Dispose()
+        {
+            foreach (TComponent component in ReadOnlyComponents)
+                component.Dispose();
+
+            base.Dispose();
+        }
 
         bool IContainer.Opened => ContainerImplementation.Opened;
         void IContainer<IGlyphComponent>.Link(IGlyphComponent child) => ContainerImplementation.Link(child);
@@ -29,23 +37,30 @@ namespace Glyph.Composition.Base
 
         private IContainer ContainerImplementationT0 => ContainerImplementation;
         private IContainer<IGlyphComponent> ContainerImplementationT1 => ContainerImplementation;
+        private IContainer<IGlyphComponent, IGlyphContainer> ContainerImplementationT2 => ContainerImplementation;
 
-        public event Event<TComponent> ComponentAdded
+        public event Event<IComponentsChangedEventArgs<IGlyphComponent, IGlyphContainer, TComponent>> ComponentsChanged
         {
-            add => ContainerImplementation.ComponentAdded += value;
-            remove => ContainerImplementation.ComponentAdded -= value;
+            add => ContainerImplementation.ComponentsChanged += value;
+            remove => ContainerImplementation.ComponentsChanged -= value;
         }
 
-        event Event<IComponent> IContainer.ComponentAdded
+        event Event<IComponentsChangedEventArgs> IContainer.ComponentsChanged
         {
-            add => ContainerImplementationT0.ComponentAdded += value;
-            remove => ContainerImplementationT0.ComponentAdded -= value;
+            add => ContainerImplementationT0.ComponentsChanged += value;
+            remove => ContainerImplementationT0.ComponentsChanged -= value;
         }
 
-        event Event<IGlyphComponent> IContainer<IGlyphComponent>.ComponentAdded
+        event Event<IComponentsChangedEventArgs<IGlyphComponent>> IContainer<IGlyphComponent>.ComponentsChanged
         {
-            add => ContainerImplementationT1.ComponentAdded += value;
-            remove => ContainerImplementationT1.ComponentAdded -= value;
+            add => ContainerImplementationT1.ComponentsChanged += value;
+            remove => ContainerImplementationT1.ComponentsChanged -= value;
+        }
+
+        event Event<IComponentsChangedEventArgs<IGlyphComponent, IGlyphContainer>> IContainer<IGlyphComponent, IGlyphContainer>.ComponentsChanged
+        {
+            add => ContainerImplementationT2.ComponentsChanged += value;
+            remove => ContainerImplementationT2.ComponentsChanged -= value;
         }
     }
 }
