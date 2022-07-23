@@ -1,6 +1,8 @@
-﻿namespace Glyph.Tools.UndoRedo
+﻿using System;
+
+namespace Glyph.Tools.UndoRedo
 {
-    public interface IUndoRedo
+    public interface IUndoRedo : IDisposable
     {
         string Description { get; }
         void Undo();

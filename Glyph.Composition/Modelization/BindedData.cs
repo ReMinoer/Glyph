@@ -16,7 +16,7 @@ using Simulacra.Injection.Base;
 
 namespace Glyph.Composition.Modelization
 {
-    public class BindedData<TData, T> : ResolvingDataBase<TData, T, IGlyphConfigurator<T>>, IGlyphCreator<T>, IGlyphConfigurator<T>, IHierarchicalData
+    public class BindedData<TData, T> : ResolvingDataBase<TData, T, IGlyphConfigurator<T>>, IGlyphCreator<T>, IGlyphConfigurator<T>, IHierarchicalData, IRestorable
         where TData : BindedData<TData, T>
         where T : class, IGlyphComponent
     {
@@ -146,10 +146,19 @@ namespace Glyph.Composition.Modelization
             if (subData != null)
             {
                 SubData.Add(subData);
-                subData.ParentSource = new PropertySource<TSubData>(getData, setData, propertyName);
+                subData.ParentSource = new PropertySource<TSubData>(this, getData, setData, propertyName);
             }
 
             return true;
+        }
+
+        void IRestorable.Store() => Release();
+        void IRestorable.Restore()
+        {
+            if (DependencyResolver is null)
+                return;
+
+            Instantiate();
         }
 
         protected override void DisposeBindedObject()
@@ -171,10 +180,13 @@ namespace Glyph.Composition.Modelization
     {
         private readonly Func<TSubData> _getSubData;
         private readonly Action<TSubData> _setSubData;
+
+        public IGlyphData Owner { get; }
         public string PropertyName { get; }
 
-        public PropertySource(Func<TSubData> getSubData, Action<TSubData> setSubData, string propertyName)
+        public PropertySource(IGlyphData owner, Func<TSubData> getSubData, Action<TSubData> setSubData, string propertyName)
         {
+            Owner = owner;
             _getSubData = getSubData;
             _setSubData = setSubData;
             PropertyName = propertyName;

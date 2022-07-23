@@ -50,5 +50,23 @@ namespace Glyph.Graphics
             if (_assetAsyncLoader.UpdateContent(ref _texture))
                 Loaded?.Invoke(this);
         }
+
+        public override void Store()
+        {
+            _assetAsyncLoader.Store();
+            base.Store();
+        }
+
+        public override void Restore()
+        {
+            base.Restore();
+            _assetAsyncLoader.Restore();
+        }
+
+        public override void Dispose()
+        {
+            _assetAsyncLoader.Dispose();
+            base.Dispose();
+        }
     }
 }

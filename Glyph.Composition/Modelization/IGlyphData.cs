@@ -20,6 +20,7 @@ namespace Glyph.Composition.Modelization
 
     public interface IGlyphDataSource
     {
+        IGlyphData Owner { get; }
         int IndexOf(IGlyphData data);
         void Set(int index, IGlyphData data);
         void Unset(int index);

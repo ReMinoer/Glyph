@@ -64,5 +64,23 @@ namespace Glyph.Audio
         {
             MediaPlayer.Pause();
         }
+
+        public override void Store()
+        {
+            AssetAsyncLoader.Store();
+            base.Store();
+        }
+
+        public override void Restore()
+        {
+            base.Restore();
+            AssetAsyncLoader.Restore();
+        }
+
+        public override void Dispose()
+        {
+            AssetAsyncLoader.Dispose();
+            base.Dispose();
+        }
     }
 }

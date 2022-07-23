@@ -4,15 +4,18 @@ using System.Threading.Tasks;
 
 namespace Glyph.Content
 {
-    public class AssetAsyncLoader<T>
+    public class AssetAsyncLoader<T> : IRestorable, IDisposable
         where T : class
     {
+        private bool _stored;
+        private bool _loaded;
         private bool _loadedOnce;
+
         private Task _loading;
         private CancellationTokenSource _loadingCancellation;
 
         private bool _needUpdate;
-        private object _contentLock = new object();
+        private readonly object _contentLock = new object();
         private T _newContent;
 
         private IAsset<T> _asset;
@@ -24,42 +27,9 @@ namespace Glyph.Content
                 if (_asset == value)
                     return;
 
-                if (_asset != null)
-                {
-                    // Cancel all loading and release previous asset
-                    _asset.ContentChanged -= OnContentChanged;
-
-                    _loading = null;
-                    _loadingCancellation?.Cancel();
-                    _loadingCancellation = null;
-
-                    _asset?.ReleaseAsync();
-                }
-
+                UnloadAsset();
                 _asset = value;
-
-                if (value != null)
-                {
-                    // Handle new asset and start loading only if it was already loaded previously
-                    _asset.Handle();
-
-                    if (_loadedOnce)
-                    {
-                        _loadingCancellation = new CancellationTokenSource();
-                        _loading = LoadingAsync(_loadingCancellation.Token);
-                    }
-
-                    _asset.ContentChanged += OnContentChanged;
-                }
-                else
-                {
-                    // Need immediate update if new content is null
-                    lock (_contentLock)
-                    {
-                        _newContent = null;
-                        _needUpdate = true;
-                    }
-                }
+                LoadAsset();
             }
         }
 
@@ -97,10 +67,14 @@ namespace Glyph.Content
 
             // Throw if cancellation before assigning any new content
             cancellationToken.ThrowIfCancellationRequested();
+            OnLoaded(content);
+        }
 
+        private void OnLoaded(T loadedContent)
+        {
             lock (_contentLock)
             {
-                _newContent = content;
+                _newContent = loadedContent;
                 _needUpdate = true;
             }
         }
@@ -116,6 +90,70 @@ namespace Glyph.Content
                 content = _newContent;
                 return true;
             }
+        }
+
+        public void Store()
+        {
+            UnloadAsset();
+            _stored = true;
+        }
+
+        public void Restore()
+        {
+            _stored = false;
+            LoadAsset();
+        }
+
+        public void Dispose()
+        {
+            UnloadAsset();
+        }
+
+        private void LoadAsset()
+        {
+            if (_loaded)
+                return;
+            if (_stored)
+                return;
+
+            if (_asset is null)
+            {
+                // Need immediate update if new asset is null
+                OnLoaded(null);
+                return;
+            }
+
+            // Handle new asset and start loading only if it was already loaded previously
+            _asset.Handle();
+
+            if (_loadedOnce)
+            {
+                _loadingCancellation = new CancellationTokenSource();
+                _loading = LoadingAsync(_loadingCancellation.Token);
+            }
+
+            _asset.ContentChanged += OnContentChanged;
+            _loaded = true;
+        }
+
+        private void UnloadAsset()
+        {
+            if (!_loaded)
+                return;
+            if (_stored)
+                return;
+            if (_asset is null)
+                return;
+            
+            // Cancel all loading and release previous asset
+            _asset.ContentChanged -= OnContentChanged;
+
+            _loading = null;
+            _loadingCancellation?.Cancel();
+            _loadingCancellation = null;
+
+            _asset?.ReleaseAsync();
+            _loaded = false;
         }
     }
 }

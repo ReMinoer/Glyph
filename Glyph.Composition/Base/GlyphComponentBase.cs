@@ -113,6 +113,9 @@ namespace Glyph.Composition.Base
         public virtual void Initialize() { }
         public override string ToString() => $"{Name} ({Id.ToString().Substring(0, 4)})";
 
+        public virtual void Store() { }
+        public virtual void Restore() { }
+
         public override void Dispose()
         {
             _contextInjection.Dispose();

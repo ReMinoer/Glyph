@@ -32,7 +32,7 @@ namespace Glyph.Composition.Modelization
             base.SetView(model, view);
 
             if (!model.NotBinding)
-                model.SubDataSources.Add(new ChildrenSource(_propertyName, _referenceGetter(model)));
+                model.SubDataSources.Add(new ChildrenSource(model, _propertyName, _referenceGetter(model)));
         }
 
         protected override void ResetView(TModel model, TView view)
@@ -80,13 +80,16 @@ namespace Glyph.Composition.Modelization
         public class ChildrenSource : IGlyphDataChildrenSource
         {
             private readonly IList _list;
+            public IGlyphData Owner { get; }
             public string PropertyName { get; }
             public IEnumerable<IGlyphData> Children { get; }
             public INotifyCollectionChanged ChildrenNotifier { get; }
 
-            public ChildrenSource(string propertyName,
+            public ChildrenSource(IGlyphData owner,
+                string propertyName,
                 IEnumerable<IGlyphData> children)
             {
+                Owner = owner;
                 PropertyName = propertyName;
                 Children = children;
                 _list = children as IList;

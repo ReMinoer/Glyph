@@ -14,6 +14,8 @@ namespace Glyph.Tools.UndoRedo
             Description = description;
         }
 
+        public override string ToString() => Description;
+
         public void Push(Action redo, Action undo)
         {
             _redoList.Add(redo);
@@ -38,6 +40,6 @@ namespace Glyph.Tools.UndoRedo
                 redo();
         }
 
-        public override string ToString() => Description;
+        public void Dispose() {}
     }
 }

@@ -16,7 +16,23 @@ namespace Glyph.Composition.Base
 
         internal abstract IEnumerable<TComponent> ReadOnlyComponents { get; }
         IEnumerable<TComponent> IContainer<IGlyphComponent, IGlyphContainer, TComponent>.Components => ReadOnlyComponents;
-        
+
+        public override void Store()
+        {
+            foreach (TComponent component in ReadOnlyComponents)
+                component.Store();
+
+            base.Store();
+        }
+
+        public override void Restore()
+        {
+            base.Restore();
+
+            foreach (TComponent component in ReadOnlyComponents)
+                component.Restore();
+        }
+
         public override void Dispose()
         {
             foreach (TComponent component in ReadOnlyComponents)

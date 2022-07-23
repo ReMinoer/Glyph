@@ -182,6 +182,8 @@ namespace Glyph.Content
 
             _assetCache.TryRemove(asset.AssetPath, out _);
             TryReconditionContentManager(asset.AssetPath);
+
+            Logger.Info($"Unloaded {asset.AssetPath}");
         }
 
         private void TryReconditionContentManager(string assetPath)
