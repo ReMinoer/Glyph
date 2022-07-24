@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using Diese.Collections;
 using Simulacra.Binding.Collection.Base;
 
@@ -32,7 +33,10 @@ namespace Glyph.Composition.Modelization
             base.SetView(model, view);
 
             if (!model.NotBinding)
-                model.SubDataSources.Add(new ChildrenSource(model, _propertyName, _referenceGetter(model)));
+            {
+                if (!model.SubDataSources.Any(x => x is ChildrenSource childrenSource && childrenSource.PropertyName == _propertyName))
+                    model.SubDataSources.Add(new ChildrenSource(model, _propertyName, _referenceGetter(model)));
+            }
         }
 
         protected override void ResetView(TModel model, TView view)
