@@ -206,7 +206,6 @@ namespace Glyph.Application
                 Type<AdvancedPositionHandle>(),
                 Type<AdvancedRotationHandle>(),
                 Type<AdvancedScaleHandle>(),
-                Type<SimplePositionHandle>(),
 
                 Type<RectangleEditor>(),
                 Type<AdvancedRectanglePositionHandle>(),
