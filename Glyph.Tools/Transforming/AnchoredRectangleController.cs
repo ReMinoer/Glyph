@@ -13,6 +13,8 @@ namespace Glyph.Tools.Transforming
             set => _controller.Rectangle = value;
         }
 
+        public bool IsLocalRectangle => _controller.IsLocalRectangle;
+
         public AnchoredRectangleController(IRectangleController controller, ISceneNode anchor)
         {
             _controller = controller;

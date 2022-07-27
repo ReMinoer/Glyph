@@ -50,7 +50,10 @@ namespace Glyph.Tools.Transforming
             IAnchoredRotationController editedObject = EditedObject;
             float newRotation = _lastRotation;
             float previousRotation = _startRotation;
-            
+
+            if (EditedObject.IsLocalRotation)
+                newRotation = editedObject.Anchor.Rotation / editedObject.Anchor.LocalRotation;
+
             if (newRotation.EpsilonEquals(previousRotation))
                 return;
 

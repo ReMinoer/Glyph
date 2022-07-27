@@ -39,14 +39,16 @@ namespace Glyph.Tools.Transforming
 
         public class AnchoredPositionController : IAnchoredPositionController
         {
-            public ISceneNode Anchor { get; }
-
             private readonly IPositionController _controller;
+
+            public bool IsLocalPosition => _controller.IsLocalPosition;
             public Vector2 Position
             {
                 get => _controller.Position;
                 set => _controller.Position = value;
             }
+
+            public ISceneNode Anchor { get; }
 
             public AnchoredPositionController(IPositionController controller, ISceneNode anchor)
             {
@@ -57,14 +59,16 @@ namespace Glyph.Tools.Transforming
 
         public class AnchoredRotationController : IAnchoredRotationController
         {
-            public ISceneNode Anchor { get; }
-
             private readonly IRotationController _controller;
+
+            public bool IsLocalRotation => _controller.IsLocalRotation;
             public float Rotation
             {
                 get => _controller.Rotation;
                 set => _controller.Rotation = value;
             }
+
+            public ISceneNode Anchor { get; }
 
             public AnchoredRotationController(IRotationController controller, ISceneNode anchor)
             {
@@ -75,14 +79,16 @@ namespace Glyph.Tools.Transforming
 
         public class AnchoredScaleController : IAnchoredScaleController
         {
-            public ISceneNode Anchor { get; }
-
             private readonly IScaleController _controller;
+
+            public bool IsLocalScale => _controller.IsLocalScale;
             public float Scale
             {
                 get => _controller.Scale;
                 set => _controller.Scale = value;
             }
+
+            public ISceneNode Anchor { get; }
 
             public AnchoredScaleController(IScaleController controller, ISceneNode anchor)
             {

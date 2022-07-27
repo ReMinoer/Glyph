@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Diese.Collections;
 using Glyph.Core;
 using Glyph.Graphics.Meshes;
 using Glyph.Math;
@@ -143,10 +142,14 @@ namespace Glyph.Tools.Transforming
 
         private void UpdateAnchorTransformations(ElapsedTime elapsedTime)
         {
-            _topLeftAnchor.AnchorTransformation = new Transformation(EditedObject.Rectangle.Position, 0, 1);
-            _topRightAnchor.AnchorTransformation = new Transformation(EditedObject.Rectangle.P1, 0, 1);
-            _bottomLeftAnchor.AnchorTransformation = new Transformation(EditedObject.Rectangle.P2, 0, 1);
-            _bottomRightAnchor.AnchorTransformation = new Transformation(EditedObject.Rectangle.P3, 0, 1);
+            ITransformation transformation = EditedObject.IsLocalRectangle
+                ? EditedObject.Anchor.LocalTransformation.InverseTransform(EditedObject.Anchor.Transformation)
+                : Transformation.Identity;
+
+            _topLeftAnchor.AnchorTransformation = transformation.Transform(new Transformation(EditedObject.Rectangle.Position, 0, 1));
+            _topRightAnchor.AnchorTransformation = transformation.Transform(new Transformation(EditedObject.Rectangle.P1, 0, 1));
+            _bottomLeftAnchor.AnchorTransformation = transformation.Transform(new Transformation(EditedObject.Rectangle.P2, 0, 1));
+            _bottomRightAnchor.AnchorTransformation = transformation.Transform(new Transformation(EditedObject.Rectangle.P3, 0, 1));
 
             _positionHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), EditedObject.Rectangle.Size);
             _leftHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(-Unit, 0), new Vector2(Unit, EditedObject.Rectangle.Size.Y));

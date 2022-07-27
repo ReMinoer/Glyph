@@ -16,18 +16,21 @@ namespace Glyph.Tools.Transforming
             OrientedReferential = orientedReferential;
         }
 
+        bool IPositionController.IsLocalPosition => false;
         Vector2 IPositionController.Position
         {
             get => SceneNode.Position;
             set => SceneNode.Position = value;
         }
 
+        bool IRotationController.IsLocalRotation => false;
         float IRotationController.Rotation
         {
             get => SceneNode.Rotation;
             set => SceneNode.Rotation = value;
         }
 
+        bool IScaleController.IsLocalScale => false;
         float IScaleController.Scale
         {
             get => SceneNode.Scale;

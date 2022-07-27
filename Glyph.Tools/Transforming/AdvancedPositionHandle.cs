@@ -20,7 +20,11 @@ namespace Glyph.Tools.Transforming
         {
             IAnchoredPositionController editedObject = EditedObject;
             Vector2 previousPosition = _startPosition;
-            
+
+            // Maybe reverse full local transform ?
+            if (editedObject.IsLocalPosition)
+                position -= editedObject.Anchor.Position - editedObject.Anchor.LocalPosition;
+
             if (position == previousPosition)
                 return;
 

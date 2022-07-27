@@ -32,8 +32,16 @@ namespace Glyph.Tools.Transforming
 
         protected override void SetPosition(Vector2 position, IUndoRedoStack undoRedoStack = null)
         {
-            Vector2 clampedPosition = new Vector2(MathHelper.Min(position.X, EditedObject.Rectangle.Right), MathHelper.Min(position.Y, EditedObject.Rectangle.Bottom));
+            IAnchoredRectangleController editedObject = EditedObject;
+            Vector2 previousPosition = _startPosition;
+
             Vector2 positionDiff = position - _startCursorProjectedPosition;
+
+            // Maybe reverse full local transform ?
+            if (editedObject.IsLocalRectangle)
+                position -= editedObject.Anchor.Position - editedObject.Anchor.LocalPosition;
+
+            Vector2 clampedPosition = new Vector2(MathHelper.Min(position.X, EditedObject.Rectangle.Right), MathHelper.Min(position.Y, EditedObject.Rectangle.Bottom));
 
             Vector2 computedPosition;
             Vector2 computedSize;
@@ -61,9 +69,8 @@ namespace Glyph.Tools.Transforming
 
             Vector2 correctedComputedSize = new Vector2(MathHelper.Max(computedSize.X, 0), MathHelper.Max(computedSize.Y, 0));
 
-            IAnchoredRectangleController editedObject = EditedObject;
             var newRectangle = new TopLeftRectangle(computedPosition, correctedComputedSize);
-            var previousRectangle = new TopLeftRectangle(_startPosition, _startSize);
+            var previousRectangle = new TopLeftRectangle(previousPosition, _startSize);
 
             if (newRectangle.Equals(previousRectangle))
                 return;

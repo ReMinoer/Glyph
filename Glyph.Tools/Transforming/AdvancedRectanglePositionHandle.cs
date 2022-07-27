@@ -22,6 +22,10 @@ namespace Glyph.Tools.Transforming
             IAnchoredRectangleController editedObject = EditedObject;
             Vector2 previousPosition = _startPosition;
 
+            // Maybe reverse full local transform ?
+            if (editedObject.IsLocalRectangle)
+                position -= editedObject.Anchor.Position - editedObject.Anchor.LocalPosition;
+
             if (position == previousPosition)
                 return;
 

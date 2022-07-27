@@ -5,16 +5,19 @@ namespace Glyph.Tools.Transforming
 {
     public interface IPositionController
     {
+        bool IsLocalPosition { get; }
         Vector2 Position { get; set; }
     }
 
     public interface IRotationController
     {
+        bool IsLocalRotation { get; }
         float Rotation { get; set; }
     }
 
     public interface IScaleController
     {
+        bool IsLocalScale { get; }
         float Scale { get; set; }
     }
 
@@ -52,6 +55,7 @@ namespace Glyph.Tools.Transforming
 
     public interface IRectangleController
     {
+        bool IsLocalRectangle { get; }
         TopLeftRectangle Rectangle { get; set; }
     }
 

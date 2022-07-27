@@ -47,6 +47,9 @@ namespace Glyph.Tools.Transforming
             float newScale = _lastScale;
             float previousScale = _startScale;
 
+            if (EditedObject.IsLocalScale)
+                newScale = editedObject.Anchor.Scale / editedObject.Anchor.LocalScale;
+
             if (newScale.EpsilonEquals(previousScale))
                 return;
 
