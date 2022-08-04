@@ -9,10 +9,10 @@ using Niddle.Attributes;
 
 namespace Glyph.UI
 {
-    public class InterfaceRoot : InteractiveChildComponentBase<InteractiveInterfaceRoot, IInteractive>
+    public class InterfaceRoot : InteractiveChildComponentBase<InterfaceRoot.RootInteractive, IInteractive>
     {
         private readonly ProjectionCursorControl _cursorProjection;
-        public override sealed InteractiveInterfaceRoot Interactive { get; } = new InteractiveInterfaceRoot();
+        public override sealed RootInteractive Interactive { get; }
 
         public IDrawClient RaycastClient
         {
@@ -20,8 +20,14 @@ namespace Glyph.UI
             set => _cursorProjection.RaycastClient = value;
         }
 
-        public InterfaceRoot(RootView rootView, ProjectionManager projectionManager, [Resolvable, ResolveTargets(ResolveTargets.Parent)] IGlyphComponent parent = null)
+        public InterfaceRoot(
+            CursorManager cursorManager,
+            RootView rootView,
+            ProjectionManager projectionManager,
+            [Resolvable, ResolveTargets(ResolveTargets.Parent)] IGlyphComponent parent = null)
         {
+            Interactive = new RootInteractive(cursorManager);
+
             if (parent?.Name != null)
                 Interactive.Name = parent.Name + " interface root";
 
@@ -31,6 +37,22 @@ namespace Glyph.UI
             Interactive.Confirm = UserInterfaceControls.Instance.Confirm;
             Interactive.Cancel = UserInterfaceControls.Instance.Cancel;
             Interactive.Exit = UserInterfaceControls.Instance.Exit;
+        }
+
+        public class RootInteractive : InteractiveInterfaceRoot<IGlyphInteractiveInterface>
+        {
+            private readonly CursorManager _cursorManager;
+
+            public RootInteractive(CursorManager cursorManager)
+            {
+                _cursorManager = cursorManager;
+            }
+
+            protected override void UpdateEnabled(float elapsedTime)
+            {
+                base.UpdateEnabled(elapsedTime);
+                _cursorManager.Cursor = Touching?.TouchCursor ?? Hovered?.HoverCursor;
+            }
         }
     }
 }

@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using Glyph.Engine;
+using Microsoft.Win32.SafeHandles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.WpfInterop;
 
 namespace Glyph.WpfInterop
@@ -73,9 +78,65 @@ namespace Glyph.WpfInterop
 
         public void Draw(D3D11Client client, GameTime gameTime)
         {
+            UpdateCursor(client as GlyphWpfViewer);
+
             Engine.BeginDraw();
             Engine.Draw(client as IDrawClient ?? new DrawClient(client));
             Engine.EndDraw();
+        }
+
+        private void UpdateCursor(GlyphWpfViewer viewer)
+        {
+            if (!Engine.CursorManager.ChangeRequested)
+                return;
+
+            if (Engine.CursorManager.Cursor is null)
+                viewer.Cursor = null;
+            else if (Engine.CursorManager.Cursor == MouseCursor.Arrow)
+                viewer.Cursor = Cursors.Arrow;
+            else if (Engine.CursorManager.Cursor == MouseCursor.Crosshair)
+                viewer.Cursor = Cursors.Cross;
+            else if (Engine.CursorManager.Cursor == MouseCursor.Hand)
+                viewer.Cursor = Cursors.Hand;
+            else if (Engine.CursorManager.Cursor == MouseCursor.IBeam)
+                viewer.Cursor = Cursors.IBeam;
+            else if (Engine.CursorManager.Cursor == MouseCursor.No)
+                viewer.Cursor = Cursors.No;
+            else if (Engine.CursorManager.Cursor == MouseCursor.SizeAll)
+                viewer.Cursor = Cursors.SizeAll;
+            else if (Engine.CursorManager.Cursor == MouseCursor.SizeNS)
+                viewer.Cursor = Cursors.SizeNS;
+            else if (Engine.CursorManager.Cursor == MouseCursor.SizeWE)
+                viewer.Cursor = Cursors.SizeWE;
+            else if (Engine.CursorManager.Cursor == MouseCursor.SizeNWSE)
+                viewer.Cursor = Cursors.SizeNWSE;
+            else if (Engine.CursorManager.Cursor == MouseCursor.SizeNESW)
+                viewer.Cursor = Cursors.SizeNESW;
+            else if (Engine.CursorManager.Cursor == MouseCursor.Wait)
+                viewer.Cursor = Cursors.Wait;
+            else if (Engine.CursorManager.Cursor == MouseCursor.WaitArrow)
+                viewer.Cursor = Cursors.AppStarting;
+            else
+                viewer.Cursor = CursorInteropHelper.Create(new SafeCursorHandle(Engine.CursorManager.Cursor.Handle));
+
+            Engine.CursorManager.ResetRequest();
+        }
+
+        public sealed class SafeCursorHandle : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            [DllImport("user32.dll")]
+            static private extern bool DestroyCursor(IntPtr handle);
+            
+            public SafeCursorHandle(IntPtr handle)
+                : base(true)
+            {
+                SetHandle(handle);
+            }
+
+            protected override bool ReleaseHandle()
+            {
+                return DestroyCursor(handle);
+            }
         }
 
         public class DrawClient : IDrawClient

@@ -5,6 +5,7 @@ using Glyph.Math;
 using Glyph.Tools.Transforming;
 using Glyph.UI;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Glyph.Tools.Base
 {
@@ -37,6 +38,7 @@ namespace Glyph.Tools.Base
         object IIntegratedEditor.EditedObject => EditedObject;
 
         protected abstract IArea Area { get; }
+        protected abstract MouseCursor Cursor { get; }
 
         public Vector2 LocalPosition
         {
@@ -63,10 +65,19 @@ namespace Glyph.Tools.Base
             _sceneNode = Add<SceneNode>();
 
             _userInterface = Add<UserInterface>();
+            _userInterface.CursorHovering += OnCursorHovering;
             _userInterface.TouchStarted += OnTouchStarted;
             _userInterface.Touching += OnTouching;
             _userInterface.TouchEnded += OnTouchEnded;
             _userInterface.Cancelled += OnCancelled;
+        }
+
+        private void OnCursorHovering(object sender, HandlableHoverEventArgs e)
+        {
+            if (!Active || !Area.ContainsPoint(e.CursorPosition))
+                return;
+
+            e.Handle(Cursor);
         }
 
         private void OnTouchStarted(object sender, HandlableTouchEventArgs e)
@@ -76,7 +87,7 @@ namespace Glyph.Tools.Base
             if (!Active || !Area.ContainsPoint(e.CursorPosition))
                 return;
             
-            e.Handle();
+            e.Handle(Cursor);
 
             IsGrabbed = true;
             OnGrabbed(e.CursorPosition);

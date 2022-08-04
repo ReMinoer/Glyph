@@ -2,6 +2,7 @@
 using Glyph.Tools.Transforming.Base;
 using Glyph.Tools.UndoRedo;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Niddle.Attributes;
 
 namespace Glyph.Tools.Transforming
@@ -19,6 +20,8 @@ namespace Glyph.Tools.Transforming
             : base(context, projectionManager)
         {
         }
+
+        protected override MouseCursor Cursor => MouseCursor.Hand;
 
         protected override void OnGrabbed(Vector2 cursorPosition)
         {

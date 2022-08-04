@@ -2,6 +2,7 @@
 using Glyph.Tools.Transforming.Base;
 using Glyph.Tools.UndoRedo;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Niddle.Attributes;
 
 namespace Glyph.Tools.Transforming
@@ -14,6 +15,8 @@ namespace Glyph.Tools.Transforming
 
         [Resolvable]
         public IUndoRedoStack UndoRedoStack { get; set; }
+
+        protected override MouseCursor Cursor => MouseCursor.SizeNWSE;
 
         public AdvancedScaleHandle(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context, projectionManager)

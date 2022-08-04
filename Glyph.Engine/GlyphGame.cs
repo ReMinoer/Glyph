@@ -126,6 +126,21 @@ namespace Glyph.Engine
             //    return;
 
             Engine.Update();
+
+            if (Engine.CursorManager.ChangeRequested)
+            {
+                if (Engine.CursorManager.Cursor != null)
+                {
+                    Mouse.SetCursor(Engine.CursorManager.Cursor);
+                    IsMouseVisible = true;
+                }
+                else
+                {
+                    IsMouseVisible = false;
+                }
+
+                Engine.CursorManager.ResetRequest();
+            }
         }
 
         public void ToggleFullscreen()

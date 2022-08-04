@@ -33,6 +33,7 @@ namespace Glyph.Engine
         public ProjectionManager ProjectionManager { get; }
         public InputClientManager InputClientManager { get; }
         public InteractionManager InteractionManager { get; }
+        public CursorManager CursorManager { get; }
 
         public UpdateScheduler UpdateScheduler { get; }
         public DrawScheduler DrawScheduler { get; }
@@ -109,6 +110,7 @@ namespace Glyph.Engine
 
             InputClientManager = new InputClientManager();
             InteractionManager = new InteractionManager();
+            CursorManager = new CursorManager();
 
             UpdateScheduler = resolver.Resolve<UpdateScheduler>();
             DrawScheduler = resolver.Resolve<DrawScheduler>();
@@ -120,6 +122,7 @@ namespace Glyph.Engine
             Registry.Add(GlyphDependency.OnType<IContentLibrary>().Using(ContentLibrary));
             Registry.Add(GlyphDependency.OnType<InputClientManager>().Using(InputClientManager));
             Registry.Add(GlyphDependency.OnType<InteractionManager>().Using(InteractionManager));
+            Registry.Add(GlyphDependency.OnType<CursorManager>().Using(CursorManager));
             Registry.Add(GlyphDependency.OnType<Func<GraphicsDevice>>().Using(() =>
             {
                 if (FocusedClient != null)

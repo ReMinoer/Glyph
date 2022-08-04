@@ -3,6 +3,7 @@ using Glyph.Core;
 using Glyph.Math.Shapes;
 using Glyph.Tools.UndoRedo;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Glyph.Tools.Transforming
 {
@@ -11,6 +12,35 @@ namespace Glyph.Tools.Transforming
         private Vector2 _startSize;
         private Vector2 _startCursorProjectedPosition;
         public Axes AxesEditedFromOrigin { get; set; }
+
+        protected override MouseCursor Cursor
+        {
+            get
+            {
+                switch (Axes)
+                {
+                    case Axes.Both:
+                    {
+                        switch (AxesEditedFromOrigin)
+                        {
+                            case Axes.None:
+                            case Axes.Both:
+                                return MouseCursor.SizeNWSE;
+                            case Axes.Horizontal:
+                            case Axes.Vertical:
+                                return MouseCursor.SizeNESW;
+                        }
+                        break;
+                    }
+                    case Axes.Horizontal:
+                        return MouseCursor.SizeWE;
+                    case Axes.Vertical:
+                        return MouseCursor.SizeNS;
+                }
+
+                return MouseCursor.SizeAll;
+            }
+        }
 
         public AdvancedRectangleBorderPositionHandle(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context, projectionManager)

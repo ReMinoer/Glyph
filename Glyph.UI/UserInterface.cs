@@ -1,20 +1,21 @@
 ﻿using System;
-using Fingear.Interactives.Interfaces;
 using Fingear.Interactives.Interfaces.Base;
 using Fingear.MonoGame;
 using Glyph.Composition;
 using Glyph.Core.Inputs;
 using Glyph.Resolver;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Niddle.Attributes;
 
 namespace Glyph.UI
 {
-    public class UserInterface : InteractiveChildComponentBase<UserInterface.SubscribableInterface, IInteractiveInterface>
+    public class UserInterface : InteractiveChildComponentBase<UserInterface.SubscribableInterface, IGlyphInteractiveInterface>
     {
         public override sealed SubscribableInterface Interactive { get; }
 
         public event EventHandler<CursorEventArgs> CursorMoved;
+        public event EventHandler<HandlableHoverEventArgs> CursorHovering;
         public event EventHandler<HandlableTouchEventArgs> TouchStarted;
         public event EventHandler<CursorEventArgs> Touching;
         public event EventHandler<CursorEventArgs> TouchEnded;
@@ -34,6 +35,7 @@ namespace Glyph.UI
         public override void Dispose()
         {
             CursorMoved = null;
+            CursorHovering = null;
             TouchStarted = null;
             Touching = null;
             TouchEnded = null;
@@ -44,9 +46,12 @@ namespace Glyph.UI
             base.Dispose();
         }
 
-        public class SubscribableInterface : InteractiveInterfaceCompositeBase
+        public class SubscribableInterface : InteractiveInterfaceCompositeBase<IGlyphInteractiveInterface>, IGlyphInteractiveInterface
         {
             private readonly UserInterface _owner;
+
+            public MouseCursor HoverCursor { get; private set; }
+            public MouseCursor TouchCursor { get; private set; }
 
             public SubscribableInterface(UserInterface owner)
             {
@@ -58,9 +63,24 @@ namespace Glyph.UI
                 _owner.CursorMoved?.Invoke(this, new CursorEventArgs(cursorPosition.AsMonoGameVector()));
             }
 
-            protected override IInteractiveInterface OnLocalTouchStarted(System.Numerics.Vector2 cursorPosition)
+            protected override IGlyphInteractiveInterface OnLocalCursorHovering(System.Numerics.Vector2 cursorPosition)
             {
-                return OnHandlableEventWithHandler(_owner.TouchStarted, new HandlableTouchEventArgs(cursorPosition.AsMonoGameVector()));
+                HoverCursor = null;
+
+                var eventArgs = new HandlableHoverEventArgs(cursorPosition.AsMonoGameVector());
+                IGlyphInteractiveInterface handler = OnHandlableEventWithHandler(_owner.CursorHovering, eventArgs);
+
+                HoverCursor = eventArgs.Cursor;
+                return handler;
+            }
+
+            protected override IGlyphInteractiveInterface OnLocalTouchStarted(System.Numerics.Vector2 cursorPosition)
+            {
+                var eventArgs = new HandlableTouchEventArgs(cursorPosition.AsMonoGameVector());
+                IGlyphInteractiveInterface handler = OnHandlableEventWithHandler(_owner.TouchStarted, eventArgs);
+
+                TouchCursor = eventArgs.Cursor;
+                return handler;
             }
 
             protected override void OnLocalTouching(System.Numerics.Vector2 cursorPosition)
@@ -100,7 +120,7 @@ namespace Glyph.UI
                 return eventArgs.IsHandled;
             }
 
-            private IInteractiveInterface OnHandlableEventWithHandler<TEventArgs>(EventHandler<TEventArgs> eventHandler, TEventArgs eventArgs)
+            private IGlyphInteractiveInterface OnHandlableEventWithHandler<TEventArgs>(EventHandler<TEventArgs> eventHandler, TEventArgs eventArgs)
                 where TEventArgs : HandlableEventArgs
             {
                 eventHandler?.Invoke(this, eventArgs);
@@ -124,9 +144,9 @@ namespace Glyph.UI
 
     public class HandledEventArgs : EventArgs
     {
-        public IInteractiveInterface Handler { get; }
+        public IGlyphInteractiveInterface Handler { get; }
 
-        public HandledEventArgs(IInteractiveInterface handler)
+        public HandledEventArgs(IGlyphInteractiveInterface handler)
         {
             Handler = handler;
         }
@@ -142,13 +162,37 @@ namespace Glyph.UI
         }
     }
 
+    public class HandlableHoverEventArgs : HandlableEventArgs
+    {
+        public Vector2 CursorPosition { get; }
+        public MouseCursor Cursor { get; private set; }
+
+        public HandlableHoverEventArgs(Vector2 cursorPosition)
+        {
+            CursorPosition = cursorPosition;
+        }
+
+        public void Handle(MouseCursor cursor)
+        {
+            Cursor = cursor;
+            Handle();
+        }
+    }
+
     public class HandlableTouchEventArgs : HandlableEventArgs
     {
         public Vector2 CursorPosition { get; }
+        public MouseCursor Cursor { get; private set; }
 
         public HandlableTouchEventArgs(Vector2 cursorPosition)
         {
             CursorPosition = cursorPosition;
+        }
+
+        public void Handle(MouseCursor cursor)
+        {
+            Cursor = cursor;
+            Handle();
         }
     }
 
@@ -162,11 +206,22 @@ namespace Glyph.UI
         }
     }
 
+    public class HandledHoverEventArgs : HandledEventArgs
+    {
+        public Vector2 CursorPosition { get; }
+
+        public HandledHoverEventArgs(IGlyphInteractiveInterface handler, Vector2 cursorPosition)
+            : base(handler)
+        {
+            CursorPosition = cursorPosition;
+        }
+    }
+
     public class HandledTouchEventArgs : HandledEventArgs
     {
         public Vector2 CursorPosition { get; }
 
-        public HandledTouchEventArgs(IInteractiveInterface handler, Vector2 cursorPosition)
+        public HandledTouchEventArgs(IGlyphInteractiveInterface handler, Vector2 cursorPosition)
             : base(handler)
         {
             CursorPosition = cursorPosition;
@@ -177,7 +232,7 @@ namespace Glyph.UI
     {
         public Vector2 Direction { get; }
 
-        public HandledDirectionEventArgs(IInteractiveInterface handler, Vector2 direction)
+        public HandledDirectionEventArgs(IGlyphInteractiveInterface handler, Vector2 direction)
             : base(handler)
         {
             Direction = direction;
