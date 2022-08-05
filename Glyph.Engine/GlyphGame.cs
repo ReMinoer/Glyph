@@ -18,6 +18,7 @@ namespace Glyph.Engine
 {
     public class GlyphGame : Game, IGlyphClient
     {
+        private Task _loadContentTask;
         private IControl _fullscreenControl;
         private Point _windowSize;
         private Point _lastWindowSize;
@@ -108,7 +109,7 @@ namespace Glyph.Engine
         protected override void LoadContent()
         {
             base.LoadContent();
-            Task.Run(async () => await Engine.LoadContentAsync()).Wait();
+            _loadContentTask = Engine.LoadContentAsync();
         }
 
         protected override void Update(GameTime gameTime)
@@ -119,6 +120,10 @@ namespace Glyph.Engine
 
             if (_fullscreenControl.IsActive)
                 ToggleFullscreen();
+
+            // Do not update engine until loading is done.
+            if (!_loadContentTask.IsCompleted)
+                return;
 
             Engine.HandleInput();
 
@@ -185,6 +190,11 @@ namespace Glyph.Engine
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            // Do not draw engine until loading is done.
+            if (!_loadContentTask.IsCompleted)
+                return;
+
             Engine.Draw(this);
         }
 

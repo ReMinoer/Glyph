@@ -22,7 +22,7 @@ namespace Glyph.Graphics
             set
             {
                 _size = value;
-                Task.Run(RefreshRenderTarget).Wait();
+                RefreshRenderTarget();
             }
         }
 
@@ -31,12 +31,13 @@ namespace Glyph.Graphics
             _lazyGraphicsDevice = lazyGraphicsDevice;
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public Task LoadContent(IContentLibrary contentLibrary)
         {
-            await RefreshRenderTarget();
+            RefreshRenderTarget();
+            return Task.CompletedTask;
         }
 
-        private async Task RefreshRenderTarget()
+        private void RefreshRenderTarget()
         {
             if (Size.X <= 0 || Size.Y <= 0)
             {
@@ -55,7 +56,7 @@ namespace Glyph.Graphics
                 return;
             }
 
-            RenderTarget = await Task.Run(() => new RenderTarget2D(_lazyGraphicsDevice(), (int)Size.X, (int)Size.Y, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8));
+            RenderTarget = new RenderTarget2D(_lazyGraphicsDevice(), (int)Size.X, (int)Size.Y, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
             _texture = RenderTarget;
             Loaded?.Invoke(this);
         }
