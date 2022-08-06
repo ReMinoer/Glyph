@@ -13,6 +13,7 @@ namespace Glyph.WpfInterop
     public class GlyphWpf : WpfGame, IGlyphClient
     {
         private GlyphEngine _engine;
+        private Task _loadContentTask;
         private readonly WpfInputStates _wpfInputStates;
 
         IInputStates IInputClient.States => _wpfInputStates;
@@ -79,7 +80,7 @@ namespace Glyph.WpfInterop
         protected override void LoadContent()
         {
             base.LoadContent();
-            Task.Run(() => Engine?.LoadContentAsync()).Wait();
+            _loadContentTask = Engine.LoadContentAsync();
         }
 
         protected override void Update(GameTime gameTime)
@@ -87,6 +88,11 @@ namespace Glyph.WpfInterop
             Engine?.BeginUpdate(gameTime);
 
             base.Update(gameTime);
+
+            // Do not update engine until loading is done.
+            if (!_loadContentTask.IsCompleted)
+                return;
+            _loadContentTask.Wait();
 
             Engine?.HandleInput();
 
@@ -104,7 +110,13 @@ namespace Glyph.WpfInterop
                 return;
 
             base.Draw(gameTime);
-            Engine.Draw(this);
+
+            // Do not draw engine until loading is done.
+            if (_loadContentTask.IsCompleted)
+            {
+                _loadContentTask.Wait();
+                Engine.Draw(this);
+            }
 
             Engine.EndDraw();
         }
