@@ -7,6 +7,9 @@ namespace Glyph.Content
 {
     public class Asset<T> : IAsset<T>
     {
+        static private readonly SemaphoreSlim _firstAssetSemaphore = new SemaphoreSlim(1);
+        static private bool _isFirstAsset = true;
+
         private readonly LoadDelegate<T> _loadDelegate;
         private readonly SemaphoreSlim _loadingSemaphore = new SemaphoreSlim(1);
         private Task<T> _loadingTask;
@@ -29,6 +32,13 @@ namespace Glyph.Content
         public ITask<T> GetContentAsync(CancellationToken cancellationToken) => new TaskWrapper<T>(GetContentAsyncInternal(cancellationToken));
         private async Task<T> GetContentAsyncInternal(CancellationToken cancellationToken)
         {
+            // Some asset init singleton at first instance (OpenAL). We will lock the first asset loading.
+            await _firstAssetSemaphore.WaitAsync(cancellationToken);
+
+            bool isFirstAsset = _isFirstAsset;
+            if (!isFirstAsset)
+                _firstAssetSemaphore.Release();
+
             await _loadingSemaphore.WaitAsync(cancellationToken);
 
             try
@@ -45,7 +55,9 @@ namespace Glyph.Content
                 try
                 {
                     // Await content
-                    return await _loadingTask;
+                    T asset = await _loadingTask;
+                    _isFirstAsset = false;
+                    return asset;
                 }
                 catch (OperationCanceledException)
                 {
@@ -58,6 +70,9 @@ namespace Glyph.Content
             finally
             {
                 _loadingSemaphore.Release();
+
+                if (isFirstAsset)
+                    _firstAssetSemaphore.Release();
             }
         }
 
