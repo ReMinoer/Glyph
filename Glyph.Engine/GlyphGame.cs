@@ -27,9 +27,10 @@ namespace Glyph.Engine
         public GlyphEngine Engine { get; }
         public GraphicsDeviceManager GraphicsDeviceManager { get; }
 
-        [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
-        public virtual bool IsFocus => IsActive && GetForegroundWindow() == Window.Handle;
+        // TODO: Make it cross-platform
+        //[DllImport("user32.dll")]
+        //static extern IntPtr GetForegroundWindow();
+        //public virtual bool IsFocus => IsActive && GetForegroundWindow() == Window.Handle;
 
         IInputStates IInputClient.States { get; } = new InputStates();
         Vector2 IDrawClient.Size => WindowSize.ToVector2();
@@ -124,6 +125,7 @@ namespace Glyph.Engine
             // Do not update engine until loading is done.
             if (!_loadContentTask.IsCompleted)
                 return;
+            _loadContentTask.Wait();
 
             Engine.HandleInput();
 
@@ -194,6 +196,7 @@ namespace Glyph.Engine
             // Do not draw engine until loading is done.
             if (!_loadContentTask.IsCompleted)
                 return;
+            _loadContentTask.Wait();
 
             Engine.Draw(this);
         }
