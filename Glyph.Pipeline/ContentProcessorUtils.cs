@@ -33,12 +33,13 @@ namespace Glyph.Pipeline
                     return typeof(SpriteFont);
                 case nameof(EffectProcessor):
                     return typeof(Effect);
-                case nameof(VideoProcessor):
-                    return typeof(Video);
+                // TODO: Handle video for supporting platforms
+                //case nameof(VideoProcessor): // Not supported on all platforms
+                //    return typeof(Video);
                 case nameof(PassThroughProcessor):
                     return typeof(object);
                 default:
-                    throw new NotSupportedException();
+                    return null;
             }
         }
     }

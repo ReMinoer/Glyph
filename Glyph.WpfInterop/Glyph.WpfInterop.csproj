@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>$(TargetFramework)</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>True</UseWPF>
   </PropertyGroup>
   <ItemGroup>
@@ -14,6 +14,6 @@
     <ProjectReference Include="..\Glyph\Glyph.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.7.1.189" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.303" />
   </ItemGroup>
 </Project>

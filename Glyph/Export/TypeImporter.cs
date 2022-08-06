@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Glyph.Export
 {
@@ -25,14 +26,19 @@ namespace Glyph.Export
             if (assemblyDirectory == null)
                 throw new InvalidOperationException();
 
-            Assembly CurrentDomainOnReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs e) => Assembly.ReflectionOnlyLoad(e.Name);
+            string[] assemblyPaths = Directory.GetFiles(assemblyDirectory, "*.dll", SearchOption.TopDirectoryOnly);
+
+            var pathAssemblyResolver = new PathAssemblyResolver(Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll").Concat(assemblyPaths));
+            var metadataLoadContext = new MetadataLoadContext(pathAssemblyResolver);
+
+            Assembly CurrentDomainOnReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs e) => metadataLoadContext.LoadFromAssemblyPath(e.Name);
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomainOnReflectionOnlyAssemblyResolve;
 
-            IEnumerable<Assembly> assemblies = Directory.GetFiles(assemblyDirectory, "*.dll", SearchOption.TopDirectoryOnly)
-                                                        .Where(x => !IgnoredDlls.Contains(Path.GetFileName(x)))
-                                                        .Select(Assembly.ReflectionOnlyLoadFrom)
-                                                        .Where(HasAssemblyContainsAttribute)
-                                                        .ToArray();
+            IEnumerable<Assembly> assemblies = assemblyPaths
+                .Where(x => !IgnoredDlls.Contains(Path.GetFileName(x)))
+                .Select(metadataLoadContext.LoadFromAssemblyPath)
+                .Where(HasAssemblyContainsAttribute)
+                .ToArray();
 
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve -= CurrentDomainOnReflectionOnlyAssemblyResolve;
             
@@ -43,7 +49,7 @@ namespace Glyph.Export
         {
             try
             {
-                return a.CustomAttributes.Any(x => x.AttributeType.Name == typeof(AssemblyContainsAttribute).Name);
+                return a.CustomAttributes.Any(x => x.AttributeType.Name == nameof(AssemblyContainsAttribute));
             }
             catch (IOException)
             {

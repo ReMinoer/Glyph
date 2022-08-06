@@ -31,7 +31,7 @@ namespace Glyph.Pipeline
         public string FxCompilerPath { get; set; }
         public string FxProfile { get; set; } = "DirectX_11";
 
-        public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, ILogger logger, string rawRootPath, string cacheRootPath)
+        public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, ILogger logger, TargetPlatform targetPlatform, string rawRootPath, string cacheRootPath)
             : base(graphicsDeviceService, logger, Path.Combine(cacheRootPath, "bin"))
         {
             Directory.CreateDirectory(cacheRootPath);
@@ -46,7 +46,7 @@ namespace Glyph.Pipeline
             {
                 CompressContent = true,
                 Profile = GraphicsProfile.HiDef,
-                Platform = TargetPlatform.Windows
+                Platform = targetPlatform
             };
             
             FxCompilerPath = ResolveFxCompilerPath();
@@ -300,7 +300,8 @@ namespace Glyph.Pipeline
         private IEnumerable<string> GetSupportedExtensionsForEngineContent(Type contentType)
         {
             return _pipelineManager.GetProcessorTypes()
-                .Where(x => contentType.IsAssignableFrom(ContentProcessorUtils.GetEngineContentType(x)))
+                .Where(x => ContentProcessorUtils.GetEngineContentType(x) != null
+                    && contentType.IsAssignableFrom(ContentProcessorUtils.GetEngineContentType(x)))
                 .SelectMany(GetSupportedExtensionsForProcessor);
         }
 
