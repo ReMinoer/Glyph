@@ -93,7 +93,7 @@ namespace Glyph.Core
                 item.Initialize();
 
             if (_contentLoaded && item is ILoadContent loadingItem)
-                Task.Run(async () => await loadingItem.LoadContent(Resolver.Resolve<IContentLibrary>())).Wait();
+                loadingItem.LoadContent(Resolver.Resolve<IContentLibrary>());
         }
 
         public T GetKeyedComponent<T>(object key)
@@ -200,7 +200,16 @@ namespace Glyph.Core
             _initialized = true;
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
+        {
+            if (IsDisposed)
+                return;
+
+            Schedulers.LoadContent.RunSchedule(contentLibrary);
+            _contentLoaded = true;
+        }
+
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
         {
             if (IsDisposed)
                 return;

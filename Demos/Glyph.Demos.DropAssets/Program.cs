@@ -142,7 +142,7 @@ namespace Glyph.Demos.DropAssets
                     const string key = nameof(key);
                     _soundLoader.Remove(key);
                     _soundLoader.Add(key, assetPath);
-                    await _soundLoader.LoadContent(_game.Engine.ContentLibrary);
+                    await _soundLoader.LoadContentAsync(_game.Engine.ContentLibrary);
                     _soundEmitter.Play(key);
                     break;
                 case Song _:

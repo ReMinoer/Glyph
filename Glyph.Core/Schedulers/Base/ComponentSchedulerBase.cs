@@ -70,7 +70,7 @@ namespace Glyph.Core.Schedulers.Base
 
         public void Unplan(TDelegate taskDelegate) => Unplan(_glyphScheduler.GetDelegateTask(taskDelegate));
 
-        private void InitPriority(T task)
+        protected void InitPriority(T task)
         {
             if (!_priorityGroups[Priority.Normal].Contains(task))
                 _priorityGroups[Priority.Normal].Add(task);

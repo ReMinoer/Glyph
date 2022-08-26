@@ -49,9 +49,14 @@ namespace Glyph.UI.Simple
 
         private void OnSceneNodeDepthChanged(object sender, EventArgs e) => RenderDepthChanged?.Invoke(this, EventArgs.Empty);
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
         {
-            await _rectangleSprite.LoadContent(contentLibrary);
+            _rectangleSprite.LoadContent(contentLibrary);
+        }
+
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            await _rectangleSprite.LoadContentAsync(contentLibrary);
         }
 
         public void Draw(IDrawer drawer)

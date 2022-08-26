@@ -72,9 +72,9 @@ namespace Glyph.Pipeline
             return null;
         }
 
-        protected override IAsset<T> CreateAsset<T>(string assetPath, LoadDelegate<T> loadDelegate)
+        protected override IAsset<T> CreateAsset<T>(string assetPath, LoadAsyncDelegate<T> loadAsyncDelegate, LoadDelegate<T> loadDelegate)
         {
-            var asset = new Asset<T>(assetPath, loadDelegate);
+            var asset = new Asset<T>(assetPath, loadAsyncDelegate, loadDelegate);
 
             string watchedPath = Path.Combine(RawRootPath, assetPath + ".*");
             if (!PathUtils.IsValidAbsolutePath(watchedPath))
@@ -92,21 +92,98 @@ namespace Glyph.Pipeline
             return asset;
         }
 
-        protected override async Task<T> Load<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
+        protected override T Load<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
         {
-            if (await CookAsset(assetPath, cancellationToken))
-                return await base.Load(loadingFunc, assetPath, cancellationToken);
+            if (CookAsset(assetPath, cancellationToken))
+                base.Load(loadingFunc, assetPath, cancellationToken);
             return default;
         }
 
-        protected override async Task<Effect> LoadEffect(string assetPath, CancellationToken cancellationToken)
+        protected override async Task<T> LoadAsync<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
         {
-            if (await CompileEffect(assetPath, cancellationToken))
-                return await base.LoadEffect(assetPath, cancellationToken);
+            if (await CookAssetAsync(assetPath, cancellationToken))
+                return await base.LoadAsync(loadingFunc, assetPath, cancellationToken);
+            return default;
+        }
+
+        protected override Effect LoadEffect(string assetPath, CancellationToken cancellationToken)
+        {
+            if (CompileEffect(assetPath, cancellationToken))
+                base.LoadEffect(assetPath, cancellationToken);
             return null;
         }
 
-        private async Task<bool> CookAsset(string assetPath, CancellationToken cancellationToken)
+        protected override async Task<Effect> LoadEffectAsync(string assetPath, CancellationToken cancellationToken)
+        {
+            if (await CompileEffectAsync(assetPath, cancellationToken))
+                return await base.LoadEffectAsync(assetPath, cancellationToken);
+            return null;
+        }
+
+        private bool CookAsset(string assetPath, CancellationToken cancellationToken)
+        {
+            bool foundImporter = false;
+            Stopwatch stopwatch = null;
+            try
+            {
+                _pipelineSemaphore.Wait(cancellationToken);
+
+                stopwatch = Stopwatch.StartNew();
+                try
+                {
+                    ICollection<string> rawFilePaths = GetRawFilesPaths(assetPath);
+                    if (rawFilePaths.Count == 0)
+                        return false; //throw new AssetNotFoundException(assetPath);
+
+                    foreach (string rawFilePath in rawFilePaths)
+                    {
+                        string importerName = _pipelineManager.FindImporterByExtension(Path.GetExtension(rawFilePath));
+                        if (importerName == null)
+                            continue;
+
+                        foundImporter = true;
+
+                        string processorName = _pipelineManager.FindDefaultProcessor(importerName);
+                        if (processorName == null)
+                            continue;
+
+                        string inputPath = Path.GetFullPath(rawFilePath);
+                        string outputPath = Path.GetFullPath(Path.Combine(RootPath, rawFilePath.Substring(RawRootPath.Length + 1)));
+
+                        try
+                        {
+                            _pipelineManager.BuildContent(inputPath, outputPath, importerName, processorName);
+                        }
+                        catch (PipelineException)
+                        {
+                            Logger.Info($"Failed to cook {assetPath}. Second try... (Importer: {importerName}, Processor: {processorName})");
+                            _pipelineManager.BuildContent(inputPath, outputPath, importerName, processorName);
+                        }
+
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        Logger.Info($"Cooked: {assetPath} ({stopwatch.ElapsedMilliseconds} ms, Importer: {importerName}, Processor: {processorName})");
+                        return true;
+                    }
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                    _pipelineSemaphore.Release();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.Info($"Cancelled cooking: {assetPath} ({stopwatch?.ElapsedMilliseconds ?? 0} ms)");
+                throw;
+            }
+
+            if (!foundImporter)
+                throw new NoImporterException(assetPath);
+            throw new NoProcessorException(assetPath);
+        }
+
+        private async Task<bool> CookAssetAsync(string assetPath, CancellationToken cancellationToken)
         {
             bool foundImporter = false;
             Stopwatch stopwatch = null;
@@ -173,7 +250,83 @@ namespace Glyph.Pipeline
             throw new NoProcessorException(assetPath);
         }
 
-        private async Task<bool> CompileEffect(string assetPath, CancellationToken cancellationToken)
+        private bool CompileEffect(string assetPath, CancellationToken cancellationToken)
+        {
+            Stopwatch stopwatch = null;
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                stopwatch = Stopwatch.StartNew();
+                try
+                {
+                    string inputPath = Path.GetFullPath(Path.Combine(RawRootPath, assetPath + ".fx"));
+                    if (!File.Exists(inputPath))
+                        return false; //throw new AssetNotFoundException(assetPath);
+
+                    string outputPath = Path.ChangeExtension(Path.GetFullPath(Path.Combine(RootPath, inputPath.Substring(RawRootPath.Length + 1))), ".mgfx");
+                    string outputFolderPath = Path.GetDirectoryName(outputPath);
+                    if (outputFolderPath != null)
+                        Directory.CreateDirectory(outputFolderPath);
+
+                    var processStartInfo = new ProcessStartInfo
+                    {
+                        FileName = FxCompilerPath,
+                        Arguments = $"\"{inputPath}\" \"{outputPath}\" /Profile:{FxProfile}",
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardError = true
+                    };
+
+                    var process = new Process
+                    {
+                        StartInfo = processStartInfo
+                    };
+
+                    process.Start();
+                    process.WaitForExit();
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    if (process.ExitCode != 0)
+                    {
+                        string rootPathToRemove = RawRootPath.Replace("\\", "\\\\") + "\\\\";
+
+                        var errorMessages = new List<string>();
+                        while (true)
+                        {
+                            string error = process.StandardError.ReadLine();
+                            if (error == null)
+                                break;
+                            if (string.IsNullOrWhiteSpace(error))
+                                continue;
+
+                            errorMessages.Add(error.Replace(rootPathToRemove, ""));
+                        }
+
+                        Logger.Error($"Failed to compile {assetPath} (Profile: {FxProfile})");
+                        foreach (string errorMessage in errorMessages)
+                            Logger.Error(errorMessage);
+
+                        return false;
+                    }
+
+                    Logger.Info($"Compiled: {assetPath} ({stopwatch.ElapsedMilliseconds} ms, Profile: {FxProfile})");
+                    return true;
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.Info($"Cancelled compilation: {assetPath} ({stopwatch?.ElapsedMilliseconds ?? 0} ms)");
+                throw;
+            }
+        }
+
+        private async Task<bool> CompileEffectAsync(string assetPath, CancellationToken cancellationToken)
         {
             Stopwatch stopwatch = null;
             try

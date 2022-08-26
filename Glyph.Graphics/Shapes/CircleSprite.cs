@@ -15,36 +15,33 @@ namespace Glyph.Graphics.Shapes
         {
         }
 
-        protected override Task<Texture2D> GenerateTexture()
+        protected override Texture2D GenerateTexture()
         {
-            return Task.Run(() =>
+            int outerDiameter = (Radius + 1) * 2;
+
+            var data = new Color[outerDiameter * outerDiameter];
+
+            for (int i = 0; i < data.Length; i++)
+                data[i] = Color.Transparent;
+
+            for (int i = 0; i < Thickness; i++)
             {
-                int outerDiameter = (Radius + 1) * 2;
+                // Work out the minimum step necessary using trigonometry + sine approximation.
+                double angleStep = 1f / (Radius - i);
 
-                var data = new Color[outerDiameter * outerDiameter];
-
-                for (int i = 0; i < data.Length; i++)
-                    data[i] = Color.Transparent;
-
-                for (int i = 0; i < Thickness; i++)
+                for (double angle = 0; angle < System.Math.PI * 2; angle += angleStep)
                 {
-                    // Work out the minimum step necessary using trigonometry + sine approximation.
-                    double angleStep = 1f / (Radius - i);
+                    // Use the parametric definition of a circle: http://en.wikipedia.org/wiki/Circle#Cartesian_coordinates
+                    int x = (int)System.Math.Round(Radius + (Radius - i) * System.Math.Cos(angle));
+                    int y = (int)System.Math.Round(Radius + (Radius - i) * System.Math.Sin(angle));
 
-                    for (double angle = 0; angle < System.Math.PI * 2; angle += angleStep)
-                    {
-                        // Use the parametric definition of a circle: http://en.wikipedia.org/wiki/Circle#Cartesian_coordinates
-                        int x = (int)System.Math.Round(Radius + (Radius - i) * System.Math.Cos(angle));
-                        int y = (int)System.Math.Round(Radius + (Radius - i) * System.Math.Sin(angle));
-
-                        data[y * outerDiameter + x + 1] = Color;
-                    }
+                    data[y * outerDiameter + x + 1] = Color;
                 }
+            }
 
-                var texture = new Texture2D(GraphicsDeviceFunc(), outerDiameter, outerDiameter);
-                texture.SetData(data);
-                return texture;
-            });
+            var texture = new Texture2D(GraphicsDeviceFunc(), outerDiameter, outerDiameter);
+            texture.SetData(data);
+            return texture;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Glyph.Content
 
         private Task _loading;
         private CancellationTokenSource _loadingCancellation;
+        private readonly SemaphoreSlim _loadingSemaphore = new SemaphoreSlim(1);
 
         private bool _needUpdate;
         private readonly object _contentLock = new object();
@@ -44,18 +45,63 @@ namespace Glyph.Content
             _loading = LoadingAsync(_loadingCancellation.Token);
         }
 
-        public Task LoadContent(CancellationToken cancellationToken)
+        public void LoadContent(CancellationToken cancellationToken)
         {
             _loadedOnce = true;
 
-            // Return existing loading task
-            if (_loading != null)
-                return _loading;
+            _loadingSemaphore.Wait(cancellationToken);
+            try
+            {
+                // Start new loading if none existing
+                if (_loading is null)
+                {
+                    _loadingCancellation = new CancellationTokenSource();
+                    var linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(_loadingCancellation.Token, cancellationToken);
 
-            // Start new loading if none existing
-            _loadingCancellation = new CancellationTokenSource();
-            var linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(_loadingCancellation.Token, cancellationToken);
-            return _loading = LoadingAsync(linkedCancellation.Token);
+                    Loading(linkedCancellation.Token);
+                    _loading = Task.CompletedTask;
+                }
+            }
+            finally
+            {
+                _loadingSemaphore.Release();
+            }
+        }
+
+        public async Task LoadContentAsync(CancellationToken cancellationToken)
+        {
+            _loadedOnce = true;
+
+            await _loadingSemaphore.WaitAsync(cancellationToken);
+            try
+            {
+                // Start new loading if none existing
+                if (_loading is null)
+                {
+                    _loadingCancellation = new CancellationTokenSource();
+                    var linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(_loadingCancellation.Token, cancellationToken);
+
+                    _loading = LoadingAsync(linkedCancellation.Token);
+                }
+
+                await _loading;
+            }
+            finally
+            {
+                _loadingSemaphore.Release();
+            }
+        }
+
+        private void Loading(CancellationToken cancellationToken)
+        {
+            if (_asset == null)
+                return;
+
+            T content = _asset.GetContent(cancellationToken);
+
+            // Throw if cancellation before assigning any new content
+            cancellationToken.ThrowIfCancellationRequested();
+            OnLoaded(content);
         }
 
         private async Task LoadingAsync(CancellationToken cancellationToken)

@@ -36,4 +36,15 @@ namespace Glyph.Scheduling
     {
         new TTaskController Plan(TDelegate taskDelegate);
     }
+
+    public interface IGlyphAsyncDelegateScheduler<in T, in TAsyncDelegate, in TDelegate> : IGlyphDelegateScheduler<T, TDelegate>
+    {
+        void Plan(TAsyncDelegate asyncTaskDelegate, TDelegate taskDelegate);
+    }
+
+    public interface IGlyphAsyncDelegateScheduler<in T, in TAsyncDelegate, in TDelegate, out TTaskController, out TTypeController>
+        : IGlyphAsyncDelegateScheduler<T, TAsyncDelegate, TDelegate>, IGlyphScheduler<T, TTaskController, TTypeController>
+    {
+        new TTaskController Plan(TAsyncDelegate asyncTaskDelegate, TDelegate taskDelegate);
+    }
 }

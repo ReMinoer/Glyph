@@ -21,14 +21,19 @@ namespace Glyph.Graphics.Shapes
             Color = Color.White;
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
         {
-            _texture = await GenerateTexture();
-
+            _texture = GenerateTexture();
             Loaded?.Invoke(this);
         }
 
-        protected abstract Task<Texture2D> GenerateTexture();
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            _texture = await Task.Run(GenerateTexture);
+            Loaded?.Invoke(this);
+        }
+
+        protected abstract Texture2D GenerateTexture();
 
         public override void Dispose()
         {

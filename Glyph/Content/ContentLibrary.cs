@@ -70,25 +70,39 @@ namespace Glyph.Content
 
         private IAsset<T> CreateAsset<T>(string assetPath)
         {
-            return CreateAsset(assetPath, (path, token) => Load((c, a) => c.Load<T>(a), path, token));
+            return CreateAsset(assetPath,
+                (path, token) => LoadAsync((c, a) => c.Load<T>(a), path, token),
+                (path, token) => Load((c, a) => c.Load<T>(a), path, token));
         }
 
         private IAsset<T> CreateLocalizedAsset<T>(string assetPath)
         {
-            return CreateAsset(assetPath, (path, token) => Load((c, a) => c.LoadLocalized<T>(a), path, token));
+            return CreateAsset(assetPath,
+                (path, token) => LoadAsync((c, a) => c.LoadLocalized<T>(a), path, token),
+                (path, token) => Load((c, a) => c.LoadLocalized<T>(a), path, token));
         }
 
         private IAsset<Effect> CreateEffectAsset(string assetPath)
         {
-            return CreateAsset(assetPath, LoadEffect);
+            return CreateAsset(assetPath, LoadEffectAsync, LoadEffect);
         }
 
-        protected virtual IAsset<T> CreateAsset<T>(string assetPath, LoadDelegate<T> loadDelegate)
+        protected virtual IAsset<T> CreateAsset<T>(string assetPath, LoadAsyncDelegate<T> loadAsyncDelegate, LoadDelegate<T> loadDelegate)
         {
-            return new Asset<T>(assetPath, loadDelegate);
+            return new Asset<T>(assetPath, loadAsyncDelegate, loadDelegate);
         }
 
-        protected virtual Task<T> Load<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
+        protected virtual T Load<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
+        {
+            return LoadImplementation(loadingFunc, assetPath, cancellationToken);
+        }
+
+        protected virtual Task<T> LoadAsync<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(LoadImplementation(loadingFunc, assetPath, cancellationToken));
+        }
+
+        private T LoadImplementation<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
         {
             Stopwatch stopwatch = null;
             try
@@ -106,7 +120,7 @@ namespace Glyph.Content
                     _usedContentManagers.TryAdd(assetPath, contentManager);
                     LogLoadingTime(assetPath, stopwatch);
 
-                    return Task.FromResult(content);
+                    return content;
                 }
                 catch (Exception)
                 {
@@ -121,7 +135,42 @@ namespace Glyph.Content
             }
         }
 
-        protected virtual async Task<Effect> LoadEffect(string assetPath, CancellationToken cancellationToken)
+        protected virtual Effect LoadEffect(string assetPath, CancellationToken cancellationToken)
+        {
+            Stopwatch stopwatch = null;
+            try
+            {
+                _effectLock.Wait(cancellationToken);
+
+                stopwatch = Stopwatch.StartNew();
+
+                string effectFilePath = Path.Combine(RootPath, assetPath + ".mgfx");
+
+                using (FileStream fileStream = File.OpenRead(effectFilePath))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var bytes = new byte[fileStream.Length];
+                    fileStream.Read(bytes, 0, (int)fileStream.Length);
+
+                    cancellationToken.ThrowIfCancellationRequested();
+                    LogLoadingTime(assetPath, stopwatch);
+
+                    return new Effect(_graphicsDeviceService.GraphicsDevice, bytes);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                LogCancellationTime(assetPath, stopwatch);
+                throw;
+            }
+            finally
+            {
+                _effectLock.Release();
+            }
+        }
+
+        protected virtual async Task<Effect> LoadEffectAsync(string assetPath, CancellationToken cancellationToken)
         {
             Stopwatch stopwatch = null;
             try

@@ -36,9 +36,17 @@ namespace Glyph.Graphics
             _contentLibrary = contentLibrary;
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
         {
-            await _assetAsyncLoader.LoadContent(CancellationToken.None);
+            _assetAsyncLoader.LoadContent(CancellationToken.None);
+
+            if (_assetAsyncLoader.UpdateContent(ref _effect))
+                Loaded?.Invoke(_effect);
+        }
+
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            await _assetAsyncLoader.LoadContentAsync(CancellationToken.None);
 
             if (_assetAsyncLoader.UpdateContent(ref _effect))
                 Loaded?.Invoke(_effect);

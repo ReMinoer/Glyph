@@ -10,6 +10,7 @@ namespace Glyph.Content
         static private readonly SemaphoreSlim _firstAssetSemaphore = new SemaphoreSlim(1);
         static private bool _isFirstAsset = true;
 
+        private readonly LoadAsyncDelegate<T> _loadAsyncDelegate;
         private readonly LoadDelegate<T> _loadDelegate;
         private readonly SemaphoreSlim _loadingSemaphore = new SemaphoreSlim(1);
         private Task<T> _loadingTask;
@@ -23,10 +24,57 @@ namespace Glyph.Content
         public event EventHandler FullyReleasing;
         public event EventHandler FullyReleased;
 
-        public Asset(string assetPath, LoadDelegate<T> loadDelegate)
+        public Asset(string assetPath, LoadAsyncDelegate<T> loadAsyncDelegate, LoadDelegate<T> loadDelegate)
         {
             AssetPath = assetPath;
+            _loadAsyncDelegate = loadAsyncDelegate;
             _loadDelegate = loadDelegate;
+        }
+
+        public T GetContent(CancellationToken cancellationToken)
+        {
+            // Some asset init singleton at first instance (OpenAL). We will lock the first asset loading.
+            _firstAssetSemaphore.Wait(cancellationToken);
+
+            bool isFirstAsset = _isFirstAsset;
+            if (!isFirstAsset)
+                _firstAssetSemaphore.Release();
+
+            _loadingSemaphore.Wait(cancellationToken);
+
+            try
+            {
+                // Create loading task if it doesn't exists
+                if (_loadingTask == null)
+                {
+                    _releaseCancellation = new CancellationTokenSource();
+                    var linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _releaseCancellation.Token);
+
+                    _loadingTask = Task.FromResult(_loadDelegate(AssetPath, linkedCancellation.Token));
+                }
+
+                try
+                {
+                    // Await content
+                    T asset = _loadingTask.Result;
+                    _isFirstAsset = false;
+                    return asset;
+                }
+                catch (OperationCanceledException)
+                {
+                    // Rethrow only if cancellation came from user. Return default if it came from release.
+                    if (cancellationToken.IsCancellationRequested)
+                        throw;
+                    return default;
+                }
+            }
+            finally
+            {
+                _loadingSemaphore.Release();
+
+                if (isFirstAsset)
+                    _firstAssetSemaphore.Release();
+            }
         }
 
         public ITask<T> GetContentAsync(CancellationToken cancellationToken) => new TaskWrapper<T>(GetContentAsyncInternal(cancellationToken));
@@ -49,7 +97,7 @@ namespace Glyph.Content
                     _releaseCancellation = new CancellationTokenSource();
                     var linkedCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _releaseCancellation.Token);
 
-                    _loadingTask = _loadDelegate(AssetPath, linkedCancellation.Token);
+                    _loadingTask = _loadAsyncDelegate(AssetPath, linkedCancellation.Token);
                 }
 
                 try
@@ -79,6 +127,25 @@ namespace Glyph.Content
         public void Handle()
         {
             Interlocked.Increment(ref _handlerCounter);
+        }
+
+        public bool Release()
+        {
+            if (Interlocked.Decrement(ref _handlerCounter) > 0)
+                return false;
+
+            _loadingSemaphore.Wait(CancellationToken.None);
+            try
+            {
+                FullyReleasing?.Invoke(this, EventArgs.Empty);
+                StopLoading();
+                FullyReleased?.Invoke(this, EventArgs.Empty);
+                return true;
+            }
+            finally
+            {
+                _loadingSemaphore.Release();
+            }
         }
 
         public async Task<bool> ReleaseAsync()
@@ -112,6 +179,29 @@ namespace Glyph.Content
             {
                 _loadingSemaphore.Release();
             }
+        }
+
+        private void StopLoading()
+        {
+            if (_loadingTask == null)
+                return;
+
+            // Cancel loading
+            _releaseCancellation?.Cancel();
+
+            try
+            {
+                _loadingTask.Wait();
+            }
+            catch (OperationCanceledException)
+            {
+            }
+
+            // Dispose content if necessary
+            //if (_loadingTask.IsCompleted)
+            //    (_loadingTask.Result as IDisposable)?.Dispose();
+
+            _loadingTask = null;
         }
 
         private async Task StopLoadingAsync()

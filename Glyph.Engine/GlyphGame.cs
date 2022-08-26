@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Niddle;
 using Fingear.Controls;
@@ -69,10 +68,7 @@ namespace Glyph.Engine
             Window.ClientSizeChanged += OnClientSizeChanged;
             IsMouseVisible = false;
 
-            GraphicsDeviceManager = new GraphicsDeviceManager(this)
-            {
-                PreferMultiSampling = true
-            };
+            GraphicsDeviceManager = new GraphicsDeviceManager(this);
             GraphicsDeviceManager.ApplyChanges();
             
             _windowSize = new Point(GraphicsDeviceManager.PreferredBackBufferWidth, GraphicsDeviceManager.PreferredBackBufferHeight);

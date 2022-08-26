@@ -46,12 +46,23 @@ namespace Glyph.Graphics
             Effects = new List<IEffectComponent>();
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
+        {
+            foreach (IEffectComponent effect in Effects)
+                effect.LoadContent(contentLibrary, _lazyGraphicsDevice());
+
+            _spriteTargetA.LoadContent(contentLibrary);
+            _spriteTargetB.LoadContent(contentLibrary);
+
+            Loaded?.Invoke(this);
+        }
+
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
         {
             await Task.WhenAll(new List<Task>(Effects.Select(x => x.LoadContent(contentLibrary, _lazyGraphicsDevice())))
             {
-                _spriteTargetA.LoadContent(contentLibrary),
-                _spriteTargetB.LoadContent(contentLibrary)
+                _spriteTargetA.LoadContentAsync(contentLibrary),
+                _spriteTargetB.LoadContentAsync(contentLibrary)
             });
 
             Loaded?.Invoke(this);

@@ -24,11 +24,17 @@ namespace Glyph.UI
             SpriteTransformer = Add<SpriteTransformer>();
             Motion = Add<Motion>();
 
-            Schedulers.LoadContent.Plan(LoadContentLocal);
+            Schedulers.LoadContent.Plan(LoadContentLocalAsync, LoadContentLocal);
             Schedulers.Draw.Plan(DrawLocal).InScene(SceneNode);
         }
 
-        public async Task LoadContentLocal(IContentLibrary contentLibrary)
+        private void LoadContentLocal(IContentLibrary contentLibrary)
+        {
+            if (Asset != null)
+                Font = contentLibrary.GetAsset<SpriteFont>(Asset).GetContent();
+        }
+
+        private async Task LoadContentLocalAsync(IContentLibrary contentLibrary)
         {
             if (Asset != null)
                 Font = await contentLibrary.GetAsset<SpriteFont>(Asset).GetContentAsync();

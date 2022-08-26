@@ -51,9 +51,14 @@ namespace Glyph.Graphics
             Frames = new List<Rectangle>();
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
         {
-            await _spriteLoader.LoadContent(contentLibrary);
+            _spriteLoader.LoadContent(contentLibrary);
+        }
+
+        public Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            return _spriteLoader.LoadContentAsync(contentLibrary);
         }
 
         private void OnSpriteLoaded(ISpriteSource obj)

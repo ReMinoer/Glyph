@@ -90,7 +90,7 @@ namespace Glyph.UI.Guide
             userInterface.TouchStarted += OnTouchStarted;
 
             Schedulers.Initialize.Plan(InitializeLocal).AtEnd();
-            Schedulers.LoadContent.Plan(LoadContentLocal);
+            Schedulers.LoadContent.Plan(LoadContentLocalAsync, LoadContentLocal);
             Schedulers.Update.Plan(HandleInput);
             Schedulers.Update.Plan(UpdateLocal).After(HandleInput);
         }
@@ -101,9 +101,14 @@ namespace Glyph.UI.Guide
             TransitionOpacity.Reset();
         }
 
-        private Task LoadContentLocal(IContentLibrary content)
+        private void LoadContentLocal(IContentLibrary contentLibrary)
         {
             IconChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private Task LoadContentLocalAsync(IContentLibrary contentLibrary)
+        {
+            LoadContentLocal(contentLibrary);
             return Task.CompletedTask;
         }
 

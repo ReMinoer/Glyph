@@ -3,5 +3,6 @@ using System.Threading.Tasks;
 
 namespace Glyph.Content
 {
-    public delegate Task<T> LoadDelegate<T>(string assetPath, CancellationToken cancellationToken);
+    public delegate T LoadDelegate<T>(string assetPath, CancellationToken cancellationToken);
+    public delegate Task<T> LoadAsyncDelegate<T>(string assetPath, CancellationToken cancellationToken);
 }

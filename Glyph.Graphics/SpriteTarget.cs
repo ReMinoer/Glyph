@@ -31,9 +31,14 @@ namespace Glyph.Graphics
             _lazyGraphicsDevice = lazyGraphicsDevice;
         }
 
-        public Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
         {
             RefreshRenderTarget();
+        }
+
+        public Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            LoadContent(contentLibrary);
             return Task.CompletedTask;
         }
 

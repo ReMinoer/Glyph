@@ -20,7 +20,13 @@ namespace Glyph.Audio
             _assets = new Dictionary<object, string>();
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
+        {
+            foreach (KeyValuePair<object, string> asset in _assets)
+                _soundEffects[asset.Key] = contentLibrary.GetAsset<SoundEffect>(asset.Value).GetContent();
+        }
+
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
         {
             await Task.WhenAll(_assets.Select(async x => _soundEffects[x.Key] = await contentLibrary.GetAsset<SoundEffect>(x.Value).GetContentAsync()));
         }

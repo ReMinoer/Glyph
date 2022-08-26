@@ -55,7 +55,7 @@ namespace Glyph.Core.Schedulers
             : base(scheduler) { }
     }
 
-    public class LoadContentComponentScheduler : AsyncComponentScheduler<ILoadContentTask, LoadContentDelegate, IContentLibrary>
+    public class LoadContentComponentScheduler : AsyncComponentScheduler<ILoadContentTask, LoadContentAsyncDelegate, LoadContentDelegate, IContentLibrary>
     {
         public LoadContentComponentScheduler(LoadContentScheduler scheduler)
             : base(scheduler) { }

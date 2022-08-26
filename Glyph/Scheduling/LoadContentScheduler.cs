@@ -3,24 +3,30 @@ using Glyph.Scheduling.Base;
 
 namespace Glyph.Scheduling
 {
-    public delegate Task LoadContentDelegate(IContentLibrary contentLibrary);
+    public delegate void LoadContentDelegate(IContentLibrary contentLibrary);
+    public delegate Task LoadContentAsyncDelegate(IContentLibrary contentLibrary);
 
     public interface ILoadContentTask
     {
-        Task LoadContent(IContentLibrary contentLibrary);
+        void LoadContent(IContentLibrary contentLibrary);
+        Task LoadContentAsync(IContentLibrary contentLibrary);
     }
 
-    public class LoadContentTask : DelegateTaskBase<LoadContentDelegate>, ILoadContentTask
+    public class LoadContentTask : AsyncDelegateTaskBase<LoadContentAsyncDelegate, LoadContentDelegate>, ILoadContentTask
     {
-        public LoadContentTask(LoadContentDelegate taskDelegate)
-            : base(taskDelegate) { }
+        public LoadContentTask(LoadContentAsyncDelegate asyncTaskDelegate, LoadContentDelegate taskDelegate)
+            : base(asyncTaskDelegate, taskDelegate) { }
 
-        public Task LoadContent(IContentLibrary contentLibrary) => TaskDelegate(contentLibrary);
+        public void LoadContent(IContentLibrary contentLibrary) => TaskDelegate(contentLibrary);
+        public Task LoadContentAsync(IContentLibrary contentLibrary) => AsyncTaskDelegate(contentLibrary);
     }
 
-    public class LoadContentScheduler : AsyncGlyphScheduler<ILoadContentTask, LoadContentDelegate, IContentLibrary>
+    public class LoadContentScheduler : GlyphAsyncScheduler<ILoadContentTask, LoadContentAsyncDelegate, LoadContentDelegate, IContentLibrary>
     {
         public LoadContentScheduler()
-            : base(x => new LoadContentTask(x), (x, contentLibrary, _) => x.LoadContent(contentLibrary)) { }
+            : base((asyncTaskDelegate, taskDelegate) => new LoadContentTask(asyncTaskDelegate, taskDelegate),
+                taskDelegate => new LoadContentTask(contentLibrary => Task.Run(() => taskDelegate(contentLibrary)), taskDelegate),
+                (x, contentLibrary, _) => x.LoadContentAsync(contentLibrary),
+                (x, contentLibrary, _) => x.LoadContent(contentLibrary)) { }
     }
 }

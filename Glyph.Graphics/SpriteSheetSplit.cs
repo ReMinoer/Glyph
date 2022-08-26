@@ -60,9 +60,15 @@ namespace Glyph.Graphics
             Add(spriteSheet);
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
         {
-            await Task.WhenAll(Components.Select(async x => await x.LoadContent(contentLibrary)));
+            foreach (SpriteSheet component in Components)
+                component.LoadContent(contentLibrary);
+        }
+
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            await Task.WhenAll(Components.Select(async x => await x.LoadContentAsync(contentLibrary)));
         }
 
         private void OnSpriteSheetLoaded(ISpriteSource obj)

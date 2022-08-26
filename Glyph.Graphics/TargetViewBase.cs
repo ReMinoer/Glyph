@@ -73,9 +73,14 @@ namespace Glyph.Graphics
             EffectManager.Initialize();
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public async void LoadContent(IContentLibrary contentLibrary)
         {
-            await EffectManager.LoadContent(contentLibrary);
+            EffectManager.LoadContent(contentLibrary);
+        }
+
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            await EffectManager.LoadContentAsync(contentLibrary);
         }
 
         public void Update(ElapsedTime elapsedTime)

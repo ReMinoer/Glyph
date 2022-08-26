@@ -142,17 +142,30 @@ namespace Glyph.Engine
             IsInitialized = true;
         }
 
+        public void LoadContent()
+        {
+            if (_spriteBatch is null)
+            {
+                GraphicsDevice graphicsDevice = Resolver.Resolve<Func<GraphicsDevice>>()();
+                _spriteBatch = new SpriteBatch(graphicsDevice);
+            }
+
+            if (Root != null)
+                Root.LoadContent(ContentLibrary);
+
+            IsLoaded = true;
+        }
+
         public async Task LoadContentAsync()
         {
-            GraphicsDevice graphicsDevice = Resolver.Resolve<Func<GraphicsDevice>>()();
-            _spriteBatch = new SpriteBatch(graphicsDevice);
+            if (_spriteBatch is null)
+            {
+                GraphicsDevice graphicsDevice = Resolver.Resolve<Func<GraphicsDevice>>()();
+                _spriteBatch = new SpriteBatch(graphicsDevice);
+            }
 
-            await Task.WhenAll(
-                Task.Run(async () =>
-                {
-                    if (Root != null)
-                        await Root.LoadContent(ContentLibrary);
-                }));
+            if (Root != null)
+                await Root.LoadContentAsync(ContentLibrary);
 
             IsLoaded = true;
         }

@@ -27,30 +27,27 @@ namespace Glyph.Graphics.Shapes
             Height = 100;
         }
 
-        protected override Task<Texture2D> GenerateTexture()
+        protected override Texture2D GenerateTexture()
         {
-            return Task.Run(() =>
+            var data = new Color[Width * Height];
+            for (int i = 0; i < data.Length; i++)
+                data[i] = Color.Transparent;
+
+            for (int i = 0; i < Width; i++)
             {
-                var data = new Color[Width * Height];
-                for (int i = 0; i < data.Length; i++)
-                    data[i] = Color.Transparent;
+                data[i] = Color;
+                data[(Width - 1) * Width + i] = Color;
+            }
 
-                for (int i = 0; i < Width; i++)
-                {
-                    data[i] = Color;
-                    data[(Width - 1) * Width + i] = Color;
-                }
+            for (int i = 0; i < Height; i++)
+            {
+                data[i * Width] = Color;
+                data[i * Width + (Width - 1)] = Color;
+            }
 
-                for (int i = 0; i < Height; i++)
-                {
-                    data[i * Width] = Color;
-                    data[i * Width + (Width - 1)] = Color;
-                }
-
-                var texture = new Texture2D(GraphicsDeviceFunc(), Width, Height);
-                texture.SetData(data);
-                return texture;
-            });
+            var texture = new Texture2D(GraphicsDeviceFunc(), Width, Height);
+            texture.SetData(data);
+            return texture;
         }
     }
 }

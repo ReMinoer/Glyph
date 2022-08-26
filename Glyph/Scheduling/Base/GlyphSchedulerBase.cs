@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Glyph.Scheduling.Base
     {
         protected IScheduler<T> Scheduler { get; }
 
-        protected readonly Dictionary<TDelegate, T> DelegateDictionary = new Dictionary<TDelegate, T>();
+        private readonly ConcurrentDictionary<TDelegate, T> _delegateDictionary = new ConcurrentDictionary<TDelegate, T>();
         private readonly Func<TDelegate, T> _delegateToTaskFunc;
 
         protected readonly TypedGroupDictionary TypedGroups = new TypedGroupDictionary();
@@ -66,20 +67,13 @@ namespace Glyph.Scheduling.Base
             T task = GetDelegateTask(taskDelegate);
             Unplan(task);
 
-            DelegateDictionary.Remove(taskDelegate);
+            _delegateDictionary.TryRemove(taskDelegate, out _);
         }
 
-        public T GetDelegateTask(TDelegate taskDelegate) => DelegateDictionary[taskDelegate];
+        public T GetDelegateTask(TDelegate taskDelegate) => _delegateDictionary[taskDelegate];
 
-        protected T GetOrAddDelegateTask(TDelegate taskDelegate)
-        {
-            if (DelegateDictionary.TryGetValue(taskDelegate, out T task))
-                return task;
-
-            task = _delegateToTaskFunc(taskDelegate);
-            DelegateDictionary.Add(taskDelegate, task);
-            return task;
-        }
+        protected T GetOrAddDelegateTask(TDelegate taskDelegate) => GetOrAddTask(taskDelegate, () => _delegateToTaskFunc(taskDelegate));
+        protected T GetOrAddTask(TDelegate taskDelegate, Func<T> taskFunc) => _delegateDictionary.GetOrAdd(taskDelegate, _ => taskFunc());
 
         public TypedGroup GetOrAddTypedGroup(Type type)
         {

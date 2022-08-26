@@ -44,9 +44,14 @@ namespace Glyph.Audio
             _contentLibrary = contentLibrary;
         }
 
-        public async Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
         {
-            await AssetAsyncLoader.LoadContent(CancellationToken.None);
+            AssetAsyncLoader.LoadContent(CancellationToken.None);
+        }
+
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            await AssetAsyncLoader.LoadContentAsync(CancellationToken.None);
         }
 
         public void Update(ElapsedTime elapsedTime)

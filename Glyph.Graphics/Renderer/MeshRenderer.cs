@@ -47,7 +47,7 @@ namespace Glyph.Graphics.Renderer
             SubscribeDepthChanged(sceneNode);
         }
 
-        public Task LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
         {
             GraphicsDevice graphicsDevice = _graphicsDeviceFunc();
 
@@ -57,7 +57,11 @@ namespace Glyph.Graphics.Renderer
             };
 
             RefreshBuffers();
+        }
 
+        public Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            LoadContent(contentLibrary);
             return Task.CompletedTask;
         }
 

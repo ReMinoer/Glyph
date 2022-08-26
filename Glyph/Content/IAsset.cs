@@ -9,6 +9,7 @@ namespace Glyph.Content
     {
         string AssetPath { get; }
         void Handle();
+        bool Release();
         Task<bool> ReleaseAsync();
         event EventHandler ContentChanged;
         event EventHandler FullyReleasing;
@@ -17,6 +18,7 @@ namespace Glyph.Content
 
     public interface IAsset<out T> : IAsset
     {
+        T GetContent(CancellationToken cancellationToken = default);
         ITask<T> GetContentAsync(CancellationToken cancellationToken = default);
     }
 }
