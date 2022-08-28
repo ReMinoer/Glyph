@@ -22,7 +22,7 @@ namespace Glyph.Graphics
                     return;
 
                 _assetPath = value;
-                _assetAsyncLoader.Asset = !string.IsNullOrWhiteSpace(value) ? _contentLibrary.GetEffectAsset(value) : null;
+                _assetAsyncLoader.Asset = !string.IsNullOrWhiteSpace(value) ? _contentLibrary.GetAsset<Effect>(value) : null;
             }
         }
 

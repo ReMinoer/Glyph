@@ -58,16 +58,6 @@ namespace Glyph.Content
             });
         }
 
-        public IAsset<Effect> GetEffectAsset(string assetPath)
-        {
-            return (IAsset<Effect>)_assetCache.GetOrAdd(assetPath, x =>
-            {
-                IAsset<Effect> asset = CreateEffectAsset(x);
-                asset.FullyReleasing += OnAssetFullyReleasing;
-                return asset;
-            });
-        }
-
         private IAsset<T> CreateAsset<T>(string assetPath)
         {
             return CreateAsset(assetPath,
@@ -80,11 +70,6 @@ namespace Glyph.Content
             return CreateAsset(assetPath,
                 (path, token) => LoadAsync((c, a) => c.LoadLocalized<T>(a), path, token),
                 (path, token) => Load((c, a) => c.LoadLocalized<T>(a), path, token));
-        }
-
-        private IAsset<Effect> CreateEffectAsset(string assetPath)
-        {
-            return CreateAsset(assetPath, LoadEffectAsync, LoadEffect);
         }
 
         protected virtual IAsset<T> CreateAsset<T>(string assetPath, LoadAsyncDelegate<T> loadAsyncDelegate, LoadDelegate<T> loadDelegate)
@@ -132,76 +117,6 @@ namespace Glyph.Content
             {
                 LogCancellationTime(assetPath, stopwatch);
                 throw;
-            }
-        }
-
-        protected virtual Effect LoadEffect(string assetPath, CancellationToken cancellationToken)
-        {
-            Stopwatch stopwatch = null;
-            try
-            {
-                _effectLock.Wait(cancellationToken);
-
-                stopwatch = Stopwatch.StartNew();
-
-                string effectFilePath = Path.Combine(RootPath, assetPath + ".mgfx");
-
-                using (FileStream fileStream = File.OpenRead(effectFilePath))
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    var bytes = new byte[fileStream.Length];
-                    fileStream.Read(bytes, 0, (int)fileStream.Length);
-
-                    cancellationToken.ThrowIfCancellationRequested();
-                    LogLoadingTime(assetPath, stopwatch);
-
-                    return new Effect(_graphicsDeviceService.GraphicsDevice, bytes);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                LogCancellationTime(assetPath, stopwatch);
-                throw;
-            }
-            finally
-            {
-                _effectLock.Release();
-            }
-        }
-
-        protected virtual async Task<Effect> LoadEffectAsync(string assetPath, CancellationToken cancellationToken)
-        {
-            Stopwatch stopwatch = null;
-            try
-            {
-                await _effectLock.WaitAsync(cancellationToken);
-
-                stopwatch = Stopwatch.StartNew();
-
-                string effectFilePath = Path.Combine(RootPath, assetPath + ".mgfx");
-
-                using (FileStream fileStream = File.OpenRead(effectFilePath))
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    var bytes = new byte[fileStream.Length];
-                    await fileStream.ReadAsync(bytes, 0, (int)fileStream.Length, cancellationToken);
-
-                    cancellationToken.ThrowIfCancellationRequested();
-                    LogLoadingTime(assetPath, stopwatch);
-
-                    return new Effect(_graphicsDeviceService.GraphicsDevice, bytes);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                LogCancellationTime(assetPath, stopwatch);
-                throw;
-            }
-            finally
-            {
-                _effectLock.Release();
             }
         }
 

@@ -35,8 +35,18 @@ namespace Glyph.Export
             AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomainOnReflectionOnlyAssemblyResolve;
 
             IEnumerable<Assembly> assemblies = assemblyPaths
-                .Where(x => !IgnoredDlls.Contains(Path.GetFileName(x)))
-                .Select(metadataLoadContext.LoadFromAssemblyPath)
+                .Select(x =>
+                    {
+                        try
+                        {
+                            return metadataLoadContext.LoadFromAssemblyPath(x);
+                        }
+                        catch (BadImageFormatException)
+                        {
+                            return null;
+                        }
+                    }
+                )
                 .Where(HasAssemblyContainsAttribute)
                 .ToArray();
 
@@ -49,24 +59,12 @@ namespace Glyph.Export
         {
             try
             {
-                return a.CustomAttributes.Any(x => x.AttributeType.Name == nameof(AssemblyContainsAttribute));
+                return a != null && a.CustomAttributes.Any(x => x.AttributeType.Name == nameof(AssemblyContainsAttribute));
             }
             catch (IOException)
             {
                 return false;
             }
         }
-
-        static private string[] IgnoredDlls =
-        {
-            "netstandard.dll",
-            // "Module was expected to contain an assembly manifest."
-            "assimp.dll",
-            "FreeImage.dll",
-            "freetype6.dll",
-            "libmojoshader_64.dll",
-            "nvtt.dll",
-            "PVRTexLibWrapper.dll"
-        };
     }
 }
