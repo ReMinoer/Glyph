@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -16,11 +15,7 @@ namespace Glyph.Content
         private readonly ConcurrentDictionary<string, IAsset> _assetCache = new ConcurrentDictionary<string, IAsset>(new PathComparer());
         private readonly ConcurrentDictionary<string, ContentManager> _usedContentManagers = new ConcurrentDictionary<string, ContentManager>(new PathComparer());
         private readonly ContentManagerPool _contentManagerPool;
-
-        private readonly IGraphicsDeviceService _graphicsDeviceService;
         protected readonly ILogger Logger;
-
-        private readonly SemaphoreSlim _effectLock = new SemaphoreSlim(1);
 
         public string RootPath { get; }
         protected virtual string WorkingDirectory => RootPath;
@@ -28,7 +23,6 @@ namespace Glyph.Content
 
         public ContentLibrary(IGraphicsDeviceService graphicsDeviceService, ILogger logger, string rootPath = null)
         {
-            _graphicsDeviceService = graphicsDeviceService;
             Logger = logger;
 
             RootPath = rootPath ?? "Content";

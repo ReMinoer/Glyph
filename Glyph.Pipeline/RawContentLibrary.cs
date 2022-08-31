@@ -28,9 +28,6 @@ namespace Glyph.Pipeline
         public string RawRootPath { get; }
         protected override string WorkingDirectory => RawRootPath;
 
-        public string FxCompilerPath { get; set; }
-        public string FxProfile { get; set; } = "DirectX_11";
-
         public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, ILogger logger, TargetPlatform targetPlatform, string rawRootPath, string cacheRootPath)
             : base(graphicsDeviceService, logger, Path.Combine(cacheRootPath, "bin"))
         {
@@ -48,28 +45,6 @@ namespace Glyph.Pipeline
                 Profile = GraphicsProfile.HiDef,
                 Platform = targetPlatform
             };
-            
-            FxCompilerPath = ResolveFxCompilerPath();
-        }
-
-        static private string ResolveFxCompilerPath()
-        {
-            string ComputePath(Environment.SpecialFolder programFilesFolder)
-            {
-                return Path.Combine(Environment.GetFolderPath(programFilesFolder), @"MSBuild\\MonoGame\\v3.0\\Tools\\2MGFX.exe");
-            }
-
-            string path = ComputePath(Environment.SpecialFolder.Programs);
-            if (File.Exists(path))
-                return path;
-            path = ComputePath(Environment.SpecialFolder.ProgramFilesX86);
-            if (File.Exists(path))
-                return path;
-            path = ComputePath(Environment.SpecialFolder.ProgramFiles);
-            if (File.Exists(path))
-                return path;
-
-            return null;
         }
 
         protected override IAsset<T> CreateAsset<T>(string assetPath, LoadAsyncDelegate<T> loadAsyncDelegate, LoadDelegate<T> loadDelegate)
@@ -246,15 +221,6 @@ namespace Glyph.Pipeline
 
             string assetName = Path.GetFileName(assetPath);
             return Directory.GetFiles(fullFolderPath, $"{assetName}.*");
-        }
-
-        private string GetAssetPathPattern(string rootPath, string assetPath)
-        {
-            string watchedPath = Path.Combine(rootPath, assetPath + ".*");
-            if (!PathUtils.IsValidAbsolutePath(watchedPath))
-                watchedPath = Path.Combine(Environment.CurrentDirectory, watchedPath);
-
-            return watchedPath;
         }
 
         public IEnumerable<string> GetSupportedFileExtensions(Type type)
