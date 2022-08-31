@@ -29,11 +29,11 @@ namespace Glyph.Pipeline
         protected override string WorkingDirectory => RawRootPath;
 
         public RawContentLibrary(IGraphicsDeviceService graphicsDeviceService, ILogger logger, TargetPlatform targetPlatform, string rawRootPath, string cacheRootPath)
-            : base(graphicsDeviceService, logger, Path.Combine(cacheRootPath, "bin"))
+            : base(graphicsDeviceService, logger, Path.Combine(cacheRootPath, targetPlatform.ToString(), "bin"))
         {
             Directory.CreateDirectory(cacheRootPath);
 
-            IntermediateRootPath = Path.Combine(cacheRootPath, "obj");
+            IntermediateRootPath = Path.Combine(cacheRootPath, targetPlatform.ToString(), "obj");
             RawRootPath = rawRootPath;
 
             _pathWatcher = new PathWatcher();
