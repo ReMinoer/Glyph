@@ -114,12 +114,9 @@ namespace Glyph.Composition.Modelization
 
             public int IndexOf(IGlyphData data) => _list?.IndexOf(data) ?? -1;
 
-            public bool CanInsert(int index, IGlyphData data) => index >= 0 && index <= Count
-                && (_list is null || !_list.IsFixedSize)
-                && (_itemType is null || _itemType.IsInstanceOfType(data));
-
-            public bool CanRemoveAt(int index) => index >= 0 && index <= Count
-                && (_list is null || !_list.IsFixedSize);
+            public bool CanInsert(int index) => index >= 0 && index <= Count && (_list is null || !_list.IsFixedSize);
+            public bool CanInsert(int index, IGlyphData data) => CanInsert(index) && (_itemType is null || _itemType.IsInstanceOfType(data));
+            public bool CanRemoveAt(int index) => index >= 0 && index < Count && (_list is null || !_list.IsFixedSize);
 
             public void Insert(int index, IGlyphData data) => _list?.Insert(index, data);
             public void RemoveAt(int index) => _list?.RemoveAt(index);

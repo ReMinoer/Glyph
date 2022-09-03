@@ -200,7 +200,8 @@ namespace Glyph.Composition.Modelization
             return _getSubData() == data ? 0 : -1;
         }
 
-        public bool CanInsert(int index, IGlyphData data) => index == 0 && !HasData && data is TSubData;
+        public bool CanInsert(int index) => index == 0 && !HasData;
+        public bool CanInsert(int index, IGlyphData data) => CanInsert(index) && data is TSubData;
         public void Insert(int index, IGlyphData data)
         {
             if (index != 0)

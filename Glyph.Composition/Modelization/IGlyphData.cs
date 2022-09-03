@@ -23,6 +23,7 @@ namespace Glyph.Composition.Modelization
         IGlyphData Owner { get; }
         int Count { get; }
         int IndexOf(IGlyphData data);
+        bool CanInsert(int index);
         bool CanInsert(int index, IGlyphData data);
         void Insert(int index, IGlyphData data);
         bool CanRemoveAt(int index);
