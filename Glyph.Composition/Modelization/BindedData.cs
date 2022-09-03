@@ -184,6 +184,9 @@ namespace Glyph.Composition.Modelization
         public IGlyphData Owner { get; }
         public string PropertyName { get; }
 
+        public int Count => HasData ? 1 : 0;
+        public bool HasData => _getSubData() != null;
+
         public PropertySource(IGlyphData owner, Func<TSubData> getSubData, Action<TSubData> setSubData, string propertyName)
         {
             Owner = owner;
@@ -194,22 +197,27 @@ namespace Glyph.Composition.Modelization
 
         public int IndexOf(IGlyphData data)
         {
-            TSubData currentSubData = _getSubData();
-            return currentSubData == data ? 0 : -1;
+            return _getSubData() == data ? 0 : -1;
         }
 
-        public void Set(int index, IGlyphData data)
+        public bool CanInsert(int index, IGlyphData data) => index == 0 && !HasData && data is TSubData;
+        public void Insert(int index, IGlyphData data)
         {
             if (index != 0)
                 throw new ArgumentException("Index should be 0.");
+            if (HasData)
+                throw new InvalidOperationException("Data is already set.");
 
             _setSubData((TSubData)data);
         }
 
-        public void Unset(int index)
+        public bool CanRemoveAt(int index) => index == 0 && HasData;
+        public void RemoveAt(int index)
         {
             if (index != 0)
                 throw new ArgumentException("Index should be 0.");
+            if (!HasData)
+                throw new InvalidOperationException("Data is already unset.");
 
             _setSubData(null);
         }

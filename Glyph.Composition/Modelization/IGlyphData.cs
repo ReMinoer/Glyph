@@ -21,14 +21,18 @@ namespace Glyph.Composition.Modelization
     public interface IGlyphDataSource
     {
         IGlyphData Owner { get; }
+        int Count { get; }
         int IndexOf(IGlyphData data);
-        void Set(int index, IGlyphData data);
-        void Unset(int index);
+        bool CanInsert(int index, IGlyphData data);
+        void Insert(int index, IGlyphData data);
+        bool CanRemoveAt(int index);
+        void RemoveAt(int index);
     }
 
     public interface IGlyphDataPropertySource : IGlyphDataSource
     {
         string PropertyName { get; }
+        bool HasData { get; }
     }
 
     public interface IGlyphDataChildrenSource : IGlyphDataPropertySource

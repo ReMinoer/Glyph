@@ -84,7 +84,12 @@ namespace Glyph.Composition.Modelization
         public class ChildrenSource : IGlyphDataChildrenSource
         {
             private readonly IList _list;
+            private readonly Type _itemType;
+
             public IGlyphData Owner { get; }
+            public int Count => _list?.Count ?? Children.Count();
+            public bool HasData => true;
+
             public string PropertyName { get; }
             public IEnumerable<IGlyphData> Children { get; }
             public INotifyCollectionChanged ChildrenNotifier { get; }
@@ -96,13 +101,28 @@ namespace Glyph.Composition.Modelization
                 Owner = owner;
                 PropertyName = propertyName;
                 Children = children;
+
                 _list = children as IList;
                 ChildrenNotifier = children as INotifyCollectionChanged;
+
+                _itemType = children.GetType()
+                    .GetInterfaces()
+                    .Where(x => x.IsGenericType)
+                    .FirstOrDefault(x => x.GetGenericTypeDefinition() == typeof(ICollection<>))?
+                    .GetGenericArguments()[0];
             }
 
             public int IndexOf(IGlyphData data) => _list?.IndexOf(data) ?? -1;
-            public void Set(int index, IGlyphData data) => _list?.Insert(index, data);
-            public void Unset(int index) => _list?.RemoveAt(index);
+
+            public bool CanInsert(int index, IGlyphData data) => index >= 0 && index <= Count
+                && (_list is null || !_list.IsFixedSize)
+                && (_itemType is null || _itemType.IsInstanceOfType(data));
+
+            public bool CanRemoveAt(int index) => index >= 0 && index <= Count
+                && (_list is null || !_list.IsFixedSize);
+
+            public void Insert(int index, IGlyphData data) => _list?.Insert(index, data);
+            public void RemoveAt(int index) => _list?.RemoveAt(index);
         }
     }
 }
