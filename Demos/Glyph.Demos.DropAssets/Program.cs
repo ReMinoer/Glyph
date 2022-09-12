@@ -127,27 +127,23 @@ namespace Glyph.Demos.DropAssets
             cancellationToken.ThrowIfCancellationRequested();
 
             string assetPath = Path.GetFileNameWithoutExtension(filePath);
+            Type contentType = _rawContentLibrary.GetContentType(filePath);
 
-            // Get uncached asset to determine content type
-            IAsset<object> uncachedAsset = _rawContentLibrary.GetAsset<object>(assetPath);
-            object content = await uncachedAsset.GetContentAsync(cancellationToken);
-            await uncachedAsset.ReleaseAsync();
-
-            switch (content)
+            if (contentType == typeof(Texture2D))
             {
-                case Texture2D _:
-                    _spriteLoader.AssetPath = assetPath;
-                    break;
-                case SoundEffect _:
-                    const string key = nameof(key);
-                    _soundLoader.Remove(key);
-                    _soundLoader.Add(key, assetPath);
-                    await _soundLoader.LoadContentAsync(_game.Engine.ContentLibrary);
-                    _soundEmitter.Play(key);
-                    break;
-                case Song _:
-                    _songPlayer.AssetPath = assetPath;
-                    break;
+                _spriteLoader.AssetPath = assetPath;
+            }
+            else if (contentType == typeof(SoundEffect))
+            {
+                const string key = nameof(key);
+                _soundLoader.Remove(key);
+                _soundLoader.Add(key, assetPath);
+                await _soundLoader.LoadContentAsync(_game.Engine.ContentLibrary);
+                _soundEmitter.Play(key);
+            }
+            else if (contentType == typeof(Song))
+            {
+                _songPlayer.AssetPath = assetPath;
             }
         }
     }

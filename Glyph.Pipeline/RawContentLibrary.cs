@@ -70,7 +70,7 @@ namespace Glyph.Pipeline
         protected override T Load<T>(Func<ContentManager, string, T> loadingFunc, string assetPath, CancellationToken cancellationToken)
         {
             if (CookAsset(assetPath, cancellationToken))
-                base.Load(loadingFunc, assetPath, cancellationToken);
+                return base.Load(loadingFunc, assetPath, cancellationToken);
             return default;
         }
 
@@ -276,6 +276,23 @@ namespace Glyph.Pipeline
             }
 
             return processorDefaultValues;
+        }
+
+        public Type GetContentType(string filePath)
+        {
+            string importerName = _pipelineManager.FindImporterByExtension(Path.GetExtension(filePath));
+            if (importerName is null)
+                return null;
+
+            string processorName = _pipelineManager.FindDefaultProcessor(importerName);
+            if (processorName is null)
+                return null;
+
+            Type processorType = _pipelineManager.GetProcessorType(processorName);
+            if (processorType is null)
+                return null;
+
+            return ContentProcessorUtils.GetEngineContentType(processorType);
         }
 
         public void CleanCookedAssets()
