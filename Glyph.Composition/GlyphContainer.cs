@@ -18,7 +18,7 @@ namespace Glyph.Composition
             _component = new SealedOrderedComposite<IGlyphComponent, IGlyphContainer, TComponent>(this);
             ReadOnlyComponents = new ReadOnlyCollection<TComponent>(Components);
 
-            SetupContextInjection();
+            SetupComponent();
         }
 
         private readonly SealedOrderedComposite<IGlyphComponent, IGlyphContainer, TComponent> _component;

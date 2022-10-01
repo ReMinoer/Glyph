@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -15,6 +13,7 @@ using Glyph.Math;
 using Glyph.Messaging;
 using Glyph.Resolver;
 using Glyph.Scheduling;
+using CategoryAttribute = System.ComponentModel.CategoryAttribute;
 
 namespace Glyph.Core
 {
@@ -22,14 +21,10 @@ namespace Glyph.Core
     {
         private bool _initialized;
         private bool _contentLoaded;
-        private readonly Dictionary<object, IGlyphComponent> _keyedComponents = new Dictionary<object, IGlyphComponent>();
         public GlyphCompositeDependencyResolver Resolver { get; }
 
         [Category(ComponentCategory.Automation)]
         public ComponentSchedulerHandler Schedulers { get; }
-
-        [Category(ComponentCategory.Activation)]
-        public bool Visible { get; set; }
 
         [Category(ComponentCategory.Automation)]
         public Predicate<IDrawer> DrawPredicate { get; set; }
@@ -41,14 +36,22 @@ namespace Glyph.Core
 
         public GlyphObject(GlyphResolveContext context)
         {
-            Visible = true;
-
             var compositeResolver = new GlyphCompositeDependencyResolver(this, context);
             Resolver = compositeResolver;
             
             Resolver.Local.Registry.Add(GlyphDependency.OnType<TrackingRouter>().Using(Router.Local));
 
-            Schedulers = new ComponentSchedulerHandler(context.GlobalResolver);
+            Schedulers = new ComponentSchedulerHandler(context.GlobalResolver, this);
+        }
+
+        public override IGlyphComponent this[int index]
+        {
+            get => base[index];
+            set
+            {
+                RemoveAt(index);
+                Insert(index, value);
+            }
         }
 
         public T Add<T>()
@@ -68,8 +71,13 @@ namespace Glyph.Core
             return Resolver.Add(componentType) as IGlyphComponent;
         }
 
-        // TODO : Handle injection on changing children & parents
         public override sealed void Add(IGlyphComponent item)
+        {
+            Insert(Components.Count, item);
+        }
+
+        // TODO : Handle injection on changing children & parents
+        public override void Insert(int index, IGlyphComponent item)
         {
             if (Contains(item))
                 throw new ArgumentException("Component provided is already contained by this entity !");
@@ -81,8 +89,8 @@ namespace Glyph.Core
             var glyphObject = item as GlyphObject;
             if (glyphObject != null)
                 glyphObject.Resolver.Parent = null;
-
-            base.Add(item);
+            
+            base.Insert(index, item);
 
             if (glyphObject != null)
                 glyphObject.Resolver.Parent = this;
@@ -96,73 +104,28 @@ namespace Glyph.Core
                 loadingItem.LoadContent(Resolver.Resolve<IContentLibrary>());
         }
 
-        public T GetKeyedComponent<T>(object key)
-            where T : class, IGlyphComponent
-        {
-            return _keyedComponents.TryGetValue(key, out IGlyphComponent component) ? (T)component : default(T);
-        }
-
-        public bool SetKeyedComponent(object key, IGlyphComponent component)
-        {
-            IGlyphComponent currentComponent = GetKeyedComponent<IGlyphComponent>(key);
-            if (component == currentComponent)
-                return false;
-
-            if (currentComponent != null)
-            {
-                RemoveAndDispose(currentComponent);
-                _keyedComponents.Remove(key);
-            }
-
-            if (component != null)
-            {
-                if (!Contains(component))
-                    Add(component);
-                _keyedComponents[key] = component;
-            }
-
-            return true;
-        }
-
-        protected bool SetPropertyComponent<T>(ref T component, T value, bool disposeOnRemove = false)
-            where T : class, IGlyphComponent
-        {
-            if (component == value)
-                return false;
-
-            if (component != null)
-            {
-                Remove(component);
-                if (disposeOnRemove)
-                    component.Dispose();
-            }
-
-            component = value;
-
-            if (component != null)
-            {
-                Add(component);
-            }
-
-            return true;
-        }
-
         public override sealed bool Remove(IGlyphComponent item)
         {
             if (!Contains(item))
                 return false;
-
-            Schedulers.UnplanComponent(item);
-            _keyedComponents.Remove(x => x.Value == item);
-
-            base.Remove(item);
+            
+            RemoveItem(item);
             return true;
         }
 
-        public void RemoveAndDispose(IGlyphComponent item)
+        public override void RemoveAt(int index)
         {
-            Remove(item);
-            item.Dispose();
+            if (index < 0 || index > Components.Count)
+                throw new ArgumentOutOfRangeException(nameof(index), index, $"Insert index {index} out of range.");
+            
+            RemoveItem(Components[index]);
+        }
+
+        private void RemoveItem(IGlyphComponent item)
+        {
+            Schedulers.UnplanComponent(item);
+
+            base.Remove(item);
         }
 
         public override sealed void Clear()
@@ -170,18 +133,7 @@ namespace Glyph.Core
             foreach (IGlyphComponent component in Components)
                 Schedulers.UnplanComponent(component);
 
-            _keyedComponents.Clear();
-
             base.Clear();
-        }
-
-        public void ClearAndDisposeComponents()
-        {
-            IGlyphComponent[] components = Components.ToArray();
-            Clear();
-
-            foreach (IGlyphComponent component in components)
-                component.Dispose();
         }
 
         public override sealed void Initialize()

@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Diese;
+using Diese.Collections;
 using Glyph.Composition.Messaging;
 using Glyph.Composition.Utils;
 using Glyph.Logging;
 using Glyph.Messaging;
 using Glyph.Observation.Properties;
+using Glyph.Scheduling;
 using Microsoft.Extensions.Logging;
 using Niddle.Attributes;
 using Stave;
@@ -80,6 +82,16 @@ namespace Glyph.Composition.Base
             }
         }
 
+        IDrawNode IDrawNode.ParentDrawNode => Parent;
+        int IDrawNode.IndexOfDrawNode(IDrawNode task) => ComponentImplementation.Components.IndexOf(task);
+        event EventHandler IDrawNode.DrawNodeHierarchyChanged
+        {
+            add => DrawNodeHierarchyChanged += value;
+            remove => DrawNodeHierarchyChanged -= value;
+        }
+
+        private event EventHandler DrawNodeHierarchyChanged;
+
         private readonly GlyphComponentContextInjection _contextInjection;
 
         private readonly CategoryLogger _categoryLogger;
@@ -105,9 +117,10 @@ namespace Glyph.Composition.Base
             _categoryLogger = new CategoryLogger(type.GetDisplayName());
         }
 
-        internal void SetupContextInjection()
+        internal void SetupComponent()
         {
             _contextInjection.Setup();
+            HierarchyComponentsChanged += (s, e) => DrawNodeHierarchyChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void Initialize() { }

@@ -67,10 +67,11 @@ namespace Glyph.Application
                 Type<UpdateScheduler>().Creating(UpdateScheduler).AsSingleton(),
                 Type<DrawScheduler>().AsSingleton(),
                 Type<RenderScheduler>(),
-
+                
                 Type<InitializeComponentScheduler>(),
                 Type<LoadContentComponentScheduler>(),
                 Type<UpdateComponentScheduler>(),
+                Type<DrawComponentScheduler>(),
 
                 #endregion
 

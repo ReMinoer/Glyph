@@ -22,7 +22,7 @@ namespace Glyph.Composition.Modelization.Base
 
         public SubDataSourceCollection(IDependencyResolverClient parentData)
         {
-            _collectionImplementation = new ObservableCollection<IGlyphDataChildrenSource>();
+            _collectionImplementation = new ObservableList<IGlyphDataChildrenSource>();
             _parentData = parentData;
             _sourceByNotifier = new Dictionary<INotifyCollectionChanged, IGlyphDataChildrenSource>();
 

@@ -13,6 +13,7 @@ using Simulacra.Binding.Collection;
 using Simulacra.Binding.Property;
 using Simulacra.IO.Binding;
 using Simulacra.Injection.Base;
+using System.Reflection;
 
 namespace Glyph.Composition.Modelization
 {
@@ -221,6 +222,13 @@ namespace Glyph.Composition.Modelization
                 throw new InvalidOperationException("Data is already unset.");
 
             _setSubData(null);
+        }
+        
+        public bool CanMove(int oldIndex, int newIndex) => oldIndex == 0 && newIndex == 0;
+        public void Move(int oldIndex, int newIndex)
+        {
+            if (oldIndex != 0 || newIndex != 0)
+                throw new ArgumentException("Index should be 0.");
         }
     }
 }

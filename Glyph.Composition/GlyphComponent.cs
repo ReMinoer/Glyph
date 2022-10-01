@@ -10,7 +10,7 @@ namespace Glyph.Composition
         public GlyphComponent()
         {
             ComponentImplementation = new Component<IGlyphComponent, IGlyphContainer>(this);
-            SetupContextInjection();
+            SetupComponent();
         }
     }
 }

@@ -28,6 +28,8 @@ namespace Glyph.Composition.Modelization
         void Insert(int index, IGlyphData data);
         bool CanRemoveAt(int index);
         void RemoveAt(int index);
+        bool CanMove(int oldIndex, int newIndex);
+        void Move(int oldIndex, int newIndex);
     }
 
     public interface IGlyphDataPropertySource : IGlyphDataSource

@@ -23,7 +23,7 @@ namespace Glyph.Composition.Modelization.Base
         {
             _parentData = parentData;
 
-            _collectionImplementation = new ObservableCollection<TGlyphData>();
+            _collectionImplementation = new ObservableList<TGlyphData>();
             _collectionImplementation.PropertyChanged += OnPropertyChanged;
             _collectionImplementation.CollectionChanged += OnCollectionChanged;
         }
