@@ -14,6 +14,7 @@ using Glyph.Messaging;
 using Glyph.Resolver;
 using Glyph.Scheduling;
 using CategoryAttribute = System.ComponentModel.CategoryAttribute;
+using Simulacra.Injection;
 
 namespace Glyph.Core
 {
@@ -21,7 +22,9 @@ namespace Glyph.Core
     {
         private bool _initialized;
         private bool _contentLoaded;
+
         public GlyphCompositeDependencyResolver Resolver { get; }
+        IDependencyResolver IGlyphCompositeResolver.DependencyResolver => Resolver;
 
         [Category(ComponentCategory.Automation)]
         public ComponentSchedulerHandler Schedulers { get; }

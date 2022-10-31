@@ -50,6 +50,7 @@ namespace Glyph.Core.Colliders.Base
         {
             SceneNode.Initialize();
 
+            // TODO: handle parent node injection
             for (ISceneNode sceneNode = SceneNode.ParentNode; sceneNode.ParentNode != null; sceneNode = sceneNode.ParentNode)
             {
                 var writableSceneNode = sceneNode as SceneNode;

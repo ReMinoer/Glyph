@@ -13,7 +13,6 @@ using Simulacra.Binding.Collection;
 using Simulacra.Binding.Property;
 using Simulacra.IO.Binding;
 using Simulacra.Injection.Base;
-using System.Reflection;
 
 namespace Glyph.Composition.Modelization
 {
@@ -127,6 +126,16 @@ namespace Glyph.Composition.Modelization
             _notBinding = true;
             T obj = base.Create();
             _notBinding = false;
+            return obj;
+        }
+
+        protected override T New()
+        {
+            T obj = base.New();
+
+            if (!_notBinding && obj is IGlyphCompositeResolver glyphCompositeResolver)
+                DependencyResolver = glyphCompositeResolver.DependencyResolver;
+
             return obj;
         }
 

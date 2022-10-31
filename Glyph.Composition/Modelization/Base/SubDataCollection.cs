@@ -34,7 +34,6 @@ namespace Glyph.Composition.Modelization.Base
         public void Add(TGlyphData item)
         {
             _collectionImplementation.Add(item);
-            item.DependencyResolver = _parentData.DependencyResolver;
         }
 
         public bool Remove(TGlyphData item) => _collectionImplementation.Remove(item);

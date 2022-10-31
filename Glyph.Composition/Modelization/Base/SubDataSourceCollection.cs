@@ -121,13 +121,11 @@ namespace Glyph.Composition.Modelization.Base
         private void RegisterChild(IGlyphData child, IGlyphDataChildrenSource childrenSource)
         {
             child.ParentSource = childrenSource;
-            child.DependencyResolver = _parentData.DependencyResolver;
         }
 
         private void UnregisterChild(IGlyphData child)
         {
             child.ParentSource = null;
-            child.DependencyResolver = null;
         }
     }
 }

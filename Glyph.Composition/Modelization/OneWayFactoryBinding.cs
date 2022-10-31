@@ -36,11 +36,13 @@ namespace Glyph.Composition.Modelization
 
             base.SetView(model, view);
 
-            if (!model.NotBinding)
-            {
-                if (!model.SubDataSources.Any(x => x is ChildrenSource childrenSource && childrenSource.PropertyName == _propertyName))
-                    model.SubDataSources.Add(new ChildrenSource(model, _propertyName, _referenceGetter(model)));
-            }
+            if (model.NotBinding)
+                return;
+            if (model is IComposable composableModel && composableModel.Composition == _referenceGetter(model))
+                return;
+
+            if (!model.SubDataSources.Any(x => x is ChildrenSource childrenSource && childrenSource.PropertyName == _propertyName))
+                model.SubDataSources.Add(new ChildrenSource(model, _propertyName, _referenceGetter(model)));
         }
 
         protected override void ResetView(TModel model, TView view)
