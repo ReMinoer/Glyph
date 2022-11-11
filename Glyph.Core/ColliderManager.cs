@@ -6,8 +6,9 @@ namespace Glyph.Core
 {
     public class ColliderManager
     {
-        private IWriteableSpace<ICollider> _space;
+        public bool Enabled { get; set; } = true;
 
+        private IWriteableSpace<ICollider> _space;
         public IWriteableSpace<ICollider> Space
         {
             get { return _space; }
@@ -38,6 +39,12 @@ namespace Glyph.Core
 
         internal bool ResolveOneCollision(ICollider collider, out Collision collision)
         {
+            if (!Enabled)
+            {
+                collision = Collision.Empty;
+                return false;
+            }
+
             foreach (ICollider other in Space.GetAllItemsInRange(collider).Where(other => other != collider && other.Active && !other.Unphysical))
                 if (collider.IsColliding(other, out collision))
                     return true;
