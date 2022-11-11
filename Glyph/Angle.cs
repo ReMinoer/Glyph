@@ -1,57 +1,50 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Glyph
 {
     static public class Angle
     {
-        static public float ToRadian(float degree)
+        static public float ToRadians(float degrees)
         {
-            float result = (degree / 180) * MathHelper.Pi;
+            return degrees / 180 * MathHelper.Pi;
+        }
+
+        static public float ToDegrees(float radians)
+        {
+            return radians * 180 / MathHelper.Pi;
+        }
+
+        static public float ToPositiveRadians(float degrees)
+        {
+            float result = ToRadians(degrees);
             result %= MathHelper.TwoPi;
             result += MathHelper.TwoPi;
             result %= MathHelper.TwoPi;
+
             return result;
         }
 
-        static public float ToDegree(float radian)
+        static public float ToPositiveDegrees(float radians)
         {
-            float result = radian;
+            float result = radians;
             result %= MathHelper.TwoPi;
             result += MathHelper.TwoPi;
             result %= MathHelper.TwoPi;
-            result = (result * 180) / MathHelper.Pi;
+            result = ToDegrees(result);
 
             return result;
         }
 
-        public class Rotation
+        static public float ToSignedRadians(float degrees)
         {
-            public float Value { get; private set; }
+            (float sin, float cos) = MathF.SinCos(ToRadians(degrees));
+            return MathF.Atan2(sin,cos);
+        }
 
-            static public Rotation None
-            {
-                get { return new Rotation {Value = 0}; }
-            }
-
-            static public Rotation RotateRight
-            {
-                get { return new Rotation {Value = 3 * MathHelper.PiOver2}; }
-            }
-
-            static public Rotation RotateLeft
-            {
-                get { return new Rotation {Value = MathHelper.PiOver2}; }
-            }
-
-            static public Rotation RotateOpposite
-            {
-                get { return new Rotation {Value = MathHelper.Pi}; }
-            }
-
-            static public implicit operator float(Rotation x)
-            {
-                return x.Value;
-            }
+        static public float ToSignedDegrees(float radians)
+        {
+            return ToDegrees(MathF.Atan2(MathF.Sin(radians), MathF.Cos(radians)));
         }
     }
 }
