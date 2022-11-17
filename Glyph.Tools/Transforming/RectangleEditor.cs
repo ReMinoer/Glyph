@@ -146,16 +146,18 @@ namespace Glyph.Tools.Transforming
                 ? EditedObject.Anchor.LocalTransformation.InverseTransform(EditedObject.Anchor.Transformation)
                 : Transformation.Identity;
 
-            _topLeftAnchor.AnchorTransformation = transformation.Transform(new Transformation(EditedObject.Rectangle.Position, 0, 1));
-            _topRightAnchor.AnchorTransformation = transformation.Transform(new Transformation(EditedObject.Rectangle.P1, 0, 1));
-            _bottomLeftAnchor.AnchorTransformation = transformation.Transform(new Transformation(EditedObject.Rectangle.P2, 0, 1));
-            _bottomRightAnchor.AnchorTransformation = transformation.Transform(new Transformation(EditedObject.Rectangle.P3, 0, 1));
+            TopLeftRectangle liveRectangle = new TopLeftRectangle(EditedObject.LiveRectanglePosition, EditedObject.LiveRectangleSize);
 
-            _positionHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), EditedObject.Rectangle.Size);
-            _leftHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(-Unit, 0), new Vector2(Unit, EditedObject.Rectangle.Size.Y));
-            _topHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, -Unit), new Vector2(EditedObject.Rectangle.Size.X, Unit));
-            _rightHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), new Vector2(Unit, EditedObject.Rectangle.Size.Y));
-            _bottomHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), new Vector2(EditedObject.Rectangle.Size.X, Unit));
+            _topLeftAnchor.AnchorTransformation = transformation.Transform(new Transformation(liveRectangle.Position, 0, 1));
+            _topRightAnchor.AnchorTransformation = transformation.Transform(new Transformation(liveRectangle.P1, 0, 1));
+            _bottomLeftAnchor.AnchorTransformation = transformation.Transform(new Transformation(liveRectangle.P2, 0, 1));
+            _bottomRightAnchor.AnchorTransformation = transformation.Transform(new Transformation(liveRectangle.P3, 0, 1));
+
+            _positionHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), liveRectangle.Size);
+            _leftHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(-Unit, 0), new Vector2(Unit, liveRectangle.Size.Y));
+            _topHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, -Unit), new Vector2(liveRectangle.Size.X, Unit));
+            _rightHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), new Vector2(Unit, liveRectangle.Size.Y));
+            _bottomHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), new Vector2(liveRectangle.Size.X, Unit));
         }
 
         public class Anchor : AnchoredEditorBase<IAnchoredRectangleController>

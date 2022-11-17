@@ -7,18 +7,21 @@ namespace Glyph.Tools.Transforming
     {
         bool IsLocalPosition { get; }
         Vector2 Position { get; set; }
+        Vector2 LivePosition { get; set; }
     }
 
     public interface IRotationController
     {
         bool IsLocalRotation { get; }
         float Rotation { get; set; }
+        float LiveRotation { get; set; }
     }
 
     public interface IScaleController
     {
         bool IsLocalScale { get; }
         float Scale { get; set; }
+        float LiveScale { get; set; }
     }
 
     public interface ITransformationController
@@ -57,6 +60,8 @@ namespace Glyph.Tools.Transforming
     {
         bool IsLocalRectangle { get; }
         TopLeftRectangle Rectangle { get; set; }
+        Vector2 LiveRectanglePosition { get; set; }
+        Vector2 LiveRectangleSize { get; set; }
     }
 
     public interface IAnchoredRectangleController : IRectangleController, IAnchoredController

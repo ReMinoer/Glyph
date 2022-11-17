@@ -22,6 +22,11 @@ namespace Glyph.Tools.Transforming
             get => SceneNode.Position;
             set => SceneNode.Position = value;
         }
+        Vector2 IPositionController.LivePosition
+        {
+            get => SceneNode.Position;
+            set => SceneNode.Position = value;
+        }
 
         bool IRotationController.IsLocalRotation => false;
         float IRotationController.Rotation
@@ -29,9 +34,19 @@ namespace Glyph.Tools.Transforming
             get => SceneNode.Rotation;
             set => SceneNode.Rotation = value;
         }
+        float IRotationController.LiveRotation
+        {
+            get => SceneNode.Rotation;
+            set => SceneNode.Rotation = value;
+        }
 
         bool IScaleController.IsLocalScale => false;
         float IScaleController.Scale
+        {
+            get => SceneNode.Scale;
+            set => SceneNode.Scale = value;
+        }
+        float IScaleController.LiveScale
         {
             get => SceneNode.Scale;
             set => SceneNode.Scale = value;

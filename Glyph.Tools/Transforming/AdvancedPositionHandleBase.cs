@@ -15,7 +15,7 @@ namespace Glyph.Tools.Transforming
     {
         protected Vector2 _startPosition;
         protected Vector2 _relativeGrabPosition;
-        private Vector2 _lastRelativeGrabPosition;
+        private Vector2 _lastProjectedCursorPosition;
 
         public Axes Axes { get; set; } = Axes.Both;
         public Func<Vector2, Vector2> Revaluation { get; set; }
@@ -69,8 +69,8 @@ namespace Glyph.Tools.Transforming
             if (Revaluation != null)
                 projectedCursorPosition = Revaluation(projectedCursorPosition);
 
-            SetPosition(projectedCursorPosition);
-            _lastRelativeGrabPosition = projectedCursorPosition;
+            SetPosition(projectedCursorPosition, live: true);
+            _lastProjectedCursorPosition = projectedCursorPosition;
         }
 
         private Vector2 GetClosestPointOnAxis(Vector2 position, Vector2 axis)
@@ -81,16 +81,17 @@ namespace Glyph.Tools.Transforming
         protected override void OnReleased()
         {
             base.OnReleased();
-            SetPosition(_lastRelativeGrabPosition, UndoRedoStack);
+            SetPosition(_lastProjectedCursorPosition, live: false, UndoRedoStack);
         }
 
         protected override void OnCancelled()
         {
             base.OnCancelled();
-            SetPosition(_startPosition);
+            ResetPosition();
         }
 
         protected abstract Vector2 GetPosition();
-        protected abstract void SetPosition(Vector2 position, IUndoRedoStack undoRedoStack = null);
+        protected abstract void SetPosition(Vector2 position, bool live, IUndoRedoStack undoRedoStack = null);
+        protected abstract void ResetPosition();
     }
 }

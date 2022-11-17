@@ -42,7 +42,7 @@ namespace Glyph.Tools.Transforming
 
             var newRotation = _startRotation + cursorRotation.Value - _relativeRotation;
 
-            EditedObject.Rotation = newRotation;
+            EditedObject.LiveRotation = newRotation;
             _lastRotation = newRotation;
         }
 

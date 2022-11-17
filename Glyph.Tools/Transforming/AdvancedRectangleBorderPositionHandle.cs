@@ -11,6 +11,7 @@ namespace Glyph.Tools.Transforming
     {
         private Vector2 _startSize;
         private Vector2 _startCursorProjectedPosition;
+
         public Axes AxesEditedFromOrigin { get; set; }
 
         protected override MouseCursor Cursor
@@ -60,7 +61,7 @@ namespace Glyph.Tools.Transforming
             return EditedObject.Rectangle.Position;
         }
 
-        protected override void SetPosition(Vector2 position, IUndoRedoStack undoRedoStack = null)
+        protected override void SetPosition(Vector2 position, bool live, IUndoRedoStack undoRedoStack = null)
         {
             IAnchoredRectangleController editedObject = EditedObject;
             Vector2 previousPosition = _startPosition;
@@ -105,9 +106,21 @@ namespace Glyph.Tools.Transforming
             if (newRectangle.Equals(previousRectangle))
                 return;
 
+            if (live)
+            {
+                editedObject.LiveRectanglePosition = newRectangle.Position;
+                editedObject.LiveRectangleSize = newRectangle.Size;
+                return;
+            }
+
             undoRedoStack.Execute($"Set rectangle bounds to {newRectangle}.",
                 () => editedObject.Rectangle = newRectangle,
                 () => editedObject.Rectangle = previousRectangle);
+        }
+
+        protected override void ResetPosition()
+        {
+            EditedObject.Rectangle = new TopLeftRectangle(_startPosition, _startSize);
         }
     }
 }

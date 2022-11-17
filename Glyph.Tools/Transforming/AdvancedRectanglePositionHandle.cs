@@ -17,7 +17,7 @@ namespace Glyph.Tools.Transforming
         }
 
         protected override Vector2 GetPosition() => EditedObject.Rectangle.Position;
-        protected override void SetPosition(Vector2 position, IUndoRedoStack undoRedoStack = null)
+        protected override void SetPosition(Vector2 position, bool live, IUndoRedoStack undoRedoStack = null)
         {
             IAnchoredRectangleController editedObject = EditedObject;
             Vector2 previousPosition = _startPosition;
@@ -29,9 +29,20 @@ namespace Glyph.Tools.Transforming
             if (position == previousPosition)
                 return;
 
+            if (live)
+            {
+                editedObject.LiveRectanglePosition = position;
+                return;
+            }
+
             undoRedoStack.Execute($"Set rectangle position to {position}.",
                 () => editedObject.Rectangle = new TopLeftRectangle(position, editedObject.Rectangle.Size),
                 () => editedObject.Rectangle = new TopLeftRectangle(previousPosition, editedObject.Rectangle.Size));
+        }
+
+        protected override void ResetPosition()
+        {
+            EditedObject.Rectangle = new TopLeftRectangle(_startPosition, EditedObject.Rectangle.Size);
         }
 
         private void OnDirectionChanged(object sender, HandlableDirectionEventArgs e)
@@ -39,7 +50,7 @@ namespace Glyph.Tools.Transforming
             if (!Active || !KeyboardEnabled || e.IsHandled)
                 return;
 
-            SetPosition(GetPosition() + e.Direction.Normalized().Multiply(10, -10));
+            SetPosition(GetPosition() + e.Direction.Normalized().Multiply(10, -10), live: false, undoRedoStack: UndoRedoStack);
             e.Handle();
         }
     }

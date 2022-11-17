@@ -38,7 +38,7 @@ namespace Glyph.Tools.Transforming
             Vector2 scaleRatio = (projectedCursorPosition - _sceneNode.ParentNode.Position) / _sceneNode.LocalPosition.Rotate(_sceneNode.ParentNode.Rotation);
             float newScale = _startScale * MathHelper.Max(MathHelper.Max(scaleRatio.X, scaleRatio.Y), 0.1f);
 
-            EditedObject.Scale = newScale;
+            EditedObject.LiveScale = newScale;
             _lastScale = newScale;
         }
 

@@ -47,6 +47,11 @@ namespace Glyph.Tools.Transforming
                 get => _controller.Position;
                 set => _controller.Position = value;
             }
+            public Vector2 LivePosition
+            {
+                get => _controller.LivePosition;
+                set => _controller.LivePosition = value;
+            }
 
             public ISceneNode Anchor { get; }
 
@@ -67,6 +72,11 @@ namespace Glyph.Tools.Transforming
                 get => _controller.Rotation;
                 set => _controller.Rotation = value;
             }
+            public float LiveRotation
+            {
+                get => _controller.LiveRotation;
+                set => _controller.LiveRotation = value;
+            }
 
             public ISceneNode Anchor { get; }
 
@@ -86,6 +96,11 @@ namespace Glyph.Tools.Transforming
             {
                 get => _controller.Scale;
                 set => _controller.Scale = value;
+            }
+            public float LiveScale
+            {
+                get => _controller.LiveScale;
+                set => _controller.LiveScale = value;
             }
 
             public ISceneNode Anchor { get; }
