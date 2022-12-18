@@ -39,7 +39,7 @@ namespace Glyph.Graphics.Meshes.Base
                 if (_textureMapper != null)
                     _textureMapper.RefreshRequested += OnRefreshRequested;
 
-                void OnRefreshRequested(object sender, EventArgs e) => _dirtyTextureCoordinates = true;
+                void OnRefreshRequested(object sender, EventArgs e) => DirtyTextureCoordinates();
             }
         }
 
