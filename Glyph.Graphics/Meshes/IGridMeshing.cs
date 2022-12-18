@@ -9,14 +9,15 @@ namespace Glyph.Graphics.Meshes
         where TGrid : IGrid<T>
     {
         event EventHandler Changed;
+
         TInfo EmptyInfo { get; }
-        TInfo GetCellInfo(TGrid grid, int i, int j);
+        TInfo GetCellInfo(TGrid grid, int i, int j, int gridColumns, int gridRows);
 
         bool CanContainsRectangles { get; }
         bool IsPartOfRectangle(TInfo cellInfo);
-        void AddRectangle(List<Vector2> vertices, List<int> indices, TGrid grid, Rectangle rectangle);
+        void AddRectangle(ICollection<Vector2> vertices, TGrid grid, Rectangle rectangle);
 
         bool IsCell(TInfo cellInfo);
-        void AddCell(List<Vector2> vertices, List<int> indices, TGrid grid, int i, int j, TInfo info);
+        void AddCell(ICollection<Vector2> vertices, TGrid grid, int i, int j, TInfo info);
     }
 }

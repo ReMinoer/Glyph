@@ -113,7 +113,7 @@ namespace Glyph.Space
 
         public override sealed GridDimension Dimension
         {
-            get => new GridDimension(_data.Lengths[1], _data.Lengths[0]);
+            get => base.Dimension;
             set => Resize(value.ToArray());
         }
 
@@ -150,6 +150,7 @@ namespace Glyph.Space
         public override void Resize(int[] newLengths, bool keepValues = true, Func<T, int[], T> valueFactory = null)
         {
             _data.Resize(newLengths, keepValues, valueFactory ?? _defaultCellValueFactory);
+            base.Dimension = new GridDimension(newLengths[1], newLengths[0]);
         }
 
         protected override T GetValue(int i, int j) => _data[i, j];

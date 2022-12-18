@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Glyph.Math;
 using Glyph.Math.Shapes;
 using Microsoft.Xna.Framework;
-using Simulacra.Utils;
 
 namespace Glyph.Space
 {
@@ -13,18 +11,17 @@ namespace Glyph.Space
     {
         static public bool ContainsPoint(this IGrid grid, Point gridPoint)
         {
-            return gridPoint.X >= 0 && gridPoint.X < grid.Dimension.Columns
-                && gridPoint.Y >= 0 && gridPoint.Y < grid.Dimension.Rows;
+            return grid.Dimension.ContainsPoint(gridPoint);
         }
 
         static public bool ContainsPoint(this IGrid grid, int i, int j)
         {
-            return grid.ContainsPoint(new Point(j, i));
+            return grid.Dimension.ContainsPoint(new Point(j, i));
         }
 
         static public bool ContainsPoint(this IGrid grid, int[] indexes)
         {
-            return grid.ContainsPoint(indexes[0], indexes[1]);
+            return grid.Dimension.ContainsPoint(new Point(indexes[0], indexes[1]));
         }
 
         static public Vector2 ToWorldPoint(this IGrid grid, int i, int j)

@@ -9,12 +9,18 @@ namespace Glyph.Graphics.Meshes.Base
         public bool Visible { get; set; } = true;
 
         public abstract PrimitiveType Type { get; }
+
         public IEnumerable<Vector2> Vertices => ReadOnlyVertices;
         public IEnumerable<Vector2> TextureCoordinates => ReadOnlyTextureCoordinates;
         public IEnumerable<int> TriangulationIndices => ReadOnlyIndices;
+
         protected abstract IReadOnlyList<Vector2> ReadOnlyVertices { get; }
         protected abstract IReadOnlyList<Vector2> ReadOnlyTextureCoordinates { get; }
-        protected abstract IReadOnlyList<int> ReadOnlyIndices { get; }
+        protected abstract IList<int> ReadOnlyIndices { get; }
+
+        private bool _dirtyDrawVertices = true;
+        private VertexPositionColorTexture[] _readOnlyDrawVertices;
+
         public virtual int VertexCount => ReadOnlyVertices?.Count ?? 0;
         public virtual int TriangulationIndexCount => ReadOnlyIndices?.Count ?? 0;
 
@@ -33,34 +39,10 @@ namespace Glyph.Graphics.Meshes.Base
             _parts = new IVisualMeshPart[]{this};
         }
 
-        public virtual void CopyToVertexArray(VertexPosition[] vertexArray, int startIndex)
-        {
-            for (int i = 0; i < VertexCount; i++)
-                vertexArray[startIndex + i] = new VertexPosition(ReadOnlyVertices[i].ToVector3());
-        }
-
-        public virtual void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex)
-        {
-            for (int i = 0; i < VertexCount; i++)
-                vertexArray[startIndex + i] = new VertexPositionColor(ReadOnlyVertices[i].ToVector3(), GetColor(i));
-        }
-
         public virtual void CopyToVertexArray(VertexPositionColorTexture[] vertexArray, int startIndex)
         {
-            for (int i = 0; i < VertexCount; i++)
-                vertexArray[startIndex + i] = new VertexPositionColorTexture(ReadOnlyVertices[i].ToVector3(), GetColor(i), ReadOnlyTextureCoordinates[i]);
-        }
-
-        public virtual void CopyToVertexArray(VertexPositionTexture[] vertexArray, int startIndex)
-        {
-            for (int i = 0; i < VertexCount; i++)
-                vertexArray[startIndex + i] = new VertexPositionTexture(ReadOnlyVertices[i].ToVector3(), ReadOnlyTextureCoordinates[i]);
-        }
-
-        public virtual void CopyToIndexArray(int[] indexArray, int startIndex)
-        {
-            for (int i = 0; i < TriangulationIndexCount; i++)
-                indexArray[startIndex + i] = ReadOnlyIndices[i];
+            RefreshDrawVertices();
+            _readOnlyDrawVertices.CopyTo(vertexArray, startIndex);
         }
 
         public void SetEffect<TEffect>(TEffect effect)
@@ -74,6 +56,35 @@ namespace Glyph.Graphics.Meshes.Base
         {
             Effect = effect;
             EffectMatrices = null;
+        }
+
+        public virtual void CopyToIndexArray(int[] indexArray, int startIndex)
+        {
+            ReadOnlyIndices.CopyTo(indexArray, startIndex);
+        }
+
+        private void RefreshDrawVertices()
+        {
+            if (!_dirtyDrawVertices)
+                return;
+
+            int vertexCount = VertexCount;
+            if (_readOnlyDrawVertices is null || vertexCount != _readOnlyDrawVertices.Length)
+            {
+                _readOnlyDrawVertices = new VertexPositionColorTexture[vertexCount];
+            }
+
+            for (int i = 0; i < vertexCount; i++)
+            {
+                _readOnlyDrawVertices[i] = new VertexPositionColorTexture(ReadOnlyVertices[i].ToVector3(), GetColor(i), ReadOnlyTextureCoordinates[i]);
+            }
+
+            _dirtyDrawVertices = false;
+        }
+
+        protected void DirtyDrawVerticesCache()
+        {
+            _dirtyDrawVertices = true;
         }
 
         protected abstract Color GetColor(int vertexIndex);

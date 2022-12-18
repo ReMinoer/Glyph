@@ -37,7 +37,7 @@ namespace Glyph.Graphics.Meshes
 
         protected override IReadOnlyList<Vector2> ReadOnlyVertices => _readOnlyVertices;
         protected override IReadOnlyList<Vector2> ReadOnlyTextureCoordinates => _readOnlyTextureCoordinates;
-        protected override IReadOnlyList<int> ReadOnlyIndices => null;
+        protected override IList<int> ReadOnlyIndices => null;
 
         protected override bool IsStrip => true;
 

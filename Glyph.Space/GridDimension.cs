@@ -14,6 +14,12 @@ namespace Glyph.Space
             Rows = rows;
         }
 
+        public bool ContainsPoint(Point gridPoint)
+        {
+            return gridPoint.X >= 0 && gridPoint.X < Columns
+                && gridPoint.Y >= 0 && gridPoint.Y < Rows;
+        }
+
         public int[] ToArray() => new[] {Rows, Columns};
 
         static public implicit operator Point(GridDimension gridDimension)

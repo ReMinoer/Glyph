@@ -10,7 +10,7 @@ namespace Glyph.Graphics.Meshes.Base
         private Vector2[] _vertexCache;
         private int[] _indexCache;
         private IReadOnlyList<Vector2> _readOnlyVertexCache;
-        private IReadOnlyList<int> _readOnlyIndexCache;
+        private IList<int> _readOnlyIndexCache;
 
         private bool _dirtyVertices = true;
         private bool _dirtyIndices = true;
@@ -26,7 +26,7 @@ namespace Glyph.Graphics.Meshes.Base
             }
         }
 
-        protected override IReadOnlyList<int> ReadOnlyIndices
+        protected override IList<int> ReadOnlyIndices
         {
             get
             {
@@ -138,27 +138,10 @@ namespace Glyph.Graphics.Meshes.Base
         {
             _dirtyIndices = true;
             _dirtyIndexCount = true;
-        }
-
-        public override void CopyToVertexArray(VertexPosition[] vertexArray, int startIndex)
-        {
-            Refresh();
-            base.CopyToVertexArray(vertexArray, startIndex);
-        }
-
-        public override void CopyToVertexArray(VertexPositionColor[] vertexArray, int startIndex)
-        {
-            Refresh();
-            base.CopyToVertexArray(vertexArray, startIndex);
+            DirtyDrawVerticesCache();
         }
 
         public override void CopyToVertexArray(VertexPositionColorTexture[] vertexArray, int startIndex)
-        {
-            Refresh();
-            base.CopyToVertexArray(vertexArray, startIndex);
-        }
-
-        public override void CopyToVertexArray(VertexPositionTexture[] vertexArray, int startIndex)
         {
             Refresh();
             base.CopyToVertexArray(vertexArray, startIndex);

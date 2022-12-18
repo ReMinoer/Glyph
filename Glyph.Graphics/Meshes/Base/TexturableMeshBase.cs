@@ -61,6 +61,7 @@ namespace Glyph.Graphics.Meshes.Base
         protected void DirtyTextureCoordinates()
         {
             _dirtyTextureCoordinates = true;
+            DirtyDrawVerticesCache();
         }
     }
 }

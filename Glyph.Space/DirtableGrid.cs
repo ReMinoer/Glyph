@@ -9,13 +9,11 @@ using Simulacra.Utils;
 namespace Glyph.Space
 {
     public class DirtableGrid<T> : IDirtableResizeableGrid<T>
-        where T : class, IDirtable
+        where T : class, IDirtableGridCell<T>
     {
         private readonly IResizeableGrid<T> _gridImplementation;
         private readonly List<IGridCase<T>> _dirtiedCases;
         private readonly IReadOnlyList<IGridCase<T>> _readOnlyDirtiedCases;
-
-        private EventHandler[,] _dirtyHandlers;
 
         public T this[int i, int j]
         {
@@ -27,16 +25,14 @@ namespace Glyph.Space
                     return;
 
                 if (previousValue != null)
-                    UnsubscribeDirty(new GridCase<T>(i, j, previousValue));
+                    UnregisterValue(previousValue);
 
                 _gridImplementation[i, j] = value;
 
                 if (value != null)
-                    SubscribeDirty(new GridCase<T>(i, j, value));
+                    RegisterValue(i, j, value);
 
-                _dirtiedCases.Add(new GridCase<T>(i, j, value));
-
-                SetDirty(new GridCase<T>(i, j, value));
+                SetDirty(i, j, value);
             }
         }
 
@@ -50,12 +46,12 @@ namespace Glyph.Space
                     return;
 
                 if (previousValue != null)
-                    UnsubscribeDirty(new GridCase<T>(gridPoint, previousValue));
+                    UnregisterValue(previousValue);
 
                 _gridImplementation[gridPoint] = value;
 
                 if (value != null)
-                    SubscribeDirty(new GridCase<T>(gridPoint, value));
+                    RegisterValue(gridPoint, value);
 
                 SetDirty(new GridCase<T>(gridPoint, value));
             }
@@ -73,14 +69,14 @@ namespace Glyph.Space
                 Point gridPoint = ToGridPoint(worldPoint);
 
                 if (previousValue != null)
-                    UnsubscribeDirty(new GridCase<T>(gridPoint, previousValue));
+                    UnregisterValue(previousValue);
 
                 _gridImplementation[worldPoint] = value;
 
                 if (value != null)
-                    SubscribeDirty(new GridCase<T>(gridPoint, value));
+                    RegisterValue(gridPoint, value);
 
-                SetDirty(new GridCase<T>(gridPoint, value));
+                SetDirty(gridPoint, value);
             }
         }
 
@@ -94,15 +90,14 @@ namespace Glyph.Space
                     return;
 
                 if (previousValue != null)
-                    UnsubscribeDirty(new GridCase<T>(indexes[0], indexes[1], previousValue));
+                    UnregisterValue(previousValue);
 
                 _gridImplementation[indexes] = value;
-                var valueCase = new GridCase<T>(indexes[0], indexes[1], value);
 
                 if (value != null)
-                    SubscribeDirty(valueCase);
+                    RegisterValue(indexes[0], indexes[1], value);
 
-                SetDirty(valueCase);
+                SetDirty(indexes[0], indexes[1], value);
             }
         }
 
@@ -133,12 +128,10 @@ namespace Glyph.Space
 
             _dirtiedCases = new List<IGridCase<T>>();
             _readOnlyDirtiedCases = _dirtiedCases.AsReadOnly();
-
-            _dirtyHandlers = new EventHandler[_gridImplementation.Dimension.Rows, _gridImplementation.Dimension.Columns];
-
-            int[] indexes = GetResetIndex();
-            while (MoveIndex(indexes))
-                SubscribeDirty(new GridCase<T>(indexes[0], indexes[1], _gridImplementation[indexes]));
+            
+            this.GetResetIndex(out int i, out int j);
+            while (this.MoveIndex(ref i, ref j))
+                RegisterValue(i, j, _gridImplementation[i, j]);
         }
 
         public event ArrayChangedEventHandler ArrayChanged;
@@ -149,6 +142,7 @@ namespace Glyph.Space
 
         public event EventHandler Dirtied;
         public event EventHandler DirtyCleaned;
+        public event EventHandler<CellsDirtiedEventArgs<T>> CellsDirtied;
 
         public void CleanDirty()
         {
@@ -156,54 +150,55 @@ namespace Glyph.Space
             DirtyCleaned?.Invoke(this, EventArgs.Empty);
         }
 
+        private void SetDirty(int i, int j, T value) => SetDirty(new GridCase<T>(i, j, value));
+        private void SetDirty(Point point, T value) => SetDirty(new GridCase<T>(point, value));
         private void SetDirty(GridCase<T> gridCase)
         {
             _dirtiedCases.Add(gridCase);
+
+            CellsDirtied?.Invoke(this, CellsDirtiedEventArgs<T>.Change(gridCase.Value));
             Dirtied?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void SetDirty(T value)
+        {
+            SetDirty(new GridCase<T>(value.GridPoint, value));
         }
 
         void IDirtable.SetDirty() => SetDirty();
         private void SetDirty()
         {
-            int[] indexes = GetResetIndex();
-            while (MoveIndex(indexes))
-                _dirtiedCases.Add(new GridCase<T>(indexes[0], indexes[1], this[indexes[0], indexes[1]]));
-
+            this.GetResetIndex(out int i, out int j);
+            while (this.MoveIndex(ref i, ref j))
+                _dirtiedCases.Add(new GridCase<T>(i, j, this[i, j]));
+            
+            CellsDirtied?.Invoke(this, CellsDirtiedEventArgs<T>.GlobalChange());
             Dirtied?.Invoke(this, EventArgs.Empty);
         }
 
-        private void SubscribeDirty(GridCase<T> gridCase)
+        private void RegisterValue(int i, int j, T value) => RegisterValue(new Point(j, i), value);
+        private void RegisterValue(Point gridPoint, T value)
         {
-            Point point = gridCase.Point;
-
-            gridCase.Value.Dirtied += Handler;
-            _dirtyHandlers[point.Y, point.X] = Handler;
-
-            void Handler(object sender, EventArgs e) => SetDirty(new GridCase<T>(point, this[point]));
+            value.Grid = this;
+            value.GridPoint = gridPoint;
         }
 
-        private void UnsubscribeDirty(GridCase<T> gridCase)
+        private void UnregisterValue(T value)
         {
-            Point point = gridCase.Point;
-
-            gridCase.Value.Dirtied -= _dirtyHandlers[point.Y, point.X];
-            _dirtyHandlers[point.Y, point.X] = null;
+            value.Grid = null;
         }
 
         public void Resize(int[] newLengths, bool keepValues = true, Func<T, int[], T> valueFactory = null)
         {
-            _dirtyHandlers = (EventHandler[,])_dirtyHandlers.ToResizedArray<EventHandler>(newLengths, keepValues: true);
-
             _gridImplementation.Resize(newLengths, keepValues, (previous, indexes) =>
             {
                 if (previous != null)
-                    UnsubscribeDirty(new GridCase<T>(indexes[0], indexes[1], previous));
+                    UnregisterValue(previous);
 
-                T value = valueFactory(previous, indexes);
-                var valueCase = new GridCase<T>(indexes[0], indexes[1], value);
+                T value = valueFactory?.Invoke(previous, indexes);
 
                 if (value != null)
-                    SubscribeDirty(valueCase);
+                    RegisterValue(indexes[0], indexes[1], value);
 
                 return value;
             });
@@ -219,9 +214,6 @@ namespace Glyph.Space
         public Point ToGridPoint(Vector2 worldPoint) => _gridImplementation.ToGridPoint(worldPoint);
         public IEnumerator<T> GetEnumerator() => _gridImplementation.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => _gridImplementation.GetEnumerator();
-
-        public int[] GetResetIndex() => _gridImplementation.GetResetIndex();
-        public bool MoveIndex(int[] indexes) => _gridImplementation.MoveIndex(indexes);
 
         int IArrayDefinition.Rank => _gridImplementation.Rank;
         int IArrayDefinition.GetLowerBound(int dimension) => _gridImplementation.GetLowerBound(dimension);
