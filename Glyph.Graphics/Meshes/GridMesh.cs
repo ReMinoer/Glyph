@@ -117,6 +117,7 @@ namespace Glyph.Graphics.Meshes
                 int x = gridPoint.X / samplingSize.X;
                 int y = gridPoint.Y / samplingSize.Y;
 
+                // TODO: Dirty neighbor samples if on border
                 _dirtySamples.Add(_samples[y, x]);
             }
 

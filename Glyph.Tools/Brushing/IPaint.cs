@@ -1,6 +1,4 @@
-﻿using Glyph.Tools.UndoRedo;
-
-namespace Glyph.Tools.Brushing
+﻿namespace Glyph.Tools.Brushing
 {
     public interface IPaint
     {
@@ -9,6 +7,8 @@ namespace Glyph.Tools.Brushing
     public interface IPaint<in TCanvas, in TArgs> : IPaint
     {
         bool CanApply(TCanvas canvas, TArgs args);
-        void Apply(TCanvas canvas, TArgs args, IUndoRedoActionBatch undoRedoActionBatch);
+        void Apply(TCanvas canvas, TArgs args);
+        object GetUndoData(TCanvas canvas, TArgs args);
+        void Undo(TCanvas canvas, TArgs args, object undoData);
     }
 }

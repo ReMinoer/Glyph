@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Glyph.Math;
 using Glyph.Math.Shapes;
 using Glyph.Space;
 using Glyph.Tools.Brushing.Grid.Brushes.Base;
@@ -17,7 +15,7 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
 
         private Point _previousGridPoint;
         private Vector2 _previousWorldPoint;
-        private UndoRedoActionBatch _undoRedoActionBatch;
+        private UndoRedoBatch _undoRedoBatch;
 
         public ContinuousGridBrush(Point? size = null)
         {
@@ -29,7 +27,7 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
         {
             _previousGridPoint = args.GridPoint;
             _previousWorldPoint = args.WorldPoint;
-            _undoRedoActionBatch = new UndoRedoActionBatch($"Apply paint {paint} with brush {this} on canvas {canvas}.");
+            _undoRedoBatch = new UndoRedoBatch($"Apply paint {paint} with brush {this} on canvas {canvas}.");
 
             TryApply(canvas, args, paint);
         }
@@ -56,19 +54,25 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
                 for (int i = 0; i < _brushRange.Lengths[0]; i++)
                     for (int j = 0; j < _brushRange.Lengths[1]; j++)
                     {
-                        Point gridPoint = new Point(x + _brushRange.StartingIndex[1] + j, y + _brushRange.StartingIndex[0] + i);
+                        var gridPoint = new Point(x + _brushRange.StartingIndex[1] + j, y + _brushRange.StartingIndex[0] + i);
                         Vector2 worldPoint = canvas.ToWorldPoint(gridPoint);
 
                         var cellArgs = new GridBrushArgs(gridPoint, worldPoint);
-                        if (paint.CanApply(canvas, cellArgs))
-                            paint.Apply(canvas, cellArgs, _undoRedoActionBatch);
+                        if (!paint.CanApply(canvas, cellArgs))
+                            continue;
+
+                        object undoData = paint.GetUndoData(canvas, cellArgs);
+
+                        _undoRedoBatch.Execute($"Apply paint {paint} with brush {this} on canvas {canvas} at position {gridPoint}.",
+                            () => paint.Apply(canvas, cellArgs),
+                            () => paint.Undo(canvas, cellArgs, undoData));
                     }
             }
         }
 
         public override void EndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint, IUndoRedoStack undoRedoStack)
         {
-            undoRedoStack?.Push(_undoRedoActionBatch);
+            undoRedoStack?.Push(_undoRedoBatch);
         }
 
         public override bool CanEndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint) => true;

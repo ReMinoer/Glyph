@@ -14,9 +14,11 @@ namespace Glyph.Tools.Brushing.Grid.Brushes
 
         public override void EndApply(IWriteableGrid<TCell> canvas, IGridBrushArgs args, TPaint paint, IUndoRedoStack undoRedoStack)
         {
-            var actionBatch = new UndoRedoActionBatch($"Apply paint {paint} with brush {this} on canvas {canvas}.");
-            paint.Apply(canvas, args, actionBatch);
-            undoRedoStack?.Push(actionBatch);
+            object undoData = paint.GetUndoData(canvas, args);
+
+            undoRedoStack?.Push($"Apply paint {paint} with brush {this} on canvas {canvas}.",
+                () => paint.Apply(canvas, args),
+                () => paint.Undo(canvas, args, undoData));
         }
     }
 }
