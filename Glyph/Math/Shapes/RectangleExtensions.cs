@@ -99,7 +99,7 @@ namespace Glyph.Math.Shapes
             if (inner.Left < outer.Left)
             {
                 inner.Width -= outer.Left - inner.Left;
-                inner.X = outer.Y;
+                inner.X = outer.X;
             }
             if (inner.Right > outer.Right)
                 inner.Width -= inner.Right - outer.Right;
