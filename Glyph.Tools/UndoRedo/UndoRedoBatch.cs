@@ -20,13 +20,6 @@ namespace Glyph.Tools.UndoRedo
             _undoRedoList.Add(undoRedo);
         }
 
-        public void Execute(IUndoRedo undoRedo)
-        {
-            // TODO: Check if items are already done
-            undoRedo.Redo();
-            Push(undoRedo);
-        }
-
         void IUndoRedo.Undo()
         {
             foreach (IUndoRedo undoRedo in Enumerable.Reverse(_undoRedoList))

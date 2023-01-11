@@ -11,7 +11,7 @@ namespace Glyph.Tools.UndoRedo
         private readonly Action _undoDispose;
         private bool _isDone;
 
-        public UndoRedoAction(string description, Action redo, Action undo, Action redoDispose, Action undoDispose, bool alreadyDone)
+        public UndoRedoAction(string description, Action redo, Action undo, Action redoDispose, Action undoDispose, bool alreadyDone = true)
         {
             Description = description;
             _redo = redo;
