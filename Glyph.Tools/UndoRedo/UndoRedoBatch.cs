@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Glyph.Tools.UndoRedo
 {
-    public class UndoRedoBatch : IUndoRedoBatch
+    public class UndoRedoBatch : IUndoRedo, IUndoRedoStack
     {
         private readonly List<IUndoRedo> _undoRedoList = new List<IUndoRedo>();
         public string Description { get; }
