@@ -94,8 +94,26 @@ namespace Glyph.Tools
                 float zoom = _camera.Zoom + wheelValue * (_camera.Zoom / 2);
                 if (zoom < 0)
                     zoom = 0;
+                
+                _rootViewCursor.IsActive(out Vector2 cursorRootViewPosition);
+
+                Projection<Vector2> previousCameraSceneProjection = _projectionManager.ProjectFromPosition(_rootView, cursorRootViewPosition).To(_sceneNode)
+                    .InDirections(GraphDirections.Successors)
+                    .Where(TransformPathContainsCamera)
+                    .FirstOrDefault();
 
                 _camera.Zoom = zoom;
+
+                if (previousCameraSceneProjection is null)
+                    return;
+                
+                if (_projectionManager.ProjectFromPosition(_rootView, cursorRootViewPosition).To(_sceneNode)
+                    .InDirections(GraphDirections.Successors)
+                    .Where(TransformPathContainsCamera)
+                    .Any(out Projection<Vector2> newCameraSceneProjection))
+                {
+                    _sceneNode.Position -= newCameraSceneProjection.Value - previousCameraSceneProjection.Value;
+                }
             }
              
             if (_moveCamera.IsActive(out InputActivity inputActivity))
