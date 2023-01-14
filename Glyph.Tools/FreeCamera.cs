@@ -136,7 +136,7 @@ namespace Glyph.Tools
 
         private bool TransformPathContainsCamera(Projection<Vector2> projection)
         {
-            return projection.TransformerPath.Any(x => x is IView view && view.Camera == _camera);
+            return projection.GraphPath.Any(x => x is IView view && view.Camera == _camera);
         }
     }
 }

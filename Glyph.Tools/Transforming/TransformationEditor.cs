@@ -11,7 +11,7 @@ namespace Glyph.Tools.Transforming
 {
     public class TransformationEditor : AnchoredEditorBase<IAnchoredTransformationController>, IHandle<IAnchoredTransformationController>
     {
-        public const float Unit = 100;
+        public const float Unit = 50;
         
         private readonly List<AdvancedPositionHandle> _positionHandles;
         private readonly List<AdvancedRotationHandle> _rotationHandles;
@@ -40,6 +40,12 @@ namespace Glyph.Tools.Transforming
             }
         }
 
+        public ISceneNode ScaleAnchorNode
+        {
+            get => AnchoredSceneNode.ScaleAnchorNode;
+            set => AnchoredSceneNode.ScaleAnchorNode = value;
+        }
+
         public Func<Vector2, Vector2> Revaluation
         {
             get => _positionHandles[0].Revaluation;
@@ -58,6 +64,8 @@ namespace Glyph.Tools.Transforming
         public TransformationEditor(GlyphResolveContext context)
             : base(context)
         {
+            AnchoredSceneNode.IgnoreScale = false;
+
             const float u = Unit;
             const float cursorSize = u / 16;
             float radius = (new Vector2(2.5f, 2.5f) * u).Length();

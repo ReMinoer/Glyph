@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Glyph.Composition;
 using Glyph.Core.Base;
@@ -12,8 +13,10 @@ namespace Glyph.Core
     {
         private readonly ProjectionManager _projectionManager;
         private ISceneNode _anchorNode;
+        private ISceneNode _scaleAnchorNode;
         private ITransformation _anchorTransformation;
-        private ITransformer[] _projectionPath;
+        private readonly HashSet<ITransformer> _intermediaryTransformers = new HashSet<ITransformer>();
+        private readonly HashSet<ITransformer> _scaleIntermediaryTransformers = new HashSet<ITransformer>();
 
         private bool _ignoreRotation;
         public bool IgnoreRotation
@@ -52,13 +55,32 @@ namespace Glyph.Core
                     return;
 
                 if (_anchorNode != null)
-                    _anchorNode.TransformationChanged -= OnAnchorNodeTransformationChanged;
+                    UnsubscribeToTransformationChanged(_anchorNode);
 
                 _anchorNode = value;
                 Refresh();
 
                 if (_anchorNode != null)
-                    _anchorNode.TransformationChanged += OnAnchorNodeTransformationChanged;
+                    SubscribeToTransformationChanged(_anchorNode);
+            }
+        }
+
+        public ISceneNode ScaleAnchorNode
+        {
+            get => _scaleAnchorNode;
+            set
+            {
+                if (_scaleAnchorNode == value)
+                    return;
+
+                if (_scaleAnchorNode != null)
+                    UnsubscribeToTransformationChanged(_scaleAnchorNode);
+
+                _scaleAnchorNode = value;
+                Refresh();
+
+                if (_scaleAnchorNode != null)
+                    SubscribeToTransformationChanged(_scaleAnchorNode);
             }
         }
 
@@ -71,39 +93,13 @@ namespace Glyph.Core
                     return;
 
                 if (_anchorTransformation != null)
-                    _anchorTransformation.TransformationChanged -= OnAnchorTransformationChanged;
+                    UnsubscribeToTransformationChanged(_anchorTransformation);
 
                 _anchorTransformation = value;
                 Refresh();
 
                 if (_anchorTransformation != null)
-                    _anchorTransformation.TransformationChanged += OnAnchorTransformationChanged;
-            }
-        }
-
-        public ITransformer[] TransformerPath
-        {
-            get => _projectionPath;
-            set
-            {
-                if (_projectionPath == value || _projectionPath != null && value != null && _projectionPath.SequenceEqual(value))
-                    return;
-
-                if (_projectionPath != null)
-                    foreach (ITransformer transformer in _projectionPath)
-                    {
-                        transformer.TransformationChanged -= Refresh;
-                    }
-
-                _projectionPath = value;
-
-                if (_projectionPath != null)
-                    foreach (ITransformer transformer in _projectionPath)
-                    {
-                        transformer.TransformationChanged += Refresh;
-                    }
-
-                Refresh();
+                    SubscribeToTransformationChanged(_anchorTransformation);
             }
         }
         
@@ -129,7 +125,8 @@ namespace Glyph.Core
         {
             _projectionManager = projectionManager;
         }
-
+        
+        private void Refresh(object sender, EventArgs args) => Refresh();
         protected override void Refresh()
         {
             if (_anchorNode == null || !_projectionManager.SceneRoots.Contains(_anchorNode.RootNode(), new RepresentativeEqualityComparer<ISceneNode>()))
@@ -138,8 +135,31 @@ namespace Glyph.Core
                 RefreshFrom(Referential.Local);
                 return;
             }
+            
+            ITransformation worldTransformation = GetProjectionTransformation(_anchorNode, _anchorTransformation, _intermediaryTransformers);
+            if (worldTransformation is null)
+            {
+                _transformation = Transformation.Identity;
+                RefreshFrom(Referential.Local);
+                return;
+            }
 
-            ProjectionManager.IOptionsController<ITransformation> projectionController = _projectionManager.ProjectFrom(_anchorNode, _anchorTransformation ?? _anchorNode).To(this);
+            ITransformation scaleWorldTransformation = _scaleAnchorNode is null ? null : GetProjectionTransformation(_scaleAnchorNode, null, _scaleIntermediaryTransformers);
+
+            _position = worldTransformation.Translation;
+            _rotation = IgnoreRotation ? ParentNode?.Rotation ?? 0 : worldTransformation.Rotation;
+            _scale = IgnoreScale ? ParentNode?.Scale ?? 1 : scaleWorldTransformation?.Scale ?? worldTransformation.Scale;
+
+            RefreshFrom(Referential.World);
+        }
+
+        private ITransformation GetProjectionTransformation(ISceneNode anchorNode, ITransformation anchorTransformation, ISet<ITransformer> projectionTransformers)
+        {
+            foreach (ITransformer previousTransformer in projectionTransformers)
+                UnsubscribeToTransformationChanged(previousTransformer);
+            projectionTransformers.Clear();
+
+            ProjectionManager.IOptionsController<ITransformation> projectionController = _projectionManager.ProjectFrom(anchorNode, anchorTransformation ?? anchorNode).To(this);
             if (ProjectionConfiguration != null)
                 projectionController = ProjectionConfiguration(projectionController);
 
@@ -148,33 +168,41 @@ namespace Glyph.Core
             {
                 _transformation = Transformation.Identity;
                 RefreshFrom(Referential.Local);
-                return;
+                return null;
             }
 
-            ITransformation worldTransformation = projection.Value;
-            //Transformation worldTransformation = projectionController.First(x => x.TransformerPath.SequenceEqual(TransformerPath)).Value;
+            foreach (ITransformer newTransformer in projection.TransformerPath)
+                if (projectionTransformers.Add(newTransformer))
+                    SubscribeToTransformationChanged(newTransformer);
 
-            _position = worldTransformation.Translation;
-            _rotation = IgnoreRotation ? ParentNode?.Rotation ?? 0 : worldTransformation.Rotation;
-            _scale = IgnoreScale ? ParentNode?.Scale ?? 1 : worldTransformation.Scale;
-
-            RefreshFrom(Referential.World);
+            return projection.Value;
         }
 
-        private void Refresh(object sender, EventArgs args) => Refresh();
-
-        private void OnAnchorNodeTransformationChanged(object sender, EventArgs e)
+        private void SubscribeToTransformationChanged(ITransformer transformer)
         {
-            if (AnchorTransformation is null)
-                Refresh();
+            transformer.TransformationChanged += OnProjectionTransformationChanged;
         }
 
-        private void OnAnchorTransformationChanged(object sender, EventArgs e) => Refresh();
+        private void UnsubscribeToTransformationChanged(ITransformer transformer)
+        {
+            transformer.TransformationChanged -= OnProjectionTransformationChanged;
+        }
+
+        private void OnProjectionTransformationChanged(object sender, EventArgs e) => Refresh();
 
         public override void Dispose()
         {
+            foreach (ITransformer transformer in _scaleIntermediaryTransformers)
+                UnsubscribeToTransformationChanged(transformer);
+            foreach (ITransformer transformer in _intermediaryTransformers)
+                UnsubscribeToTransformationChanged(transformer);
+
+            if (_scaleAnchorNode != null)
+                UnsubscribeToTransformationChanged(_scaleAnchorNode);
+            if (_anchorTransformation != null)
+                UnsubscribeToTransformationChanged(_anchorTransformation);
             if (_anchorNode != null)
-                _anchorNode.TransformationChanged -= OnAnchorNodeTransformationChanged;
+                UnsubscribeToTransformationChanged(_anchorNode);
 
             base.Dispose();
         }

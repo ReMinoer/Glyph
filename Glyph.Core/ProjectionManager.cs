@@ -112,8 +112,10 @@ namespace Glyph.Core
 
                 var viewVertex = new ViewVertex(view);
                 graph.AddViewVertex(view, viewVertex);
+                
+                ISceneNode viewSceneNode = view.GetSceneNode();
 
-                ISceneNode viewSceneRoot = view.GetSceneNode().RootNode();
+                ISceneNode viewSceneRoot = viewSceneNode.RootNode();
                 if (viewSceneRoot != null)
                 {
                     SceneVertex viewSceneVertex = graph.GetSceneVertex(viewSceneRoot);
@@ -126,7 +128,9 @@ namespace Glyph.Core
                     new SceneToViewEdge().Link(viewSceneVertex, viewVertex);
                 }
 
-                ISceneNode cameraSceneRoot = view.Camera.GetSceneNode().RootNode();
+                ISceneNode cameraSceneNode = view.Camera.GetSceneNode();
+
+                ISceneNode cameraSceneRoot = cameraSceneNode.RootNode();
                 SceneVertex cameraSceneVertex = graph.GetSceneVertex(cameraSceneRoot);
                 if (cameraSceneVertex == null)
                 {
@@ -290,53 +294,72 @@ namespace Glyph.Core
             public override IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args) => visitor.Visit(this, args);
         }
 
-        public interface IEdgeBase : ILinkableEdge<IVertexBase, IEdgeBase>, ITransformer
+        public interface IEdgeBase : ILinkableEdge<IVertexBase, IEdgeBase>
         {
             IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, GraphDirection direction);
+            Vector2 Transform(Vector2 position, Stack<ITransformer> transformerStack);
+            Vector2 InverseTransform(Vector2 position, Stack<ITransformer> transformerStack);
+            ITransformation Transform(ITransformation transformation, Stack<ITransformer> transformerStack);
+            ITransformation InverseTransform(ITransformation transformation, Stack<ITransformer> transformerStack);
         }
 
         public abstract class EdgeBase<TStart, TEnd> : Edge<TStart, TEnd, IVertexBase, IEdgeBase>, IEdgeBase
             where TStart : class, IVertexBase where TEnd : class, IVertexBase
         {
             public abstract IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, GraphDirection direction);
-            public abstract Vector2 Transform(Vector2 position);
-            public abstract Vector2 InverseTransform(Vector2 position);
-            public abstract ITransformation Transform(ITransformation transformation);
-            public abstract ITransformation InverseTransform(ITransformation transformation);
-            public event EventHandler TransformationChanged;
+            public abstract Vector2 Transform(Vector2 position, Stack<ITransformer> transformerStack);
+            public abstract Vector2 InverseTransform(Vector2 position, Stack<ITransformer> transformerStack);
+            public abstract ITransformation Transform(ITransformation transformation, Stack<ITransformer> transformerStack);
+            public abstract ITransformation InverseTransform(ITransformation transformation, Stack<ITransformer> transformerStack);
         }
 
         public class ViewToSceneEdge : EdgeBase<ViewVertex, SceneVertex>
         {
             public override IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, GraphDirection direction) => visitor.Visit(this, args, direction);
 
-            public override Vector2 Transform(Vector2 position)
+            public override Vector2 Transform(Vector2 position, Stack<ITransformer> transformerStack)
             {
                 IView view = Start.View;
+
+                transformerStack.Push(view);
+                transformerStack.Push(view.Camera);
+
                 position = view.Transform(position);
                 position = view.Camera.Transform(position);
                 return position;
             }
 
-            public override ITransformation Transform(ITransformation transformation)
+            public override ITransformation Transform(ITransformation transformation, Stack<ITransformer> transformerStack)
             {
                 IView view = Start.View;
+
+                transformerStack.Push(view);
+                transformerStack.Push(view.Camera);
+
                 transformation = view.Transform(transformation);
                 transformation = view.Camera.Transform(transformation);
                 return transformation;
             }
 
-            public override Vector2 InverseTransform(Vector2 position)
+            public override Vector2 InverseTransform(Vector2 position, Stack<ITransformer> transformerStack)
             {
                 IView view = Start.View;
+                
+                transformerStack.Push(view.Camera);
+                transformerStack.Push(view);
+
                 position = view.Camera.InverseTransform(position);
                 position = view.InverseTransform(position);
                 return position;
             }
 
-            public override ITransformation InverseTransform(ITransformation transformation)
+            public override ITransformation InverseTransform(ITransformation transformation, Stack<ITransformer> transformerStack)
             {
                 IView view = Start.View;
+                
+                transformerStack.Push(view.Camera);
+                transformerStack.Push(view);
+
                 transformation = view.Camera.InverseTransform(transformation);
                 transformation = view.InverseTransform(transformation);
                 return transformation;
@@ -347,54 +370,70 @@ namespace Glyph.Core
         {
             public override IEnumerable<Projection<TValue>> Accept<TValue>(ProjectionVisitor<TValue> visitor, ProjectionVisitor<TValue>.Arguments args, GraphDirection direction) => visitor.Visit(this, args, direction);
 
-            public override Vector2 Transform(Vector2 position)
+            public override Vector2 Transform(Vector2 position, Stack<ITransformer> transformerStack)
             {
                 IView view = End.View;
 
                 SceneNode viewSceneNode = view.GetSceneNode();
                 if (viewSceneNode != null)
+                {
                     position = viewSceneNode.InverseTransform(position);
+                    transformerStack.Push(viewSceneNode);
+                }
 
                 position = view.InverseTransform(position);
+                transformerStack.Push(view);
 
                 return position;
             }
 
-            public override ITransformation Transform(ITransformation transformation)
+            public override ITransformation Transform(ITransformation transformation, Stack<ITransformer> transformerStack)
             {
                 IView view = End.View;
 
                 SceneNode viewSceneNode = view.GetSceneNode();
                 if (viewSceneNode != null)
+                {
                     transformation = viewSceneNode.InverseTransform(transformation);
+                    transformerStack.Push(viewSceneNode);
+                }
 
                 transformation = view.InverseTransform(transformation);
+                transformerStack.Push(view);
 
                 return transformation;
             }
 
-            public override Vector2 InverseTransform(Vector2 position)
+            public override Vector2 InverseTransform(Vector2 position, Stack<ITransformer> transformerStack)
             {
                 IView view = End.View;
 
                 position = view.Transform(position);
+                transformerStack.Push(view);
 
                 SceneNode viewSceneNode = view.GetSceneNode();
                 if (viewSceneNode != null)
+                {
                     position = viewSceneNode.Transform(position);
+                    transformerStack.Push(viewSceneNode);
+                }
 
                 return position;
             }
 
-            public override ITransformation InverseTransform(ITransformation transformation)
+            public override ITransformation InverseTransform(ITransformation transformation, Stack<ITransformer> transformerStack)
             {
                 IView view = End.View;
 
                 transformation = view.Transform(transformation);
+                transformerStack.Push(view);
 
                 SceneNode viewSceneNode = view.GetSceneNode();
                 if (viewSceneNode != null)
+                {
                     transformation = viewSceneNode.Transform(transformation);
+                    transformerStack.Push(viewSceneNode);
+                }
 
                 return transformation;
             }
@@ -403,7 +442,7 @@ namespace Glyph.Core
         public class PositionProjectionVisitor : ProjectionVisitor<Vector2>
         {
             public PositionProjectionVisitor()
-                : base((t, x) => t.Transform(x), (t, x) => t.InverseTransform(x), (a, x) => a.ContainsPoint(x))
+                : base((e, x, p) => e.Transform(x, p), (e, x, p) => e.InverseTransform(x, p), (a, x) => a.ContainsPoint(x))
             {
             }
         }
@@ -411,18 +450,18 @@ namespace Glyph.Core
         public class TransformationProjectionVisitor : ProjectionVisitor<ITransformation>
         {
             public TransformationProjectionVisitor()
-                : base((t, x) => t.Transform(x), (t, x) => t.InverseTransform(x), (a, x) => a.ContainsPoint(x.Translation))
+                : base((e, x, p) => e.Transform(x, p), (e, x, p) => e.InverseTransform(x, p), (a, x) => a.ContainsPoint(x.Translation))
             {
             }
         }
 
         public class ProjectionVisitor<TValue>
         {
-            private readonly Func<ITransformer, TValue, TValue> _transform;
-            private readonly Func<ITransformer, TValue, TValue> _inverseTransform;
+            private readonly Func<IEdgeBase, TValue, Stack<ITransformer>, TValue> _transform;
+            private readonly Func<IEdgeBase, TValue, Stack<ITransformer>, TValue> _inverseTransform;
             private readonly Func<IShape, TValue, bool> _areaContains;
 
-            protected ProjectionVisitor(Func<ITransformer, TValue, TValue> transform, Func<ITransformer, TValue, TValue> inverseTransform, Func<IShape, TValue, bool> areaContains)
+            protected ProjectionVisitor(Func<IEdgeBase, TValue, Stack<ITransformer>, TValue> transform, Func<IEdgeBase, TValue, Stack<ITransformer>, TValue> inverseTransform, Func<IShape, TValue, bool> areaContains)
             {
                 _transform = transform;
                 _inverseTransform = inverseTransform;
@@ -461,11 +500,11 @@ namespace Glyph.Core
 
             private IEnumerable<Projection<TValue>> Visit(IVertexBase vertex, Arguments args)
             {
-                args.TransformerPath.Push(vertex.Transformer);
+                args.GraphPath.Push(vertex.Transformer);
 
                 if (vertex == args.Target)
                 {
-                    yield return new Projection<TValue> { Value = args.Value, TransformerPath = args.TransformerPath.ToArray() };
+                    yield return new Projection<TValue>(args.Value, args.TransformerPath.ToArray(), args.GraphPath.ToArray());
                     yield break;
                 }
 
@@ -477,7 +516,7 @@ namespace Glyph.Core
                     foreach (Projection<TValue> projection in VisitDirection(vertex, args, GraphDirection.Predecessors))
                         yield return projection;
 
-                args.TransformerPath.Pop();
+                args.GraphPath.Pop();
             }
 
             public IEnumerable<Projection<TValue>> VisitDirection(IVertexBase vertex, Arguments args, GraphDirection direction)
@@ -486,14 +525,14 @@ namespace Glyph.Core
 
                 if (args.Target == null && nextEdges.Count == 0)
                 {
-                    yield return new Projection<TValue> { Value = args.Value, TransformerPath = args.TransformerPath.ToArray() };
+                    yield return new Projection<TValue>(args.Value, args.TransformerPath.ToArray(), args.GraphPath.ToArray());
                 }
                 else
                 {
                     foreach (Projection<TValue> value in nextEdges.Where(x => GetNextVertex(x, direction) != vertex)
                                                                   .OrderBy(x => (GetNextVertex(x, direction) as ViewVertex)?.View.GetSceneNode()?.Depth ?? 0)
                                                                   .SelectMany(x => x.Accept(this, args, direction))
-                                                                  .Where(x => args.Target == null || x.TransformerPath[0] == args.Target.Transformer))
+                                                                  .Where(x => args.Target == null || x.GraphPath[0] == args.Target.Transformer))
                         yield return value;
                 }
             }
@@ -501,7 +540,7 @@ namespace Glyph.Core
             public IEnumerable<Projection<TValue>> Visit(IEdgeBase edge, Arguments args, GraphDirection direction)
             {
                 args = new Arguments(args);
-                args.Value = Transform(edge, args.Value, direction);
+                args.Value = Transform(edge, args.Value, direction, args.TransformerPath);
                 
                 IVertexBase nextVertex = GetNextVertex(edge, direction);
                 foreach (Projection<TValue> projection in nextVertex.Accept(this, args))
@@ -514,12 +553,12 @@ namespace Glyph.Core
                        || args.ViewDepthMax > -1 && args.ViewDepths.TryGetValue(view, out int viewCount) && viewCount + 1 >= args.ViewDepthMax;
             }
 
-            private TValue Transform(ITransformer transformer, TValue value, GraphDirection direction)
+            private TValue Transform(IEdgeBase edge, TValue value, GraphDirection direction, Stack<ITransformer> transformerPath)
             {
                 switch (direction)
                 {
-                    case GraphDirection.Successors: return _transform(transformer, value);
-                    case GraphDirection.Predecessors: return _inverseTransform(transformer, value);
+                    case GraphDirection.Successors: return _transform(edge, value, transformerPath);
+                    case GraphDirection.Predecessors: return _inverseTransform(edge, value, transformerPath);
                     default: throw new NotSupportedException();
                 }
             }
@@ -555,6 +594,8 @@ namespace Glyph.Core
                 public int ViewDepthMax { get; }
 
                 public Stack<ITransformer> TransformerPath { get; }
+                public Stack<ITransformer> GraphPath { get; }
+
                 public Dictionary<ViewVertex, int> ViewDepths { get; }
                 public int Depth => TransformerPath.Count;
 
@@ -569,6 +610,7 @@ namespace Glyph.Core
                     RaycastClient = raycastClient;
 
                     TransformerPath = new Stack<ITransformer>();
+                    GraphPath = new Stack<ITransformer>();
                     ViewDepths = new Dictionary<ViewVertex, int>();
                 }
 
@@ -583,6 +625,7 @@ namespace Glyph.Core
                     ViewDepthMax = arguments.ViewDepthMax;
 
                     TransformerPath = arguments.TransformerPath;
+                    GraphPath = arguments.GraphPath;
                     ViewDepths = arguments.ViewDepths;
                 }
             }
