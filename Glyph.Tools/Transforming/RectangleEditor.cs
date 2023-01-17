@@ -13,7 +13,8 @@ namespace Glyph.Tools.Transforming
 {
     public class RectangleEditor : MultiAnchoredEditorBase<IAnchoredRectangleController>, IHandle<IAnchoredRectangleController>
     {
-        public const float Unit = 100;
+        private readonly ProjectionManager _projectionManager;
+        public const float Unit = 25;
 
         private readonly Anchor _topLeftAnchor;
         private readonly Anchor _topRightAnchor;
@@ -25,6 +26,10 @@ namespace Glyph.Tools.Transforming
         private readonly HandleSetter _topHandleSetter;
         private readonly HandleSetter _rightHandleSetter;
         private readonly HandleSetter _bottomHandleSetter;
+        private readonly HandleSetter _topLeftHandleSetter;
+        private readonly HandleSetter _topRightHandleSetter;
+        private readonly HandleSetter _bottomLeftHandleSetter;
+        private readonly HandleSetter _bottomRightHandleSetter;
 
         public Func<Vector2, Vector2> Revaluation
         {
@@ -38,34 +43,36 @@ namespace Glyph.Tools.Transforming
             }
         }
 
+        public ISceneNode ScaleAnchorNode { get; set; }
+
         public event EventHandler Grabbed;
         public event EventHandler Dragging;
         public event EventHandler Released;
         public event EventHandler Cancelled;
 
-        public RectangleEditor(GlyphResolveContext context)
+        public RectangleEditor(GlyphResolveContext context, ProjectionManager projectionManager)
             : base(context)
         {
-            var v = new Vector2(Unit, Unit);
-            Color color = Color.White * 0.25f;
+            _projectionManager = projectionManager;
 
             _topLeftAnchor = Add<Anchor>();
             {
                 AdvancedRectanglePositionHandle positionHandle = _topLeftAnchor.CreatePositionHandle();
-                _positionHandleSetter = new HandleSetter(positionHandle);
+                _positionHandleSetter = CreateHandleSetter(positionHandle);
                 positionHandle.KeyboardEnabled = true;
 
-                AdvancedRectangleBorderPositionHandle topLeftHandle = _topLeftAnchor.CreateBorderHandle(new TopLeftRectangle(new Vector2(-Unit, -Unit), v).ToMesh(color));
+                AdvancedRectangleBorderPositionHandle topLeftHandle = _topLeftAnchor.CreateBorderHandle();
+                _topLeftHandleSetter = CreateHandleSetter(topLeftHandle);
                 topLeftHandle.Axes = Axes.Both;
                 topLeftHandle.AxesEditedFromOrigin = Axes.Both;
                 
                 AdvancedRectangleBorderPositionHandle leftHandle = _topLeftAnchor.CreateBorderHandle();
-                _leftHandleSetter = new HandleSetter(leftHandle);
+                _leftHandleSetter = CreateHandleSetter(leftHandle);
                 leftHandle.Axes = Axes.Horizontal;
                 leftHandle.AxesEditedFromOrigin = Axes.Horizontal;
                 
                 AdvancedRectangleBorderPositionHandle topHandle = _topLeftAnchor.CreateBorderHandle();
-                _topHandleSetter = new HandleSetter(topHandle);
+                _topHandleSetter = CreateHandleSetter(topHandle);
                 topHandle.Axes = Axes.Vertical;
                 topHandle.AxesEditedFromOrigin = Axes.Vertical;
             }
@@ -73,31 +80,34 @@ namespace Glyph.Tools.Transforming
 
             _topRightAnchor = Add<Anchor>();
             {
-                AdvancedRectangleBorderPositionHandle topRightHandle = _topRightAnchor.CreateBorderHandle(new TopLeftRectangle(new Vector2(0, -Unit), v).ToMesh(color));
+                AdvancedRectangleBorderPositionHandle topRightHandle = _topRightAnchor.CreateBorderHandle();
+                _topRightHandleSetter = CreateHandleSetter(topRightHandle);
                 topRightHandle.Axes = Axes.Both;
                 topRightHandle.AxesEditedFromOrigin = Axes.Vertical;
 
                 AdvancedRectangleBorderPositionHandle rightHandle = _topRightAnchor.CreateBorderHandle();
-                _rightHandleSetter = new HandleSetter(rightHandle);
+                _rightHandleSetter = CreateHandleSetter(rightHandle);
                 rightHandle.Axes = Axes.Horizontal;
             }
             AddEditor(_topRightAnchor);
 
             _bottomLeftAnchor = Add<Anchor>();
             {
-                AdvancedRectangleBorderPositionHandle bottomLeftHandle = _bottomLeftAnchor.CreateBorderHandle(new TopLeftRectangle(new Vector2(-Unit, 0), v).ToMesh(color));
+                AdvancedRectangleBorderPositionHandle bottomLeftHandle = _bottomLeftAnchor.CreateBorderHandle();
+                _bottomLeftHandleSetter = CreateHandleSetter(bottomLeftHandle);
                 bottomLeftHandle.Axes = Axes.Both;
                 bottomLeftHandle.AxesEditedFromOrigin = Axes.Horizontal;
 
                 AdvancedRectangleBorderPositionHandle bottomHandle = _bottomLeftAnchor.CreateBorderHandle();
-                _bottomHandleSetter = new HandleSetter(bottomHandle);
+                _bottomHandleSetter = CreateHandleSetter(bottomHandle);
                 bottomHandle.Axes = Axes.Vertical;
             }
             AddEditor(_bottomLeftAnchor);
 
             _bottomRightAnchor = Add<Anchor>();
             {
-                AdvancedRectangleBorderPositionHandle bottomRightHandle = _bottomRightAnchor.CreateBorderHandle(new TopLeftRectangle(Vector2.Zero, v).ToMesh(color));
+                AdvancedRectangleBorderPositionHandle bottomRightHandle = _bottomRightAnchor.CreateBorderHandle();
+                _bottomRightHandleSetter = CreateHandleSetter(bottomRightHandle);
                 bottomRightHandle.Axes = Axes.Both;
             }
             AddEditor(_bottomRightAnchor);
@@ -111,6 +121,11 @@ namespace Glyph.Tools.Transforming
         {
             UnsubscribeHandles();
             base.Dispose();
+        }
+
+        private HandleSetter CreateHandleSetter(AdvancedHandleBase<IAnchoredRectangleController> handle)
+        {
+            return new HandleSetter(handle);
         }
 
         private void SubscribeHandles()
@@ -153,11 +168,30 @@ namespace Glyph.Tools.Transforming
             _bottomLeftAnchor.AnchorTransformation = transformation.Transform(new Transformation(liveRectangle.P2, 0, 1));
             _bottomRightAnchor.AnchorTransformation = transformation.Transform(new Transformation(liveRectangle.P3, 0, 1));
 
+            float? scale = null;
+            if (ScaleAnchorNode != null)
+            {
+                scale = _projectionManager
+                    .ProjectFrom(_topLeftAnchor.GetSceneNode())
+                    .To(ScaleAnchorNode)
+                    .InDirections(GraphDirections.Predecessors)
+                    .FirstOrDefault()?.Value.Scale;
+            }
+
+            float u = Unit / (scale ?? 1);
+            var v = new Vector2(u, u);
+            
             _positionHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), liveRectangle.Size);
-            _leftHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(-Unit, 0), new Vector2(Unit, liveRectangle.Size.Y));
-            _topHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, -Unit), new Vector2(liveRectangle.Size.X, Unit));
-            _rightHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), new Vector2(Unit, liveRectangle.Size.Y));
-            _bottomHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), new Vector2(liveRectangle.Size.X, Unit));
+
+            _leftHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(-u, 0), new Vector2(u, liveRectangle.Size.Y));
+            _topHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, -u), new Vector2(liveRectangle.Size.X, u));
+            _rightHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), new Vector2(u, liveRectangle.Size.Y));
+            _bottomHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, 0), new Vector2(liveRectangle.Size.X, u));
+            
+            _topLeftHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(-u, -u), v);
+            _topRightHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(0, -u), v);
+            _bottomLeftHandleSetter.Rectangle = new TopLeftRectangle(new Vector2(-u, 0), v);
+            _bottomRightHandleSetter.Rectangle = new TopLeftRectangle(Vector2.Zero, v);
         }
 
         public class Anchor : AnchoredEditorBase<IAnchoredRectangleController>
@@ -208,16 +242,6 @@ namespace Glyph.Tools.Transforming
                 var handle = Add<AdvancedRectangleBorderPositionHandle>();
 
                 _borderHandles.Add(handle);
-                return handle;
-            }
-
-            public AdvancedRectangleBorderPositionHandle CreateBorderHandle(TriangulableShapeMesh<TopLeftRectangle> rectangleMesh)
-            {
-                AdvancedRectangleBorderPositionHandle handle = CreateBorderHandle();
-                handle.Rectangle = rectangleMesh.Shape;
-                handle.DefaultMeshes.Add(rectangleMesh);
-                handle.DefaultMeshes.Add(rectangleMesh.Shape.ToOutlineMesh(Color.White));
-
                 return handle;
             }
 
