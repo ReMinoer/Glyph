@@ -171,11 +171,15 @@ namespace Glyph.Tools.Transforming
             float? scale = null;
             if (ScaleAnchorNode != null)
             {
-                scale = _projectionManager
-                    .ProjectFrom(_topLeftAnchor.GetSceneNode())
-                    .To(ScaleAnchorNode)
-                    .InDirections(GraphDirections.Predecessors)
-                    .FirstOrDefault()?.Value.Scale;
+                SceneNode sceneNode = this.GetSceneNode();
+                if (sceneNode != null)
+                {
+                    scale = _projectionManager
+                        .ProjectFrom(sceneNode)
+                        .To(ScaleAnchorNode)
+                        .InDirections(GraphDirections.Predecessors)
+                        .FirstOrDefault()?.Value.Scale;
+                }
             }
 
             float u = Unit / (scale ?? 1);
