@@ -32,6 +32,8 @@ namespace Glyph.Graphics.Meshes
 
                 Vector2[] textureCoordinates = NormalizedTextureMapper.Instance.GetVertexTextureCoordinates(vertices);
                 _readOnlyTextureCoordinates = new ReadOnlyList<Vector2>(textureCoordinates);
+
+                DirtyDrawVerticesCache();
             }
         }
 

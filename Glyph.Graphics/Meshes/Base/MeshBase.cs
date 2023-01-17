@@ -60,7 +60,7 @@ namespace Glyph.Graphics.Meshes.Base
 
         public virtual void CopyToIndexArray(int[] indexArray, int startIndex)
         {
-            ReadOnlyIndices.CopyTo(indexArray, startIndex);
+            ReadOnlyIndices?.CopyTo(indexArray, startIndex);
         }
 
         private void RefreshDrawVertices()
