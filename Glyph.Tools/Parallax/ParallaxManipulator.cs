@@ -130,14 +130,12 @@ namespace Glyph.Tools.Parallax
                 _displayedRectangleOutline = new EdgedShapeOutlineMesh<CenteredRectangle>(Color);
                 _positionHandle.HoverMeshes.Add(_displayedRectangleOutline);
 
-                Schedulers.Initialize.Plan(UpdateClamping);
+                Schedulers.Initialize.Plan(InitClamping);
                 Schedulers.Initialize.Plan(UpdateDisplayedRectangleOutline);
-                Schedulers.Update.Plan(UpdateClamping);
                 Schedulers.Update.Plan(UpdateDisplayedRectangleOutline);
             }
-
-            private void UpdateClamping(ElapsedTime elapsedTime) => UpdateClamping();
-            private void UpdateClamping()
+            
+            private void InitClamping()
             {
                 EditedObject.Position = ClampToCameraArea(EditedObject.Position);
             }
@@ -160,7 +158,7 @@ namespace Glyph.Tools.Parallax
                 return clampedHandlePosition.Value;
             }
 
-            private void UpdateDisplayedRectangleOutline(ElapsedTime elapsedTime) => UpdateClamping();
+            private void UpdateDisplayedRectangleOutline(ElapsedTime elapsedTime) => UpdateDisplayedRectangleOutline();
             private void UpdateDisplayedRectangleOutline()
             {
                 if (Settings != null)
