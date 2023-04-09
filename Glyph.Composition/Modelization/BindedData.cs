@@ -48,6 +48,9 @@ namespace Glyph.Composition.Modelization
         static private readonly string TypeName = typeof(TData).GetDisplayName();
 
         [Browsable(false), IgnoreDataMember]
+        public virtual bool CanSetDisplayName => false;
+
+        [Browsable(false), IgnoreDataMember]
         new public T BindedObject => base.BindedObject;
 
         [Browsable(false), IgnoreDataMember]
@@ -138,6 +141,8 @@ namespace Glyph.Composition.Modelization
 
             return obj;
         }
+
+        public virtual void SetDisplayName(string newName) => throw new NotSupportedException();
 
         protected bool SetSubData<TSubData>(ref TSubData subData, TSubData value, Func<TSubData> getData, Action<TSubData> setData, [CallerMemberName] string propertyName = null)
             where TSubData : class, IGlyphData

@@ -10,6 +10,8 @@ namespace Glyph.Composition.Modelization
     public interface IGlyphData : IBindableData, IDependencyResolverClient, INotifyDisposed
     {
         string DisplayName { get; }
+        bool CanSetDisplayName { get; }
+        void SetDisplayName(string newName);
         bool NotBinding { get; }
         new IGlyphComponent BindedObject { get; }
         IReadOnlyObservableCollection<IGlyphData> Children { get; }
