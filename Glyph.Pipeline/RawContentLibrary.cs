@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Framework.Content.Pipeline.Builder;
-using Simulacra.IO.Utils;
+using Simulacra.IO;
 using Simulacra.IO.Watching;
 
 namespace Glyph.Pipeline
@@ -52,7 +52,7 @@ namespace Glyph.Pipeline
             var asset = new Asset<T>(assetPath, loadAsyncDelegate, loadDelegate);
 
             string watchedPath = Path.Combine(RawRootPath, assetPath + ".*");
-            if (!PathUtils.IsValidAbsolutePath(watchedPath))
+            if (!PathSystem.Instance.IsValidAbsolutePath(watchedPath))
                 watchedPath = Path.Combine(Environment.CurrentDirectory, watchedPath);
 
             _pathWatcher.WatchFile(watchedPath, OnAssetFileChanged);
