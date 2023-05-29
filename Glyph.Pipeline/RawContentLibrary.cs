@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Glyph.Content;
+using Glyph.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Content.Pipeline;
@@ -23,6 +24,7 @@ namespace Glyph.Pipeline
 
         private readonly PipelineManager _pipelineManager;
         private readonly SemaphoreSlim _pipelineSemaphore = new SemaphoreSlim(1);
+        private readonly int _rawRootPathLength;
 
         public string IntermediateRootPath { get; }
         public string RawRootPath { get; }
@@ -35,6 +37,7 @@ namespace Glyph.Pipeline
 
             IntermediateRootPath = Path.Combine(cacheRootPath, targetPlatform.ToString(), "obj");
             RawRootPath = rawRootPath;
+            _rawRootPathLength = PathSystem.Instance.UniqueFolder(RawRootPath).Length;
 
             _pathWatcher = new PathWatcher();
 
@@ -109,7 +112,8 @@ namespace Glyph.Pipeline
                             continue;
 
                         string inputPath = Path.GetFullPath(rawFilePath);
-                        string outputPath = Path.GetFullPath(Path.Combine(RootPath, rawFilePath.Substring(RawRootPath.Length + 1)));
+                        string relativeRawFilePath = rawFilePath.Substring(_rawRootPathLength);
+                        string outputPath = Path.GetFullPath(Path.Combine(RootPath, relativeRawFilePath));
 
                         try
                         {
@@ -172,7 +176,8 @@ namespace Glyph.Pipeline
                             continue;
 
                         string inputPath = Path.GetFullPath(rawFilePath);
-                        string outputPath = Path.GetFullPath(Path.Combine(RootPath, rawFilePath.Substring(RawRootPath.Length + 1)));
+                        string relativeRawFilePath = rawFilePath.Substring(_rawRootPathLength);
+                        string outputPath = Path.GetFullPath(Path.Combine(RootPath, relativeRawFilePath));
 
                         await Task.Run(
                             () =>
