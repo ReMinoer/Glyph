@@ -108,8 +108,7 @@ namespace Glyph.Tools.Transforming
 
             if (live)
             {
-                editedObject.LiveRectanglePosition = newRectangle.Position;
-                editedObject.LiveRectangleSize = newRectangle.Size;
+                editedObject.LiveRectangle = newRectangle;
                 return;
             }
 

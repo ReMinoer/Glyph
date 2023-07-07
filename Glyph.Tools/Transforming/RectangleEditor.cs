@@ -161,7 +161,7 @@ namespace Glyph.Tools.Transforming
                 ? EditedObject.Anchor.LocalTransformation.InverseTransform(EditedObject.Anchor.Transformation)
                 : Transformation.Identity;
 
-            TopLeftRectangle liveRectangle = new TopLeftRectangle(EditedObject.LiveRectanglePosition, EditedObject.LiveRectangleSize);
+            TopLeftRectangle liveRectangle = EditedObject.LiveRectangle;
 
             _topLeftAnchor.AnchorTransformation = transformation.Transform(new Transformation(liveRectangle.Position, 0, 1));
             _topRightAnchor.AnchorTransformation = transformation.Transform(new Transformation(liveRectangle.P1, 0, 1));

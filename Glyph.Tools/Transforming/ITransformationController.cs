@@ -60,8 +60,7 @@ namespace Glyph.Tools.Transforming
     {
         bool IsLocalRectangle { get; }
         TopLeftRectangle Rectangle { get; set; }
-        Vector2 LiveRectanglePosition { get; set; }
-        Vector2 LiveRectangleSize { get; set; }
+        TopLeftRectangle LiveRectangle { get; set; }
     }
 
     public interface IAnchoredRectangleController : IRectangleController, IAnchoredController

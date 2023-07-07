@@ -31,7 +31,7 @@ namespace Glyph.Tools.Transforming
 
             if (live)
             {
-                editedObject.LiveRectanglePosition = position;
+                editedObject.LiveRectangle = new TopLeftRectangle(position, editedObject.Rectangle.Size);
                 return;
             }
 

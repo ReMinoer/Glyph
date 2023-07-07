@@ -1,5 +1,4 @@
 ﻿using Glyph.Math.Shapes;
-using Microsoft.Xna.Framework;
 
 namespace Glyph.Tools.Transforming
 {
@@ -14,15 +13,10 @@ namespace Glyph.Tools.Transforming
             get => _controller.Rectangle;
             set => _controller.Rectangle = value;
         }
-        public Vector2 LiveRectanglePosition
+        public TopLeftRectangle LiveRectangle
         {
-            get => _controller.LiveRectanglePosition;
-            set => _controller.LiveRectanglePosition = value;
-        }
-        public Vector2 LiveRectangleSize
-        {
-            get => _controller.LiveRectangleSize;
-            set => _controller.LiveRectangleSize = value;
+            get => _controller.LiveRectangle;
+            set => _controller.LiveRectangle = value;
         }
 
         public AnchoredRectangleController(IRectangleController controller, ISceneNode anchor)
