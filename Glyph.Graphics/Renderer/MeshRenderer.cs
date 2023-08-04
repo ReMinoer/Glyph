@@ -24,6 +24,7 @@ namespace Glyph.Graphics.Renderer
         [Populatable, ResolveTargets(ResolveTargets.Fraternal)]
         public List<IVisualMeshProvider> MeshProviders { get; } = new List<IVisualMeshProvider>();
         public IEnumerable<IVisualMesh> Meshes => MeshProviders.SelectMany(x => x.Meshes);
+        public bool DrawAsWireFrame { get; set; }
 
         [Resolvable]
         public ISpriteSource TextureSource { get; set; }
@@ -192,7 +193,18 @@ namespace Glyph.Graphics.Renderer
                         graphicsDevice.Textures[0] = TextureSource?.Texture;
                         graphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
-                        graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                        if (DrawAsWireFrame)
+                        {
+                            graphicsDevice.RasterizerState = new RasterizerState
+                            {
+                                FillMode = FillMode.WireFrame
+                            };
+                        }
+                        else
+                        {
+                            graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+                        }
+
                         graphicsDevice.BlendState = BlendState.AlphaBlend;
                         graphicsDevice.DepthStencilState = DepthStencilState.None;
 
