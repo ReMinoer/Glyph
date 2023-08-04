@@ -103,13 +103,14 @@ namespace Glyph.Space
         }
 
         protected bool IsNotifying => ArrayChanged != null;
-        protected void NotifyArrayChanged(ArrayChangedEventArgs e) => ArrayChanged?.Invoke(this, e);
+        protected virtual void NotifyArrayChanged(ArrayChangedEventArgs e) => ArrayChanged?.Invoke(this, e);
     }
 
     public class Grid<T> : GridBase<T>
     {
         private readonly TwoDimensionArray<T> _data;
         private readonly Func<T, int[], T> _defaultCellValueFactory;
+        private readonly HashSet<ArrayChangedEventArgs> _selfEventArgs = new HashSet<ArrayChangedEventArgs>();
 
         public override sealed GridDimension Dimension
         {
@@ -143,14 +144,34 @@ namespace Glyph.Space
 
         private void OnArrayChanged(object sender, ArrayChangedEventArgs e)
         {
+            if (_selfEventArgs.Contains(e))
+                return;
+
             if (e.Action == ArrayChangedAction.Resize)
+            {
                 base.Dimension = new GridDimension(e.NewLengths[1], e.NewLengths[0]);
+                return;
+            }
+
+            NotifyArrayChanged(e);
+        }
+
+        protected override void NotifyArrayChanged(ArrayChangedEventArgs e)
+        {
+            _selfEventArgs.Add(e);
+            try
+            {
+                base.NotifyArrayChanged(e);
+            }
+            finally
+            {
+                _selfEventArgs.Remove(e);
+            }
         }
 
         public override void Resize(int[] newLengths, bool keepValues = true, Func<T, int[], T> valueFactory = null)
         {
             _data.Resize(newLengths, keepValues, valueFactory ?? _defaultCellValueFactory);
-            base.Dimension = new GridDimension(newLengths[1], newLengths[0]);
         }
 
         protected override T GetValue(int i, int j) => _data[i, j];

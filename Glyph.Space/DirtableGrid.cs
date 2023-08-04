@@ -24,15 +24,7 @@ namespace Glyph.Space
                 if (previousValue == value)
                     return;
 
-                if (previousValue != null)
-                    UnregisterValue(previousValue);
-
                 _gridImplementation[i, j] = value;
-
-                if (value != null)
-                    RegisterValue(i, j, value);
-
-                SetDirty(i, j, value);
             }
         }
 
@@ -45,15 +37,7 @@ namespace Glyph.Space
                 if (previousValue == value)
                     return;
 
-                if (previousValue != null)
-                    UnregisterValue(previousValue);
-
                 _gridImplementation[gridPoint] = value;
-
-                if (value != null)
-                    RegisterValue(gridPoint, value);
-
-                SetDirty(new GridCase<T>(gridPoint, value));
             }
         }
 
@@ -66,17 +50,7 @@ namespace Glyph.Space
                 if (previousValue == value)
                     return;
 
-                Point gridPoint = ToGridPoint(worldPoint);
-
-                if (previousValue != null)
-                    UnregisterValue(previousValue);
-
                 _gridImplementation[worldPoint] = value;
-
-                if (value != null)
-                    RegisterValue(gridPoint, value);
-
-                SetDirty(gridPoint, value);
             }
         }
 
@@ -89,15 +63,7 @@ namespace Glyph.Space
                 if (previousValue == value)
                     return;
 
-                if (previousValue != null)
-                    UnregisterValue(previousValue);
-
                 _gridImplementation[indexes] = value;
-
-                if (value != null)
-                    RegisterValue(indexes[0], indexes[1], value);
-
-                SetDirty(indexes[0], indexes[1], value);
             }
         }
 
@@ -131,13 +97,68 @@ namespace Glyph.Space
             
             this.GetResetIndex(out int i, out int j);
             while (this.MoveIndex(ref i, ref j))
-                RegisterValue(i, j, _gridImplementation[i, j]);
+                RegisterValue(i, j);
         }
 
         public event ArrayChangedEventHandler ArrayChanged;
         private void OnArrayChanged(object sender, ArrayChangedEventArgs e)
         {
             ArrayChanged?.Invoke(this, e);
+
+            switch (e.Action)
+            {
+                case ArrayChangedAction.Replace:
+                {
+                    foreach (T oldValue in e.OldValues)
+                        UnregisterValue(oldValue);
+
+                    e.NewRange.GetResetIndex(out int i, out int j);
+                    while (e.NewRange.MoveIndex(ref i, ref j))
+                    {
+                        RegisterValue(i, j);
+                        SetDirty(i, j);
+                    }
+                    break;
+                }
+                case ArrayChangedAction.Resize:
+                {
+                    // TODO: Unregister values out of new lengths
+
+                    this.GetResetIndex(out int i, out int j);
+                    while (this.MoveIndex(ref i, ref j))
+                        RegisterValue(i, j);
+
+                    SetDirty();
+                    break;
+                }
+                case ArrayChangedAction.Add:
+                {
+                    e.NewRange.GetResetIndex(out int i, out int j);
+                    while (e.NewRange.MoveIndex(ref i, ref j))
+                    {
+                        RegisterValue(i, j);
+                        SetDirty(i, j);
+                    }
+
+                    SetDirty();
+                    break;
+                }
+                case ArrayChangedAction.Remove:
+                {
+                    foreach (T oldValue in e.OldValues)
+                        UnregisterValue(oldValue);
+
+                    SetDirty();
+                    break;
+                }
+                case ArrayChangedAction.Move:
+                {
+                    SetDirty();
+                    break;
+                }
+                default:
+                    throw new NotSupportedException();
+            }
         }
 
         public event EventHandler Dirtied;
@@ -150,19 +171,14 @@ namespace Glyph.Space
             DirtyCleaned?.Invoke(this, EventArgs.Empty);
         }
 
-        private void SetDirty(int i, int j, T value) => SetDirty(new GridCase<T>(i, j, value));
-        private void SetDirty(Point point, T value) => SetDirty(new GridCase<T>(point, value));
+        public void SetDirty(T value) => SetDirty(new GridCase<T>(value.GridPoint, value));
+        private void SetDirty(int i, int j) => SetDirty(new GridCase<T>(i, j, this[i, j]));
         private void SetDirty(GridCase<T> gridCase)
         {
             _dirtiedCases.Add(gridCase);
 
             CellsDirtied?.Invoke(this, CellsDirtiedEventArgs<T>.Change(gridCase.Value));
             Dirtied?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void SetDirty(T value)
-        {
-            SetDirty(new GridCase<T>(value.GridPoint, value));
         }
 
         void IDirtable.SetDirty() => SetDirty();
@@ -176,7 +192,7 @@ namespace Glyph.Space
             Dirtied?.Invoke(this, EventArgs.Empty);
         }
 
-        private void RegisterValue(int i, int j, T value) => RegisterValue(new Point(j, i), value);
+        private void RegisterValue(int i, int j) => RegisterValue(new Point(j, i), this[i, j]);
         private void RegisterValue(Point gridPoint, T value)
         {
             value.Grid = this;
@@ -188,24 +204,7 @@ namespace Glyph.Space
             value.Grid = null;
         }
 
-        public void Resize(int[] newLengths, bool keepValues = true, Func<T, int[], T> valueFactory = null)
-        {
-            _gridImplementation.Resize(newLengths, keepValues, (previous, indexes) =>
-            {
-                if (previous != null)
-                    UnregisterValue(previous);
-
-                T value = valueFactory?.Invoke(previous, indexes);
-
-                if (value != null)
-                    RegisterValue(indexes[0], indexes[1], value);
-
-                return value;
-            });
-
-            SetDirty();
-        }
-
+        public void Resize(int[] newLengths, bool keepValues = true, Func<T, int[], T> valueFactory = null) => _gridImplementation.Resize(newLengths, keepValues, valueFactory);
         public bool ContainsPoint(Vector2 point) => _gridImplementation.ContainsPoint(point);
         public bool Intersects(Segment segment) => _gridImplementation.Intersects(segment);
         public bool Intersects<T1>(T1 edgedShape) where T1 : IEdgedShape => _gridImplementation.Intersects(edgedShape);
