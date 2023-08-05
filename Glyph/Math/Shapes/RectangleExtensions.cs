@@ -78,18 +78,34 @@ namespace Glyph.Math.Shapes
             if (inner.Left < outer.Left)
             {
                 inner.Width -= outer.Left - inner.Left;
+                if (inner.Width < 0)
+                    inner.Width = 0;
+
                 inner.Left = outer.Left;
             }
+
             if (inner.Right > outer.Right)
+            {
                 inner.Width -= inner.Right - outer.Right;
+                if (inner.Width < 0)
+                    inner.Width = 0;
+            }
 
             if (inner.Top < outer.Top)
             {
                 inner.Height -= outer.Top - inner.Top;
+                if (inner.Height < 0)
+                    inner.Height = 0;
+
                 inner.Top = outer.Top;
             }
+
             if (inner.Bottom > outer.Bottom)
+            {
                 inner.Height -= inner.Bottom - outer.Bottom;
+                if (inner.Height < 0)
+                    inner.Height = 0;
+            }
 
             return inner;
         }
@@ -99,18 +115,34 @@ namespace Glyph.Math.Shapes
             if (inner.Left < outer.Left)
             {
                 inner.Width -= outer.Left - inner.Left;
+                if (inner.Width < 0)
+                    inner.Width = 0;
+
                 inner.X = outer.X;
             }
+
             if (inner.Right > outer.Right)
+            {
                 inner.Width -= inner.Right - outer.Right;
+                if (inner.Width < 0)
+                    inner.Width = 0;
+            }
 
             if (inner.Top < outer.Top)
             {
                 inner.Height -= outer.Top - inner.Top;
+                if (inner.Height < 0)
+                    inner.Height = 0;
+
                 inner.Y = outer.Y;
             }
+
             if (inner.Bottom > outer.Bottom)
+            {
                 inner.Height -= inner.Bottom - outer.Bottom;
+                if (inner.Height < 0)
+                    inner.Height = 0;
+            }
 
             return inner;
         }
