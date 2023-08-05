@@ -7,7 +7,6 @@ using Glyph.Core.Base;
 using Glyph.Graphics.Renderer;
 using Glyph.Math;
 using Glyph.Math.Shapes;
-using Glyph.Scheduling;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -77,7 +76,7 @@ namespace Glyph.Graphics
             EffectManager.Initialize();
         }
 
-        public async void LoadContent(IContentLibrary contentLibrary)
+        public void LoadContent(IContentLibrary contentLibrary)
         {
             EffectManager.LoadContent(contentLibrary);
         }
