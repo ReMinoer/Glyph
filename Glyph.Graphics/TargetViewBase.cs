@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Diese.Collections;
 using Glyph.Composition;
 using Glyph.Core;
 using Glyph.Core.Base;
@@ -53,6 +54,9 @@ namespace Glyph.Graphics
             Components.Add(_fillingRectangle = new FillingRectangle(_sceneNode));
             Components.Add(_fillingRenderer = new FillingRenderer(_fillingRectangle, EffectManager));
 
+            DrawClientFilter = new ExcludingFilter<IDrawClient>();
+            _fillingRenderer.DrawClientFilter = DrawClientFilter;
+
             _readOnlySceneNode = new ReadOnlySceneNode(_sceneNode);
             _sceneNode.Refreshed += OnSceneNodeRefreshed;
             _sceneNode.DepthChanged += OnSceneNodeDepthChanged;
@@ -90,9 +94,6 @@ namespace Glyph.Graphics
 
         public override void Draw(IDrawer drawer)
         {
-            if (!this.Displayed(drawer, drawer.Client, SceneNode))
-                return;
-
             RenderTargetBinding[] renderTargetsBackup = drawer.GraphicsDevice.GetRenderTargets();
 
             var newDrawer = new Drawer(drawer, Camera.GetSceneNode().RootNode())
