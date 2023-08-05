@@ -38,8 +38,7 @@ namespace Glyph.Graphics
                 SpriteBatchMatrix = CurrentView.RenderMatrix * _spriteBatchOrthographicMatrix;
                 
                 _projectionMatrix = Matrix.CreateOrthographicOffCenter(
-                    DisplayedRectangle.Left, DisplayedRectangle.Right, DisplayedRectangle.Bottom, DisplayedRectangle.Top,
-                    float.MinValue / 2, float.MaxValue / 2);
+                    DisplayedRectangle.Left, DisplayedRectangle.Right, DisplayedRectangle.Bottom, DisplayedRectangle.Top, -1, 1);
             }
         }
 
@@ -60,7 +59,7 @@ namespace Glyph.Graphics
 
             SpriteBatchStack = spriteBatchStack;
 
-            _spriteBatchOrthographicMatrix = Matrix.CreateOrthographicOffCenter(0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0, 0, -1);;
+            _spriteBatchOrthographicMatrix = Matrix.CreateOrthographicOffCenter(0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0, 0, -1);
         }
 
         public Drawer(IDrawer drawer, params ISceneNode[] sceneRoots)
@@ -70,7 +69,7 @@ namespace Glyph.Graphics
 
         public Matrix GetWorldViewProjectionMatrix(ISceneNode sceneNode)
         {
-            return sceneNode.Matrix.ToMatrix4X4(sceneNode.Depth) * ViewEffectMatrix * _projectionMatrix;
+            return sceneNode.Matrix.ToMatrix4X4() * ViewEffectMatrix * _projectionMatrix;
         }
 
         public bool DrawPredicate(ISceneNode sceneNode)

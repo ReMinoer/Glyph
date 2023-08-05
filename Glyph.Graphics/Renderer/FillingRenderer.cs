@@ -26,10 +26,10 @@ namespace Glyph.Graphics.Renderer
         {
             if (SpriteTransformer != null)
                 drawer.SpriteBatchStack.Current.Draw(Source.Texture, _fillingRectangle.Rectangle.P0, Source.Rectangle, SpriteTransformer.Color,
-                    SceneNode.Rotation, SpriteTransformer.Origin, _fillingRectangle.Rectangle.Size / Source.Texture.Size(), SpriteTransformer.Effects, SceneNode.Depth);
+                    SceneNode.Rotation, SpriteTransformer.Origin, _fillingRectangle.Rectangle.Size / Source.Texture.Size(), SpriteTransformer.Effects, 0);
             else
                 drawer.SpriteBatchStack.Current.Draw(Source.Texture, _fillingRectangle.Rectangle.P0, Source.Rectangle, Color.White,
-                    SceneNode.Rotation, Vector2.Zero, _fillingRectangle.Rectangle.Size / Source.Texture.Size(), SpriteEffects.None, SceneNode.Depth);
+                    SceneNode.Rotation, Vector2.Zero, _fillingRectangle.Rectangle.Size / Source.Texture.Size(), SpriteEffects.None, 0);
         }
     }
 }

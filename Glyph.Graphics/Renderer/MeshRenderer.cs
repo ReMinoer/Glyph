@@ -125,9 +125,9 @@ namespace Glyph.Graphics.Renderer
             Quad rect = drawer.DisplayedRectangle;
 
             // Configure default effect matrices
-            _defaultEffect.World = SceneNode.Matrix.ToMatrix4X4(SceneNode.Depth);
+            _defaultEffect.World = SceneNode.Matrix.ToMatrix4X4();
             _defaultEffect.View = Matrix.CreateLookAt(Vector3.Backward, Vector3.Zero, Vector3.Up);
-            _defaultEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, float.MinValue / 2, float.MaxValue / 2);
+            _defaultEffect.Projection = Matrix.CreateOrthographicOffCenter(rect.Left, rect.Right, rect.Bottom, rect.Top, -1, 1);
 
             drawer.SpriteBatchStack.Push(null);
 

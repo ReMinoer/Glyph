@@ -56,10 +56,10 @@ namespace Glyph.Graphics.Renderer
 
                     if (SpriteTransformer != null)
                         drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToIntegers(), SpriteTransformer.Color,
-                            SceneNode.Rotation, Vector2.Zero, SceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, SceneNode.Depth);
+                            SceneNode.Rotation, Vector2.Zero, SceneNode.Scale * SpriteTransformer.Scale, SpriteTransformer.Effects, 0);
                     else
                         drawer.SpriteBatchStack.Current.Draw(Source.Texture, position, sourcePatch.ToIntegers(), Color.White,
-                            SceneNode.Rotation, Vector2.Zero, SceneNode.Scale, SpriteEffects.None, SceneNode.Depth);
+                            SceneNode.Rotation, Vector2.Zero, SceneNode.Scale, SpriteEffects.None, 0);
 
                     x += sourcePatchWidth;
                     sourcePatchOrigin.X = sourceRectangle.Position.X;
