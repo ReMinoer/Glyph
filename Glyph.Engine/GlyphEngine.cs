@@ -54,7 +54,10 @@ namespace Glyph.Engine
             get
             {
                 if (_root == null)
+                {
                     Root = Resolver.Resolve<GlyphObject>();
+                    Root.Name = "Root";
+                }
 
                 return _root;
             }
