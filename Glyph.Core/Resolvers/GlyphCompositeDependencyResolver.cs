@@ -205,11 +205,8 @@ namespace Glyph.Core.Resolvers
         {
             if (args != null && args.AnyOfType(out ResolveTargetsAttribute attribute))
                 return attribute.Targets;
-
-            ResolveTargets targets = ResolveTargets.Global | ResolveTargets.Local | ResolveTargets.Parent;
-            if (typeof(IGlyphComponent).IsAssignableFrom(type))
-                targets |= ResolveTargets.Fraternal;
-            return targets;
+            
+            return ResolveTargets.All;
         }
 
         private IEnumerable ResolveManyFamily(IGlyphComponent parent, Type type)
