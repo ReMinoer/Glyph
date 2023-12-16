@@ -24,7 +24,7 @@ namespace Glyph.Graphics.Renderer
         protected override float RenderDepthOverride => RenderDepth;
         public override IArea Area => Grid.BoundingBox;
 
-        public MappingRenderer(ISpriteSheet spriteSheet, SceneNode sceneNode)
+        public MappingRenderer(ISpriteSheet spriteSheet, ISceneNode sceneNode)
             : base(spriteSheet)
         {
             SpriteSheet = spriteSheet;

@@ -10,7 +10,7 @@ namespace Glyph.Graphics.Renderer
 {
     public class SpriteRenderer : SpriteRendererBase
     {
-        private readonly SceneNode _sceneNode;
+        private readonly ISceneNode _sceneNode;
         protected override ISceneNode SceneNode => _sceneNode;
 
         public override IArea Area
@@ -28,7 +28,7 @@ namespace Glyph.Graphics.Renderer
             }
         }
 
-        public SpriteRenderer(ISpriteSource source, SceneNode sceneNode)
+        public SpriteRenderer(ISpriteSource source, ISceneNode sceneNode)
             : base(source)
         {
             _sceneNode = sceneNode;
