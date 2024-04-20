@@ -14,9 +14,10 @@ namespace Glyph.Core.Colliders.Base
         private readonly ColliderManager _colliderManager;
 
         public Predicate<ICollider> IgnoredFilter { get; set; }
-        protected SceneNode ParentNode { get; private set; }
+        public SceneNode ParentNode { get; private set; }
         public abstract TopLeftRectangle BoundingBox { get; }
         public abstract bool IsVoid { get; }
+        public bool IsImmovable { get; set; }
         public bool Unphysical { get; set; }
 
         public Vector2 LocalCenter
@@ -70,9 +71,18 @@ namespace Glyph.Core.Colliders.Base
             int i = 0;
             while (i < CollisionDepth && _colliderManager.ResolveOneCollision(this, out Collision collision))
             {
+                ICollider otherCollider = collision.OtherCollider;
+
                 Colliding?.Invoke(collision);
-                ParentNode.Position += collision.Correction;
+                (otherCollider as ColliderBase)?.Colliding?.Invoke(collision);
+
+                if (IsImmovable && !(otherCollider.IsFreeze || otherCollider.Parent.IsFreeze || otherCollider.IsImmovable))
+                    otherCollider.ParentNode.Position -= collision.Correction;
+                else
+                    ParentNode.Position += collision.Correction;
+
                 Collided?.Invoke(collision);
+                (otherCollider as ColliderBase)?.Collided?.Invoke(collision);
                 i++;
             }
         }
