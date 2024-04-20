@@ -49,8 +49,12 @@ namespace Glyph.Graphics.Meshes
             set => SetAndDirtyCachesOnChanged(ref _rows, value);
         }
 
-        public Color Color { get; set; } = Color.White;
-        protected override Color GetColor(int vertexIndex) => Color;
+        private Color _color = Color.White;
+        public Color Color
+        {
+            get => _color;
+            set => SetAndDirtyCachesOnChanged(ref _color, value);
+        }
 
         public override PrimitiveType Type => PrimitiveType.TriangleList;
 
@@ -63,6 +67,8 @@ namespace Glyph.Graphics.Meshes
             Columns = gridSize.X;
             Rows = gridSize.Y;
         }
+
+        protected override Color GetColor(int vertexIndex) => Color;
 
         protected override void RefreshCache(List<Vector2> vertices, List<int> indices)
         {
