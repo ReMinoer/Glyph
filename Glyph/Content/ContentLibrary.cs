@@ -36,7 +36,6 @@ namespace Glyph.Content
             return (IAsset<T>)_assetCache.GetOrAdd(assetPath, x =>
             {
                 IAsset<T> asset = CreateAsset<T>(x);
-                asset.ContentChanged += OnAssetContentChanged;
                 asset.FullyReleasing += OnAssetFullyReleasing;
                 return asset;
             });
@@ -54,6 +53,8 @@ namespace Glyph.Content
 
         private IAsset<T> CreateAsset<T>(string assetPath)
         {
+            TryReconditionContentManager(assetPath);
+
             return CreateAsset(assetPath,
                 (path, token) => LoadAsync((c, a) => c.Load<T>(a), path, token),
                 (path, token) => Load((c, a) => c.Load<T>(a), path, token));
@@ -61,6 +62,8 @@ namespace Glyph.Content
 
         private IAsset<T> CreateLocalizedAsset<T>(string assetPath)
         {
+            TryReconditionContentManager(assetPath);
+
             return CreateAsset(assetPath,
                 (path, token) => LoadAsync((c, a) => c.LoadLocalized<T>(a), path, token),
                 (path, token) => Load((c, a) => c.LoadLocalized<T>(a), path, token));
@@ -126,17 +129,10 @@ namespace Glyph.Content
             Logger.Info($"Canceled loading of {assetRelativePath} ({stopwatch?.ElapsedMilliseconds ?? 0} ms)");
         }
 
-        private void OnAssetContentChanged(object sender, EventArgs e)
-        {
-            var asset = (IAsset)sender;
-            TryReconditionContentManager(asset.AssetPath);
-        }
-
         private void OnAssetFullyReleasing(object sender, EventArgs e)
         {
             var asset = (IAsset)sender;
             asset.FullyReleasing -= OnAssetFullyReleasing;
-            asset.ContentChanged -= OnAssetContentChanged;
 
             _assetCache.TryRemove(asset.AssetPath, out _);
             TryReconditionContentManager(asset.AssetPath);
