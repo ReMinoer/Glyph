@@ -135,6 +135,9 @@ namespace Glyph.Graphics
 
         private void Refresh()
         {
+            if (Components.Any(x => x.FramesCount == 0))
+                return;
+
             _frameData = GetFrameData(_currentFrame);
         }
 
