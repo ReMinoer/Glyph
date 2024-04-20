@@ -229,7 +229,8 @@ namespace Glyph.Animation
             var animationPlayer = new AnimationPlayer<T>(Animatable)
             {
                 Animation = state.Animation,
-                TimeOffset = 0
+                TimeOffset = 0,
+                UseUnscaledTime = UseUnscaledTime
             };
             animationPlayer.Play();
 
