@@ -9,10 +9,16 @@ namespace Glyph.Graphics
 {
     public class MeshesComponent : GlyphComponent, IBoxedComponent, IVisualMeshProvider
     {
-        public bool Visible { get; set; } = true;
-        public IArea Area => MathUtils.GetBoundingBox(Meshes.SelectMany(x => x.Vertices));
+        public ISceneNodeComponent SceneNode { get; }
+
+        public IArea Area => SceneNode.Transform(MathUtils.GetBoundingBox(Meshes.SelectMany(x => x.Vertices)));
 
         public VisualMeshCollection Meshes { get; } = new VisualMeshCollection();
         IEnumerable<IVisualMesh> IVisualMeshProvider.Meshes => Meshes;
+
+        public MeshesComponent(ISceneNodeComponent sceneNode)
+        {
+            SceneNode = sceneNode;
+        }
     }
 }
