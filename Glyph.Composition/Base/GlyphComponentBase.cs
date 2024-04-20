@@ -124,7 +124,13 @@ namespace Glyph.Composition.Base
         }
 
         public virtual void Initialize() { }
-        public override string ToString() => $"{Name} ({Id.ToString().Substring(0, 4)})";
+        public override string ToString()
+        {
+            return $"{Name} ({Id.ToString().Substring(0, 4)})"
+                + (Parent != null
+                    ? $" of {Parent.Name} ({Parent.Id.ToString().Substring(0, 4)})"
+                    : string.Empty);
+        }
 
         public virtual void Store() { }
         public virtual void Restore() { }
