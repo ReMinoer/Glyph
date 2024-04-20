@@ -14,7 +14,6 @@ using Glyph.Messaging;
 using Glyph.Resolver;
 using Glyph.Scheduling;
 using CategoryAttribute = System.ComponentModel.CategoryAttribute;
-using Simulacra.Injection;
 
 namespace Glyph.Core
 {
@@ -46,6 +45,14 @@ namespace Glyph.Core
 
             Schedulers = new ComponentSchedulerHandler(context.GlobalResolver, this);
         }
+
+        //public override void Dispose()
+        //{
+        //    foreach (IGlyphComponent component in Components)
+        //        Schedulers.UnplanComponent(component);
+
+        //    base.Dispose();
+        //}
 
         public override IGlyphComponent this[int index]
         {
