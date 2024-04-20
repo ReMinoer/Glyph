@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Glyph.Graphics
 {
-    public class EffectLoader : GlyphComponent, ILoadContent, IUpdate
+    public class EffectLoader : GlyphComponent, ILoadContent, IUpdate, IEffectSource
     {
         private readonly IContentLibrary _contentLibrary;
         private readonly AssetAsyncLoader<Effect> _assetAsyncLoader = new AssetAsyncLoader<Effect>();
@@ -29,7 +29,7 @@ namespace Glyph.Graphics
         private Effect _effect;
         public Effect Effect => _effect;
 
-        public event Action<Effect> Loaded;
+        public event Action<IEffectSource> EffectLoaded;
 
         public EffectLoader(IContentLibrary contentLibrary)
         {
@@ -41,21 +41,7 @@ namespace Glyph.Graphics
             _assetAsyncLoader.LoadContent(CancellationToken.None);
 
             if (_assetAsyncLoader.UpdateContent(ref _effect))
-                Loaded?.Invoke(_effect);
-        }
-
-        public async Task LoadContentAsync(IContentLibrary contentLibrary)
-        {
-            await _assetAsyncLoader.LoadContentAsync(CancellationToken.None);
-
-            if (_assetAsyncLoader.UpdateContent(ref _effect))
-                Loaded?.Invoke(_effect);
-        }
-
-        public void Update(ElapsedTime elapsedTime)
-        {
-            if (_assetAsyncLoader.UpdateContent(ref _effect))
-                Loaded?.Invoke(_effect);
+                EffectLoaded?.Invoke(this);
         }
 
         public override void Store()
@@ -74,6 +60,20 @@ namespace Glyph.Graphics
         {
             _assetAsyncLoader.Dispose();
             base.Dispose();
+        }
+
+        public async Task LoadContentAsync(IContentLibrary contentLibrary)
+        {
+            await _assetAsyncLoader.LoadContentAsync(CancellationToken.None);
+
+            if (_assetAsyncLoader.UpdateContent(ref _effect))
+                EffectLoaded?.Invoke(this);
+        }
+
+        public void Update(ElapsedTime elapsedTime)
+        {
+            if (_assetAsyncLoader.UpdateContent(ref _effect))
+                EffectLoaded?.Invoke(this);
         }
     }
 }
