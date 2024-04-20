@@ -43,7 +43,7 @@ namespace Glyph.Core.Resolvers
                 for (IGlyphContainer parent = _composite; parent != null; parent = parent.Parent)
                 {
                     if ((targets & ResolveTargets.Parent) != 0 && type.IsInstanceOfType(parent))
-                        return _composite;
+                        return parent;
 
                     if ((targets & ResolveTargets.Fraternal) != 0 && TryResolveManyFamily(out IEnumerable objs, parent, type))
                         return objs.First();
@@ -75,7 +75,7 @@ namespace Glyph.Core.Resolvers
                 {
                     if ((targets & ResolveTargets.Parent) != 0 && type.IsInstanceOfType(parent))
                     {
-                        obj = _composite;
+                        obj = parent;
                         return true;
                     }
 
