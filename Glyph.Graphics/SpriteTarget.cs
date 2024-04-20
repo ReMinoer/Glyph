@@ -61,7 +61,11 @@ namespace Glyph.Graphics
                 return;
             }
 
-            RenderTarget = new RenderTarget2D(_lazyGraphicsDevice(), (int)Size.X, (int)Size.Y, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8);
+            RenderTarget = new RenderTarget2D(_lazyGraphicsDevice(), (int)Size.X, (int)Size.Y, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8)
+            {
+                Name = Id.ToString()
+            };
+
             _texture = RenderTarget;
             Loaded?.Invoke(this);
         }
