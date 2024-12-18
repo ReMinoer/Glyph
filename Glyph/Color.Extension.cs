@@ -11,7 +11,7 @@ namespace Glyph
 
         static public Color WithOpacity(this Color color, float alpha)
         {
-            return color.A == 0 ? Color.Transparent : color * (255f / color.A) * alpha;
+            return new Color(color, alpha);
         }
     }
 }
